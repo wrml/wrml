@@ -1,0 +1,37 @@
+{
+	"schemaApiDocrootId" : "http://api.schema.wrml.org",
+	"schemaClassRootDirectory" : "/Users/mark/Documents/WRML/code/wrml/test/output/schema/classes",
+	
+	"serviceMappings" : [
+		{
+			"schemaIds" : [
+				"http://api.schema.wrml.org/org/wrml/model/Collection",	
+				"http://api.schema.wrml.org/org/wrml/model/Document",	
+				"http://api.schema.wrml.org/org/wrml/model/schema/Constraint",
+				"http://api.schema.wrml.org/org/wrml/model/schema/constraint/SchemaConstraint",
+				"http://api.schema.wrml.org/org/wrml/model/schema/constraint/text/SyntaxConstraint",
+				"http://api.schema.wrml.org/org/wrml/model/schema/Schema",
+				"http://api.schema.wrml.org/example/Foo"
+			],
+			
+			"serviceClassName" : "org.wrml.service.Web"
+		}	
+	],
+	
+	"syntaxConstraintHandlers" : [
+		{
+			"syntaxConstraintId" : "http://api.constraint.wrml.org/text/syntax/Date",
+			"toStringTransformerClassName" : "org.wrml.util.transformer.DateToStringTransformer"				
+		},
+		{		
+			"syntaxConstraintId" : "http://api.constraint.wrml.org/text/syntax/URI",
+			"toStringTransformerClassName" : "org.wrml.util.transformer.UriToStringTransformer"		
+		},
+	    {
+			"syntaxConstraintId" : "http://api.constraint.wrml.org/text/syntax/UUID",
+			"toStringTransformerClassName" : "org.wrml.util.transformer.UuidToStringTransformer"				
+		}
+	]
+}
+
+
