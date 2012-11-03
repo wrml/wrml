@@ -2,7 +2,7 @@ WRML - Web Resource Modeling Language
 ====
 WRML, pronounced like "Wormle", is an open source software project focused on providing standards, frameworks, and tools that support the development of web-oriented, client-server applications.
 
-WRML is a schema-based modeling language that comes with a set of standards, tools, and frameworks. WRML can be thought of as a "Domain Specific Language" (DSL) for the Web and it's architectural style (known as REST). WRML shares some traits with traditional "ObjectRelational Mapping" (ORM) frameworks; but WRML skews closer to Web-Oriented concepts (Schemas in place of Classes or Tables). 
+WRML is a schema-based modeling language that comes with a set of standards, tools, and frameworks. WRML can be thought of as a "Domain Specific Language" (DSL) for the Web and it's architectural style (known as REST). WRML shares some traits with traditional "Object/Relational Mapping" (ORM) frameworks; but WRML skews closer to Web-Oriented concepts (Schemas in place of Classes or Tables). 
 
 WRML.org is the home of the WRML Project, an open source endeavor promoting the development of WRML-based standards, tools, and frameworks.
 
