@@ -1,0 +1,43 @@
+{
+    "uniqueName" : "org/wrml/test/C",
+    "title" : "C",
+    "description" : "The atomic C test schema",
+    "version" : 1,
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "keySlotNames" :
+    [
+        "cKey"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "cKey",
+            "description" : "The key slot that uniquely identifies C model instances.",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        },
+        {
+            "name" : "cDouble",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/DoubleValue"
+            }
+        },
+        {
+            "name" : "cFlag",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/BooleanValue",
+                "default" : true
+            }
+        }
+    ]
+}

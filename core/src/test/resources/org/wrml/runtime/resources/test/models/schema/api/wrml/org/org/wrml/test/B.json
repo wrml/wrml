@@ -1,0 +1,37 @@
+{
+    "uniqueName" : "org/wrml/test/B",
+    "title" : "B",
+    "description" : "The atomic B test schema",
+    "version" : 1,
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "keySlotNames" :
+    [
+        "bKey"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "bKey",
+            "description" : "The key slot that uniquely identifies B model instances.",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        },
+
+        {
+            "name" : "bInt",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        }
+    ]
+
+}

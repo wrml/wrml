@@ -1,0 +1,29 @@
+{
+    "uniqueName" : "org/wrml/test/wizard/Spell",
+    "title" : "Spell",
+    "description" : "A Wizard spell.",
+    "version" : 1,
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "keySlotNames" :
+    [
+        "spellId"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "spellId",
+            "description" : "The key slot that uniquely identifies a Spell.",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+            }
+        }
+
+    ]
+}

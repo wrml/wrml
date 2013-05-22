@@ -1,0 +1,7 @@
+{
+    "wizardId" : "harry",
+    "guildId" : 7,
+    "primarySpellId" : "fireball",
+    "secondarySpellId" : "iceStorm",
+    "spellBookSpellIds" : ["fireball", "heal", "lightningBolt", "tornado", "iceStorm"]
+}

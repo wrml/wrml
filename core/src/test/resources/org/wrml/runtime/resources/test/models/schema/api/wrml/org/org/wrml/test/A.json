@@ -1,0 +1,110 @@
+{
+    "uniqueName" : "org/wrml/test/A",
+    "title" : "A",
+    "description" : "The atomic A test schema",
+    "version" : 1,
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "keySlotNames" :
+    [
+        "aKey"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "aKey",
+            "description" : "The key slot that uniquely identifies A model instances.",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        },
+
+        {
+            "name" : "aText",
+            "aliases" :
+            [
+                "aTextSlot"
+            ],
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue",
+                "minimumLength" : 2,
+                "maximumLength" : 100
+            }
+        },
+
+        {
+            "name" : "aUuid",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue",
+                "syntaxUri" : "http://syntax.api.wrml.org/org/wrml/syntax/UUID"
+            }
+        },
+
+        {
+            "name" : "aDate",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/DateValue"
+            }
+        },
+
+        {
+            "name" : "aDouble",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/DoubleValue"
+            }
+        },
+
+        {
+            "name" : "aMediaType",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue",
+                "syntaxUri" : "http://syntax.api.wrml.org/org/wrml/syntax/MediaType"
+            }
+        },
+
+        {
+            "name" : "aTextList",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/ListValue",
+                "elementSlot" :
+                {
+                    "name" : "E",
+                    "value" :
+                    {
+                        "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+                    }
+                }
+            }
+        },
+
+        {
+            "name" : "aUriList",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/ListValue",
+                "elementSlot" :
+                {
+                    "name" : "E",
+                    "value" :
+                    {
+                        "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue",
+                        "syntaxUri" : "http://syntax.api.wrml.org/org/wrml/syntax/URI"
+                    }
+                }
+            }
+        }
+
+    ]
+}

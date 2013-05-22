@@ -1,0 +1,4 @@
+placeholder.txt
+
+This file is a placeholder to ensure that this test resource directory is 
+version controlled in case there are issues with empty directories.

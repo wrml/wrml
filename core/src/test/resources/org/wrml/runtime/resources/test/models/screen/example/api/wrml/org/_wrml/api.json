@@ -1,0 +1,132 @@
+{
+    "uri" : "http://screen.example.api.wrml.org",
+    "title" : "Screen API",
+    "docroot" : {
+        "uniqueId" : "082bcce7-6e40-4e8b-b761-bdbd5a8cbb1d",
+        "pathSegment" : "",
+        "description" : "The docroot.",
+        "children" : [
+            {
+                "uniqueId" : "53c32a35-9177-4880-acbd-28e36b63da6a",
+                "pathSegment" : "atoms",
+                "children" : [
+                    {
+                        "uniqueId" : "d4d620a5-7e8e-4d9a-b3cd-b68ab7dea4f8",
+                        "pathSegment" : "a",
+                        "children" : [
+                            {
+                                "uniqueId" : "3a42b08a-ee7e-4b9d-80ea-c13e151fc8c6",
+                                "pathSegment" : "{aKey}",
+                                "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/A",
+                                "version" : 1
+                            }
+                        ],
+                        "version" : 1
+                    },
+                    {
+                        "uniqueId" : "51bde01d-a74f-4cfc-b3e9-21c2ff635648",
+                        "pathSegment" : "b",
+                        "children" : [
+                            {
+                                "uniqueId" : "5b84464f-8ba3-4e3f-83c5-508dc03b12f2",
+                                "pathSegment" : "{bKey}",
+                                "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/B",
+                                "version" : 1
+                            }
+                        ],
+                        "version" : 1
+                    },
+                    {
+                        "uniqueId" : "33577f41-32b8-42c5-93ed-386f251fd4a7",
+                        "pathSegment" : "c",
+                        "children" : [
+                            {
+                                "uniqueId" : "7dc70026-5900-407b-b824-de28cfc2b16f",
+                                "pathSegment" : "{cKey}",
+                                "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/C",
+                                "version" : 1
+                            }
+                        ],
+                        "version" : 1
+                    }
+                ],
+                "version" : 1
+            },
+            {
+                "uniqueId" : "13d6a13c-1504-4ef5-a6d8-7227ae7b853d",
+                "pathSegment" : "screens",
+                "children" : [
+                    {
+                        "uniqueId" : "28a635a3-09ef-48b3-bbc8-de7c8a3466cf",
+                        "pathSegment" : "{aKey}",
+                        "children" : [
+                            {
+                                "uniqueId" : "ef5700dd-317c-42ea-aa85-71b3a56d74ec",
+                                "pathSegment" : "{bKey}",
+                                "children" : [
+                                    {
+                                        "uniqueId" : "c7ea6407-327f-4471-aa21-05cc502fc345",
+                                        "pathSegment" : "{cKey}",
+                                        "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/Screen",
+                                        "version" : 1
+                                    }
+                                ],
+                                "version" : 1
+                            }
+                        ],
+                        "version" : 1
+                    }
+                ],
+                "version" : 1
+            }
+        ],
+        "version" : 1
+    },
+    "description" : "",
+    "linkTemplates" : [
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/A",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "3a42b08a-ee7e-4b9d-80ea-c13e151fc8c6",
+            "endPointId" : "3a42b08a-ee7e-4b9d-80ea-c13e151fc8c6"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/B",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "5b84464f-8ba3-4e3f-83c5-508dc03b12f2",
+            "endPointId" : "5b84464f-8ba3-4e3f-83c5-508dc03b12f2"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/C",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "7dc70026-5900-407b-b824-de28cfc2b16f",
+            "endPointId" : "7dc70026-5900-407b-b824-de28cfc2b16f"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/Screen",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "c7ea6407-327f-4471-aa21-05cc502fc345",
+            "endPointId" : "c7ea6407-327f-4471-aa21-05cc502fc345"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/A",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/a",
+            "referrerId" : "c7ea6407-327f-4471-aa21-05cc502fc345",
+            "endPointId" : "3a42b08a-ee7e-4b9d-80ea-c13e151fc8c6"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/B",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/b",
+            "referrerId" : "c7ea6407-327f-4471-aa21-05cc502fc345",
+            "endPointId" : "5b84464f-8ba3-4e3f-83c5-508dc03b12f2"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/C",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/c",
+            "referrerId" : "c7ea6407-327f-4471-aa21-05cc502fc345",
+            "endPointId" : "7dc70026-5900-407b-b824-de28cfc2b16f"
+        }
+
+    ],
+    "version" : 1
+}

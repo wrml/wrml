@@ -1,0 +1,39 @@
+{
+
+    "context" :
+    {
+        "modelCache" :
+        {
+            "name":"Cache",
+            "implementation":"org.wrml.runtime.service.cache.ShardedModelCache"
+        },
+
+        "schemaLoader" :
+        {
+
+            "factory" : "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
+
+            "schemaClassRootDirectory":"",
+            "jsonSchemaIds":
+            [
+                "http://www.my.schemas/schemas/my-schema.json"
+            ]
+        },
+
+        "serviceLoader" :
+        {
+            "services" :
+            [
+               
+            ],
+
+            "serviceChains" :
+            {
+                "*":
+                [
+                   
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "context" :
+    {
+        "apiLoader" :
+        {
+            "apis" : 
+            [
+                "http://screen.example.api.wrml.org"
+            ]
+        },
+        "serviceLoader" :
+        {
+            "services" :
+            [
+                {
+                    "name" : "JVM",
+                    "implementation" : "org.wrml.runtime.service.resource.JavaResourceService",
+                    "settings" :
+                    {
+                        "resourceOwnerClassName" : "org.wrml.runtime.Context",
+                        "resourceRootDirectoryPath" : "resources/test/models"
+                    }
+                }
+            ],
+
+            "serviceMapping" :
+            {
+                "*" : "JVM"
+            }
+        }
+    }
+}

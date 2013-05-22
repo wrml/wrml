@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.wrml.contrib.runtime</groupId>
+		<artifactId>service</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<organization>
+		<name>Mark Masse (OSS project WRML.org)</name>
+		<url>http://www.wrml.org</url>
+	</organization>
+
+	<groupId>org.wrml.contrib.runtime.service</groupId>
+	<artifactId>mongo</artifactId>
+	<name>wrml-contrib-runtime-service-mongo</name>
+	<description>The mongoDB NoSQL mongoDatabase as a WRML service. See also: http://www.mongodb.org</description>
+
+	<dependencies>
+		<!-- WRML -->
+		<dependency>
+			<groupId>org.wrml</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.wrml</groupId>
+			<artifactId>core</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Logging Utilities -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+		</dependency>
+
+		<!-- MongoDB -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.wrml.cli.Wrml</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+            <!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+
+					<artifactSet>
+						<excludes>
+							<exclude>org.wrml:core:*:*</exclude>
+						</excludes>
+					</artifactSet>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            -->
+
+		</plugins>
+	</build>
+
+	<modules>
+	</modules>
+</project>

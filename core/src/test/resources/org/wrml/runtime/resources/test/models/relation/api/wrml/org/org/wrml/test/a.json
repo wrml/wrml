@@ -1,0 +1,6 @@
+{
+    "uniqueName" : "org/wrml/test/a",
+    "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/A",
+    "method" : "Get",
+    "version" : 1
+}

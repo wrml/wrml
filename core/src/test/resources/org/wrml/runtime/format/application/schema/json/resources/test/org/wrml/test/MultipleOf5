@@ -1,0 +1,12 @@
+{
+    "title": "Multiple of 5 value",
+    "description" : "Example using the multipleof JSON Schema",
+    "type" : "object",
+    "properties" : {
+        "value" : {
+            "type" : "integer",
+            "multipleOf" : 5
+        }
+    },
+    "required" : [ "value" ]
+}

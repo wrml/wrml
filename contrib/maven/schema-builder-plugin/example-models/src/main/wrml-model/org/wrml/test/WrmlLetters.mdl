@@ -1,0 +1,11 @@
+{
+    "uniqueName" : "org/wrml/test/WrmlLetters",
+    "list" :
+    [
+        "W",
+        "R",
+        "M",
+        "L"
+    ],
+    "version" : 1
+}

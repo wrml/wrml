@@ -1,0 +1,4 @@
+{
+    "uniqueName" : "org/wrml/test/wizard/secondarySpell",
+    "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell"
+}

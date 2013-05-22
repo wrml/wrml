@@ -1,0 +1,48 @@
+{
+
+    "context" :
+    {
+        "modelCache" :
+        {
+            "name":"Cache",
+            "implementation":"org.wrml.runtime.service.cache.ShardedModelCache"
+        },
+
+        "schemaLoader" :
+        {
+
+            "factory" : "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
+            "schemaClassRootDirectory":"/etc/wrml/schemas"
+        },
+
+        "serviceLoader" :
+        {
+            "services" :
+            [
+                {
+                    "name" : "File",
+                    "implementation" : "org.wrml.runtime.service.file.FileSystemService",
+                    "settings" :
+                    {
+                        "rootDirectory" : "/etc/wrml/models"
+                    }
+                },
+                {
+                    "name" : "ApiDesigner",
+                    "implementation" : "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
+                    "settings" :
+                    {
+                        "apiUri" : "http://design.api.wrml.org"
+                    }
+                }
+
+            ],
+
+            "serviceMapping" :
+            {
+                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*" : "ApiDesigner",
+                "*" : "File"
+            }
+        }
+    }
+}

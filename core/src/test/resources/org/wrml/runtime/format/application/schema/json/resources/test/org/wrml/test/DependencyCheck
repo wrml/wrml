@@ -1,0 +1,13 @@
+{
+    "properties" : {
+        "a" : {
+            "type" : "string"
+        },
+        "b" : {
+            "type" : "string"
+        }
+    },
+    "dependencies" : {
+        "a" : ["b","c"]
+    }
+}

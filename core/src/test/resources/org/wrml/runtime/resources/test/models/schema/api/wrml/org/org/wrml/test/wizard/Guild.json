@@ -1,0 +1,30 @@
+{
+    "uniqueName" : "org/wrml/test/wizard/Guild",
+    "title" : "Guild",
+    "description" : "A Wizard guild.",
+    "version" : 1,
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/Named",
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "keySlotNames" :
+    [
+        "id"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "id",
+            "description" : "The key slot that uniquely identifies a Guild.",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        }
+
+    ]
+}

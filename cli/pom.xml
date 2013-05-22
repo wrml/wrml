@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.wrml</groupId>
+		<artifactId>wrml</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>cli</artifactId>
+	<packaging>jar</packaging>
+
+	<name>WRML CLI (Werminal)</name>
+	<description>WRML Command Line Interface</description>
+
+	<build>
+		<plugins>
+			<!-- Adds the standard license header to the source files -->
+			<!-- Run "mvn license:check" to check if all sources files have the proper 
+				header. Run "mvn license:format" to add the proper header to source files. -->
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<strictCheck>true</strictCheck>
+					<header>src/main/resources/headers/JavaFileHeader-latest.txt</header>
+					<includes>
+						<include>src/**/*.java</include>
+					</includes>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<validHeaders>
+						<validHeader>src/main/resources/headers/JavaFileHeader-version-00.txt</validHeader>
+						<validHeader>src/main/resources/headers/JavaFileHeader-version-01.txt</validHeader>
+						<validHeader>src/main/resources/headers/JavaFileHeader-version-02.txt</validHeader>
+					</validHeaders>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<!-- Adds eclipse support (What does this do)? -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>jar-with-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>wrml-cli</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<archive>
+								<manifest>
+									<mainClass>org.wrml.werminal.Werminal</mainClass>
+									<addClasspath>true</addClasspath>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.lanterna</groupId>
+			<artifactId>lanterna</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Janino is used for evaluating conditional expressions in logback.xml. -->
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wrml</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.wrml.contrib.runtime.service</groupId>
+            <artifactId>mongo</artifactId>
+        </dependency>
+		<!-- 'test'-scoped dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

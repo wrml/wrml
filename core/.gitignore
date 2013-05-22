@@ -1,0 +1,11 @@
+target
+logs
+bin
+.DS_Store
+nb-configuration.xml
+nbactions-WRML.xml
+nbactions.xml
+.classpath
+.project
+.settings
+dependency-reduced-pom.xml

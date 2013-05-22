@@ -1,0 +1,113 @@
+{
+    "uri" : "http://wizard.example.api.wrml.org",
+    "title" : "Wizard API",
+    "docroot" : {
+        "uniqueId" : "4F7F80DA-7078-4F38-B22D-A74BEB006F21",
+        "pathSegment" : "",
+        "description" : "The docroot.",
+        "children" : [
+            {
+                "uniqueId" : "DBFBB042-DABB-4BBC-841C-321F5C483C6A",
+                "pathSegment" : "wizards",
+                "children" : [
+                    {
+                        "uniqueId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+                        "pathSegment" : "{wizardId}",
+                        "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Wizard",
+                        "version" : 1
+                    }
+                ]
+            },
+            {
+                "uniqueId" : "0AE0DB43-0D78-40F5-AA4D-EACCE320A0FB",
+                "pathSegment" : "guilds",
+                "children" : [
+                    {
+                        "uniqueId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A",
+                        "pathSegment" : "{id}",
+                        "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+                        "version" : 1
+                    }
+                ]
+            },
+            {
+                "uniqueId" : "DD3D7899-130B-4A96-9CB1-967BFB24FBB5",
+                "pathSegment" : "spells",
+                "children" : [
+                    {
+                        "uniqueId" : "528A958E-5885-4613-A2DD-B4C352D862AD",
+                        "pathSegment" : "{spellId}",
+                        "defaultSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+                        "version" : 1
+                    }
+                ],
+                "version" : 1
+            }
+        ],
+        "version" : 1
+    },
+    "description" : "",
+    "linkTemplates" : [
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Wizard",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A",
+            "endPointId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/relation/self",
+            "referrerId" : "528A958E-5885-4613-A2DD-B4C352D862AD",
+            "endPointId" : "528A958E-5885-4613-A2DD-B4C352D862AD"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/defaultGuild",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/rivalGuild",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/guild",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "767565DB-2F67-4F31-AC59-BC44E167DA7A"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/defaultSpell",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "528A958E-5885-4613-A2DD-B4C352D862AD"
+        },        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/primarySpell",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "528A958E-5885-4613-A2DD-B4C352D862AD"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/secondarySpell",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "528A958E-5885-4613-A2DD-B4C352D862AD"
+        },
+        {
+            "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+            "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/spell",
+            "referrerId" : "5AB0F408-DF4F-4FF6-A70F-76AEF53C0304",
+            "endPointId" : "528A958E-5885-4613-A2DD-B4C352D862AD"
+        }
+
+    ],
+    "version" : 1
+}

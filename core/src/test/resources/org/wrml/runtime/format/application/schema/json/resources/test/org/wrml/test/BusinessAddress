@@ -1,0 +1,11 @@
+{
+    "title": "Postal Business Address",
+    "description" : "Example Business Address JSON Schema",
+    "type" : "object",
+    "extends" : "http://schema.api.wrml.org/org/wrml/test/PostalAddress",
+    "properties" : {
+        "businessName" : {
+            "type" : "string"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+	"title": "ImportantPerson",
+        "description" : "Example Important Person JSON Schema",
+	"type": "object",
+        "allOf" : [
+            { "$ref" : "http://schema.api.wrml.org/org/wrml/test/Person" }
+        ],
+	"properties": {
+                "status" : {
+                        "type" : "string"
+                }
+	},
+	"required": ["status"]
+}

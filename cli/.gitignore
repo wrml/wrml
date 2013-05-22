@@ -1,0 +1,12 @@
+target
+bin
+logs
+.classpath
+.project
+.settings
+dependency-reduced-pom.xml
+src/test/resources/fileSystemServiceRootDirectory/*
+!src/test/resources/fileSystemServiceRootDirectory/placeholder.txt
+src/test/resources/schemaClassRootDirectory/*
+!src/test/resources/schemaClassRootDirectory/placeholder.txt
+/wrml.json*

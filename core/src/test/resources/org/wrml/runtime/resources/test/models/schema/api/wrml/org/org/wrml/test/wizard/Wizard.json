@@ -1,0 +1,177 @@
+{
+    "uniqueName" : "org/wrml/test/wizard/Wizard",
+    "version" : 1,
+    "description" : "A magical Wizard.",
+
+    "keySlotNames" :
+    [
+        "wizardId"
+    ],
+
+    "baseSchemaUris" :
+    [
+        "http://schema.api.wrml.org/org/wrml/model/rest/Document"
+    ],
+
+    "slots" :
+    [
+        {
+            "name" : "wizardId",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+            }
+        },
+        {
+            "name" : "guildId",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            }
+        },
+        {
+            "name" : "primarySpellId",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+            }
+        },
+        {
+            "name" : "secondarySpellId",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+            }
+        },
+        {
+            "name" : "spellBookSpellIds",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/ListValue",
+                "elementSlot" : {
+                    "name" : "E",
+                    "value" :
+                    {
+                        "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/TextValue"
+                    }
+                }
+            }
+        },
+        {
+            "name" : "defaultGuild",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/defaultGuild",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "id",
+                         "valueSource" : "7",
+                         "valueSourceType" : "Constant"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "guild",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/guild",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "id",
+                         "valueSource" : "guildId"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "rivalGuild",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/rivalGuild",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "id",
+                         "valueSource" : "rg",
+                         "valueSourceType" : "QueryParameter"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "defaultSpell",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/defaultSpell",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "spellId",
+                         "valueSource" : "lightningBolt",
+                         "valueSourceType" : "Constant"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "primarySpell",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/primarySpell",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "spellId",
+                         "valueSource" : "primarySpellId"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "secondarySpell",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell",
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/secondarySpell",
+                "bindings" : [
+                    {
+                         "referenceSlot" : "spellId",
+                         "valueSource" : "secondarySpellId"
+                    }
+                ]
+            }
+        },
+        {
+            "name" : "spellBook",
+            "value" :
+            {
+                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/CollectionValue",
+                "elementSlot" : {
+                    "name" : "E",
+                    "value" :
+                    {
+                        "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/ModelValue",
+                        "modelSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Spell"
+                    }
+                },
+                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/wizard/spell",
+                "and" : [
+                    {
+                        "referenceSlot" : "spellId",
+                        "operator" : "equalToAny",
+                        "valueSource" : "spellBookSpellIds"
+                    }
+                ]
+            }
+        }
+    ]
+}

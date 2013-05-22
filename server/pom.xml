@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.wrml</groupId>
+		<artifactId>wrml</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<organization>
+		<name>Mark Masse (OSS project WRML.org)</name>
+		<url>http://www.wrml.org</url>
+	</organization>
+
+	<artifactId>server</artifactId>
+	<packaging>pom</packaging>
+	<name>wrml-server</name>
+	<description>Various forms of servers to run on top of the core.</description>
+
+	<modules>
+		<module>server-core</module>
+		<module>server-war</module>
+	</modules>
+
+</project>
