@@ -28,6 +28,5 @@
 ##########################################################################################
 
 
-java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/projects/wrml/wrml/cli/target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
-#java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/projects/wrml/wrml/cli/target/wrml-cli.jar:/Users/mark/projects/wrml/wrml/core/src/test/resources" org.wrml.werminal.Werminal -unix
+java -DwrmlConfiguration=config/dev-wrml.json -classpath "cli/target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
 
