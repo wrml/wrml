@@ -8,7 +8,7 @@
  *
  * http://www.wrml.org
  *
- * Copyright 2012 Mark Masse (OSS project WRML.org)
+ * Copyright (C) 2011 - 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -11,8 +11,7 @@
         <name>Mark Masse (OSS project WRML.org)</name>
         <url>http://www.wrml.org</url>
     </organization>
-        
-        
+
     <artifactId>contrib</artifactId>
     <packaging>pom</packaging>    
     <name>wrml-contrib</name>    
@@ -26,6 +25,7 @@
     <build>
 
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>

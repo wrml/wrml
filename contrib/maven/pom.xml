@@ -14,10 +14,6 @@
 	<packaging>pom</packaging>
 	<name>maven</name>
 	<description>Contributions that may optionally be used along with the WRML core.</description>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
 
 	<dependencies>
 

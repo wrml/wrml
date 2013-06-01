@@ -16,6 +16,18 @@
 	<name>wrml-server-core</name>
 	<description>The server for the wrml engine.</description>
 
+    <properties>
+        <jacoco-maven-plugin.classRatio>100</jacoco-maven-plugin.classRatio>
+        <jacoco-maven-plugin.instructionRatio>75</jacoco-maven-plugin.instructionRatio>
+        <jacoco-maven-plugin.branchRatio>60</jacoco-maven-plugin.branchRatio>
+        <jacoco-maven-plugin.lineRatio>75</jacoco-maven-plugin.lineRatio>
+        <jacoco-maven-plugin.complexityRatio>50</jacoco-maven-plugin.complexityRatio>
+        <jacoco-maven-plugin.methodRatio>95</jacoco-maven-plugin.methodRatio>
+        <!-- this property is required to override the relative path configuration in wrml/pom.xml -->
+        <maven-license-plugin.valid-header.wrml.core.path>../../core/src/main/resources/headers</maven-license-plugin.valid-header.wrml.core.path>
+    </properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.wrml</groupId>
@@ -72,14 +84,4 @@
 		</plugins>
 	</build>
 
-	<properties>
-		<jacoco-maven-plugin.classRatio>100</jacoco-maven-plugin.classRatio>
-		<jacoco-maven-plugin.instructionRatio>75</jacoco-maven-plugin.instructionRatio>
-		<jacoco-maven-plugin.branchRatio>60</jacoco-maven-plugin.branchRatio>
-		<jacoco-maven-plugin.lineRatio>75</jacoco-maven-plugin.lineRatio>
-		<jacoco-maven-plugin.complexityRatio>50</jacoco-maven-plugin.complexityRatio>
-		<jacoco-maven-plugin.methodRatio>95</jacoco-maven-plugin.methodRatio>
-		<!-- this property is required to override the relative path configuration in wrml/pom.xml -->
-		<maven-license-plugin.valid-header.wrml.core.path>../../core/src/main/resources/headers</maven-license-plugin.valid-header.wrml.core.path>
-	</properties>
 </project>

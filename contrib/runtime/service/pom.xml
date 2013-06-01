@@ -18,7 +18,14 @@
 	<name>wrml-contrib-runtime-service</name>
 	<description>Service contributions that may optionally be used along with the WRML core runtime.</description>
 
-	<modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven-license-plugin.valid-header.wrml.core.path>../../../core/src/main/resources/headers</maven-license-plugin.valid-header.wrml.core.path>
+    </properties>
+
+
+    <modules>
 		<module>groovy</module>
 		<module>mongo</module>
 	</modules>

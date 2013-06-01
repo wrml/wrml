@@ -17,7 +17,14 @@
 	<name>wrml-contrib-runtime-service-groovy</name>
 	<description>The Groovy template language as a WRML service.</description>
 
-	<dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven-license-plugin.valid-header.wrml.core.path>../../../../core/src/main/resources/headers</maven-license-plugin.valid-header.wrml.core.path>
+    </properties>
+
+
+    <dependencies>
 		<!-- WRML -->
 		<dependency>
 			<groupId>org.wrml</groupId>
@@ -59,7 +66,41 @@
 	<build>
 		<plugins>
 
-			<plugin>
+
+            <plugin>
+                <!-- Adds the standard license header to the source files -->
+                <!-- Run "mvn license:check" to check if all sources files have the proper header. Run "mvn license:format" to add the
+                    proper header to source files. -->
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <strictCheck>true</strictCheck>
+                    <header>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-latest.txt</header>
+                    <includes>
+                        <include>src/**/*.java</include>
+                    </includes>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <validHeaders>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-00.txt</validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-01.txt</validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-02.txt</validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-03.txt</validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-04.txt</validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-05.txt</validHeader>
+                    </validHeaders>
+                </configuration>
+            </plugin>
+
+            <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 			</plugin>

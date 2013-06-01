@@ -81,6 +81,8 @@
 							<validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-00.txt</validHeader>
 							<validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-01.txt</validHeader>
 							<validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-02.txt</validHeader>
+                            <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-03.txt</validHeader>
+                            <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-04.txt</validHeader>
 						</validHeaders>
 					</configuration>
 				</plugin>

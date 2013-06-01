@@ -8,7 +8,7 @@
  *
  * http://www.wrml.org
  *
- * Copyright (C) 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
+ * Copyright (C) 2011 - 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import java.util.UUID;
  * <a href="http://www.wrml.org">http://www.wrml.org</a></h2>
  * <p/>
  * <p>
- * Copyright 2012 Mark Masse (OSS project WRML.org)
+ * Copyright 2013 Mark Masse (OSS project WRML.org)
  * </p>
  * <p/>
  * <p>
