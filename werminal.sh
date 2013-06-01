@@ -28,8 +28,6 @@
 ##########################################################################################
 
 
-java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/Documents/WRML/code/WRML/core/src/test/resources:/Users/mark/Documents/WRML/code/WRML/cli/target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
-#java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/Documents/WRML/code/WRML/core/src/test/resources:/Users/mark/Documents/WRML/code/WRML/cli/target/wrml-cli.jar:/Users/mark/.m2/repository/org/mongodb/mongo-java-driver/2.7.3/mongo-java-driver-2.7.3.jar:/Users/mark/Documents/WRML/code/WRML/contrib/runtime/service/mongo/target/original-mongo-1.0-SNAPSHOT.jar" org.wrml.werminal.Werminal -unix
-#java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/Documents/WRML/code/WRML/core/src/test/resources:/Users/mark/Documents/WRML/code/WRML/cli/target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
-#java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/Documents/WRML/code/WRML/core/src/test/resources:/Users/mark/Documents/WRML/code/WRML/cli/target/wrml-cli.jar:/Users/mark/Documents/WRML/code/WRML/contrib/runtime/service/mongo/target/mongo-1.0-SNAPSHOT.jar" org.wrml.werminal.Werminal -unix
+java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/projects/wrml/wrml/cli/target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
+#java -DwrmlConfiguration=/Users/mark/Documents/WRML/config/dev-wrml.json -classpath "/Users/mark/projects/wrml/wrml/cli/target/wrml-cli.jar:/Users/mark/projects/wrml/wrml/core/src/test/resources" org.wrml.werminal.Werminal -unix
 

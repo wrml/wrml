@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+
+<!-- The Werminal logback configuration. -->
+
+<configuration debug="false">
 
 	<!-- The logs directory can be set at startup using -Dlogging.dir=... If 
 		not specified the logging directory will be the value specified below. -->
@@ -33,7 +36,7 @@
 	<logger name="org.eclipse.jetty" level="WARN" />
 	<logger name="org.springframework" level="WARN" />
 
-	<root level="INFO">
+	<root level="DEBUG">
 		<appender-ref ref="WRML_LOG" />
 	</root>
 </configuration>

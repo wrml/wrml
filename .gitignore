@@ -1,3 +1,5 @@
 .idea
+logs
+Werminal.json
 *.DS_Store
 *.class
