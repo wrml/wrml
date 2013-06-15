@@ -1,0 +1,16 @@
+<div class="panel radius">
+	<div id="form-content-region"></div>
+	<% if @footer: %>
+		<footer>
+			<% if @buttons: %>
+				<ul class="inline-list">
+					<% for button in @buttons: %>
+						<li>
+							<button type="<%= button.buttonType %>" data-form-button="<%= button.type %>" class="<%= button.className %>"><%= button.text %></button>
+						</li>
+					<% end %>
+				</ul>
+			<% end %>
+		</footer>
+	<% end %>
+</div>

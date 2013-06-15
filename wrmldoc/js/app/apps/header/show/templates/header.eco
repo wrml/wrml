@@ -1,0 +1,101 @@
+<div id="header" class="navbar navbar-fixed-top navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
+
+			<div class="row">
+				<div class="pull-left">
+					<span class="brand">
+						<!-- <img id="logo" src="<%= wrmlData.docroot %>img/logo.png" /> -->
+						WRML
+					</span>
+				</div>
+				
+				<ul class="nav pull-right">
+
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							User
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+
+							<li><a tabindex="-1" href="#">Log In</a></li>
+							<li class="divider"></li>
+							<li><a tabindex="-1" href="#">Preferences</a></li>
+
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Model
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+							<li><a tabindex="-1" href="#">New</a></li>
+							<li><a tabindex="-1" href="#">Open</a></li>
+							<li class="divider"></li>
+							<li><a tabindex="-1" href="#">Save</a></li>
+							<li><a tabindex="-1" href="#">Save As</a></li>
+							<li class="divider"></li>
+							<li><a tabindex="-1" href="#">Bookmark</a></li>
+							<li class="divider"></li>
+							<li><a tabindex="-1" href="#"><!-- <img src="<%= wrmlData.docroot %>img/store-small.png" /> -->Delete</a></li>					  
+							<!-- <li class="divider"></li> -->
+							<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Edit
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+							<li><a tabindex="-1" href="#">Cut</a></li>
+							<li><a tabindex="-1" href="#">Copy</a></li>
+							<li><a tabindex="-1" href="#">Paste</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							View
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+							<li>
+								<a  tabindex="-1" href="#">Format <span class="badge badge-inverse">&gt;</span></a>
+
+								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+									<li><a tabindex="-1" href="#">&bull; HTML</a></li>						  	
+									<li><a tabindex="-1" href="#">&ensp; JSON</a></li>
+									<li><a tabindex="-1" href="#">&ensp; XML</a></li>
+								</ul>
+
+							</li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Help
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+							<li><a tabindex="-1" href="#">README</a></li>
+							<li><a tabindex="-1" href="#">User Guide</a></li>
+							<li><a tabindex="-1" href="#">WRML Wiki</a></li>
+							<li><a tabindex="-1" href="#">WRML.org</a></li>
+						</ul>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+

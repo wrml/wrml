@@ -10,7 +10,7 @@
 
   http://www.wrml.org
 
-  Copyright (C) 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
+  Copyright (C) 2011 - 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -37,61 +37,63 @@ wrmldoc - A JS web app for WRML documentation generation.
 
         <script type="text/javascript">
 
-            var settings = '{'
+            wrmlData = '{'
 
-            "docroot" : "{0}",
+                "docroot" : "{0}",
 
-            "indexHeadTemplate" : {1},
+                "dotMin" : "{1}",
 
-            "indexBodyTemplate" : {2},
+                "model" : {2},
 
-            "model" : {3},
+                "schema" : {3},
 
-            "schema" : {4},
-
-            "api" : {5}
+                "api" : {4}
 
             '}';
 
         </script>
 
-        <!-- Uses jQuery for the DOM scripting and AJAX calls -->
-        <script type="text/javascript" src="{0}js/lib/jquery.js"></script>
 
-        <!-- Uses EJS for the "Embedded JavaScript" templates. -->
-        <script type="text/javascript" src="{0}js/lib/ejs.js"></script>
+        <script type="text/javascript" src="{0}js/lib{1}.js"></script>
 
-        <!-- Uses Underscore for the util functions. -->
-        <script type="text/javascript" src="{0}js/lib/underscore.js"></script>
+        <!-- Uses wrmldoc for app logic -->
+        <script type="text/javascript" src="{0}js/wrmldoc{1}.js"></script>
 
-        <!-- Uses wrmldoc for rendering logic -->
-        <script type="text/javascript" src="{0}js/wrmldoc.js"></script>
+        <meta charset="utf-8" />
 
-        <script type="text/javascript">
+        <meta name="description" content="wrmldoc" />
 
-            // Create the wrmldoc JS library
-            var wrmldoc = buildWrmldoc(settings);
+        <meta name="keywords" content="wrml, wormle, wrmldoc, zeitgeist, modern, WWW, Web, web resource, web development, HTML, CSS, JavaScript, HTML5, design, web services, web applications, computer books, programming, development, developer resources, REST API, RESTful, JSON, Schema" />
 
-        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-        <script type="text/javascript">
+        <!-- The favicon -->
+        <link rel="shortcut icon" href="{0}img/shortcut.png" />
 
-            // Render the head dynamically (client-side).
-            var headHtml = wrmldoc.renderHead();
-            document.write(headHtml);
+        <link rel="stylesheet" media="all" href="{0}css/wrmldoc{1}.css" />
 
-        </script>
+        <title>wrmldoc</title>
 
     </head>
 
     <body>
 
 
+
+        <div id="wrap">
+            <div id="header-region"></div>
+            <div id="main-region" class="container"></div>
+            <div id="push"></div>
+        </div>
+        <div id="footer-region"></div>
+
+
+
+
         <script type="text/javascript">
 
-            // Render the body dynamically (client-side).
-            var bodyHtml = wrmldoc.renderBody();
-            document.write(bodyHtml);
+            // Start App
+            Wrmldoc.start(wrmlData);
 
         </script>
 

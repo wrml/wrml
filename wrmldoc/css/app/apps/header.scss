@@ -1,0 +1,123 @@
+/*
+ * WRML - Web Resource Modeling Language
+ *  __     __   ______   __    __   __
+ * /\ \  _ \ \ /\  == \ /\ "-./  \ /\ \
+ * \ \ \/ ".\ \\ \  __< \ \ \-./\ \\ \ \____
+ *  \ \__/".~\_\\ \_\ \_\\ \_\ \ \_\\ \_____\
+ *   \/_/   \/_/ \/_/ /_/ \/_/  \/_/ \/_____/
+ *
+ * http://www.wrml.org
+ *
+ * Copyright (C) 2011 - 2013 Mark Masse <mark@wrml.org> (OSS project WRML.org)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#header-region		
+{
+	padding-top: $navbarHeight;
+
+	.navbar-inner
+	{
+		height: $navbarHeight;
+		border-bottom: 1px solid $red;  
+	}
+
+	#logo					
+	{  
+
+		width: 25px; 
+		height: 25px; 	
+		margin-left: 5px;				
+	}
+	
+	.brand 
+	{
+		color: $red;		
+		font-weight: 500; 
+	}
+
+	.caret
+	{  
+		border-top-color: $white;		
+		border-bottom-color: $white;		
+	}
+
+	a.dropdown-toggle
+	{  
+		color: $white;		
+	}
+
+	a.dropdown-toggle:focus, a.dropdown-toggle:hover						
+	{  
+		color: $red;	
+
+		.caret
+		{  
+			border-top-color: $red;		
+			border-bottom-color: $red;		
+		}	
+	}
+
+	.dropdown-menu {
+
+		li {
+
+			a {
+				
+				span
+				{
+					margin-left: $cascadeMenuIconSpacing;
+					color: $white;	
+				}
+			}
+			
+			a:hover, a:focus 
+			{
+				background-color: $red;		
+				background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 0, 53));
+				background-repeat: repeat-x;
+
+				span
+				{					
+					color: $red;	
+				}
+
+			}			
+		}
+	}
+
+
+	// Add cascade menu support to Bootstrap
+	.nav li.dropdown ul.dropdown-menu li:HOVER ul 
+	{
+		display:block; 
+		position:absolute; 
+		left:100%;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+	}
+
+
+	.nav li.dropdown ul.dropdown-menu ul 
+	{
+		display: none;
+		float:right;
+		position: relative;
+		top: auto;
+		margin-top: -30px;
+	}
+
+
+}

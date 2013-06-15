@@ -10,3 +10,4 @@ src/test/resources/fileSystemServiceRootDirectory/*
 src/test/resources/schemaClassRootDirectory/*
 !src/test/resources/schemaClassRootDirectory/placeholder.txt
 /wrml.json*
+Werminal.json

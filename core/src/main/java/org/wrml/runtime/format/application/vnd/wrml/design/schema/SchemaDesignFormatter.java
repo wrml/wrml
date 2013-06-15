@@ -44,6 +44,7 @@ import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.rest.SystemLinkRelation;
 import org.wrml.runtime.schema.*;
 import org.wrml.runtime.syntax.SyntaxLoader;
+import org.wrml.util.UniqueName;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -121,6 +122,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         final ObjectNode rootNode = objectMapper.createObjectNode();
 
         final URI schemaUri = schema.getUri();
+        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
 
         rootNode.put(PropertyName.uri.name(), syntaxLoader.formatSyntaxValue(schemaUri));
         rootNode.put(PropertyName.title.name(), schema.getTitle());
@@ -132,10 +134,19 @@ public class SchemaDesignFormatter extends AbstractFormatter
             rootNode.put(PropertyName.titleSlotName.name(), guessedTitleSlot);
         }
 
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
+        final UniqueName uniqueName = schema.getUniqueName();
+        final ObjectNode uniqueNameNode = objectMapper.createObjectNode();
+        uniqueNameNode.put(PropertyName.fullName.name(), uniqueName.getFullName());
+        uniqueNameNode.put(PropertyName.namespace.name(), uniqueName.getNamespace());
+        uniqueNameNode.put(PropertyName.localName.name(), uniqueName.getLocalName());
+        rootNode.put(PropertyName.uniqueName.name(), uniqueNameNode);
+
+        final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
+
+        rootNode.put(PropertyName.keyCount.name(), allKeySlotNames.size());
+
         final ArrayNode allKeySlotNamesNode = objectMapper.createArrayNode();
         rootNode.put(PropertyName.allKeySlotNames.name(), allKeySlotNamesNode);
-        final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
 
         final ObjectNode keySlotMap = objectMapper.createObjectNode();
         rootNode.put(PropertyName.keys.name(), keySlotMap);
@@ -166,8 +177,16 @@ public class SchemaDesignFormatter extends AbstractFormatter
         rootNode.put(PropertyName.slots.name(), slotMapNode);
 
         final SortedSet<String> allSlotNames = prototype.getAllSlotNames();
+
+        rootNode.put(PropertyName.slotCount.name(), allSlotNames.size());
+
         for (final String slotName : allSlotNames)
         {
+            if (allKeySlotNames.contains(slotName))
+            {
+                continue;
+            }
+
             final ObjectNode slotNode = createSlot(objectMapper, prototype, slotName);
 
             if (slotNode != null)
@@ -179,6 +198,9 @@ public class SchemaDesignFormatter extends AbstractFormatter
         final ObjectNode linksMapNode = objectMapper.createObjectNode();
         rootNode.put(PropertyName.links.name(), linksMapNode);
         final Collection<LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots().values();
+
+        rootNode.put(PropertyName.linkCount.name(), linkProtoSlots.size());
+
         for (final LinkProtoSlot linkProtoSlot : linkProtoSlots)
         {
 
@@ -411,20 +433,27 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
         allKeySlotNames,
         description,
-        keys,
-        links,
         element,
+        fullName,
+        keyCount,
+        keys,
+        linkCount,
+        links,
+        localName,
         method,
         name,
+        namespace,
         rel,
         responseSchemaUri,
         responseSchemaTitle,
         schema,
+        slotCount,
         slots,
         syntax,
         title,
         titleSlotName,
         type,
+        uniqueName,
         uri;
 
     }

@@ -1,0 +1,5 @@
+<div class="container">			
+	WRML - Web Resource Modeling Language</br>	
+	Copyright (C) 2011 - 2013 Mark Masse <mark@wrml.org> (OSS project <a href="http://www.wrml.org">WRML.org</a>).</br>				
+	Licensed under the <a href="<%= wrmlData.docroot %>LICENSE-2.0.txt">Apache License, Version 2.0</a>.
+</div>

@@ -83,9 +83,9 @@ See <a href="./cli/README.md">the Werminal /cli project README.</a>
 
 For more about the Werminal app, please consult the "Werminal Masters Handbook": http://www.wrml.org/werminal/WerminalMastersHandbook.pdf
 
-##WRML Web Application##
+##wrmldoc##
 
-In progress as of the Jean Grey sprint.
+See the /wrmldoc project.
 
 
 #License#

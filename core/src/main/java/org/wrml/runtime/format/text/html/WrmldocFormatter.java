@@ -65,21 +65,24 @@ public class WrmldocFormatter extends AbstractFormatter
 
     public static final String DOCROOT_SETTING_NAME = "docroot";
 
-    public static final String DEFAULT_DOCROOT = "http://www.wrml.org/wrmldoc/";
+    public static final String MINIFY_SETTING_NAME = "minify";
+
+    //public static final String DEFAULT_DOCROOT = "http://www.wrml.org/wrmldoc/";
+
+    public static final String DEFAULT_DOCROOT = "/_wrml/wrmldoc/";
 
     public static final String SHELL_PAGE_TEMPLATE_RESOURCE = "index.html";
-
-    public static final String INDEX_HEAD_TEMPLATE_PATH = "js/templates/indexHead.ejs";
-
-    public static final String INDEX_BODY_TEMPLATE_PATH = "js/templates/indexBody.ejs";
 
     private Map<String, MessageFormat> _Templates;
 
     private String _Docroot;
 
+    private boolean _IsSourceCodeMinified;
+
     public WrmldocFormatter()
     {
-
+        // Toggle this to minify (or not) the JS and CSS used in the web app.
+        _IsSourceCodeMinified = false;
     }
 
     @SuppressWarnings("unchecked")
@@ -98,32 +101,24 @@ public class WrmldocFormatter extends AbstractFormatter
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI schemaUri = model.getSchemaUri();
 
+        final String dotMin = (_IsSourceCodeMinified) ? ".min" : "";
+
+        final ObjectMapper objectMapper = new ObjectMapper();
         try
         {
 
-            final ObjectMapper objectMapper = new ObjectMapper();
-
-            final ObjectNode indexHeadTemplateNode = objectMapper.createObjectNode();
-            indexHeadTemplateNode.put("url", _Docroot + INDEX_HEAD_TEMPLATE_PATH);
-            final String indexHeadTemplateValue = indexHeadTemplateNode.toString();
-
-            final ObjectNode indexBodyTemplateNode = objectMapper.createObjectNode();
-            indexBodyTemplateNode.put("url", _Docroot + INDEX_BODY_TEMPLATE_PATH);
-            final String indexBodyTemplateValue = indexBodyTemplateNode.toString();
-
             final String modelValue = model.toString();
-
             final Schema schema = schemaLoader.load(schemaUri);
+
             final ByteArrayOutputStream schemaBytes = new ByteArrayOutputStream();
             context.writeModel(schemaBytes, schema, SystemFormat.vnd_wrml_design_schema.getFormatUri());
             final String schemaValue = schemaBytes.toString();
-
 
             final ObjectNode apiNode = buildApiNode(objectMapper, model);
             final String apiValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(apiNode);
 
             final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
-            final String renderedPage = renderPage(pageTemplate, _Docroot, indexHeadTemplateValue, indexBodyTemplateValue, modelValue, schemaValue, apiValue);
+            final String renderedPage = renderPage(pageTemplate, _Docroot, dotMin, modelValue, schemaValue, apiValue);
 
             IOUtils.write(renderedPage, out);
 
@@ -273,6 +268,14 @@ public class WrmldocFormatter extends AbstractFormatter
         {
             _Docroot = settings.get(DOCROOT_SETTING_NAME);
         }
+
+        if (settings.containsKey(MINIFY_SETTING_NAME))
+        {
+            _IsSourceCodeMinified = Boolean.valueOf(settings.get(MINIFY_SETTING_NAME));
+        }
+
+
+
     }
 
     private enum PropertyName

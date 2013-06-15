@@ -53,6 +53,10 @@
     </dependencies>
 
     <build>
+
+        <!-- Make it easy to deploy this servlet as the ROOT web app in Tomcat -->
+        <finalName>ROOT</finalName>
+
         <plugins>
             <!-- Adds the standard license header to the source files -->
             <!-- Run "mvn license:check" to check if all sources files have the proper header. Run "mvn license:format" to 
@@ -106,6 +110,22 @@
                     <packagingExcludes>
                         servlet-api-2.5-20081211.jar
                     </packagingExcludes>
+
+
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>../../wrmldoc</directory>
+                            <targetPath>_wrml/wrmldoc</targetPath>
+                            <excludes>
+                                <exclude>**/*.sh</exclude>
+                                <exclude>**/*.coffee</exclude>
+                                <exclude>**/*.eco</exclude>
+                                <exclude>**/*.scss</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+
                 </configuration>
             </plugin>
 

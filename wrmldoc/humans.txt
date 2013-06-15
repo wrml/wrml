@@ -1,0 +1,15 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Mark Masse -- Lead Developer -- mark@wrml.org
+
+# THANKS
+
+    Shawna Stine, for encouraging me to keep going.
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3, CoffeeScript
+    Marionette, Backbone, jQuery, Modernizr

@@ -1,0 +1,54 @@
+#                                                                             
+#  WRML - Web Resource Modeling Language                                      
+#   __     __   ______   __    __   __                                        
+#  /\ \  _ \ \ /\  == \ /\ "-./  \ /\ \                                       
+#  \ \ \/ ".\ \\ \  __< \ \ \-./\ \\ \ \____                                  
+#   \ \__/".~\_\\ \_\ \_\\ \_\ \ \_\\ \_____\                                 
+#    \/_/   \/_/ \/_/ /_/ \/_/  \/_/ \/_____/                                 
+#                                                                             
+# http://www.wrml.org                                                         
+#                                                                             
+# Copyright 2011 - 2013 Mark Masse (OSS project WRML.org)                     
+#                                                                             
+# Licensed under the Apache License, Version 2.0 (the "License");             
+# you may not use this file except in compliance with the License.            
+# You may obtain a copy of the License at                                     
+#                                                                             
+# http://www.apache.org/licenses/LICENSE-2.0                                  
+#                                                                             
+# Unless required by applicable law or agreed to in writing, software         
+# distributed under the License is distributed on an "AS IS" BASIS,           
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
+# See the License for the specific language governing permissions and         
+# limitations under the License.                                              
+#             
+
+# CoffeeScript
+
+
+do ($) ->
+	$.fn.toggleWrapper = (obj = {}, init = true) ->
+		_.defaults obj,
+			className: ""
+			backgroundColor: if @css("backgroundColor") isnt "transparent" then @css("backgroundColor") else "white"
+			zIndex: if @css("zIndex") is "auto" or 0 then 1000 else (Number) @css("zIndex")
+		
+		$offset = @offset()
+		$width 	= @outerWidth(false)
+		$height = @outerHeight(false)
+		
+		if init
+			$("<div>")
+				.appendTo("body")
+					.addClass(obj.className)
+						.attr("data-wrapper", true)
+							.css
+								width: $width
+								height: $height 
+								top: $offset.top
+								left: $offset.left
+								position: "absolute"
+								zIndex: obj.zIndex + 1
+								backgroundColor: obj.backgroundColor
+		else
+			$("[data-wrapper]").remove()
