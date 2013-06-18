@@ -25,6 +25,7 @@
 package org.wrml.runtime.schema;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.rest.AggregateDocument;
@@ -143,6 +144,8 @@ public class Prototype
 
     private SortedSet<String> _SearchableSlots;
 
+    private String _TitleSlotName;
+
     private SortedSet<String> _Tags;
 
     private long _Version;
@@ -212,7 +215,7 @@ public class Prototype
         _SchemaBean = new JavaBean(schemaInterface, ValueType.JAVA_TYPE_MODEL, LinkSlot.class);
         _AllBaseSchemaUris = new LinkedHashSet<>();
         _BaseSchemaUris = new LinkedHashSet<>();
-        _AllSlotNames = new TreeSet<>(_SchemaBean.getProperties().keySet());
+        _AllSlotNames = new TreeSet<>();
         _ProtoSlots = new TreeMap<>();
         _CollectionPropertyProtoSlots = new TreeMap<>();
         _LinkRelationUris = new TreeMap<>();
@@ -323,6 +326,12 @@ public class Prototype
 
                     _ComparableSlotNames = new LinkedHashSet<String>(Arrays.asList(comparableSlotNameArray));
                 }
+
+                final String titleSlotName = wrml.titleSlotName();
+                if (StringUtils.isNotBlank(titleSlotName)) {
+                    _TitleSlotName = titleSlotName;
+                }
+
             }
 
         } // End of the key initialization
@@ -457,7 +466,6 @@ public class Prototype
                     slotName = Character.toLowerCase(slotName.charAt(0)) + slotName.substring(1);
                 }
                 _LinkRelationUris.put(slotName, linkRelationUri);
-                _AllSlotNames.add(slotName);
 
                 if (_ProtoSlots.containsKey(slotName))
                 {
@@ -623,6 +631,7 @@ public class Prototype
         return _Description;
     }
 
+
     public java.lang.reflect.Type getKeyType()
     {
 
@@ -736,6 +745,11 @@ public class Prototype
         return _Title;
     }
 
+    public String getTitleSlotName()
+    {
+        return _TitleSlotName;
+    }
+
     public UniqueName getUniqueName()
     {
 
@@ -803,6 +817,7 @@ public class Prototype
 
         final String slotName = protoSlot.getName();
         _ProtoSlots.put(slotName, protoSlot);
+        _AllSlotNames.add(slotName);
 
         final SortedSet<String> aliases = protoSlot.getAliases();
         if (aliases != null && aliases.size() > 0)

@@ -3,7 +3,7 @@
 	<div id="model-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/model.png" /><%= @model.title %> 
+	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/api.png" /><%= @model.title %> 
 
 	  </h1>
 	</div>

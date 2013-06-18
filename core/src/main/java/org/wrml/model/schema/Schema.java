@@ -27,6 +27,7 @@ package org.wrml.model.schema;
 import org.wrml.model.*;
 import org.wrml.model.rest.Document;
 import org.wrml.runtime.schema.Description;
+import org.wrml.runtime.schema.Version;
 import org.wrml.runtime.schema.WRML;
 
 import java.net.URI;
@@ -44,6 +45,7 @@ import java.util.List;
  *      blog post</a>
  */
 @WRML(keySlotNames = {"uniqueName"})
+@Version(1)
 @Description("This is the Meta Schema. Schema models describe the structure for a \"class\" of models.  Schema models are like Java Class object instances. WRML Schema models are also a bit like: SQL tables, XML DTDS, JSON or XML schemas, AVRO schemas, XLS templates, CMS content types, etc.")
 public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Titled, Thumbnailed, UniquelyNamed, Document
 {
@@ -118,4 +120,12 @@ public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Tit
     @Description("A list of Slot models. Each Slot model describes a slot that may be accessed in models representing this Schema. The names of the slots must be unique within this Schema, meaning that the list may not contain more than one Slot with the same exact value in the Slot's \"name\" slot. If the name of a Slot in this list \"overrides\" a slot of the same name defined in one (or more) of this Schema's base Schema(s), then models of this Schema should consider this Schema's slot's constraints to \"take precedence\" over any similar constraints defined by the ancestral Schema(s).")
     List<Slot> getSlots();
 
+
+    /**
+     * An optional {@link String} that names the slot value that should be used when displaying the title of models conforming this {@link org.wrml.model.schema.Schema}.
+     * @return The name of the slot that contains the title for this {@link org.wrml.model.schema.Schema}'s models.
+     */
+    String getTitleSlotName();
+
+    String setTitleSlotName(final String titleSlotName);
 }

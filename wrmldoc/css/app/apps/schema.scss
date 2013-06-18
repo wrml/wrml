@@ -1,0 +1,200 @@
+
+
+$baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
+
+#main-region							
+{                                                                                                    
+	section									
+	{  
+		margin-top: 20px;
+		margin-bottom: 20px;  
+	}       
+
+	.schema-section
+	{
+
+		fieldset 
+		{		
+			margin-left: 30px;
+			margin-right: 0px;
+		}
+
+		.form-field-label  
+		{
+			margin-left: 0px;	
+		}
+	}                                                                         
+
+	#title-icon 
+	{
+		margin-top: -5px;
+		margin-right: 10px;  
+		width: 48px;
+		height: 48px;
+	}
+
+	#schema-page-header
+	{
+		 
+		top: $navbarHeight;
+		position: fixed;
+		z-index: 1029;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		margin-top: 0px;
+		margin-bottom: 20px;		 
+		border-bottom: 1px solid $black;
+		width: 940px;
+		background-color: $white;
+	}
+
+	#schema-top-properties-section
+	{
+
+		.control-label  
+		{
+			float: left;
+			width: 100px;
+			padding-top: 5px;
+			text-align: left;			
+			font-weight: bold;
+			margin-top: 0px;
+			margin-left: 0px;
+			color: $foregroundColor;
+			display: inline;	
+		}
+
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: 120px;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=url],
+			.uneditable-input 
+			{
+				width: $containerWidth - 170;
+			}
+
+		}	
+
+		.form-field-label  
+		{
+			margin-top: 5px;			
+		}
+
+		textarea,
+		{
+			width: $containerWidth - 50;
+		}
+
+	}
+
+	#schema-base-schema-form 
+	{
+		margin-bottom: 0px;
+
+		input[type=text],
+		input[type=password],
+		input[type=url],
+		textarea,
+		.uneditable-input 
+		{
+			width: 250px;
+		}
+
+	}
+
+	#schema-base-schema-table 
+	{
+		margin-top: 20px;	
+
+		.schema-base-schema-icon
+		{		
+			width: 20px;
+			height: 20px;
+			padding-right: 5px;
+			display: inline; 
+			margin-top: -6px;		
+		}
+
+		td.schema-base-schema-input
+		{
+
+			padding-top: 20px;
+
+		}
+	}
+
+	#schema-base-schema-canvas
+	{
+		margin-top: 50px;	
+		border: 1px solid #dddddd;
+	}
+
+	#schema-properties-section
+	{
+		.form-field-label  
+		{
+			margin-top: 15px;			
+			margin-left: 8px;
+		}	
+	}
+
+	.schema-slot-name-input
+	{
+		font-weight: bold;	
+		width: 330px;
+		border: 1px solid #ebebeb;
+
+		:focus 
+		{
+			color: $focusForegroundColor;
+			border-color: $focusBorderColor;
+
+			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		}
+	}
+
+
+	.schema-slot-form
+	{
+		.control-label  
+		{
+			float: left;
+			width: $horizontalFormLabelWidth;
+			padding-top: 5px;
+			text-align: right;			
+			font-weight: normal;
+			margin-top: 10px;
+			margin-left: 30px;
+			color: $muted;		
+			display: inline;	
+		}
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: $horizontalFormMarginLeft + 30;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
+			{
+				width: 200px;
+				margin-top: 10px;
+			}
+		}			
+	}
+
+
+}

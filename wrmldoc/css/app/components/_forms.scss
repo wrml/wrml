@@ -23,9 +23,7 @@
  * limitations under the License.
  */
 
-
-
-form
+form 
 {
 	margin-bottom: 0px;
 
@@ -37,51 +35,6 @@ form
 	{
 		width: $formTextInputWidth;
 	}
-}
-
-.form-horizontal 
-{
-
-	//padding-top: 10px;
-
-	.control-label  
-	{
-		float: left;
-		width: $horizontalFormLabelWidth;
-		padding-top: 5px;
-		text-align: right;			
-		font-weight: normal;
-		margin-top: 0px;
-		color: $muted;		
-		display: inline;	
-	}
-
-
-	.controls 
-	{
-		*display: inline-block;
-		*padding-left: 20px;
-		margin-left: $horizontalFormMarginLeft;
-		*margin-left: 0;		
-
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
-		{
-			width: $horizontalFormTextInputWidth;
-		}
-
-	}
-
-	.help-block 
-	{
-		margin-bottom: 0;
-	}
-
-
-
 }
 
 .form-field-label
@@ -104,17 +57,6 @@ fieldset
 {		
 	margin-left: $formFieldSetMarginLeft;
 	margin-right: $formFieldSetMarginRight;
-
-	.table 
-	{
-	  width: $formTableWidth;
-	  margin-bottom: 10px;
-	}
-
-	.table th {
-		font-style: italic;
-		font-weight: normal;
-	}
 
 }
 

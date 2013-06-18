@@ -25,6 +25,7 @@
 package org.wrml.model;
 
 import org.wrml.runtime.schema.Description;
+import org.wrml.runtime.schema.Multiline;
 import org.wrml.runtime.schema.Title;
 
 /**
@@ -36,6 +37,7 @@ public interface Described extends Abstract
 
     @Title("Description")
     @Description("The description of the model. The description slot is typically used to \"display\" information about a model to a user.")
+    @Multiline
     String getDescription();
 
     String setDescription(String description);

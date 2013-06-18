@@ -108,7 +108,17 @@ public class WrmldocFormatter extends AbstractFormatter
         {
 
             final String modelValue = model.toString();
-            final Schema schema = schemaLoader.load(schemaUri);
+
+            final Schema schema;
+            if (model instanceof Schema)
+            {
+                schema = (Schema) model;
+            }
+            else
+            {
+                schema = schemaLoader.load(schemaUri);
+            }
+
 
             final ByteArrayOutputStream schemaBytes = new ByteArrayOutputStream();
             context.writeModel(schemaBytes, schema, SystemFormat.vnd_wrml_design_schema.getFormatUri());
@@ -118,7 +128,7 @@ public class WrmldocFormatter extends AbstractFormatter
             final String apiValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(apiNode);
 
             final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
-            final String renderedPage = renderPage(pageTemplate, _Docroot, dotMin, modelValue, schemaValue, apiValue);
+            final String renderedPage = renderPage(pageTemplate, _Docroot, dotMin, schemaUri.toString(), modelValue, schemaValue, apiValue);
 
             IOUtils.write(renderedPage, out);
 
@@ -217,7 +227,7 @@ public class WrmldocFormatter extends AbstractFormatter
                 methodNode.put(PropertyName.responseSchemas.name(), responseSchemaArrayNode);
                 for (final URI responseSchemaUri : responseSchemaUris)
                 {
-                    final ObjectNode schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, responseSchemaUri, schemaLoader);
+                    final ObjectNode schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, responseSchemaUri, schemaLoader, null);
                     responseSchemaArrayNode.add(schemaNode);
                 }
             }
@@ -231,7 +241,7 @@ public class WrmldocFormatter extends AbstractFormatter
                 methodNode.put(PropertyName.requestSchemas.name(), requestSchemaArrayNode);
                 for (final URI requestSchemaUri : requestSchemaUris)
                 {
-                    final ObjectNode schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, requestSchemaUri, schemaLoader);
+                    final ObjectNode schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, requestSchemaUri, schemaLoader, null);
                     requestSchemaArrayNode.add(schemaNode);
                 }
             }

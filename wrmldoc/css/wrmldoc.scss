@@ -30,9 +30,12 @@ $white: #FFFFFF;
 $red: #FF0000;
 $componentBackgroundColor: rgb(238, 238, 238);
 
+$foregroundColor:  #333333;
 $focusForegroundColor: $black;
 $focusBorderColor: rgba(82, 82, 82, 0.8);
 $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
+
+$sectionDividerColor: rgba(82, 82, 82, 0.5);
 
 $fontSize: 14px;
 
@@ -42,6 +45,17 @@ $muted: #999999;
 $containerWidth: 940px;
 $navbarHeight: 40px;
 $cascadeMenuIconSpacing: 50px;
+
+
+$pageHeaderHeight: 75px;
+
+$footerMarginTop: 30px; 	
+$footerBorderTopWidth: 1px;
+$footerPaddingTop: 17px; 	
+$footerHeight: 80px;
+$footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + $footerMarginTop;
+
+$wrapMarginBottom: 0 - $footerHeightTotal;
 
 $formFieldSetMarginLeft: 60px;
 $formFieldSetMarginRight: 40px;
@@ -57,16 +71,8 @@ $horizontalFormTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 
 
-$footerMarginTop: 30px; 	
-$footerBorderTopWidth: 1px;
-$footerPaddingTop: 17px; 	
-$footerHeight: 80px;
-$footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + footerMarginTop;
 
-$modelHeaderHeight: 75px;
-$listIndexHeaderWidth: $formFieldSetMarginRight;
-$listIndexCellSpacing: 5px;
-$listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;html
+html
 {
 	height: 100%;  	
 }
@@ -144,19 +150,6 @@ input[type="color"]:focus,
 	padding-bottom: 10px;
 }
 
-#wrap											
-{  
-	
-	height: auto !important; 
-	min-height: 100%; 
-	margin-bottom: -$footerHeightTotal;	  	
-}                        
-
-#push											
-{  
-	height: $footerHeightTotal;  
-}                                                                           
-
 .container,
 .navbar-static-top .container,
 .navbar-fixed-top .container,
@@ -164,10 +157,36 @@ input[type="color"]:focus,
   width: $containerWidth;
 }
 
+
+.dropdown-menu 
+{
+
+	li 
+	{
+		a:hover, a:focus 
+		{
+			color: #ffffff;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+			background-color: #363636;
+			*background-color: #222222;
+			background-image: -moz-linear-gradient(top, #444444, #222222);
+			background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
+			background-image: -webkit-linear-gradient(top, #444444, #222222);
+			background-image: -o-linear-gradient(top, #444444, #222222);
+			background-image: linear-gradient(to bottom, #444444, #222222);
+			background-repeat: repeat-x;
+			border-color: #222222 #222222 #000000;
+			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
+			filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+		}			
+	}
+}
+
 .section-divider
 {
 	height: 1px; 
-	background-color: $black; 
+	background-color: $sectionDividerColor; 
 	margin-top: 40px;
 	margin-bottom: 30px;
 
@@ -180,6 +199,26 @@ input[type="color"]:focus,
 		padding-right: 5px;
 	}
 }
+
+
+#wrap											
+{  	
+	height: auto !important; 
+	min-height: 100%; 
+	margin-bottom: $wrapMarginBottom;	  	
+}                        
+
+#page-header-push
+{
+	margin-top: $navbarHeight + $pageHeaderHeight;
+	margin-bottom: 40px;  
+}
+
+
+#push											
+{  
+	height: $footerHeightTotal;  
+}                                                                           
 
 /*
  * WRML - Web Resource Modeling Language
@@ -206,9 +245,7 @@ input[type="color"]:focus,
  * limitations under the License.
  */
 
-
-
-form
+form 
 {
 	margin-bottom: 0px;
 
@@ -220,51 +257,6 @@ form
 	{
 		width: $formTextInputWidth;
 	}
-}
-
-.form-horizontal 
-{
-
-	//padding-top: 10px;
-
-	.control-label  
-	{
-		float: left;
-		width: $horizontalFormLabelWidth;
-		padding-top: 5px;
-		text-align: right;			
-		font-weight: normal;
-		margin-top: 0px;
-		color: $muted;		
-		display: inline;	
-	}
-
-
-	.controls 
-	{
-		*display: inline-block;
-		*padding-left: 20px;
-		margin-left: $horizontalFormMarginLeft;
-		*margin-left: 0;		
-
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
-		{
-			width: $horizontalFormTextInputWidth;
-		}
-
-	}
-
-	.help-block 
-	{
-		margin-bottom: 0;
-	}
-
-
-
 }
 
 .form-field-label
@@ -287,17 +279,6 @@ fieldset
 {		
 	margin-left: $formFieldSetMarginLeft;
 	margin-right: $formFieldSetMarginRight;
-
-	.table 
-	{
-	  width: $formTableWidth;
-	  margin-bottom: 10px;
-	}
-
-	.table th {
-		font-style: italic;
-		font-weight: normal;
-	}
 
 }
 
@@ -329,6 +310,7 @@ fieldset
 
 #footer-region			
 {  
+
 	height: $footerHeight; 
 
 	margin-top: $footerMarginTop;
@@ -418,33 +400,17 @@ fieldset
 	}
 
 	.dropdown-menu {
-
 		li {
-
-			a {
-				
+			a {			
 				span
 				{
 					margin-left: $cascadeMenuIconSpacing;
 					color: $white;	
 				}
-			}
-			
-			a:hover, a:focus 
-			{
-				background-color: $red;		
-				background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 0, 53));
-				background-repeat: repeat-x;
-
-				span
-				{					
-					color: $red;	
-				}
-
-			}			
+			}					
 		}
 	}
-
+	
 
 	// Add cascade menu support to Bootstrap
 	.nav li.dropdown ul.dropdown-menu li:HOVER ul 
@@ -468,7 +434,12 @@ fieldset
 	}
 
 
-}#main-region							
+}
+$listIndexHeaderWidth: $formFieldSetMarginRight;
+$listIndexCellSpacing: 5px;
+$listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
+
+#main-region							
 {                                                                                                    
 	section									
 	{  
@@ -499,127 +470,196 @@ fieldset
 		background-color: $white;
 	}
 
-	#model-navigation
+	#model-links
 	{
-				
-		float: right;  
-		
-		.model-navigation-item
-		{	
-			position: relative; 
-			top: -0.25em; 
+		.control-label  
+		{
+			float: left;
+			width: $horizontalFormLabelWidth;
+			padding-top: 5px;
+			text-align: right;			
+			font-weight: normal;
 			margin-top: 0px;
-			padding-top: 0px;						
-			margin-left: 30px;
+			color: $muted;		
+			display: inline;	
+		}
 
-			.model-navigation-label
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: $horizontalFormMarginLeft;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
 			{
-				font-weight: bold;
-				font-size: medium;
-				//color: #999999;
-
-				margin-right: 5px;
-			}	
-
-			.model-navigation-menubutton
-			{
-				font-weight: normal;
-				font-size: $fontSize;
-
-				
-
-				.caret
-				{  
-					border-top-color: $white;		
-					border-bottom-color: $white;		
-				}
-
-				a.dropdown-toggle, a.model-navigation-menubutton-title
-				{  
-					color: $white;		
-				}
-
-				a.dropdown-toggle:focus, a.dropdown-toggle:hover, a.model-navigation-menubutton-title:focus, a.model-navigation-menubutton-title:hover						
-				{  
-					color: $red;	
-
-					.caret
-					{  
-						border-top-color: $red;		
-						border-bottom-color: $red;		
-					}	
-				}
-
-				.dropdown-menu {
-
-					li {
-
-						a {
-							
-							span
-							{
-								margin-left: $cascadeMenuIconSpacing;
-								color: $white;	
-							}
-						}
-						
-						a:hover, a:focus 
-						{
-							background-color: $red;		
-							background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 0, 53));
-							background-repeat: repeat-x;
-
-							span
-							{					
-								color: $red;	
-							}
-
-						}			
-					}
-				}
-
+				width: $horizontalFormTextInputWidth;
 			}
+		}			
+	}
 
+	.model-form
+	{
+
+	}
+
+	.model-list-table
+	{
+
+		width: $formTableWidth;
+		margin-bottom: 10px;
+
+		th {
+			font-style: italic;
+			font-weight: normal;
+		}
+
+		th.list-index-header 
+		{
+			width: $listIndexHeaderWidth; 
+			text-align: right;
+			padding-right: $listIndexCellSpacing;
+			margin-right: 0px;  		
+		}
+
+		.list-index-icon
+		{		
+			width: 16px;
+			height: 16px;
+			padding-right: $listIndexCellSpacing;
+			display: inline; 
+			margin-top: -2px;		
+		}
+
+		td.list-index-value
+		{
+			padding-top: 25px;
+			padding-right: $listIndexCellSpacing;
+			margin-right: 0px;
+			text-align: right;
+			color: $muted;	
+		}
+
+		td.list-element-value
+		{
+
+			padding-top: 20px;
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
+			{
+				width: $listValueTextInputWidth;
+			}
+		
 		}
 	}
-	
 
-	#model-description
-	{
-		margin-top: $navbarHeight + $modelHeaderHeight;
-		margin-bottom: 40px;  
-	}
+}
 
-	th.list-index-header 
-	{
-  		width: $listIndexHeaderWidth; 
-  		text-align: right;
-  		padding-right: $listIndexCellSpacing;
-  		margin-right: 0px;  		
-	}
 
-	.list-index-icon
-	{		
-		width: 16px;
-		height: 16px;
-		padding-right: $listIndexCellSpacing;
-		display: inline; 
-		margin-top: -2px;		
-	}
+$baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
-	td.list-index-value
-	{
-		padding-top: 25px;
-		padding-right: $listIndexCellSpacing;
-		margin-right: 0px;
-		text-align: right;
-		color: $muted;	
-	}
+#main-region							
+{                                                                                                    
+	section									
+	{  
+		margin-top: 20px;
+		margin-bottom: 20px;  
+	}       
 
-	td.list-element-value
+	.schema-section
 	{
 
-		padding-top: 20px;
+		fieldset 
+		{		
+			margin-left: 30px;
+			margin-right: 0px;
+		}
+
+		.form-field-label  
+		{
+			margin-left: 0px;	
+		}
+	}                                                                         
+
+	#title-icon 
+	{
+		margin-top: -5px;
+		margin-right: 10px;  
+		width: 48px;
+		height: 48px;
+	}
+
+	#schema-page-header
+	{
+		 
+		top: $navbarHeight;
+		position: fixed;
+		z-index: 1029;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		margin-top: 0px;
+		margin-bottom: 20px;		 
+		border-bottom: 1px solid $black;
+		width: 940px;
+		background-color: $white;
+	}
+
+	#schema-top-properties-section
+	{
+
+		.control-label  
+		{
+			float: left;
+			width: 100px;
+			padding-top: 5px;
+			text-align: left;			
+			font-weight: bold;
+			margin-top: 0px;
+			margin-left: 0px;
+			color: $foregroundColor;
+			display: inline;	
+		}
+
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: 120px;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=url],
+			.uneditable-input 
+			{
+				width: $containerWidth - 170;
+			}
+
+		}	
+
+		.form-field-label  
+		{
+			margin-top: 5px;			
+		}
+
+		textarea,
+		{
+			width: $containerWidth - 50;
+		}
+
+	}
+
+	#schema-base-schema-form 
+	{
+		margin-bottom: 0px;
 
 		input[type=text],
 		input[type=password],
@@ -627,8 +667,98 @@ fieldset
 		textarea,
 		.uneditable-input 
 		{
-			width: $listValueTextInputWidth;
+			width: 250px;
+		}
+
+	}
+
+	#schema-base-schema-table 
+	{
+		margin-top: 20px;	
+
+		.schema-base-schema-icon
+		{		
+			width: 20px;
+			height: 20px;
+			padding-right: 5px;
+			display: inline; 
+			margin-top: -6px;		
+		}
+
+		td.schema-base-schema-input
+		{
+
+			padding-top: 20px;
+
 		}
 	}
+
+	#schema-base-schema-canvas
+	{
+		margin-top: 50px;	
+		border: 1px solid #dddddd;
+	}
+
+	#schema-properties-section
+	{
+		.form-field-label  
+		{
+			margin-top: 15px;			
+			margin-left: 8px;
+		}	
+	}
+
+	.schema-slot-name-input
+	{
+		font-weight: bold;	
+		width: 330px;
+		border: 1px solid #ebebeb;
+
+		:focus 
+		{
+			color: $focusForegroundColor;
+			border-color: $focusBorderColor;
+
+			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		}
+	}
+
+
+	.schema-slot-form
+	{
+		.control-label  
+		{
+			float: left;
+			width: $horizontalFormLabelWidth;
+			padding-top: 5px;
+			text-align: right;			
+			font-weight: normal;
+			margin-top: 10px;
+			margin-left: 30px;
+			color: $muted;		
+			display: inline;	
+		}
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: $horizontalFormMarginLeft + 30;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
+			{
+				width: 200px;
+				margin-top: 10px;
+			}
+		}			
+	}
+
 
 }

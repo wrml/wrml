@@ -63,30 +63,19 @@ public class WrmlServlet extends HttpServlet
 
     /**
      * TODO: Javadoc this.
-     * <p/>
-     * TODO: Consider removing the X- prefix, see:
-     * "Deprecating the "X-" Prefix and Similar Constructs in Application Protocols"
-     * http://www.ietf.org/rfc/rfc6648.txt
      */
-    public static final String WRML_HOST_HEADER_NAME = "X-WRML-Host";
+    public static final String WRML_HOST_HEADER_NAME = "WRML-Host";
+
+    /**
+     * TODO: Javadoc this.
+     */
+    public static final String WRML_PORT_HEADER_NAME = "WRML-Port";
 
     /**
      * TODO: Javadoc this.
      * <p/>
-     * TODO: Consider removing the X- prefix, see:
-     * "Deprecating the "X-" Prefix and Similar Constructs in Application Protocols"
-     * http://www.ietf.org/rfc/rfc6648.txt
      */
-    public static final String WRML_PORT_HEADER_NAME = "X-WRML-Port";
-
-    /**
-     * TODO: Javadoc this.
-     * <p/>
-     * TODO: Consider removing the X- prefix, see:
-     * "Deprecating the "X-" Prefix and Similar Constructs in Application Protocols"
-     * http://www.ietf.org/rfc/rfc6648.txt
-     */
-    public static final String WRML_SCHEME_HEADER_NAME = "X-WRML-Scheme";
+    public static final String WRML_SCHEME_HEADER_NAME = "WRML-Scheme";
 
     public static final String WRML_CONFIGURATION_FILE_PATH_INIT_PARAM_NAME = "wrml-config-file-path";
 
@@ -263,7 +252,7 @@ public class WrmlServlet extends HttpServlet
             final String acceptHeaderStringValue = request.getHeader(HttpHeaders.ACCEPT);
             final List<MediaType> acceptableMediaTypes = new AcceptableMediaTypeList(acceptHeaderStringValue);
 
-            // Build the Model query object's; the Keys (URI and other identities) and Dimensions ("header" metadata).
+            // Build the Model query objects; the Keys (URI and other identities) and Dimensions ("header" metadata).
             final Dimensions dimensions = buildDimensions(request, method, requestUri, api, acceptableMediaTypes);
             final Keys keys = apiLoader.buildDocumentKeys(requestUri, dimensions.getSchemaUri());
 

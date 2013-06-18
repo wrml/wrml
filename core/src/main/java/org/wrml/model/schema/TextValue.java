@@ -54,6 +54,12 @@ public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inex
      */
     public static final String SLOT_NAME_MINIMUM_LENGTH = "minimumLength";
 
+
+    /**
+     * The WRML constant name for a TextValue's <i>multiline</i> slot.
+     */
+    public static final String SLOT_NAME_MULTILINE = "multiline";
+
     /**
      * <p>
      * The <i>optional</i> default associated with this value.
@@ -68,6 +74,8 @@ public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inex
     Integer getMaximumLength();
 
     Integer getMinimumLength();
+
+    Boolean isMultiline();
 
     /**
      * <p>
@@ -88,6 +96,8 @@ public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inex
     Integer setMaximumLength(final Integer maxLength);
 
     Integer setMinimumLength(final Integer minLength);
+
+    Boolean setMultiline(final boolean isMultiline);
 
     /**
      * @see #getSyntaxUri()

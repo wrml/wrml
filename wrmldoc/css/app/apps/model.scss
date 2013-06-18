@@ -1,3 +1,8 @@
+
+$listIndexHeaderWidth: $formFieldSetMarginRight;
+$listIndexCellSpacing: 5px;
+$listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
+
 #main-region							
 {                                                                                                    
 	section									
@@ -29,135 +34,94 @@
 		background-color: $white;
 	}
 
-	#model-navigation
+	#model-links
 	{
-				
-		float: right;  
-		
-		.model-navigation-item
-		{	
-			position: relative; 
-			top: -0.25em; 
-			margin-top: 0px;
-			padding-top: 0px;						
-			margin-left: 30px;
-
-			.model-navigation-label
-			{
-				font-weight: bold;
-				font-size: medium;
-				//color: #999999;
-
-				margin-right: 5px;
-			}	
-
-			.model-navigation-menubutton
-			{
-				font-weight: normal;
-				font-size: $fontSize;
-
-				
-
-				.caret
-				{  
-					border-top-color: $white;		
-					border-bottom-color: $white;		
-				}
-
-				a.dropdown-toggle, a.model-navigation-menubutton-title
-				{  
-					color: $white;		
-				}
-
-				a.dropdown-toggle:focus, a.dropdown-toggle:hover, a.model-navigation-menubutton-title:focus, a.model-navigation-menubutton-title:hover						
-				{  
-					color: $red;	
-
-					.caret
-					{  
-						border-top-color: $red;		
-						border-bottom-color: $red;		
-					}	
-				}
-
-				.dropdown-menu {
-
-					li {
-
-						a {
-							
-							span
-							{
-								margin-left: $cascadeMenuIconSpacing;
-								color: $white;	
-							}
-						}
-						
-						a:hover, a:focus 
-						{
-							background-color: $red;		
-							background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 0, 53));
-							background-repeat: repeat-x;
-
-							span
-							{					
-								color: $red;	
-							}
-
-						}			
-					}
-				}
-
-			}
-
-		}
-	}
-	
-
-	#model-description
-	{
-		margin-top: $navbarHeight + $modelHeaderHeight;
-		margin-bottom: 40px;  
-	}
-
-	th.list-index-header 
-	{
-  		width: $listIndexHeaderWidth; 
-  		text-align: right;
-  		padding-right: $listIndexCellSpacing;
-  		margin-right: 0px;  		
-	}
-
-	.list-index-icon
-	{		
-		width: 16px;
-		height: 16px;
-		padding-right: $listIndexCellSpacing;
-		display: inline; 
-		margin-top: -2px;		
-	}
-
-	td.list-index-value
-	{
-		padding-top: 25px;
-		padding-right: $listIndexCellSpacing;
-		margin-right: 0px;
-		text-align: right;
-		color: $muted;	
-	}
-
-	td.list-element-value
-	{
-
-		padding-top: 20px;
-
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
+		.control-label  
 		{
-			width: $listValueTextInputWidth;
+			float: left;
+			width: $horizontalFormLabelWidth;
+			padding-top: 5px;
+			text-align: right;			
+			font-weight: normal;
+			margin-top: 0px;
+			color: $muted;		
+			display: inline;	
+		}
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: $horizontalFormMarginLeft;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
+			{
+				width: $horizontalFormTextInputWidth;
+			}
+		}			
+	}
+
+	.model-form
+	{
+
+	}
+
+	.model-list-table
+	{
+
+		width: $formTableWidth;
+		margin-bottom: 10px;
+
+		th {
+			font-style: italic;
+			font-weight: normal;
+		}
+
+		th.list-index-header 
+		{
+			width: $listIndexHeaderWidth; 
+			text-align: right;
+			padding-right: $listIndexCellSpacing;
+			margin-right: 0px;  		
+		}
+
+		.list-index-icon
+		{		
+			width: 16px;
+			height: 16px;
+			padding-right: $listIndexCellSpacing;
+			display: inline; 
+			margin-top: -2px;		
+		}
+
+		td.list-index-value
+		{
+			padding-top: 25px;
+			padding-right: $listIndexCellSpacing;
+			margin-right: 0px;
+			text-align: right;
+			color: $muted;	
+		}
+
+		td.list-element-value
+		{
+
+			padding-top: 20px;
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			textarea,
+			.uneditable-input 
+			{
+				width: $listValueTextInputWidth;
+			}
+		
 		}
 	}
 

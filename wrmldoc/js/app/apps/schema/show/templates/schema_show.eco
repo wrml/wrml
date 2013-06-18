@@ -1,0 +1,298 @@
+<section>
+	
+	<div id="schema-page-header">
+	  <h1>
+
+	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/schema.png" /><%= @schema.title %> 
+
+	  </h1>
+	</div>
+
+	<div id="page-header-push">
+	</div>
+
+</section>
+
+
+
+<section id="schema-top-properties-section" class="schema-section">
+
+
+	<form class="form-horizontal">
+
+		<fieldset>			
+				  
+			<div class="control-group">								
+			
+				<label class="control-label" for="uri">URI</label>		
+
+				<div class="controls">												
+					<input type="url" id="uri" value="<%= @schema.uri %>" readonly="readonly">																											
+				</div>	
+
+			</div>
+						  
+			<div class="control-group">								
+			
+				<label class="control-label" for="uniqueName">Unique Name</label>		
+
+				<div class="controls">												
+					<input type="text" id="uniqueName" value="<%= @schema.uniqueName.fullName %>" readonly="readonly">				
+				</div>	
+
+			</div>
+
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="title">Title</label>		
+
+				<div class="controls">												
+					<input type="text" id="title" value="<%= @schema.title %>">
+				</div>	
+
+			</div>
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="version">Version</label>		
+
+				<div class="controls">												
+					<input type="number" id="version" value="<%= @schema.version %>">				
+				</div>	
+
+			</div>
+
+		</fieldset>
+
+	</form>		
+
+
+	<form>
+
+		<fieldset>	
+							
+			<label class="form-field-label" for="description">Description</label>	
+			<textarea id="description"><%= @schema.description %></textarea>
+		
+		</fieldset>
+
+	</form>		
+
+
+
+</section>
+
+<div class="section-divider">
+  <span>
+  Base Schemas  
+  </span>
+</div>
+
+<section id="schema-base-schema-section" class="schema-section">
+
+	<div class="row">
+  		
+  		<div class="span6">
+
+			<form id="schema-base-schema-form">
+			  	  
+				<fieldset>	
+
+					<div class="btn-group">
+						<button class="btn btn-inverse" type="button">Add</button>
+					</div>
+
+
+					<table id="schema-base-schema-table" class="table">
+						
+						<tbody>
+
+						<% if @schema.baseSchemas?.length > 0: %>
+
+
+							<% for baseSchema, i in @schema.baseSchemas: %>
+																	
+			                <tr>
+
+								<td class="schema-base-schema-input">
+
+								<img class="schema-base-schema-icon" src="<%= wrmlData.docroot %>img/schema.png" />
+
+									<div class="input-append">					
+										<input type="url" id="baseSchemaUri" value="<%= baseSchema.title %>" readonly="readonly">				
+						  				
+										<div class="btn-group">
+											<button class="btn btn-inverse" type="button">Open</button>
+											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+											<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a tabindex="-1" href="#">Open</a></li>
+												<li class="divider"></li>
+												<li><a tabindex="-1" href="#">Remove</a></li>
+											</ul>
+										</div>
+
+									</div>	
+
+								</td>
+
+			                </tr>
+							<% end %>
+
+						<% else: %>
+			                <tr>
+			                  <td><i>Empty</i></td>	                  
+			                </tr>				
+						<% end %>
+
+		            	</tbody>
+
+		            </table>
+
+				</fieldset>
+
+			</form>
+
+		</div>
+
+		<div class="span6">
+
+
+			<canvas id="schema-base-schema-canvas" width="450" height="450"></canvas>
+
+
+		</div>
+	
+	</div>
+
+</section>
+
+<div class="section-divider">
+  <span>
+  Properties  
+  </span>
+</div>
+
+<section id="schema-properties-section" class="schema-section">
+
+	<form class="schema-properties-form">
+		  
+		<fieldset>	
+
+			<div class="btn-group">
+				<button class="btn btn-inverse" type="button">Add</button>
+			</div>
+
+		</fieldset>
+
+	</form>		
+
+	<% if @schema.propertyNames?.length > 0: %>
+
+
+		<% for propertyName, i in @schema.propertyNames: %>
+		
+			<form class="schema-property-form form-inline">
+		  		<% property = @schema.slots[propertyName] %>
+				<% propertyType = property.type  %>				
+				<% console.log "Property - name: " + propertyName + " type: " + propertyType %>
+
+				<fieldset>	
+					
+													
+						<label class="form-field-label" for="<%= propertyName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= propertyType %>.png" /></label>																		
+						<input class="schema-slot-name-input" type="text" id="<%= propertyName %>" value="<%= propertyName %>">
+
+				</fieldset>
+
+			</form>	
+
+
+			<form class="form-horizontal schema-slot-form">
+
+				<fieldset>			
+					  
+					<div class="control-group">
+						
+						<label class="control-label" for="<%= propertyName %>_type">Type</label>
+						
+						<div class="controls">						
+
+							<input type="text" id="<%= propertyName %>_type" value="<%= propertyType %>" readonly="readonly">
+																											
+						</div>	
+
+						<label class="control-label" for="<%= propertyName %>_type">Type</label>
+						
+						<div class="controls">						
+
+							<input type="text" id="<%= propertyName %>_type" value="<%= propertyType %>" readonly="readonly">
+																											
+						</div>	
+
+					</div>
+					
+				</fieldset>
+
+			</form>	
+
+		<% end %>
+
+
+	<% end %>
+
+</section>	
+
+<div class="section-divider">
+  <span>
+  Links  
+  </span>
+</div>
+
+<section class="schema-section">
+
+	<form class="schema-links-form">
+		  
+		<fieldset>	
+
+			<div class="btn-group">
+				<button class="btn btn-inverse" type="button">Add</button>
+			</div>
+			
+		</fieldset>		
+
+	</form>		
+
+
+</section>	
+
+
+<% if @schema.baseSchemas?.length > 0: %>	
+
+	<% for baseSchema, i in @schema.baseSchemas: %>
+
+		<% if baseSchema.propertyNames?.length > 0: %>
+		<div class="section-divider">
+		  <span>
+		  <%= baseSchema.title %> Properties  
+		  </span>
+		</div>
+		<% end %>
+
+		<% if baseSchema.linkNames?.length > 0: %>
+		<div class="section-divider">
+		  <span>
+		  <%= baseSchema.title %> Links  
+		  </span>
+		</div>
+		<% end %>
+
+	<% end %>
+
+<% end %>
+
+
+
+

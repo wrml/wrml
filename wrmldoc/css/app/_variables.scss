@@ -30,9 +30,12 @@ $white: #FFFFFF;
 $red: #FF0000;
 $componentBackgroundColor: rgb(238, 238, 238);
 
+$foregroundColor:  #333333;
 $focusForegroundColor: $black;
 $focusBorderColor: rgba(82, 82, 82, 0.8);
 $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
+
+$sectionDividerColor: rgba(82, 82, 82, 0.5);
 
 $fontSize: 14px;
 
@@ -42,6 +45,17 @@ $muted: #999999;
 $containerWidth: 940px;
 $navbarHeight: 40px;
 $cascadeMenuIconSpacing: 50px;
+
+
+$pageHeaderHeight: 75px;
+
+$footerMarginTop: 30px; 	
+$footerBorderTopWidth: 1px;
+$footerPaddingTop: 17px; 	
+$footerHeight: 80px;
+$footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + $footerMarginTop;
+
+$wrapMarginBottom: 0 - $footerHeightTotal;
 
 $formFieldSetMarginLeft: 60px;
 $formFieldSetMarginRight: 40px;
@@ -57,13 +71,4 @@ $horizontalFormTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 
 
-$footerMarginTop: 30px; 	
-$footerBorderTopWidth: 1px;
-$footerPaddingTop: 17px; 	
-$footerHeight: 80px;
-$footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + footerMarginTop;
 
-$modelHeaderHeight: 75px;
-$listIndexHeaderWidth: $formFieldSetMarginRight;
-$listIndexCellSpacing: 5px;
-$listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;

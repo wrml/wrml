@@ -28,6 +28,7 @@ import org.wrml.model.Model;
 import org.wrml.model.schema.LinkValue;
 import org.wrml.model.schema.Schema;
 import org.wrml.runtime.rest.UriTemplate;
+import org.wrml.runtime.schema.WRML;
 
 import java.net.URI;
 import java.util.UUID;
@@ -75,6 +76,7 @@ import java.util.UUID;
  * @see Document
  * @see <a href="http://en.wikipedia.org/wiki/HATEOAS">http://en.wikipedia.org/wiki/HATEOAS</a>
  */
+@WRML(titleSlotName = "linkRelationUri")
 public interface LinkTemplate extends Model
 {
 

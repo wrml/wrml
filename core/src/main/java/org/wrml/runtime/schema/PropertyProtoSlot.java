@@ -85,6 +85,8 @@ public class PropertyProtoSlot extends ProtoSlot
 
     private boolean _IsExclusiveMinimum;
 
+    private boolean _IsMultiline;
+
     private Set<Object> _DisallowedValues;
 
     private boolean _Searchable;
@@ -268,6 +270,12 @@ public class PropertyProtoSlot extends ProtoSlot
                 _MaximumLength = maximumLength.value();
             }
 
+            final Multiline multiline = getAnnotation(Multiline.class);
+            if (multiline != null)
+            {
+                _IsMultiline = true;
+            }
+
             final DisallowedValues disallowedValues = getAnnotation(DisallowedValues.class);
             if (disallowedValues != null)
             {
@@ -449,6 +457,13 @@ public class PropertyProtoSlot extends ProtoSlot
     {
 
         return _IsExclusiveMinimum;
+    }
+
+
+    public boolean isMultiline()
+    {
+
+        return _IsMultiline;
     }
 
     public boolean isSearchable()

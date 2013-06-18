@@ -70,33 +70,17 @@
 	}
 
 	.dropdown-menu {
-
 		li {
-
-			a {
-				
+			a {			
 				span
 				{
 					margin-left: $cascadeMenuIconSpacing;
 					color: $white;	
 				}
-			}
-			
-			a:hover, a:focus 
-			{
-				background-color: $red;		
-				background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 0, 53));
-				background-repeat: repeat-x;
-
-				span
-				{					
-					color: $red;	
-				}
-
-			}			
+			}					
 		}
 	}
-
+	
 
 	// Add cascade menu support to Bootstrap
 	.nav li.dropdown ul.dropdown-menu li:HOVER ul 
