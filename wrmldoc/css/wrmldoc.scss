@@ -587,6 +587,10 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		{
 			margin-left: 0px;	
 		}
+
+		.form-inline {
+			margin-left: 30px;	
+		}
 	}                                                                         
 
 	#title-icon 
@@ -708,10 +712,19 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		}	
 	}
 
+	.schema-slot-divider
+	{
+		height: 1px; 
+		display: inline; 
+		background-color: #dddddd;
+		margin-left: 0px;			
+		margin-top: 25px;		
+	}
+
 	.schema-slot-name-input
 	{
 		font-weight: bold;	
-		width: 330px;
+		width: 400px;
 		border: 1px solid #ebebeb;
 
 		:focus 
@@ -725,6 +738,16 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		}
 	}
 
+
+	.schema-slot-name-form
+	{
+		margin-left: 0px;
+
+		.schema-slot-name
+		{
+			margin-left: 0px;
+		}
+	}
 
 	.schema-slot-form
 	{
@@ -754,7 +777,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 			textarea,
 			.uneditable-input 
 			{
-				width: 200px;
+				width: 250px;
 				margin-top: 10px;
 			}
 		}			

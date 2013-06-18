@@ -352,6 +352,8 @@ fieldset {
   margin-right: 0px; }
 #main-region .schema-section .form-field-label {
   margin-left: 0px; }
+#main-region .schema-section .form-inline {
+  margin-left: 30px; }
 #main-region #title-icon {
   margin-top: -5px;
   margin-right: 10px;
@@ -415,9 +417,15 @@ fieldset {
 #main-region #schema-properties-section .form-field-label {
   margin-top: 15px;
   margin-left: 8px; }
+#main-region .schema-slot-divider {
+  height: 1px;
+  display: inline;
+  background-color: #dddddd;
+  margin-left: 0px;
+  margin-top: 25px; }
 #main-region .schema-slot-name-input {
   font-weight: bold;
-  width: 330px;
+  width: 400px;
   border: 1px solid #ebebeb; }
   #main-region .schema-slot-name-input :focus {
     color: black;
@@ -425,6 +433,10 @@ fieldset {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6); }
+#main-region .schema-slot-name-form {
+  margin-left: 0px; }
+  #main-region .schema-slot-name-form .schema-slot-name {
+    margin-left: 0px; }
 #main-region .schema-slot-form .control-label {
   float: left;
   width: 50px;
@@ -445,5 +457,5 @@ fieldset {
   #main-region .schema-slot-form .controls input[type=url],
   #main-region .schema-slot-form .controls textarea,
   #main-region .schema-slot-form .controls .uneditable-input {
-    width: 200px;
+    width: 250px;
     margin-top: 10px; }

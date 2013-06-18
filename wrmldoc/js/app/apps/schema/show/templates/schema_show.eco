@@ -194,23 +194,23 @@
 
 		<% for propertyName, i in @schema.propertyNames: %>
 		
-			<form class="schema-property-form form-inline">
+			<form class="schema-slot-name-form form-inline">
 		  		<% property = @schema.slots[propertyName] %>
 				<% propertyType = property.type  %>				
 				<% console.log "Property - name: " + propertyName + " type: " + propertyType %>
-
-				<fieldset>	
-					
-													
+				
+				<div class="controls controls-row">
+					<div class="schema-slot-name controls span6">
 						<label class="form-field-label" for="<%= propertyName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= propertyType %>.png" /></label>																		
 						<input class="schema-slot-name-input" type="text" id="<%= propertyName %>" value="<%= propertyName %>">
-
-				</fieldset>
+					</div>
+					<label class="schema-slot-divider span5"></label>																		
+				</div>													
 
 			</form>	
 
 
-			<form class="form-horizontal schema-slot-form">
+			<form class="schema-slot-form form-horizontal">
 
 				<fieldset>			
 					  

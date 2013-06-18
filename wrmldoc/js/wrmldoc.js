@@ -2194,13 +2194,13 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
           _ref3 = this.schema.propertyNames;
           for (i = _j = 0, _len1 = _ref3.length; _j < _len1; i = ++_j) {
             propertyName = _ref3[i];
-            __out.push('\n\t\t\n\t\t\t<form class="schema-property-form form-inline">\n\t\t  \t\t');
+            __out.push('\n\t\t\n\t\t\t<form class="schema-slot-name-form form-inline">\n\t\t  \t\t');
             property = this.schema.slots[propertyName];
             __out.push('\n\t\t\t\t');
             propertyType = property.type;
             __out.push('\t\t\t\t\n\t\t\t\t');
             console.log("Property - name: " + propertyName + " type: " + propertyType);
-            __out.push('\n\n\t\t\t\t<fieldset>\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="form-field-label" for="');
+            __out.push('\n\t\t\t\t\n\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t<div class="schema-slot-name controls span6">\n\t\t\t\t\t\t<label class="form-field-label" for="');
             __out.push(__sanitize(propertyName));
             __out.push('"><img class="form-field-label-icon" src="');
             __out.push(__sanitize(wrmlData.docroot));
@@ -2210,7 +2210,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
             __out.push(__sanitize(propertyName));
             __out.push('" value="');
             __out.push(__sanitize(propertyName));
-            __out.push('">\n\n\t\t\t\t</fieldset>\n\n\t\t\t</form>\t\n\n\n\t\t\t<form class="form-horizontal schema-slot-form">\n\n\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t  \n\t\t\t\t\t<div class="control-group">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="control-label" for="');
+            __out.push('">\n\t\t\t\t\t</div>\n\t\t\t\t\t<label class="schema-slot-divider span5"></label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t</form>\t\n\n\n\t\t\t<form class="schema-slot-form form-horizontal">\n\n\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t  \n\t\t\t\t\t<div class="control-group">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="control-label" for="');
             __out.push(__sanitize(propertyName));
             __out.push('_type">Type</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input type="text" id="');
             __out.push(__sanitize(propertyName));
