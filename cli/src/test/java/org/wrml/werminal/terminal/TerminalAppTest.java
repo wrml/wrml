@@ -50,8 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * Test for {@link TerminalApp}.
  * <p/>
  * Initial goal is to hit most-used methods based on profiling results.
- *
- * @author JJ Zabkar
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MessageBox.class, TerminalFacade.class, DialogResult.class, Position.class})

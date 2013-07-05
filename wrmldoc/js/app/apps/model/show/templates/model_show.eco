@@ -33,15 +33,15 @@
 
 <section>
 
-	<form class="model-form">
+	<form class="wrml-form model-form">
 	  
 	<% for keySlotName, keySlot of @schema.keys: %>
 		
 		<% keySlotValue = @model[keySlotName]  %>
 		<% console.log "Key - name: " + keySlotName + " value: " + keySlotValue %>
 
-		<fieldset>	
-			<label class="form-field-label" for="<%= keySlotName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= keySlot.type %>.png" /> <%= keySlotName %></label>									
+		<fieldset class="wrml-form-fieldset">	
+			<label class="wrml-form-field-label" for="<%= keySlotName %>"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= keySlot.type %>.png" /> <%= keySlotName %></label>									
 			<input type="text" id="<%= keySlotName %>" value="<%= keySlotValue %>" readonly="readonly">
 		</fieldset>
   
@@ -74,7 +74,7 @@
 <% if @schema.slotCount > 0: %>	
 <section>
 
-	<form class="model-form">
+	<form class="wrml-form model-form">
 	
 	<% for slotName, slot of @schema.slots: %>
 		
@@ -82,9 +82,9 @@
 		<% slotValue = @model[slotName]  %>
 		<% console.log "Slot - name: " + slotName + " type: " + slotType + " value: " + slotValue %>
 
-		<fieldset>	
+		<fieldset class="wrml-form-fieldset">
 							
-			<label class="form-field-label" for="<%= slotName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= slotType %>.png" /> <%= slotName %></label>				
+			<label class="wrml-form-field-label" for="<%= slotName %>"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= slotType %>.png" /> <%= slotName %></label>				
 
 			<% if slotType == "Text": %> 
 				
@@ -209,6 +209,10 @@
 										<li><a tabindex="-1" href="#">Clear</a></li>
 										<li class="divider"></li>
 										<li><a tabindex="-1" href="#">Remove</a></li>
+										<li class="divider"></li>
+										<li><a tabindex="-1" href="#">History</a></li>
+										<li class="divider"></li>
+										<li><a tabindex="-1" href="#">Favorites</a></li>
 									</ul>
 								</div>
 
@@ -233,11 +237,14 @@
             </table>
 
 
-			<% else if slotType == "Model": %> 
-
+			<% else if slotType == "Model": %> 			
+			<% modelSchema = slot?.schema %>
+			<% modelTitleSlotName = modelSchema?.titleSlotName %>
+			<% modelTitle = slotValue[modelTitleSlotName] %>
+			<% console.log "Slot - name: " + slotName + " modelTitle: " + modelTitle %>
 
 			<div class="input-append">
-				<input type="text" id="<%= slotName %>" value="TODO: <%= slotValue %>" readonly="readonly">				
+				<input type="text" id="<%= slotName %>" value="<%= modelSchema.title %> - <%= modelTitle %>" readonly="readonly">				
   				
 
 				<div class="btn-group">
@@ -249,6 +256,10 @@
 						<li><a tabindex="-1" href="#">Open</a></li>
 						<li class="divider"></li>
 						<li><a tabindex="-1" href="#">Clear</a></li>
+						<li class="divider"></li>
+						<li><a tabindex="-1" href="#">History</a></li>
+						<li class="divider"></li>
+						<li><a tabindex="-1" href="#">Favorites</a></li>
 					</ul>
 				</div>
 
@@ -283,11 +294,11 @@
 	<% console.log "Link - name: " + linkName + " rel: " + link.rel %>
 
 
-	<form class="form-horizontal model-form">
+	<form class="form-horizontal wrml-form model-form">
 
-		<fieldset>			
+		<fieldset class="wrml-form-fieldset">		
 	
-			<label class="form-field-label" for="<%= linkName %>_href"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/Link.png" /> <%= linkName %></label>		
+			<label class="wrml-form-field-label" for="<%= linkName %>_href"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/type/Link.png" /> <%= linkName %></label>		
   
 			<div class="control-group">
 				
@@ -326,7 +337,7 @@
 
 				<div class="controls">						
 					<div class="input-append">
-						<input type="url" id="<%= linkName %>_rel" value="<%= link.rel %>" readonly="readonly">													
+						<input type="text" id="<%= linkName %>_rel" value="<%= link.relationTitle %>" readonly="readonly">													
 							<button class="btn btn-inverse" type="button">Open</button>
 					</div>	
 
@@ -355,6 +366,10 @@
 								<li><a tabindex="-1" href="#">Open</a></li>
 								<li class="divider"></li>
 								<li><a tabindex="-1" href="#">Clear</a></li>
+								<li class="divider"></li>
+								<li><a tabindex="-1" href="#">History</a></li>
+								<li class="divider"></li>
+								<li><a tabindex="-1" href="#">Favorites</a></li>
 							</ul>
 						</div>
 
@@ -387,13 +402,13 @@
 
 
 
-	<form class="model-form">
+	<form class="wrml-form model-form">
 	
-		<fieldset>	
+		<fieldset class="wrml-form-fieldset">
 							
-			<label class="form-field-label" for="schema"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/schema.png" /> Schema</label>	
+			<label class="wrml-form-field-label" for="schema"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/schema.png" /> Schema</label>	
 			<div class="input-append">
-  				<input type="text" id="schema" value="<%= @schema.title %> - <%= @schema.uri %>" readonly="readonly">				
+  				<input type="text" id="schema" value="<%= @schema.title %>" readonly="readonly">				
   				<button class="btn btn-inverse" type="button">Open</button>
 			</div>																
 				
@@ -401,13 +416,13 @@
 
 	</form>
 
-	<form class="model-form">
+	<form class="wrml-form model-form">
 
-		<fieldset>	
+		<fieldset class="wrml-form-fieldset">
 							
-			<label class="form-field-label" for="api"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/api.png" /> API</label>																	
+			<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/api.png" /> API</label>																	
 			<div class="input-append">
-				<input type="text" id="api" value="<%= @api.title %> - <%= @api.uri %>" readonly="readonly">				
+				<input type="text" id="api" value="<%= @api.title %>" readonly="readonly">				
   				<button class="btn btn-inverse" type="button">Open</button>
 			</div>																
 			
@@ -415,11 +430,11 @@
 
 	</form>
 
-	<form class="model-form">
-		
-		<fieldset>	
+	<form class="wrml-form model-form">
+
+		<fieldset class="wrml-form-fieldset">
 							
-			<label class="form-field-label" for="uriTemplate"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/resource.png" /> Resource</label>																	
+			<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/resource.png" /> Resource</label>																	
 			<div class="input-append">
 				<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">																							 		
   				<button class="btn btn-inverse" type="button">Open</button>

@@ -1,0 +1,130 @@
+<section id="registration-introduction">
+	
+	<div class="row">
+
+		<div class="span3">
+			
+		</div>
+
+		<div class="span3">
+			<img id="registration-wormle-standing" src="<%= wrmlData.docroot %>img/wormle/standing.png" />
+		</div>
+
+		<div class="span6 registration-introduction-workflow">
+
+			<div class="row">
+			
+				<div class="span12 registration-introduction-workflow-element">
+					
+					<div class="popover right registration-introduction-speech-bubble">
+						<div class="arrow"></div>
+						<h3 class="popover-title"><strong>Greetings User</strong></h3>
+						<div class="popover-content">
+						<p>
+							I am Wormle the Worm Wizard.
+							I can help you find your way around this <strong>WRML</strong> REST API design tool.
+						</p>
+						<p>
+							<em>
+								Who are you?
+							</em>
+						</p>
+					</div>
+				
+				</div>
+			
+			</div>
+			
+			<div class="row">
+
+				<div class="span12 registration-introduction-workflow-element">
+					
+					<form class="form-horizontal registration-introduction-form">
+
+						<fieldset>			
+								  
+							<div class="control-group">								
+							
+								<label class="control-label" for="username">User Name</label>		
+
+								<div class="controls">												
+									<input type="text" id="username" autofocus="autofocus">
+								</div>	
+
+							</div>
+										  
+							<div class="control-group">								
+							
+								<label class="control-label" for="email">Email</label>
+
+								<div class="controls">												
+									<input type="email" id="email" >
+								</div>	
+
+							</div>
+
+
+							<div class="control-group">								
+							
+								<label class="control-label" for="firstName">First Name</label>		
+
+								<div class="controls">												
+									<input type="text" id="firstName" >
+								</div>	
+
+							</div>
+
+							<div class="control-group">								
+							
+								<label class="control-label" for="lastName">Last Name</label>		
+
+								<div class="controls">												
+									<input type="text" id="lastName" >				
+								</div>	
+
+							</div>
+
+
+							<div class="control-group">								
+							
+								<label class="control-label" for="password">Password</label>		
+
+								<div class="controls">												
+									<input type="password" id="password" >				
+								</div>	
+
+							</div>
+
+
+							<div class="control-group">								
+							
+								<label class="control-label" for="repeatPassword">Repeat Password</label>		
+
+								<div class="controls">												
+									<input type="password" id="repeatPassword" >				
+								</div>	
+
+							</div>
+
+							<div class="control-group">								
+							
+								<div class="controls">												
+									<button class="btn btn-inverse" type="button">Register</button>
+								</div>	
+
+							</div>
+
+						</fieldset>
+					</form>		
+
+				<div>		
+			
+			</div>
+
+
+		</div>
+
+	</div>
+
+
+</section>

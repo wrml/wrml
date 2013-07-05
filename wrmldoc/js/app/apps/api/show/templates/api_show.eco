@@ -3,349 +3,159 @@
 	<div id="model-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/api.png" /><%= @model.title %> 
+	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/api.png" /><%= @api.title %> 
 
 	  </h1>
 	</div>
 
 	<div id="page-header-push">
-
-		<% if @model.description: %>	
-		<div class="well">
-			<p>
-			<%= @model.description %>
-			</p>	
-		</div>
-		<% end %>	
-
 	</div>
 
 </section>
 
+<section id="api-top-properties-section" class="api-section">
 
-<% if @schema.keyCount > 0: %>	
-<% console.log "Key Count: " + @schema.keyCount %>	
-<div class="section-divider">
-  <span>
-    Key Properties
-  </span>
-</div>
 
-<section>
+	<form class="form-horizontal wrml-form">
 
-	<form class="model-form">
-	  
-	<% for keySlotName, keySlot of @schema.keys: %>
-		
-		<% keySlotValue = @model[keySlotName]  %>
-		<% console.log "Key - name: " + keySlotName + " value: " + keySlotValue %>
+		<fieldset class="wrml-form-fieldset">
+				  
+			<div class="control-group">								
+			
+				<label class="control-label" for="uri">URI</label>		
 
-		<fieldset>	
-			<label class="form-field-label" for="<%= keySlotName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= keySlot.type %>.png" /> <%= keySlotName %></label>									
-			<input type="text" id="<%= keySlotName %>" value="<%= keySlotValue %>" readonly="readonly">
+				<div class="controls">												
+					<input type="url" id="uri" value="<%= @api.uri %>" readonly="readonly">																											
+				</div>	
+
+			</div>
+						  
+			<div class="control-group">								
+			
+				<label class="control-label" for="title">Title</label>		
+
+				<div class="controls">												
+					<input type="text" id="title" value="<%= @api.title %>" autofocus="autofocus">
+				</div>	
+
+			</div>
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="version">Version</label>		
+
+				<div class="controls">												
+					<input type="number" id="version" value="<%= @api.version %>">				
+				</div>	
+
+			</div>
+
 		</fieldset>
-  
-	<% end %>
-	  
-	</form>
+
+	</form>		
+
+
+	<form class="wrml-form">
+
+		<fieldset class="wrml-form-fieldset">
+							
+			<label class="wrml-form-field-label" for="description">Description</label>	
+			<textarea id="description"><%= @api.description %></textarea>
+		
+		</fieldset>
+
+	</form>		
+
+
 
 </section>
 
-	<% if @schema.slotCount > 0: %>
-
 <div class="section-divider">
   <span>
-    Other Properties
+  Resources
   </span>
 </div>
 
-	<% end %>
+<section id="api-resources-section" class="api-section">
 
-<% else if @schema.slotCount > 0: %>	
+	<% allResources = @api.allResources %>
 
-<div class="section-divider">
-  <span>
-    Properties
-  </span>
-</div>
+	<% if allResources: %>
 
-<% end %>
+		<% for resource in allResources: %>
 
-<% if @schema.slotCount > 0: %>	
-<section>
+			<% fullPath = resource.fullPath %>
+			<% pathSegment = resource.pathSegment %>
+			<% parentPath = resource.parentPath %>
+			<% isDocroot = not parentPath %>
 
-	<form class="model-form">
-	
-	<% for slotName, slot of @schema.slots: %>
-		
-		<% slotType = slot.type  %>
-		<% slotValue = @model[slotName]  %>
-		<% console.log "Slot - name: " + slotName + " type: " + slotType + " value: " + slotValue %>
-
-		<fieldset>	
-							
-			<label class="form-field-label" for="<%= slotName %>"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= slotType %>.png" /> <%= slotName %></label>				
-
-			<% if slotType == "Text": %> 
-				
-				<% slotSyntax = slot?.syntax?.title %>
-				<% isMultiline = slot?.multiline %>	
-
-				<% if slotSyntax == "URI": %> 
-
-				<div class="input-append">					
-					<input type="url" id="<%= slotName %>" value="<%= slotValue %>">																	
-					<button class="btn btn-success" type="button">GET</button>
-				</div>	
-
-				<% else if isMultiline: %> 
-				<textarea id="<%= slotName %>"><%= slotValue %></textarea>
-				<% else: %>
-				<input type="text" id="<%= slotName %>" value="<%= slotValue %>">				
-				<% end %>
-
-			<% else if slotType == "Boolean": %> 
-
-			<select id="<%= slotName %>">
-				<% if slotValue: %>
-				<option selected="selected">true</option>
-				<option>false</option>
-				<% else: %>
-				<option>true</option>
-				<option selected="selected">false</option>
-				<% end %>
-			</select>
-
-			<% else if slotType == "Long" or slotType == "Integer": %> 
-
-			<input type="number" id="<%= slotName %>" value="<%= slotValue %>">
-
-			
-			<% else if slotType == "List": %> 
-			
-			<% listElementDescriptor = slot.element %>
-			<% elementType = listElementDescriptor?.type %>
-			<% elementSyntax = listElementDescriptor?.syntax?.title %>
-			<% modelElementSchema = listElementDescriptor?.schema %>
-			<% modelElementTitleSlotName = modelElementSchema?.titleSlotName %>
-
-
-			<div class="btn-group">
-				<button class="btn btn-inverse" type="button">Add</button>
-			</div>
-
-
-			<table class="table model-list-table">
-				<thead>
-					<tr>
-						<th class="list-index-header">Index</th>
-						<th>Value</th>
-					</tr>
-				</thead>
-				
-				<tbody>
-				<% if slotValue: %>	
-
-
-					<% for element, i in slotValue: %>
+			<form class="wrml-form api-resource-segment-form form-inline well">
+		  						
+				<div class="controls controls-row">
 					
-					<% elementValue = slotValue[i] %>
-					<% inputDomId = slotName + "_#{i}" %>
-	                <tr>
-						<td class="list-index-value"><img class="list-index-icon" src="<%= wrmlData.docroot %>img/type/<%= elementType %>.png" /> <%= i %></td>
+					<div class="api-resource-segment controls span12">						
 
+						<label class="wrml-form-field-label" for="resource_<%= fullPath %>_pathSegment"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/resource.png" /></label>
 
+						<% if parentPath?.length > 1: %>														 
 
-						<td class="list-element-value">
+							<% parentPathSegments = parentPath.split "/" %>
+							<% for parentPathSegment in parentPathSegments: %>
 
-							
-
-							<% if elementType == "Text": %> 
-				
-								<% if elementSyntax == "URI": %> 
-
-								<div class="input-append">					
-									<input type="url" id="<%= inputDomId %>" value="<%= elementValue %>">
-									<button class="btn btn-success" type="button">GET</button>
-								</div>	
-
-								<% else: %>
-								<input type="text" id="<%= inputDomId %>" value="<%= elementValue %>">				
+								<% if not not parentPathSegment: %>
+									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><%= parentPathSegment %></label>
+									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><img class="api-resource-parent-path-icon" src="<%= wrmlData.docroot %>img/resource.png" /></label>
 								<% end %>
 
-							<% else if elementType == "Boolean": %> 
-
-							<select id="<%= inputDomId %>">
-								<% if elementValue: %>
-								<option selected="selected">true</option>
-								<option>false</option>
-								<% else: %>
-								<option>true</option>
-								<option selected="selected">false</option>
-								<% end %>
-							</select>
-
-
-							<% else if elementType == "Long" or elementType == "Integer": %> 
-							<input type="number" id="<%= inputDomId %>" value="<%= elementValue %>">
-
-							<% else if elementType == "Model": %> 
-							
-							<% modelElementTitle = elementValue[modelElementTitleSlotName] %>
-
-
-							<div class="input-append">
-								<input type="text" id="<%= inputDomId %>" value="<%= modelElementTitle %>" readonly="readonly">				
-				  				
-
-								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Open</button>
-									<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-									<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li><a tabindex="-1" href="#">Open</a></li>
-										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">Clear</a></li>
-										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">Remove</a></li>
-									</ul>
-								</div>
-
-							</div>	
-
-			
 							<% end %>
 
-						</td>
+						<% end %>
 
-	                </tr>
-					<% end %>
-
-				<% else: %>
-	                <tr>
-	                  <td colspan="2"><i>Empty</i></td>	                  
-	                </tr>				
-				<% end %>
-
-            	</tbody>
-
-            </table>
-
-
-			<% else if slotType == "Model": %> 
-
-
-			<div class="input-append">
-				<input type="text" id="<%= slotName %>" value="TODO: <%= slotValue %>" readonly="readonly">				
-  				
-
-				<div class="btn-group">
-					<button class="btn btn-inverse" type="button">Open</button>
-					<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-					<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a tabindex="-1" href="#">Open</a></li>
-						<li class="divider"></li>
-						<li><a tabindex="-1" href="#">Clear</a></li>
-					</ul>
-				</div>
-
-			</div>	
-
-			<% end %>   
-
-
-		</fieldset>
-
-	<% end %>
-
-	</form>
-
-</section>
-
-<% end %>	
-
-<% if @schema.linkCount > 0: %>	
-
-<div class="section-divider">
-  <span>
-    Links
-  </span>
-</div>
-
-<section id="model-links">
-
-	<% for linkName, link of @schema.links: %>
-	<% linkHref = @model[linkName]?.href %>
-
-	<% console.log "Link - name: " + linkName + " rel: " + link.rel %>
-
-
-	<form class="form-horizontal model-form">
-
-		<fieldset>			
-	
-			<label class="form-field-label" for="<%= linkName %>_href"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/type/Link.png" /> <%= linkName %></label>		
-  
-			<div class="control-group">
-				
-				<label class="control-label" for="<%= linkName %>_href">href</label>
-				
-				<div class="controls">						
-
-					<div class="input-append">
-						
-						<input type="url" id="<%= linkName %>_href" value="<%= linkHref %>" readonly="readonly">
-																			
-						<% if link.method == "GET": %>	
-						<button class="btn btn-success" type="button">
-						
-						<% else if link.method == "PUT": %>	
-						<button class="btn btn-warning" type="button">
-														
-						<% else if link.method == "POST": %>	
-						<button class="btn btn-warning" type="button">
-													
-						<% else if link.method == "DELETE": %>	
-						<button class="btn btn-danger" type="button">
+						<div class="input-append">					
 							
-						<% end %>							
-						<%= link.method %></button>
+							<% readonlyAttribute = if isDocroot then "readonly=readonly" else "" %>
 
-					</div>	
-				
-				</div>	
+							<input id="resource_<%= fullPath %>_pathSegment" class="api-resource-segment-input" type="text"  value="<%= pathSegment %>" <%= readonlyAttribute %>>
+			  				
+							<div class="btn-group">								
+								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									
+									<% if not isDocroot: %>
+									<li><a tabindex="-1" href="#">Rename</a></li>
+									
+									<li class="divider"></li>
+								
+									<li><a tabindex="-1" href="#">Remove</a></li>
 
-			</div>
-			
-			<div class="control-group">
-				
-				<label class="control-label" for="<%= linkName %>_rel">rel</label>
+									<li class="divider"></li>
+									<% end %>
 
-				<div class="controls">						
-					<div class="input-append">
-						<input type="url" id="<%= linkName %>_rel" value="<%= link.rel %>" readonly="readonly">													
-							<button class="btn btn-inverse" type="button">Open</button>
-					</div>	
+									<li><a tabindex="-1" href="#">Add Child</a></li>
 
-				</div>	
+								</ul>
+							</div>
 
-			</div>
+						</div>
 
-			
-			<% if link.method == "PUT" or link.method == "POST": %>	
-			<div class="control-group">
-				
-				<label class="control-label" for="<%= linkName %>_entity">entity</label>
-				
-				<div class="controls">						
+					</div>
+																		
+				</div>													
 
-					<div class="input-append">
-						<input type="text" id="<%= linkName %>_entity" placeholder="Specify request model entity." readonly="readonly">				
+			</form>
+
+			<form class="wrml-form api-resource-form form-inline">
+							
+				<div class="controls-row">
+					
+					<label class="api-resource-form-input-label" for="resource_<%= fullPath %>_defaultSchema"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/schema.png" /> Default Representation Schema</label>
+
+					<div class="input-append">					
+						<% defaultSchemaTitle = resource.defaultSchema?.title %>
+						<input id="resource_<%= fullPath %>_defaultSchema" type="text" value="<%= defaultSchemaTitle %>" readonly="readonly">
 		  				
-
 						<div class="btn-group">
 							<button class="btn btn-inverse" type="button">Open</button>
 							<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
@@ -355,78 +165,152 @@
 								<li><a tabindex="-1" href="#">Open</a></li>
 								<li class="divider"></li>
 								<li><a tabindex="-1" href="#">Clear</a></li>
+								<li class="divider"></li>
+								<li><a tabindex="-1" href="#">History</a></li>
+								<li class="divider"></li>
+								<li><a tabindex="-1" href="#">Favorites</a></li>
 							</ul>
 						</div>
 
 					</div>	
 
-				</div>	
+				</div>
 
-			</div>
-			<% end %>	
+				<table class="table resource-table">
 
-		</fieldset>
-
-	</form>		
-
-	<% end %>
+					<thead>
+						<tr>							
+							<th colspan="6"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/type/Reference.png" />References</th>							
+						</tr>
 
 
-	
-</section>
+					</thead>
+					
+					<tbody>
 
-<% end %>	
+						<tr>							
+							<td colspan="6">
+								<div class="btn-group">
+									<button class="btn btn-inverse" type="button">Add</button>
+								</div>
+							</td>
+						</tr>
 
-<div class="section-divider">
-  <span>
-    Metadata
-  </span>
-</div>
+						<% references = resource.references %>
 
-<section>
+						<% console.log "References: " + references %>
 
+						<% if references: %>
 
+							<tr>							
+								<th colspan="4">Concept</th>
+								<th colspan="1">Interaction Dialog</th>
+								<th colspan="1">Reference Actions</th>
+							</tr>
 
-	<form class="model-form">
-	
-		<fieldset>	
-							
-			<label class="form-field-label" for="schema"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/schema.png" /> Schema</label>	
-			<div class="input-append">
-  				<input type="text" id="schema" value="<%= @schema.title %> - <%= @schema.uri %>" readonly="readonly">				
-  				<button class="btn btn-inverse" type="button">Open</button>
-			</div>																
-				
-		</fieldset>
+							<% for reference in references: %>
+								<% referenceMethod = reference.method %>
+								<% console.log "Reference Method: " + referenceMethod %>
 
-	</form>
+								<tr>
 
-	<form class="model-form">
+									<td colspan="4">							
+																	
+										<% signatureParts = reference.signature.split " " %>	
 
-		<fieldset>	
-							
-			<label class="form-field-label" for="api"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/api.png" /> API</label>																	
-			<div class="input-append">
-				<input type="text" id="api" value="<%= @api.title %> - <%= @api.uri %>" readonly="readonly">				
-  				<button class="btn btn-inverse" type="button">Open</button>
-			</div>																
+										<label class="signature">
+											
+											<span class="wrml-code-normal"><%= signatureParts[0] %>&nbsp;</span>													
+											<span class="wrml-code-method-<%= referenceMethod %>"><%= signatureParts[1] %></span>		
+											<span class="wrml-code-normal"><%= signatureParts[2] %></span>		
+
+											<% parameterType = null %>
+											<% parameterName = null %>
+
+											<% for i in [3..signatureParts.length]: %>
+
+												<% parameterToken = signatureParts[i] %>
+
+												<% if parameterToken is ",": %>
+													
+													<span class="wrml-code-normal"><%= parameterToken %>&nbsp;</span>		
+
+													<% parameterType = null %>
+													<% parameterName = null %>
+
+												<% else if parameterToken is ")": %>
+
+													<span class="wrml-code-normal"><%= parameterToken %></span>		
+
+												<% else if not parameterType: %>																					
+													
+													<% parameterType = parameterToken %>
+													
+													<span class="wrml-code-normal"><%= parameterType %>&nbsp;</span>		
+												
+												<% else if not parameterName: %>																					
+												
+													<% parameterName = parameterToken %>
+
+													<span class="wrml-code-normal"><%= parameterName %></span>		
+
+												<% end %>
+
+											<% end %>											
+
+										</label>
+
+									</td>		
+
+									<td colspan="1">
+										
+										<% if referenceMethod is "GET": %>	
+										<button class="btn btn-success" type="button">
+											
+										<% else if referenceMethod is "PUT": %>	
+										<button class="btn btn-warning" type="button">
+																		
+										<% else if referenceMethod is "POST": %>	
+										<button class="btn btn-warning" type="button">
+																	
+										<% else if referenceMethod is "DELETE": %>	
+										<button class="btn btn-danger" type="button">
+											
+										<% end %>							
+										<%= referenceMethod %></button>
+									</td>
+
+									<td colspan="1">
+										<div class="btn-group">
+											<button class="btn btn-inverse" type="button">Edit</button>
+											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+											<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a tabindex="-1" href="#">Edit</a></li>
+												<li class="divider"></li>
+												<li><a tabindex="-1" href="#">Remove</a></li>
+											</ul>
+										
+										</div>
+
+									</td>
+
+								</tr>
+						
+							<% end %>
+
+						<% end %>
+
+					</tbody>
+				</table>
+					
+			</form>
 			
-		</fieldset>
 
-	</form>
 
-	<form class="model-form">
-		
-		<fieldset>	
-							
-			<label class="form-field-label" for="uriTemplate"><img class="form-field-label-icon" src="<%= wrmlData.docroot %>img/resource.png" /> Resource</label>																	
-			<div class="input-append">
-				<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">																							 		
-  				<button class="btn btn-inverse" type="button">Open</button>
-			</div>																
-		
-		</fieldset>
-	</form>		
+		<% end %>
 
-</section>
+	<% end %>	
 
+</section>	

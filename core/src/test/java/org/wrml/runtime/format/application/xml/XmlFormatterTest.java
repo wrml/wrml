@@ -37,7 +37,6 @@ import java.net.URI;
 /**
  * Test for {@link XmlFormatter} using {@link Mockito} mocks.
  *
- * @author JJ Zabkar
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
 public class XmlFormatterTest extends FormatTestBase

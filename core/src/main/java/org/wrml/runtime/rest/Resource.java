@@ -78,6 +78,8 @@ public class Resource implements Comparable<Resource>
 
     private final String _FullPath;
 
+    private final String _ParentPath;
+
     private final ConcurrentHashMap<String, Resource> _LiteralPathSubresources;
 
     private final ConcurrentHashMap<String, Resource> _VariablePathSubresources;
@@ -129,6 +131,14 @@ public class Resource implements Comparable<Resource>
         _ResourceTemplate = resourceTemplate;
         _ParentResource = parentResource;
         _FullPath = getFullPath(parentResource);
+        if (_ParentResource != null)
+        {
+            _ParentPath = _ParentResource.getPathText();
+        }
+        else
+        {
+            _ParentPath = null;
+        }
 
         final Api api = apiNavigator.getApi();
         final Context context = api.getContext();
@@ -251,18 +261,29 @@ public class Resource implements Comparable<Resource>
     {
         final StringBuffer sb = new StringBuffer();
         boolean appendPathSeparator = true;
+
         if (parentResource != null && parentResource.getPathText() != null)
         {
             final String text = parentResource.getPathText();
             sb.append(text);
             if (text.endsWith(ApiNavigator.PATH_SEPARATOR))
+            {
                 appendPathSeparator = false;
+            }
         }
+
         if (appendPathSeparator)
+        {
             sb.append(ApiNavigator.PATH_SEPARATOR);
+        }
+
         final String pathSegment = getPathSegment();
+
         if (StringUtils.isNotEmpty(pathSegment))
+        {
             sb.append(pathSegment);
+        }
+
         return sb.toString();
     }
 
@@ -374,6 +395,12 @@ public class Resource implements Comparable<Resource>
     {
 
         return _FullPath;
+    }
+
+    public String getParentPathText()
+    {
+
+        return _ParentPath;
     }
 
     public Set<URI> getReferenceLinkRelationUris(final Method requestMethod)

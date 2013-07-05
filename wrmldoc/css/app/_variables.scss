@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-
+$muted: #999999;
 $black: #000000;
 $gray: #EFEFEF;
 $white: #FFFFFF;
@@ -37,10 +37,13 @@ $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
 
 $sectionDividerColor: rgba(82, 82, 82, 0.5);
 
+$codeSchemaColor: #936cba;
+$codeMethodGetColor: #5bb75b;
+$codeMethodPutColor: #faa732;
+$codeMethodPostColor: #faa732;
+$codeMethodDeleteColor: #da4f49;
+
 $fontSize: 14px;
-
-$muted: #999999;
-
 
 $containerWidth: 940px;
 $navbarHeight: 40px;

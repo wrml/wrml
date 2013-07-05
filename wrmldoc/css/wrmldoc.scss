@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-
+$muted: #999999;
 $black: #000000;
 $gray: #EFEFEF;
 $white: #FFFFFF;
@@ -37,10 +37,13 @@ $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
 
 $sectionDividerColor: rgba(82, 82, 82, 0.5);
 
+$codeSchemaColor: #936cba;
+$codeMethodGetColor: #5bb75b;
+$codeMethodPutColor: #faa732;
+$codeMethodPostColor: #faa732;
+$codeMethodDeleteColor: #da4f49;
+
 $fontSize: 14px;
-
-$muted: #999999;
-
 
 $containerWidth: 940px;
 $navbarHeight: 40px;
@@ -89,6 +92,12 @@ ul, ol, dl
 	list-style-type: none;  
 }      
 
+// Remove this hack and replace with JS
+input:focus, textarea:focus 
+{ 
+	background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
+	background-size: contain;
+}
 
 input,
 button,
@@ -200,6 +209,54 @@ input[type="color"]:focus,
 	}
 }
 
+.readonly-label
+{
+	color: $muted;	
+}
+
+
+.wrml-code-normal, 
+.wrml-code-schema, 
+.wrml-code-method-GET, 
+.wrml-code-method-PUT, 
+.wrml-code-method-POST, 
+.wrml-code-method-DELETE,  
+.wrml-code-normal, 
+{
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;			
+	font-size: 12px;
+}
+
+[class*='wrml-code-method-']
+{
+	//font-weight: bold;
+}
+
+.wrml-code-schema
+{
+	color: $codeSchemaColor;
+}
+
+.wrml-code-method-GET
+{
+	color: $codeMethodGetColor;
+}
+
+.wrml-code-method-PUT
+{
+	color: $codeMethodPutColor;
+}
+
+.wrml-code-method-POST
+{
+	color: $codeMethodPostColor;
+}
+
+.wrml-code-method-DELETE
+{
+	color: $codeMethodDeleteColor;
+}
+
 
 #wrap											
 {  	
@@ -218,7 +275,9 @@ input[type="color"]:focus,
 #push											
 {  
 	height: $footerHeightTotal;  
-}                                                                           
+}  
+
+
 
 /*
  * WRML - Web Resource Modeling Language
@@ -245,7 +304,7 @@ input[type="color"]:focus,
  * limitations under the License.
  */
 
-form 
+.wrml-form 
 {
 	margin-bottom: 0px;
 
@@ -259,23 +318,24 @@ form
 	}
 }
 
-.form-field-label
+.wrml-form-field-label
 {
 	margin-left: -30px;
 	font-weight: bold;	
-	margin-top: 10px;
+	margin-top: 5px;
+	vertical-align: middle;
 
-	.form-field-label-icon
+	.wrml-form-field-label-icon
 	{		
 		width: 20px;
 		height: 20px;
-		padding-right: 5px;
-		display: inline; 
+		padding-right: 2px;
+		display: inline; 		
 	}
 }
 
 
-fieldset 
+.wrml-form-fieldset 
 {		
 	margin-left: $formFieldSetMarginLeft;
 	margin-right: $formFieldSetMarginRight;
@@ -283,6 +343,319 @@ fieldset
 }
 
 
+
+
+#main-region							
+{                                                                                                    
+	section									
+	{  
+		margin-top: 20px;
+		margin-bottom: 20px;  
+	}       
+
+	.api-section
+	{
+
+		fieldset 
+		{		
+			margin-left: 20px;
+			margin-right: 0px;
+		}
+
+		.wrml-form-field-label  
+		{
+			margin-left: 0px;	
+		}
+
+		.form-inline {
+			margin-left: 20px;	
+		}
+	}                                                                         
+
+	#title-icon 
+	{
+		margin-top: -5px;
+		margin-right: 10px;  
+		width: 48px;
+		height: 48px;
+	}
+
+	#api-page-header
+	{
+		 
+		top: $navbarHeight;
+		position: fixed;
+		z-index: 1029;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		margin-top: 0px;
+		margin-bottom: 20px;		 
+		border-bottom: 1px solid $black;
+		width: 940px;
+		background-color: $white;
+	}
+
+	#api-top-properties-section
+	{
+
+		.control-label  
+		{
+			float: left;
+			width: 100px;
+			padding-top: 5px;
+			text-align: left;			
+			font-weight: bold;
+			margin-top: 0px;
+			margin-left: 0px;
+			color: $foregroundColor;
+			display: inline;	
+		}
+
+
+		.controls 
+		{
+			*display: inline-block;
+			*padding-left: 20px;
+			margin-left: 120px;
+			*margin-left: 0;		
+
+			input[type=text],
+			input[type=url],
+			.uneditable-input 
+			{
+				width: $containerWidth - 170;
+			}
+
+		}	
+
+		.wrml-form-field-label  
+		{
+			margin-top: 5px;			
+		}
+
+		textarea,
+		{
+			width: $containerWidth - 50;
+		}
+
+	}
+
+
+	#api-resources-section
+	{
+		.wrml-form-field-label  
+		{			
+			margin-top: 5px;			
+			vertical-align: middle;
+			margin-left: 0px;
+		}	
+	}
+
+	.api-resource-divider
+	{
+		height: 1px; 
+		display: inline; 
+		background-color: #dddddd;	
+		width: 350px;
+		margin-top: 15px;		
+		vertical-align: middle;
+	}
+
+	.api-resource-segment-input
+	{
+		font-weight: bold;	
+		width: 200px;
+		border: 1px solid #ebebeb;
+
+		:focus 
+		{
+			color: $focusForegroundColor;
+			border-color: $focusBorderColor;
+
+			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+		}
+	}
+
+
+	.api-resource-segment-form
+	{
+		margin-top: 30px;
+		margin-left: 0px;
+		padding-bottom: 19px;
+		margin-bottom: 0px;
+
+		.api-resource-segment
+		{
+			margin-left: 0px;
+
+			.api-resource-parent-path-label
+			{
+				padding-top: 10px;	
+				font-weight: normal;	
+				vertical-align: middle;
+				color: $muted;	
+
+				.api-resource-parent-path-icon
+				{
+					width: 16px;
+					height: 16px;
+					padding-left: 0px;
+					padding-right: 0px;
+					display: inline; 
+				}
+			}
+		}
+	}
+
+	.api-resource-form
+	{
+
+		padding-top: 5px;	
+		padding-bottom: 5px;	
+		padding-left: 33px;
+
+		.controls-row 
+		{
+
+			.api-resource-form-input-label  
+			{			
+				font-weight: normal;
+				padding-top: 0px;
+				vertical-align: middle;
+				margin-top: 25px;			
+				margin-left: 15px;			
+				margin-right: 5px;							
+
+			}
+
+			.api-resource-form-checkbox-label  
+			{			
+				font-weight: normal;
+				padding-top: 0px;
+				vertical-align: middle;
+				margin-top: 20px;			
+				margin-left: 15px;			
+				margin-right: 5px;							
+			}
+
+			input[type="text"],
+			input[type="password"],
+			input[type="datetime"],
+			input[type="datetime-local"],
+			input[type="date"],
+			input[type="month"],
+			input[type="time"],
+			input[type="week"],
+			input[type="number"],
+			input[type="email"],
+			input[type="url"],
+			input[type="search"],
+			input[type="tel"],
+			input[type="color"],
+			select,
+			textarea,
+			button,
+			.uneditable-input 
+			{
+				margin-top: 20px;
+			}
+
+			input[type=text],
+			input[type=password],
+			input[type=url],
+			select,
+			.uneditable-input 
+			{
+				width: 250px;
+			}		
+
+			textarea
+			{
+				width: 650px;
+			}
+
+
+
+			input.api-resource-form-input-short,
+			{
+				width: 100px;	
+			}
+		}
+
+		.api-resource-form-icon
+		{		
+			width: 16px;
+			height: 16px;
+			margin-top: -3px;
+			margin-bottom: 0px;
+			padding-right: 5px;
+			vertical-align: middle;						
+		}
+
+	}
+
+	.resource-table
+	{
+
+		width: 850px;
+		
+		margin-top: 20px;
+		margin-left: 8px;
+		margin-bottom: 10px;
+		
+		
+		th {			
+			font-weight: normal;			
+		}
+
+		td 
+		{
+			padding-top: 15px;
+			padding-bottom: 15px;
+			
+		}
+
+		input[type=text],
+		input[type=password],
+		input[type=url],
+		select,
+		.uneditable-input 
+		{
+			width: 250px;
+		}	
+
+		label
+		{
+			vertical-align: middle;
+			margin-top: 5px;			
+		}
+
+		button
+		{
+			margin-top: 5px;
+		}
+
+		.signature
+		{
+			margin-top: 10px;
+		}
+
+		.signature
+		{
+			font-size: 0px;			
+
+			span
+			{
+				margin: 0px;
+				padding: 0px;
+			}
+		}
+
+	}
+
+}
 /*
  * WRML - Web Resource Modeling Language
  *  __     __   ______   __    __   __
@@ -563,6 +936,51 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 }
 
+#registration-introduction
+{
+	 
+	background-color: $white;
+	padding-top: 50px;	
+
+
+
+}
+
+#registration-wormle-standing
+{
+	width: 160px;
+	height: 780px;
+}
+
+.registration-introduction-workflow
+{
+	margin-top: 140px;	
+}
+
+.registration-introduction-workflow-element 
+{
+	margin-top: 50px;
+}
+
+.registration-introduction-speech-bubble
+{
+        position: relative;
+        display: block;
+        float: left;
+        max-width: 350px;
+        margin-left: -50px;
+}
+
+.registration-introduction-form
+{
+	fieldset
+	{
+		margin-left: -20px;
+	}
+}
+
+
+
 
 $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
@@ -579,17 +997,17 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 		fieldset 
 		{		
-			margin-left: 30px;
+			margin-left: 20px;
 			margin-right: 0px;
 		}
 
-		.form-field-label  
+		.wrml-form-field-label  
 		{
 			margin-left: 0px;	
 		}
 
 		.form-inline {
-			margin-left: 30px;	
+			margin-left: 20px;	
 		}
 	}                                                                         
 
@@ -649,7 +1067,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 		}	
 
-		.form-field-label  
+		.wrml-form-field-label  
 		{
 			margin-top: 5px;			
 		}
@@ -705,10 +1123,11 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 	#schema-properties-section
 	{
-		.form-field-label  
-		{
-			margin-top: 15px;			
-			margin-left: 8px;
+		.wrml-form-field-label  
+		{			
+			margin-top: 5px;			
+			vertical-align: middle;
+			margin-left: 0px;
 		}	
 	}
 
@@ -716,15 +1135,16 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 	{
 		height: 1px; 
 		display: inline; 
-		background-color: #dddddd;
-		margin-left: 0px;			
-		margin-top: 25px;		
+		background-color: #dddddd;	
+		width: 350px;
+		margin-top: 15px;		
+		vertical-align: middle;
 	}
 
 	.schema-slot-name-input
 	{
 		font-weight: bold;	
-		width: 400px;
+		width: 350px;
 		border: 1px solid #ebebeb;
 
 		:focus 
@@ -741,7 +1161,10 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 	.schema-slot-name-form
 	{
+		margin-top: 30px;
 		margin-left: 0px;
+		padding-bottom: 19px;
+		margin-bottom: 0px;
 
 		.schema-slot-name
 		{
@@ -751,36 +1174,79 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 	.schema-slot-form
 	{
-		.control-label  
-		{
-			float: left;
-			width: $horizontalFormLabelWidth;
-			padding-top: 5px;
-			text-align: right;			
-			font-weight: normal;
-			margin-top: 10px;
-			margin-left: 30px;
-			color: $muted;		
-			display: inline;	
-		}
 
-		.controls 
+		padding-top: 5px;	
+		padding-bottom: 5px;	
+		padding-left: 33px;
+
+		.controls-row 
 		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: $horizontalFormMarginLeft + 30;
-			*margin-left: 0;		
+
+			.schema-slot-form-input-label  
+			{			
+				font-weight: normal;
+				padding-top: 0px;
+				vertical-align: middle;
+				margin-top: 25px;			
+				margin-left: 15px;			
+				margin-right: 5px;							
+
+			}
+
+			.schema-slot-form-checkbox-label  
+			{			
+				font-weight: normal;
+				padding-top: 0px;
+				vertical-align: middle;
+				margin-top: 20px;			
+				margin-left: 15px;			
+				margin-right: 5px;							
+			}
+
+			input[type="text"],
+			input[type="password"],
+			input[type="datetime"],
+			input[type="datetime-local"],
+			input[type="date"],
+			input[type="month"],
+			input[type="time"],
+			input[type="week"],
+			input[type="number"],
+			input[type="email"],
+			input[type="url"],
+			input[type="search"],
+			input[type="tel"],
+			input[type="color"],
+			select,
+			textarea,
+			button,
+			.uneditable-input 
+			{
+				margin-top: 20px;
+			}
 
 			input[type=text],
 			input[type=password],
 			input[type=url],
-			textarea,
+			select,
 			.uneditable-input 
 			{
 				width: 250px;
-				margin-top: 10px;
+			}		
+
+			textarea
+			{
+				width: 650px;
 			}
-		}			
+
+
+
+			input.schema-slot-form-input-short,
+			{
+				width: 100px;	
+			}
+		}
+
 	}
 
 

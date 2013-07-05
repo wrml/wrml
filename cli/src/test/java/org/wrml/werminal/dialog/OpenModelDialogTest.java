@@ -58,8 +58,6 @@ import static org.mockito.Mockito.when;
  * {@link OpenModelDialog#updateKeysPanel}.
  * <p/>
  * Some dependencies could not be (Power)Mocked due to java/inheritance limitations, complexities.
- *
- * @author JJ Zabkar
  */
 @RunWith(MockitoJUnitRunner.class)
 // @RunWith(PowerMockRunner.class)

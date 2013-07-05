@@ -44,7 +44,6 @@ import static org.mockito.Mockito.when;
 /**
  * Test for {@link ApiAsciiFormatter} using {@link Mockito} mocks.
  *
- * @author JJ Zabkar
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
 public class ApiAsciiFormatterTest extends FormatTestBase

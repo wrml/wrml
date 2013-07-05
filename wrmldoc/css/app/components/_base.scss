@@ -15,6 +15,12 @@ ul, ol, dl
 	list-style-type: none;  
 }      
 
+// Remove this hack and replace with JS
+input:focus, textarea:focus 
+{ 
+	background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
+	background-size: contain;
+}
 
 input,
 button,
@@ -126,6 +132,54 @@ input[type="color"]:focus,
 	}
 }
 
+.readonly-label
+{
+	color: $muted;	
+}
+
+
+.wrml-code-normal, 
+.wrml-code-schema, 
+.wrml-code-method-GET, 
+.wrml-code-method-PUT, 
+.wrml-code-method-POST, 
+.wrml-code-method-DELETE,  
+.wrml-code-normal, 
+{
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;			
+	font-size: 12px;
+}
+
+[class*='wrml-code-method-']
+{
+	//font-weight: bold;
+}
+
+.wrml-code-schema
+{
+	color: $codeSchemaColor;
+}
+
+.wrml-code-method-GET
+{
+	color: $codeMethodGetColor;
+}
+
+.wrml-code-method-PUT
+{
+	color: $codeMethodPutColor;
+}
+
+.wrml-code-method-POST
+{
+	color: $codeMethodPostColor;
+}
+
+.wrml-code-method-DELETE
+{
+	color: $codeMethodDeleteColor;
+}
+
 
 #wrap											
 {  	
@@ -144,5 +198,7 @@ input[type="color"]:focus,
 #push											
 {  
 	height: $footerHeightTotal;  
-}                                                                           
+}  
+
+
 

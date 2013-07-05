@@ -33,8 +33,6 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 
 /**
  * Moved from inner class of {@link org.wrml.werminal.Werminal}.
- *
- * @author JJ Zabkar
  */
 public class ListMenu extends TerminalAppPanel
 {

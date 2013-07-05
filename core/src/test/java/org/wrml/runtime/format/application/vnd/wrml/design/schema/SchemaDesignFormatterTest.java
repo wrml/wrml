@@ -45,7 +45,6 @@ import org.wrml.runtime.syntax.SyntaxLoader;
  * Test for {@link SchemaDesignFormatter} using {@link Mockito} mocks.
  * 
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
- * @author JJ Zabkar
  */
 
 @Ignore

@@ -23,7 +23,7 @@
  * limitations under the License.
  */
 
-form 
+.wrml-form 
 {
 	margin-bottom: 0px;
 
@@ -37,23 +37,24 @@ form
 	}
 }
 
-.form-field-label
+.wrml-form-field-label
 {
 	margin-left: -30px;
 	font-weight: bold;	
-	margin-top: 10px;
+	margin-top: 5px;
+	vertical-align: middle;
 
-	.form-field-label-icon
+	.wrml-form-field-label-icon
 	{		
 		width: 20px;
 		height: 20px;
-		padding-right: 5px;
-		display: inline; 
+		padding-right: 2px;
+		display: inline; 		
 	}
 }
 
 
-fieldset 
+.wrml-form-fieldset 
 {		
 	margin-left: $formFieldSetMarginLeft;
 	margin-right: $formFieldSetMarginRight;

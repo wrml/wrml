@@ -6199,6 +6199,10 @@ body {
 ul, ol, dl {
   list-style-type: none; }
 
+input:focus, textarea:focus {
+  background: white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
+  background-size: contain; }
+
 input,
 button,
 select,
@@ -6282,6 +6286,34 @@ input[type="color"]:focus,
     top: -0.60em;
     padding-right: 5px; }
 
+.readonly-label {
+  color: #999999; }
+
+.wrml-code-normal,
+.wrml-code-schema,
+.wrml-code-method-GET,
+.wrml-code-method-PUT,
+.wrml-code-method-POST,
+.wrml-code-method-DELETE,
+.wrml-code-normal {
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size: 12px; }
+
+.wrml-code-schema {
+  color: #936cba; }
+
+.wrml-code-method-GET {
+  color: #5bb75b; }
+
+.wrml-code-method-PUT {
+  color: #faa732; }
+
+.wrml-code-method-POST {
+  color: #faa732; }
+
+.wrml-code-method-DELETE {
+  color: #da4f49; }
+
 #wrap {
   height: auto !important;
   min-height: 100%;
@@ -6318,28 +6350,200 @@ input[type="color"]:focus,
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-form {
+.wrml-form {
   margin-bottom: 0px; }
-  form input[type=text],
-  form input[type=password],
-  form input[type=url],
-  form textarea,
-  form .uneditable-input {
+  .wrml-form input[type=text],
+  .wrml-form input[type=password],
+  .wrml-form input[type=url],
+  .wrml-form textarea,
+  .wrml-form .uneditable-input {
     width: 770px; }
 
-.form-field-label {
+.wrml-form-field-label {
   margin-left: -30px;
   font-weight: bold;
-  margin-top: 10px; }
-  .form-field-label .form-field-label-icon {
+  margin-top: 5px;
+  vertical-align: middle; }
+  .wrml-form-field-label .wrml-form-field-label-icon {
     width: 20px;
     height: 20px;
-    padding-right: 5px;
+    padding-right: 2px;
     display: inline; }
 
-fieldset {
+.wrml-form-fieldset {
   margin-left: 60px;
   margin-right: 40px; }
+
+#main-region section {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+#main-region .api-section fieldset {
+  margin-left: 20px;
+  margin-right: 0px; }
+#main-region .api-section .wrml-form-field-label {
+  margin-left: 0px; }
+#main-region .api-section .form-inline {
+  margin-left: 20px; }
+#main-region #title-icon {
+  margin-top: -5px;
+  margin-right: 10px;
+  width: 48px;
+  height: 48px; }
+#main-region #api-page-header {
+  top: 40px;
+  position: fixed;
+  z-index: 1029;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid black;
+  width: 940px;
+  background-color: white; }
+#main-region #api-top-properties-section .control-label {
+  float: left;
+  width: 100px;
+  padding-top: 5px;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 0px;
+  color: #333333;
+  display: inline; }
+#main-region #api-top-properties-section .controls {
+  *display: inline-block;
+  *padding-left: 20px;
+  margin-left: 120px;
+  *margin-left: 0; }
+  #main-region #api-top-properties-section .controls input[type=text],
+  #main-region #api-top-properties-section .controls input[type=url],
+  #main-region #api-top-properties-section .controls .uneditable-input {
+    width: 770px; }
+#main-region #api-top-properties-section .wrml-form-field-label {
+  margin-top: 5px; }
+#main-region #api-top-properties-section textarea {
+  width: 890px; }
+#main-region #api-resources-section .wrml-form-field-label {
+  margin-top: 5px;
+  vertical-align: middle;
+  margin-left: 0px; }
+#main-region .api-resource-divider {
+  height: 1px;
+  display: inline;
+  background-color: #dddddd;
+  width: 350px;
+  margin-top: 15px;
+  vertical-align: middle; }
+#main-region .api-resource-segment-input {
+  font-weight: bold;
+  width: 200px;
+  border: 1px solid #ebebeb; }
+  #main-region .api-resource-segment-input :focus {
+    color: black;
+    border-color: rgba(82, 82, 82, 0.8);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6); }
+#main-region .api-resource-segment-form {
+  margin-top: 30px;
+  margin-left: 0px;
+  padding-bottom: 19px;
+  margin-bottom: 0px; }
+  #main-region .api-resource-segment-form .api-resource-segment {
+    margin-left: 0px; }
+    #main-region .api-resource-segment-form .api-resource-segment .api-resource-parent-path-label {
+      padding-top: 10px;
+      font-weight: normal;
+      vertical-align: middle;
+      color: #999999; }
+      #main-region .api-resource-segment-form .api-resource-segment .api-resource-parent-path-label .api-resource-parent-path-icon {
+        width: 16px;
+        height: 16px;
+        padding-left: 0px;
+        padding-right: 0px;
+        display: inline; }
+#main-region .api-resource-form {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 33px; }
+  #main-region .api-resource-form .controls-row .api-resource-form-input-label {
+    font-weight: normal;
+    padding-top: 0px;
+    vertical-align: middle;
+    margin-top: 25px;
+    margin-left: 15px;
+    margin-right: 5px; }
+  #main-region .api-resource-form .controls-row .api-resource-form-checkbox-label {
+    font-weight: normal;
+    padding-top: 0px;
+    vertical-align: middle;
+    margin-top: 20px;
+    margin-left: 15px;
+    margin-right: 5px; }
+  #main-region .api-resource-form .controls-row input[type="text"],
+  #main-region .api-resource-form .controls-row input[type="password"],
+  #main-region .api-resource-form .controls-row input[type="datetime"],
+  #main-region .api-resource-form .controls-row input[type="datetime-local"],
+  #main-region .api-resource-form .controls-row input[type="date"],
+  #main-region .api-resource-form .controls-row input[type="month"],
+  #main-region .api-resource-form .controls-row input[type="time"],
+  #main-region .api-resource-form .controls-row input[type="week"],
+  #main-region .api-resource-form .controls-row input[type="number"],
+  #main-region .api-resource-form .controls-row input[type="email"],
+  #main-region .api-resource-form .controls-row input[type="url"],
+  #main-region .api-resource-form .controls-row input[type="search"],
+  #main-region .api-resource-form .controls-row input[type="tel"],
+  #main-region .api-resource-form .controls-row input[type="color"],
+  #main-region .api-resource-form .controls-row select,
+  #main-region .api-resource-form .controls-row textarea,
+  #main-region .api-resource-form .controls-row button,
+  #main-region .api-resource-form .controls-row .uneditable-input {
+    margin-top: 20px; }
+  #main-region .api-resource-form .controls-row input[type=text],
+  #main-region .api-resource-form .controls-row input[type=password],
+  #main-region .api-resource-form .controls-row input[type=url],
+  #main-region .api-resource-form .controls-row select,
+  #main-region .api-resource-form .controls-row .uneditable-input {
+    width: 250px; }
+  #main-region .api-resource-form .controls-row textarea {
+    width: 650px; }
+  #main-region .api-resource-form .controls-row input.api-resource-form-input-short {
+    width: 100px; }
+  #main-region .api-resource-form .api-resource-form-icon {
+    width: 16px;
+    height: 16px;
+    margin-top: -3px;
+    margin-bottom: 0px;
+    padding-right: 5px;
+    vertical-align: middle; }
+#main-region .resource-table {
+  width: 850px;
+  margin-top: 20px;
+  margin-left: 8px;
+  margin-bottom: 10px; }
+  #main-region .resource-table th {
+    font-weight: normal; }
+  #main-region .resource-table td {
+    padding-top: 15px;
+    padding-bottom: 15px; }
+  #main-region .resource-table input[type=text],
+  #main-region .resource-table input[type=password],
+  #main-region .resource-table input[type=url],
+  #main-region .resource-table select,
+  #main-region .resource-table .uneditable-input {
+    width: 250px; }
+  #main-region .resource-table label {
+    vertical-align: middle;
+    margin-top: 5px; }
+  #main-region .resource-table button {
+    margin-top: 5px; }
+  #main-region .resource-table .signature {
+    margin-top: 10px; }
+  #main-region .resource-table .signature {
+    font-size: 0px; }
+    #main-region .resource-table .signature span {
+      margin: 0px;
+      padding: 0px; }
 
 /*
  * WRML - Web Resource Modeling Language
@@ -6511,16 +6715,40 @@ fieldset {
     #main-region .model-list-table td.list-element-value .uneditable-input {
       width: 710px; }
 
+#registration-introduction {
+  background-color: white;
+  padding-top: 50px; }
+
+#registration-wormle-standing {
+  width: 160px;
+  height: 780px; }
+
+.registration-introduction-workflow {
+  margin-top: 140px; }
+
+.registration-introduction-workflow-element {
+  margin-top: 50px; }
+
+.registration-introduction-speech-bubble {
+  position: relative;
+  display: block;
+  float: left;
+  max-width: 350px;
+  margin-left: -50px; }
+
+.registration-introduction-form fieldset {
+  margin-left: -20px; }
+
 #main-region section {
   margin-top: 20px;
   margin-bottom: 20px; }
 #main-region .schema-section fieldset {
-  margin-left: 30px;
+  margin-left: 20px;
   margin-right: 0px; }
-#main-region .schema-section .form-field-label {
+#main-region .schema-section .wrml-form-field-label {
   margin-left: 0px; }
 #main-region .schema-section .form-inline {
-  margin-left: 30px; }
+  margin-left: 20px; }
 #main-region #title-icon {
   margin-top: -5px;
   margin-right: 10px;
@@ -6556,7 +6784,7 @@ fieldset {
   #main-region #schema-top-properties-section .controls input[type=url],
   #main-region #schema-top-properties-section .controls .uneditable-input {
     width: 770px; }
-#main-region #schema-top-properties-section .form-field-label {
+#main-region #schema-top-properties-section .wrml-form-field-label {
   margin-top: 5px; }
 #main-region #schema-top-properties-section textarea {
   width: 890px; }
@@ -6581,18 +6809,20 @@ fieldset {
 #main-region #schema-base-schema-canvas {
   margin-top: 50px;
   border: 1px solid #dddddd; }
-#main-region #schema-properties-section .form-field-label {
-  margin-top: 15px;
-  margin-left: 8px; }
+#main-region #schema-properties-section .wrml-form-field-label {
+  margin-top: 5px;
+  vertical-align: middle;
+  margin-left: 0px; }
 #main-region .schema-slot-divider {
   height: 1px;
   display: inline;
   background-color: #dddddd;
-  margin-left: 0px;
-  margin-top: 25px; }
+  width: 350px;
+  margin-top: 15px;
+  vertical-align: middle; }
 #main-region .schema-slot-name-input {
   font-weight: bold;
-  width: 400px;
+  width: 350px;
   border: 1px solid #ebebeb; }
   #main-region .schema-slot-name-input :focus {
     color: black;
@@ -6601,28 +6831,56 @@ fieldset {
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6); }
 #main-region .schema-slot-name-form {
-  margin-left: 0px; }
+  margin-top: 30px;
+  margin-left: 0px;
+  padding-bottom: 19px;
+  margin-bottom: 0px; }
   #main-region .schema-slot-name-form .schema-slot-name {
     margin-left: 0px; }
-#main-region .schema-slot-form .control-label {
-  float: left;
-  width: 50px;
+#main-region .schema-slot-form {
   padding-top: 5px;
-  text-align: right;
-  font-weight: normal;
-  margin-top: 10px;
-  margin-left: 30px;
-  color: #999999;
-  display: inline; }
-#main-region .schema-slot-form .controls {
-  *display: inline-block;
-  *padding-left: 20px;
-  margin-left: 90px;
-  *margin-left: 0; }
-  #main-region .schema-slot-form .controls input[type=text],
-  #main-region .schema-slot-form .controls input[type=password],
-  #main-region .schema-slot-form .controls input[type=url],
-  #main-region .schema-slot-form .controls textarea,
-  #main-region .schema-slot-form .controls .uneditable-input {
-    width: 250px;
-    margin-top: 10px; }
+  padding-bottom: 5px;
+  padding-left: 33px; }
+  #main-region .schema-slot-form .controls-row .schema-slot-form-input-label {
+    font-weight: normal;
+    padding-top: 0px;
+    vertical-align: middle;
+    margin-top: 25px;
+    margin-left: 15px;
+    margin-right: 5px; }
+  #main-region .schema-slot-form .controls-row .schema-slot-form-checkbox-label {
+    font-weight: normal;
+    padding-top: 0px;
+    vertical-align: middle;
+    margin-top: 20px;
+    margin-left: 15px;
+    margin-right: 5px; }
+  #main-region .schema-slot-form .controls-row input[type="text"],
+  #main-region .schema-slot-form .controls-row input[type="password"],
+  #main-region .schema-slot-form .controls-row input[type="datetime"],
+  #main-region .schema-slot-form .controls-row input[type="datetime-local"],
+  #main-region .schema-slot-form .controls-row input[type="date"],
+  #main-region .schema-slot-form .controls-row input[type="month"],
+  #main-region .schema-slot-form .controls-row input[type="time"],
+  #main-region .schema-slot-form .controls-row input[type="week"],
+  #main-region .schema-slot-form .controls-row input[type="number"],
+  #main-region .schema-slot-form .controls-row input[type="email"],
+  #main-region .schema-slot-form .controls-row input[type="url"],
+  #main-region .schema-slot-form .controls-row input[type="search"],
+  #main-region .schema-slot-form .controls-row input[type="tel"],
+  #main-region .schema-slot-form .controls-row input[type="color"],
+  #main-region .schema-slot-form .controls-row select,
+  #main-region .schema-slot-form .controls-row textarea,
+  #main-region .schema-slot-form .controls-row button,
+  #main-region .schema-slot-form .controls-row .uneditable-input {
+    margin-top: 20px; }
+  #main-region .schema-slot-form .controls-row input[type=text],
+  #main-region .schema-slot-form .controls-row input[type=password],
+  #main-region .schema-slot-form .controls-row input[type=url],
+  #main-region .schema-slot-form .controls-row select,
+  #main-region .schema-slot-form .controls-row .uneditable-input {
+    width: 250px; }
+  #main-region .schema-slot-form .controls-row textarea {
+    width: 650px; }
+  #main-region .schema-slot-form .controls-row input.schema-slot-form-input-short {
+    width: 100px; }

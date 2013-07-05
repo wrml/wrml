@@ -51,8 +51,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Base {@link TestCase} for testing {@link Formatter} implementations using {@link Mockito} mocks.
- *
- * @author JJ Zabkar
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 public abstract class FormatTestBase extends TestCase

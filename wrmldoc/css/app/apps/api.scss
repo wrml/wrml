@@ -1,7 +1,5 @@
 
 
-$baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
-
 #main-region							
 {                                                                                                    
 	section									
@@ -10,7 +8,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		margin-bottom: 20px;  
 	}       
 
-	.schema-section
+	.api-section
 	{
 
 		fieldset 
@@ -37,7 +35,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		height: 48px;
 	}
 
-	#schema-page-header
+	#api-page-header
 	{
 		 
 		top: $navbarHeight;
@@ -52,7 +50,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		background-color: $white;
 	}
 
-	#schema-top-properties-section
+	#api-top-properties-section
 	{
 
 		.control-label  
@@ -97,49 +95,8 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 	}
 
-	#schema-base-schema-form 
-	{
-		margin-bottom: 0px;
 
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
-		{
-			width: 250px;
-		}
-
-	}
-
-	#schema-base-schema-table 
-	{
-		margin-top: 20px;	
-
-		.schema-base-schema-icon
-		{		
-			width: 20px;
-			height: 20px;
-			padding-right: 5px;
-			display: inline; 
-			margin-top: -6px;		
-		}
-
-		td.schema-base-schema-input
-		{
-
-			padding-top: 20px;
-
-		}
-	}
-
-	#schema-base-schema-canvas
-	{
-		margin-top: 50px;	
-		border: 1px solid #dddddd;
-	}
-
-	#schema-properties-section
+	#api-resources-section
 	{
 		.wrml-form-field-label  
 		{			
@@ -149,7 +106,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		}	
 	}
 
-	.schema-slot-divider
+	.api-resource-divider
 	{
 		height: 1px; 
 		display: inline; 
@@ -159,10 +116,10 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		vertical-align: middle;
 	}
 
-	.schema-slot-name-input
+	.api-resource-segment-input
 	{
 		font-weight: bold;	
-		width: 350px;
+		width: 200px;
 		border: 1px solid #ebebeb;
 
 		:focus 
@@ -177,20 +134,37 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 	}
 
 
-	.schema-slot-name-form
+	.api-resource-segment-form
 	{
 		margin-top: 30px;
 		margin-left: 0px;
 		padding-bottom: 19px;
 		margin-bottom: 0px;
 
-		.schema-slot-name
+		.api-resource-segment
 		{
 			margin-left: 0px;
+
+			.api-resource-parent-path-label
+			{
+				padding-top: 10px;	
+				font-weight: normal;	
+				vertical-align: middle;
+				color: $muted;	
+
+				.api-resource-parent-path-icon
+				{
+					width: 16px;
+					height: 16px;
+					padding-left: 0px;
+					padding-right: 0px;
+					display: inline; 
+				}
+			}
 		}
 	}
 
-	.schema-slot-form
+	.api-resource-form
 	{
 
 		padding-top: 5px;	
@@ -200,7 +174,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		.controls-row 
 		{
 
-			.schema-slot-form-input-label  
+			.api-resource-form-input-label  
 			{			
 				font-weight: normal;
 				padding-top: 0px;
@@ -211,7 +185,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 			}
 
-			.schema-slot-form-checkbox-label  
+			.api-resource-form-checkbox-label  
 			{			
 				font-weight: normal;
 				padding-top: 0px;
@@ -259,13 +233,81 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 
 
-			input.schema-slot-form-input-short,
+			input.api-resource-form-input-short,
 			{
 				width: 100px;	
 			}
 		}
 
+		.api-resource-form-icon
+		{		
+			width: 16px;
+			height: 16px;
+			margin-top: -3px;
+			margin-bottom: 0px;
+			padding-right: 5px;
+			vertical-align: middle;						
+		}
+
 	}
 
+	.resource-table
+	{
+
+		width: 850px;
+		
+		margin-top: 20px;
+		margin-left: 8px;
+		margin-bottom: 10px;
+		
+		
+		th {			
+			font-weight: normal;			
+		}
+
+		td 
+		{
+			padding-top: 15px;
+			padding-bottom: 15px;
+			
+		}
+
+		input[type=text],
+		input[type=password],
+		input[type=url],
+		select,
+		.uneditable-input 
+		{
+			width: 250px;
+		}	
+
+		label
+		{
+			vertical-align: middle;
+			margin-top: 5px;			
+		}
+
+		button
+		{
+			margin-top: 5px;
+		}
+
+		.signature
+		{
+			margin-top: 10px;
+		}
+
+		.signature
+		{
+			font-size: 0px;			
+
+			span
+			{
+				margin: 0px;
+				padding: 0px;
+			}
+		}
+
+	}
 
 }

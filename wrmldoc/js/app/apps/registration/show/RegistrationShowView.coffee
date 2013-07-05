@@ -21,88 +21,11 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###             
+###            
 
 # CoffeeScript
 
-@Wrmldoc = do (Backbone, Marionette) ->
+@Wrmldoc.module "RegistrationApp.Show", (Show, App, Backbone, Marionette, $, _) ->
 	
-	App = new Marionette.Application
-
-	#App.rootRoute = "/model"
-
-    # App Layout
-	App.addRegions
-		headerRegion: "#header-region"
-		mainRegion:		"#main-region"
-		footerRegion: "#footer-region"	
-
-
-    # App Init
-	App.addInitializer ->		
-
-		App.module("HeaderApp").start(App.wrmlData)
-
-		schemaUri = App.wrmlData.get "schemaUri" 
-
-		#App.module("RegistrationApp").start(App.wrmlData)	
-
-		
-		if schemaUri == "http://schema.api.wrml.org/org/wrml/model/schema/Schema" 
-			App.module("SchemaApp").start(App.wrmlData)	
-
-		else if schemaUri == "http://schema.api.wrml.org/org/wrml/model/rest/Api" 
-			App.module("ApiApp").start(App.wrmlData)	
-
-		else
-			App.module("ModelApp").start(App.wrmlData)	
-		
-		
-		App.module("FooterApp").start(App.wrmlData)
-		
-
-    #
-    # Event Handlers (on)
-    #
-
-	App.on "initialize:before", (wrmlData) ->
-		App.wrmlData = new App.Entities.Model wrmlData
-
-
-	App.on "initialize:after", ->
-		@startHistory()
-		@navigate(@rootRoute, trigger: true) unless @getCurrentRoute()
-
-	App.getWrmlData = ->
-		App.wrmlData		
-
-    #
-    # GET (reqres)
-    #		
-		
-	App.reqres.setHandler "default:region", ->
-		App.mainRegion
-
-	App.reqres.setHandler "wrml:data", ->
-		#App.wrmlData
-		App.getWrmlData()
-
-    #
-    # POST (commands)
-    #		
-
-	App.commands.setHandler "register:instance", (instance, id) ->
-		App.register instance, id #if App.environment is "development"
-	
-	App.commands.setHandler "unregister:instance", (instance, id) ->
-		App.unregister instance, id #if App.environment is "development"
-	
-
-	#	
-	# Return Wrmldoc 
-	#
-
-	# For debugging or whatever; provide a handle to the app in the Console.
-	window.wrmldoc = App
-
-	App
+	class Show.Registration extends App.Views.ItemView
+		template: "registration/show/registration_show"
