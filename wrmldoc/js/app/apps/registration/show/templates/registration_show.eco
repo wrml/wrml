@@ -7,7 +7,7 @@
 		</div>
 
 		<div class="span3">
-			<img id="registration-wormle-standing" src="<%= wrmlData.docroot %>img/wormle/standing.png" />
+			<img id="registration-wormle-standing" src="<%= @docroot %>img/wormle/standing.png" />
 		</div>
 
 		<div class="span6 registration-introduction-workflow">

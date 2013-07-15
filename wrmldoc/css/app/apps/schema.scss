@@ -1,14 +1,8 @@
 
 
 $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
-
 #main-region							
-{                                                                                                    
-	section									
-	{  
-		margin-top: 20px;
-		margin-bottom: 20px;  
-	}       
+{ 
 
 	.schema-section
 	{
@@ -29,13 +23,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		}
 	}                                                                         
 
-	#title-icon 
-	{
-		margin-top: -5px;
-		margin-right: 10px;  
-		width: 48px;
-		height: 48px;
-	}
+
 
 	#schema-page-header
 	{
@@ -115,6 +103,8 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 	#schema-base-schema-table 
 	{
 		margin-top: 20px;	
+		margin-bottom: 30px;
+		padding-bottom: 30px;
 
 		.schema-base-schema-icon
 		{		
@@ -249,7 +239,7 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 			select,
 			.uneditable-input 
 			{
-				width: 250px;
+				width: 200px;
 			}		
 
 			textarea
@@ -266,6 +256,5 @@ $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		}
 
 	}
-
 
 }

@@ -1,6 +1,14 @@
 {
     "context" :
     {
+        "apiLoader" :
+        {
+            "apis" :
+                [
+                    "http://wizard.example.api.wrml.org"
+                ]
+        },
+
         "schemaLoader" :
         {
 
@@ -55,7 +63,7 @@
             "serviceMapping" :
             {
 
-                "*" : "JVM",
+                "*" : "Mongo",
                 "http://schema.api.wrml.org/org/wrml/model/rest/FiledApi" : "File",
                 "http://schema.api.wrml.org/org/wrml/werminal/model/WerminalModel" : "File",
                 "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*" : "ApiDesigner"

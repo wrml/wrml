@@ -35,6 +35,7 @@ import org.wrml.model.Named;
 import org.wrml.model.Titled;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.LinkRelation;
+import org.wrml.model.rest.Method;
 import org.wrml.model.schema.Schema;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
@@ -129,19 +130,12 @@ public class SchemaDesignFormatter extends AbstractFormatter
         rootNode.put(PropertyName.description.name(), schema.getDescription());
         rootNode.put(PropertyName.version.name(), schema.getVersion());
 
-        final String titleSlotName = schema.getTitleSlotName();
-        if (StringUtils.isNotBlank(titleSlotName))
+        final String titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
+        if (titleSlotName != null)
         {
             rootNode.put(PropertyName.titleSlotName.name(), titleSlotName);
         }
-        else
-        {
-            final String guessedTitleSlot = guessTitleSlot(schemaUri, schemaLoader);
-            if (guessedTitleSlot != null)
-            {
-                rootNode.put(PropertyName.titleSlotName.name(), guessedTitleSlot);
-            }
-        }
+
 
         final UniqueName uniqueName = schema.getUniqueName();
         final ObjectNode uniqueNameNode = objectMapper.createObjectNode();
@@ -259,7 +253,6 @@ public class SchemaDesignFormatter extends AbstractFormatter
         }
 
 
-
         final Set<String> comparablePropertyNames = prototype.getComparableSlotNames();
         if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty())
         {
@@ -302,7 +295,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
                 linkNode.put(PropertyName.name.name(), linkProtoSlot.getName());
                 linkNode.put(PropertyName.title.name(), linkTitle);
 
-
+                final Method method = linkProtoSlot.getMethod();
                 final URI linkRelationUri = linkProtoSlot.getLinkRelationUri();
                 final URI declaringSchemaUri = linkProtoSlot.getDeclaringSchemaUri();
 
@@ -313,7 +306,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
                 linkNode.put(PropertyName.relationTitle.name(), linkRelation.getTitle());
                 linkNode.put(PropertyName.description.name(), linkProtoSlot.getDescription());
-                linkNode.put(PropertyName.method.name(), linkProtoSlot.getMethod().getProtocolGivenName());
+                linkNode.put(PropertyName.method.name(), method.getProtocolGivenName());
                 linkNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
 
                 URI requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
@@ -323,6 +316,11 @@ public class SchemaDesignFormatter extends AbstractFormatter
                     {
                         requestSchemaUri = schemaUri;
                     }
+                }
+
+                if (requestSchemaUri == null && method == Method.Save)
+                {
+                    requestSchemaUri = schemaUri;
                 }
 
                 if (requestSchemaUri != null)
@@ -335,7 +333,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
                         linkNode.put(PropertyName.requestSchemaTitle.name(), requestSchema.getTitle());
                     }
                 }
-                
+
                 URI responseSchemaUri = linkProtoSlot.getResponseSchemaUri();
                 if (schemaLoader.getDocumentSchemaUri().equals(responseSchemaUri))
                 {
@@ -374,7 +372,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    public static String guessTitleSlot(final URI schemaUri, final SchemaLoader schemaLoader)
+    public static String getTitleSlotName(final URI schemaUri, final SchemaLoader schemaLoader)
     {
         //
         // Attempt to (heuristically) determine the "title" slot for the model
@@ -383,6 +381,13 @@ public class SchemaDesignFormatter extends AbstractFormatter
         if (prototype == null)
         {
             return null;
+        }
+
+
+        String titleSlotName = prototype.getTitleSlotName();
+        if (StringUtils.isNotBlank(titleSlotName))
+        {
+            return titleSlotName;
         }
 
         final Class<?> schemaInterface = prototype.getSchemaBean().getIntrospectedClass();
@@ -397,35 +402,22 @@ public class SchemaDesignFormatter extends AbstractFormatter
         else
         {
 
-            String titleKeySlot = null;
-            boolean hasUriSlot = false;
             final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
             for (final String keySlotName : allKeySlotNames)
             {
                 if (keySlotName.equals(Document.SLOT_NAME_URI))
                 {
-                    hasUriSlot = true;
                     continue;
                 }
 
                 // TODO: Change this logic to account for composite keys
-                titleKeySlot = keySlotName;
+                titleSlotName = keySlotName;
                 break;
-            }
-
-            if (titleKeySlot != null)
-            {
-                return titleKeySlot;
-            }
-
-            if (hasUriSlot)
-            {
-                return Document.SLOT_NAME_URI;
             }
 
         }
 
-        return null;
+        return titleSlotName;
     }
 
 
@@ -454,7 +446,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         slotNode.put(PropertyName.description.name(), protoSlot.getDescription());
         slotNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
 
-        if (protoSlot instanceof  PropertyProtoSlot)
+        if (protoSlot instanceof PropertyProtoSlot)
         {
             final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
             final Object defaultValue = propertyProtoSlot.getDefaultValue();
@@ -530,7 +522,6 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-
     public static ObjectNode buildSchemaNode(final ObjectMapper objectMapper, final URI schemaUri, final SchemaLoader schemaLoader, final Set<URI> addedBaseSchemaUris)
     {
 
@@ -553,8 +544,8 @@ public class SchemaDesignFormatter extends AbstractFormatter
         }
         else
         {
-            titleSlotName = guessTitleSlot(schemaUri, schemaLoader);
-            if (titleSlotName != null)
+            titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
+            if (StringUtils.isNotBlank(titleSlotName))
             {
                 schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
             }
@@ -647,7 +638,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         }
 
         final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (declaredBaseSchemaUris!= null && !declaredBaseSchemaUris.isEmpty() && addedBaseSchemaUris != null)
+        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty() && addedBaseSchemaUris != null)
         {
 
             final ArrayNode baseSchemasNode = objectMapper.createArrayNode();

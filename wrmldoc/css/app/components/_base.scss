@@ -76,6 +76,10 @@ input[type="color"]:focus,
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
 }
 
+.table 
+{	
+	border-bottom: 1px solid #dddddd;
+}
 
 .well 
 {
@@ -134,8 +138,32 @@ input[type="color"]:focus,
 
 .readonly-label
 {
-	color: $muted;	
+	//color: $muted;	
 }
+
+.wrml-subtitle
+{
+	float: right;	
+	font-size: 0px;	
+	margin-top: 7px;
+	
+	.wrml-subtitle-text
+	{		
+		vertical-align: middle;
+		font-weight: normal;
+		font-size: 22px;	
+		color: $muted;
+	}
+
+	.wrml-subtitle-icon
+	{			
+		margin-right: 5px;
+		width: 24px;
+		height: 24px;		
+		display: inline; 
+	}
+}
+
 
 
 .wrml-code-normal, 
@@ -186,7 +214,27 @@ input[type="color"]:focus,
 	height: auto !important; 
 	min-height: 100%; 
 	margin-bottom: $wrapMarginBottom;	  	
-}                        
+}  
+
+#main-region							
+{                    
+
+	section									
+	{  
+		margin-top: 20px;
+		margin-bottom: 20px;  
+	}                                                                                
+
+	#title-icon 
+	{
+		margin-top: -5px;
+		margin-right: 8px;  
+		width: 48px;
+		height: 48px;
+	}
+
+}
+                 
 
 #page-header-push
 {

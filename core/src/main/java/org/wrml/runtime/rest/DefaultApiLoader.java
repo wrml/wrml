@@ -28,14 +28,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIUtils;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Api;
+import org.wrml.model.rest.Document;
 import org.wrml.model.rest.LinkRelation;
 import org.wrml.model.rest.Method;
-import org.wrml.runtime.CompositeKey;
-import org.wrml.runtime.Context;
-import org.wrml.runtime.Dimensions;
-import org.wrml.runtime.DimensionsBuilder;
-import org.wrml.runtime.Keys;
-import org.wrml.runtime.KeysBuilder;
+import org.wrml.runtime.*;
 import org.wrml.runtime.schema.ProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
@@ -45,13 +41,7 @@ import org.wrml.util.UniqueName;
 
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultApiLoader implements ApiLoader
@@ -97,7 +87,14 @@ public class DefaultApiLoader implements ApiLoader
 
         URI schemaUri = dimensionsBuilder.getSchemaUri();
 
-        final ApiNavigator apiNavigator = getParentApiNavigator(uri);
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+        ApiNavigator apiNavigator = null;
+        if (!schemaLoader.getApiSchemaUri().equals(schemaUri))
+        {
+            apiNavigator = getParentApiNavigator(uri);
+        }
 
         if (apiNavigator != null)
         {
@@ -105,8 +102,6 @@ public class DefaultApiLoader implements ApiLoader
             // Is the method allowed?
             final Set<URI> schemaUris = resource.getResponseSchemaUris(method);
 
-            final Context context = getContext();
-            final SchemaLoader schemaLoader = context.getSchemaLoader();
             final URI documentSchemaUriConstant = schemaLoader.getDocumentSchemaUri();
             final URI modelSchemaUriConstant = schemaLoader.getTypeUri(Model.class);
 
@@ -172,13 +167,17 @@ public class DefaultApiLoader implements ApiLoader
 
         final KeysBuilder keysBuilder = new KeysBuilder(schemaLoader.getDocumentSchemaUri(), uri);
 
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype != null)
+        if (!schemaLoader.getApiSchemaUri().equals(schemaUri))
         {
-            final Object documentSurrogateKeyValue = decipherDocumentSurrogateKeyValue(uri, prototype);
-            if (documentSurrogateKeyValue != null)
+
+            final Prototype prototype = schemaLoader.getPrototype(schemaUri);
+            if (prototype != null)
             {
-                keysBuilder.addKey(prototype.getSchemaUri(), documentSurrogateKeyValue);
+                final Object documentSurrogateKeyValue = decipherDocumentSurrogateKeyValue(uri, prototype);
+                if (documentSurrogateKeyValue != null)
+                {
+                    keysBuilder.addKey(prototype.getSchemaUri(), documentSurrogateKeyValue);
+                }
             }
         }
 
@@ -435,8 +434,9 @@ public class DefaultApiLoader implements ApiLoader
     @Override
     public String toString()
     {
+
         String result = AsciiArt.express(this);
-        if (StringUtils.isEmpty(result))
+        /*if (StringUtils.isEmpty(result))
         {
             result = com.google.common.base.Objects.toStringHelper(this) //
                     // .add("_Context", _Context) // infinite recursion SOE if included
@@ -445,7 +445,7 @@ public class DefaultApiLoader implements ApiLoader
                     .add("_LinkRelations", _LinkRelations) //
                     .add("_SystemApiNavigators", _SystemApiNavigators) //
                     .toString();
-        }
+        } */
         return result;
     }
 
@@ -595,6 +595,10 @@ public class DefaultApiLoader implements ApiLoader
 
         final Context context = getContext();
 
+        // NOTE: The SchemaLoader is not loaded at this point so we need to get the Document schema's URI the hard(coded) way.
+        final String documentSchemaPath = "/" + Document.class.getName().replace('.', '/');
+        final URI documentSchemaUri = SystemApi.Schema.getUri().resolve(documentSchemaPath);
+
         for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values())
         {
             final LinkRelation linkRelation = context.newModel(LinkRelation.class);
@@ -604,6 +608,19 @@ public class DefaultApiLoader implements ApiLoader
             linkRelation.setMethod(systemLinkRelation.getMethod());
             linkRelation.setUri(systemLinkRelation.getUri());
             linkRelation.setTitle(uniqueName.getLocalName());
+
+            // TODO: Fix the system API designs so that this doesn't break them.
+            /*
+            if (systemLinkRelation == SystemLinkRelation.self)
+            {
+                linkRelation.setResponseSchemaUri(documentSchemaUri);
+            }
+            else if (systemLinkRelation == SystemLinkRelation.save)
+            {
+                linkRelation.setResponseSchemaUri(documentSchemaUri);
+                linkRelation.setRequestSchemaUri(documentSchemaUri);
+            }
+            */
 
             loadLinkRelation(linkRelation);
         }

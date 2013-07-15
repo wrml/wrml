@@ -29,15 +29,17 @@ import com.mongodb.util.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
-import org.wrml.model.rest.Document;
-import org.wrml.model.rest.Embedded;
 import org.wrml.runtime.CompositeKey;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.Keys;
 import org.wrml.runtime.format.ModelReadingException;
+import org.wrml.runtime.format.ModelWriteOptions;
+import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.format.SystemFormat;
-import org.wrml.runtime.schema.*;
+import org.wrml.runtime.schema.Prototype;
+import org.wrml.runtime.schema.SchemaLoader;
+import org.wrml.runtime.schema.ValueType;
 import org.wrml.runtime.search.SearchCriteria;
 import org.wrml.runtime.service.AbstractService;
 import org.wrml.runtime.service.ServiceConfiguration;
@@ -46,10 +48,14 @@ import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.util.UniqueName;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * The marvellous mongoDB as a WRML Service.
@@ -106,7 +112,15 @@ public class MongoService extends AbstractService
             mongoCollection.ensureIndex(collectionIndex, options);
         }
 
-        final DBObject mongoObject = convertToMongoObject(model);
+        final DBObject mongoObject;
+        try
+        {
+            mongoObject = convertToMongoObject(model);
+        }
+        catch (ModelWritingException e)
+        {
+            throw new ServiceException("Failed to convert WRML model instance to a mongoDB object.", e, this);
+        }
 
         final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
         if (mongoCollection == null)
@@ -146,6 +160,7 @@ public class MongoService extends AbstractService
             throw new ServiceException(logMessage, throwable, this);
         }
 
+        // TODO: Should this return the saved model instead (using get?)?
         return model;
 
     }
@@ -359,6 +374,7 @@ public class MongoService extends AbstractService
 
         // TODO: Length limitations suggest that this be short: http://docs.mongodb.org/manual/reference/limits/
         // TODO: Is this unique enough?
+        // TODO: Use namespace/package abbrevs e.g. org.wrml.model.rest.Api becomes: o_w_m_r_Api
         final String collectionName = uniqueName.getLocalName();
 
         if (_CollectionPrefix == null)
@@ -384,55 +400,26 @@ public class MongoService extends AbstractService
         return model;
     }
 
-    private DBObject convertToMongoObject(final Model model)
+    private DBObject convertToMongoObject(final Model model) throws ModelWritingException
     {
 
-        return convertToMongoObject(model, null);
-    }
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final Context context = getContext();
+        final ModelWriteOptions modelWriteOptions = new ModelWriteOptions();
 
-    private DBObject convertToMongoObject(final Model model, final Set<String> projection)
-    {
+        modelWriteOptions.setDocumentKeyExcludedIfSecondary(true);
+        modelWriteOptions.setEmbeddedDocumentUriExcluded(true);
+        modelWriteOptions.setLinksExcluded(true);
+        modelWriteOptions.setCollectionsExcluded(true);
 
-        final DBObject mongoObject = new BasicDBObject();
+        context.writeModel(out, model, modelWriteOptions, SystemFormat.json.getFormatUri());
 
-        final Prototype prototype = model.getPrototype();
-        final SchemaLoader schemaLoader = prototype.getSchemaLoader();
-
-        final Set<String> slotNames = prototype.getAllSlotNames();
-
-        for (final String slotName : slotNames)
-        {
-
-            final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-
-            // Don't convert link slots or the "dynamically filled" collection slots (they are both managed by the WRML runtime).
-            if (protoSlot instanceof LinkProtoSlot || protoSlot instanceof CollectionPropertyProtoSlot)
-            {
-                continue;
-            }
-
-            // Don't bother with non-projected slots or null slot values
-            if ((projection == null || projection.isEmpty() || projection.contains(slotName)) && model.containsSlotValue(slotName))
-            {
-
-                // Omit Document and Embedded URI values
-                if ((!prototype.isDocument() || !Document.SLOT_NAME_URI.equals(slotName)) &&
-                        (!prototype.isAssignableFrom(schemaLoader.getEmbeddedSchemaUri()) && !Embedded.SLOT_NAME_DOCUMENT_URI.equals(slotName)))
-                {
-
-                    final Object slotValue = model.getSlotValue(slotName);
-                    final Object mongoValue = convertToMongoValue(slotValue);
-
-                    if (mongoValue != null)
-                    {
-                        mongoObject.put(slotName, mongoValue);
-                    }
-                }
-            }
-        }
-
+        final byte[] jsonStringBytes = out.toByteArray();
+        final String jsonStringRepresentation = new String(jsonStringBytes);
+        DBObject mongoObject = (DBObject) JSON.parse(jsonStringRepresentation);
         return mongoObject;
     }
+
 
     private Object convertToMongoValue(final Object value)
     {
@@ -453,25 +440,6 @@ public class MongoService extends AbstractService
                 mongoValue = syntaxLoader.formatSyntaxValue(value);
                 break;
 
-            case List:
-
-                final List javaList = (List) value;
-                final BasicDBList mongoList = new BasicDBList();
-                for (final Object listElement : javaList)
-                {
-                    final Object mongoListElement = convertToMongoValue(listElement);
-                    mongoList.add(mongoListElement);
-                }
-
-                mongoValue = mongoList;
-                break;
-
-            case Link:
-            case Model:
-
-                mongoValue = convertToMongoObject((Model) value);
-                break;
-
             default:
                 mongoValue = value;
                 break;
@@ -479,6 +447,5 @@ public class MongoService extends AbstractService
 
         return mongoValue;
     }
-
 
 }

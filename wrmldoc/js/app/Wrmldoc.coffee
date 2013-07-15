@@ -45,7 +45,7 @@
 
 		schemaUri = App.wrmlData.get "schemaUri" 
 
-		#App.module("RegistrationApp").start(App.wrmlData)	
+		# App.module("RegistrationApp").start(App.wrmlData)	
 
 		
 		if schemaUri == "http://schema.api.wrml.org/org/wrml/model/schema/Schema" 
@@ -54,9 +54,12 @@
 		else if schemaUri == "http://schema.api.wrml.org/org/wrml/model/rest/Api" 
 			App.module("ApiApp").start(App.wrmlData)	
 
+		else if schemaUri == "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation" 
+			App.module("RelationApp").start(App.wrmlData)	
+
 		else
 			App.module("ModelApp").start(App.wrmlData)	
-		
+				
 		
 		App.module("FooterApp").start(App.wrmlData)
 		

@@ -1,19 +1,12 @@
-
-
 #main-region							
-{                                                                                                    
-	section									
-	{  
-		margin-top: 20px;
-		margin-bottom: 20px;  
-	}       
+{ 
 
 	.api-section
 	{
 
 		fieldset 
 		{		
-			margin-left: 20px;
+			margin-left: 10px;
 			margin-right: 0px;
 		}
 
@@ -23,17 +16,10 @@
 		}
 
 		.form-inline {
-			margin-left: 20px;	
+			margin-left: 0px;	
 		}
 	}                                                                         
 
-	#title-icon 
-	{
-		margin-top: -5px;
-		margin-right: 10px;  
-		width: 48px;
-		height: 48px;
-	}
 
 	#api-page-header
 	{
@@ -71,7 +57,7 @@
 		{
 			*display: inline-block;
 			*padding-left: 20px;
-			margin-left: 120px;
+			margin-left: 50px;
 			*margin-left: 0;		
 
 			input[type=text],
@@ -164,12 +150,18 @@
 		}
 	}
 
+	.wrml-form
+	{
+		margin-left: 0px;			
+	}
+
 	.api-resource-form
 	{
 
+
 		padding-top: 5px;	
 		padding-bottom: 5px;	
-		padding-left: 33px;
+		padding-left: 15px;
 
 		.controls-row 
 		{
@@ -183,16 +175,6 @@
 				margin-left: 15px;			
 				margin-right: 5px;							
 
-			}
-
-			.api-resource-form-checkbox-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 20px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
 			}
 
 			input[type="text"],
@@ -254,13 +236,13 @@
 	.resource-table
 	{
 
-		width: 850px;
+		width: 900px;
 		
 		margin-top: 20px;
 		margin-left: 8px;
-		margin-bottom: 10px;
-		
-		
+		margin-bottom: 30px;
+		padding-bottom: 30px;
+				
 		th {			
 			font-weight: normal;			
 		}
@@ -278,7 +260,7 @@
 		select,
 		.uneditable-input 
 		{
-			width: 250px;
+			margin-top: 5px;			
 		}	
 
 		label
@@ -290,6 +272,23 @@
 		button
 		{
 			margin-top: 5px;
+		}
+
+		.api-relation-input 
+		{
+			width: 120px;
+
+		}
+
+		.api-endpoint-input 
+		{
+			width: 270px;
+			font-size: 10pt;
+		}
+
+		.api-method-text
+		{
+			margin-top: 10px;			
 		}
 
 		.signature
@@ -308,6 +307,8 @@
 			}
 		}
 
-	}
 
+
+
+	}
 }

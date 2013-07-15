@@ -186,6 +186,8 @@ this.Wrmldoc = (function(Backbone, Marionette) {
       App.module("SchemaApp").start(App.wrmlData);
     } else if (schemaUri === "http://schema.api.wrml.org/org/wrml/model/rest/Api") {
       App.module("ApiApp").start(App.wrmlData);
+    } else if (schemaUri === "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation") {
+      App.module("RelationApp").start(App.wrmlData);
     } else {
       App.module("ModelApp").start(App.wrmlData);
     }
@@ -1018,7 +1020,7 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
     }
     (function() {
       (function() {
-        var allResources, defaultSchemaTitle, fullPath, i, isDocroot, parameterName, parameterToken, parameterType, parentPath, parentPathSegment, parentPathSegments, pathSegment, readonlyAttribute, reference, referenceMethod, references, resource, signatureParts, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1;
+        var allResources, defaultSchemaTitle, fullPath, i, isDocroot, link, linkMethod, linkName, linkSchemaName, linkTemplate, linkTemplates, links, parameterName, parameterToken, parameterType, parentPath, parentPathSegment, parentPathSegments, pathSegment, readonlyAttribute, reference, referenceMethod, references, resource, signatureParts, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref, _ref1, _ref2, _ref3;
       
         __out.push('<section>\n\t\n\t<div id="model-page-header">\n\t  <h1>\n\n\t  \t<img id="title-icon" src="');
       
@@ -1111,22 +1113,24 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
             __out.push(__sanitize(fullPath));
             __out.push('_defaultSchema" type="text" value="');
             __out.push(__sanitize(defaultSchemaTitle));
-            __out.push('" readonly="readonly">\n\t\t  \t\t\t\t\n\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\t\n\n\t\t\t\t</div>\n\n\t\t\t\t<table class="table resource-table">\n\n\t\t\t\t\t<thead>\n\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<th colspan="6"><img class="api-resource-form-icon" src="');
+            __out.push('" readonly="readonly">\n\t\t  \t\t\t\t\n\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\t\n\n\t\t\t\t</div>\n\n\t\t\t\t<table class="table resource-table">\n\n\t\t\t\t\t<thead>\n\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<th colspan="10"><img class="api-resource-form-icon" src="');
             __out.push(__sanitize(wrmlData.docroot));
-            __out.push('img/type/Reference.png" />References</th>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</tr>\n\n\n\t\t\t\t\t</thead>\n\t\t\t\t\t\n\t\t\t\t\t<tbody>\n\n\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<td colspan="6">\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t</tr>\n\n\t\t\t\t\t\t');
+            __out.push('img/type/Reference.png" />References</th>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</tr>\n\n\n\t\t\t\t\t</thead>\n\t\t\t\t\t\n\t\t\t\t\t<tbody>\n\n\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<td colspan="10">\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t</tr>\n\n\t\t\t\t\t\t');
             references = resource.references;
             __out.push('\n\n\t\t\t\t\t\t');
             console.log("References: " + references);
             __out.push('\n\n\t\t\t\t\t\t');
             if (references) {
-              __out.push('\n\n\t\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<th colspan="4">Concept</th>\n\t\t\t\t\t\t\t\t<th colspan="1">Interaction Dialog</th>\n\t\t\t\t\t\t\t\t<th colspan="1">Reference Actions</th>\n\t\t\t\t\t\t\t</tr>\n\n\t\t\t\t\t\t\t');
+              __out.push('\n\n\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th colspan="2">Relation</th>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<th colspan="6">API Function</th>\n\t\t\t\t\t\t\t\t<th colspan="1">Start Dialog</th>\n\t\t\t\t\t\t\t\t<th colspan="1">Reference Actions</th>\n\t\t\t\t\t\t\t</tr>\n\n\t\t\t\t\t\t\t');
               for (_k = 0, _len2 = references.length; _k < _len2; _k++) {
                 reference = references[_k];
                 __out.push('\n\t\t\t\t\t\t\t\t');
                 referenceMethod = reference.method;
                 __out.push('\n\t\t\t\t\t\t\t\t');
                 console.log("Reference Method: " + referenceMethod);
-                __out.push('\n\n\t\t\t\t\t\t\t\t<tr>\n\n\t\t\t\t\t\t\t\t\t<td colspan="4">\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t');
+                __out.push('\n\n\t\t\t\t\t\t\t\t<tr>\n\n\t\t\t\t\t\t\t\t\t<td colspan="2">\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t\t\t\t<input class="api-relation-input" type="text" value="');
+                __out.push(__sanitize(reference.relationTitle));
+                __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t</div>\t\t\n\t\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t\t</td>\t\t\n\n\n\t\t\t\t\t\t\t\t\t<td colspan="6">\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t');
                 signatureParts = reference.signature.split(" ");
                 __out.push('\t\n\n\t\t\t\t\t\t\t\t\t\t<label class="signature">\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
                 __out.push(__sanitize(signatureParts[0]));
@@ -1188,7 +1192,93 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
               }
               __out.push('\n\n\t\t\t\t\t\t');
             }
-            __out.push('\n\n\t\t\t\t\t</tbody>\n\t\t\t\t</table>\n\t\t\t\t\t\n\t\t\t</form>\n\t\t\t\n\n\n\t\t');
+            __out.push('\n\n\t\t\t\t\t</tbody>\n\t\t\t\t</table>\n\n\t\t\t\t');
+            links = resource.links;
+            __out.push('\n\n\t\t\t\t');
+            console.log("Links: " + links);
+            __out.push('\n\n\t\t\t\t');
+            if (links) {
+              __out.push('\n\n\t\t\t\t\t');
+              for (linkSchemaName in links) {
+                link = links[linkSchemaName];
+                __out.push('\n\t\t\t\t\t\n\t\t\t\t\t\t<table class="table resource-table">\n\n\t\t\t\t\t\t\t<thead>\n\t\t\t\t\t\t\t\t<tr>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<th colspan="13"><img class="api-resource-form-icon" src="');
+                __out.push(__sanitize(this.docroot));
+                __out.push('img/type/Link.png" />');
+                __out.push(__sanitize(linkSchemaName));
+                __out.push(' Links</th>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<tbody>\n\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t<th colspan="2">Relation</th>\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<th colspan="6">');
+                __out.push(__sanitize(linkSchemaName));
+                __out.push(' Method</th>\n\t\t\t\t\t\t\t\t\t<th colspan="1">Method</th>\n\t\t\t\t\t\t\t\t\t<th colspan="4">Endpoint Resource</th>\n\t\t\t\t\t\t\t\t</tr>\n\n\t\t\t\t\t\t\t\t');
+                linkTemplates = link.linkTemplates;
+                __out.push('\n\t\t\t\t\t\t\t\t');
+                for (linkName in linkTemplates) {
+                  linkTemplate = linkTemplates[linkName];
+                  __out.push('\n\t\t\t\t\t\t\t\t\t');
+                  linkMethod = linkTemplate.method;
+                  __out.push('\n\t\t\t\t\t\t\t\t\t');
+                  console.log("Link Method: " + linkMethod);
+                  __out.push('\n\n\t\t\t\t\t\t\t\t\t<tr>\n\n\t\t\t\t\t\t\t\t\t\t<td colspan="2">\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t\t\t\t\t<input class="api-relation-input" type="text" value="');
+                  __out.push(__sanitize(linkTemplate.relationTitle));
+                  __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t\t\t</td>\t\t\n\n\n\t\t\t\t\t\t\t\t\t\t<td colspan="6">\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t');
+                  signatureParts = linkTemplate.signature.split(" ");
+                  __out.push('\t\n\n\t\t\t\t\t\t\t\t\t\t\t<label class="signature">\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                  __out.push(__sanitize(signatureParts[0]));
+                  __out.push('&nbsp;</span>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-method-');
+                  __out.push(__sanitize(linkMethod));
+                  __out.push('">');
+                  __out.push(__sanitize(signatureParts[1]));
+                  __out.push('</span>\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                  __out.push(__sanitize(signatureParts[2]));
+                  __out.push('</span>\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t');
+                  parameterType = null;
+                  __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t');
+                  parameterName = null;
+                  __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t');
+                  for (i = _m = 3, _ref2 = signatureParts.length; 3 <= _ref2 ? _m <= _ref2 : _m >= _ref2; i = 3 <= _ref2 ? ++_m : --_m) {
+                    __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    parameterToken = signatureParts[i];
+                    __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    if (parameterToken === ",") {
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                      __out.push(__sanitize(parameterToken));
+                      __out.push('&nbsp;</span>\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                      parameterType = null;
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                      parameterName = null;
+                      __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    } else if (parameterToken === ")") {
+                      __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                      __out.push(__sanitize(parameterToken));
+                      __out.push('</span>\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    } else if (!parameterType) {
+                      __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                      parameterType = parameterToken;
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                      __out.push(__sanitize(parameterType));
+                      __out.push('&nbsp;</span>\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    } else if (!parameterName) {
+                      __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                      parameterName = parameterToken;
+                      __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="wrml-code-normal">');
+                      __out.push(__sanitize(parameterName));
+                      __out.push('</span>\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                    }
+                    __out.push('\n\n\t\t\t\t\t\t\t\t\t\t\t\t');
+                  }
+                  __out.push('\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t\t\t\t\t</td>\t\t\n\n\t\t\t\t\t\t\t\t\t\t<td colspan="1">\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t<label class="api-method-text">');
+                  __out.push(__sanitize(linkMethod));
+                  __out.push('</label>\t\n\t\t\t\t\t\t\t\t\t\t</td>\n\n\t\t\t\t\t\t\t\t\t\t<td colspan="4">\n\n\t\t\t\t\t\t\t\t\t\t\t<div class="input-append">\n\n\t\t\t\t\t\t\t\t\t\t\t\t<input class="api-endpoint-input" type="text" value="');
+                  __out.push(__sanitize((_ref3 = linkTemplate.endpoint) != null ? _ref3.fullPath : void 0));
+                  __out.push('" >\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                  if (linkTemplate.endpoint) {
+                    __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Jump To</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t');
+                  }
+                  __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Recomended Resources</a></li>\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">All Resources</a></li>\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t</td>\n\n\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+                }
+                __out.push('\n\n\t\t\t\t\t\t\t</tbody>\n\n\t\t\t\t\t\t</table>\n\n\t\t\t\t\t');
+              }
+              __out.push('\t\t\t\t\t\n\n\t\t\t\t');
+            }
+            __out.push('\t\t\t\t\t\n\t\t\t</form>\n\t\t\t\n\n\n\t\t');
           }
           __out.push('\n\n\t');
         }
@@ -1832,17 +1922,41 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
     }
     (function() {
       (function() {
-        var element, elementSyntax, elementType, elementValue, i, inputDomId, isMultiline, keySlot, keySlotName, keySlotValue, link, linkHref, linkName, listElementDescriptor, modelElementSchema, modelElementTitle, modelElementTitleSlotName, modelSchema, modelTitle, modelTitleSlotName, slot, slotName, slotSyntax, slotType, slotValue, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+        var choiceValue, choiceValues, choices, element, elementSyntax, elementType, elementValue, i, inputDomId, isMultiline, keySlot, keySlotName, keySlotValue, link, linkHref, linkName, listElementDescriptor, modelElementSchema, modelElementTitle, modelElementTitleSlotName, modelSchema, modelTitle, modelTitleSlotName, requestEntitySchemaTitle, selectedAttribute, selectedValue, slot, slotName, slotSyntax, slotType, slotValue, titleClass, untitledClass, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       
-        __out.push('<section>\n\t\n\t<div id="model-page-header">\n\t  <h1>\n\n\t  \t<img id="title-icon" src="');
+        __out.push('<section id="model-title-section">\n\n\t\n\t');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        titleClass = "";
       
-        __out.push('img/model.png" />');
+        __out.push('\n\n\t');
       
-        __out.push(__sanitize(this.model.title));
+        if (this.documentTitle === "Untitled") {
+          __out.push('\t\t\n\t\t');
+          untitledClass = "untitled";
+          __out.push('\n\t');
+        }
       
-        __out.push(' \n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\n\t\t');
+        __out.push('\n\t\n\t\n\t\n\t<div id="model-page-header">\n\t  \n\t  <h1>\n\n\t  \t<img id="title-icon" src="');
+      
+        __out.push(__sanitize(this.documentIcon));
+      
+        __out.push('" />\n\t  \t<span class="wrml-title ');
+      
+        __out.push(__sanitize(untitledClass));
+      
+        __out.push('">');
+      
+        __out.push(__sanitize(this.documentTitle));
+      
+        __out.push('</span>\n\t  \t\n\t  \t<span class="wrml-subtitle">\n\t\t  \t<img class="wrml-subtitle-icon" src="');
+      
+        __out.push(__sanitize(this.docroot));
+      
+        __out.push('img/schema.png" />\n\t\t  \t<span class="wrml-subtitle-text">');
+      
+        __out.push(__sanitize(this.schema.title));
+      
+        __out.push('</span>\n\t\t</span>\n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\n\t\t');
       
         if (this.model.description) {
           __out.push('\t\n\t\t<div class="well">\n\t\t\t<p>\n\t\t\t');
@@ -1855,7 +1969,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
         if (this.schema.keyCount > 0) {
           __out.push('\t\n');
           console.log("Key Count: " + this.schema.keyCount);
-          __out.push('\t\n<div class="section-divider">\n  <span>\n    Key Properties\n  </span>\n</div>\n\n<section>\n\n\t<form class="wrml-form model-form">\n\t  \n\t');
+          __out.push('\t\n<div class="section-divider">\n  <span>\n    Key Properties\n  </span>\n</div>\n\n<section id="model-keys-section">\n\n\t<form class="wrml-form model-form">\n\t  \n\t');
           _ref = this.schema.keys;
           for (keySlotName in _ref) {
             keySlot = _ref[keySlotName];
@@ -1866,7 +1980,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
             __out.push('\n\n\t\t<fieldset class="wrml-form-fieldset">\t\n\t\t\t<label class="wrml-form-field-label" for="');
             __out.push(__sanitize(keySlotName));
             __out.push('"><img class="wrml-form-field-label-icon" src="');
-            __out.push(__sanitize(wrmlData.docroot));
+            __out.push(__sanitize(this.docroot));
             __out.push('img/type/');
             __out.push(__sanitize(keySlot.type));
             __out.push('.png" /> ');
@@ -1902,7 +2016,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
             __out.push('\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="');
             __out.push(__sanitize(slotName));
             __out.push('"><img class="wrml-form-field-label-icon" src="');
-            __out.push(__sanitize(wrmlData.docroot));
+            __out.push(__sanitize(this.docroot));
             __out.push('img/type/');
             __out.push(__sanitize(slotType));
             __out.push('.png" /> ');
@@ -1910,9 +2024,9 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
             __out.push('</label>\t\t\t\t\n\n\t\t\t');
             if (slotType === "Text") {
               __out.push(' \n\t\t\t\t\n\t\t\t\t');
-              slotSyntax = slot != null ? (_ref2 = slot.syntax) != null ? _ref2.title : void 0 : void 0;
+              slotSyntax = (_ref2 = slot.syntax) != null ? _ref2.title : void 0;
               __out.push('\n\t\t\t\t');
-              isMultiline = slot != null ? slot.multiline : void 0;
+              isMultiline = slot.multiline;
               __out.push('\t\n\n\t\t\t\t');
               if (slotSyntax === "URI") {
                 __out.push(' \n\n\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t<input type="url" id="');
@@ -1951,83 +2065,89 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
               __out.push(__sanitize(slotValue));
               __out.push('">\n\n\t\t\t\n\t\t\t');
             } else if (slotType === "List") {
-              __out.push(' \n\t\t\t\n\t\t\t');
+              __out.push(' \n\t\t\t\n\t\t\t\t');
               listElementDescriptor = slot.element;
-              __out.push('\n\t\t\t');
+              __out.push('\n\t\t\t\t');
               elementType = listElementDescriptor != null ? listElementDescriptor.type : void 0;
-              __out.push('\n\t\t\t');
+              __out.push('\n\t\t\t\t');
               elementSyntax = listElementDescriptor != null ? (_ref3 = listElementDescriptor.syntax) != null ? _ref3.title : void 0 : void 0;
-              __out.push('\n\t\t\t');
+              __out.push('\n\t\t\t\t');
               modelElementSchema = listElementDescriptor != null ? listElementDescriptor.schema : void 0;
-              __out.push('\n\t\t\t');
+              __out.push('\n\t\t\t\t');
               modelElementTitleSlotName = modelElementSchema != null ? modelElementSchema.titleSlotName : void 0;
-              __out.push('\n\n\n\t\t\t<div class="btn-group">\n\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t</div>\n\n\n\t\t\t<table class="table model-list-table">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th class="list-index-header">Index</th>\n\t\t\t\t\t\t<th>Value</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\t\t\t\t\n\t\t\t\t<tbody>\n\t\t\t\t');
+              __out.push('\n\n\n\t\t\t\t<div class="btn-group">\n\t\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t\t</div>\n\n\n\t\t\t\t<table class="table model-list-table">\n\t\t\t\t\t<thead>\n\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t<th class="list-index-header">Index</th>\n\t\t\t\t\t\t\t<th>Value</th>\n\t\t\t\t\t\t</tr>\n\t\t\t\t\t</thead>\n\t\t\t\t\t\n\t\t\t\t\t<tbody>\n\t\t\t\t\t\t');
               if (slotValue) {
-                __out.push('\t\n\n\n\t\t\t\t\t');
+                __out.push('\t\n\n\n\t\t\t\t\t\t\t');
                 for (i = _i = 0, _len = slotValue.length; _i < _len; i = ++_i) {
                   element = slotValue[i];
-                  __out.push('\n\t\t\t\t\t\n\t\t\t\t\t');
+                  __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t');
                   elementValue = slotValue[i];
-                  __out.push('\n\t\t\t\t\t');
+                  __out.push('\n\t\t\t\t\t\t\t');
                   inputDomId = slotName + ("_" + i);
-                  __out.push('\n\t                <tr>\n\t\t\t\t\t\t<td class="list-index-value"><img class="list-index-icon" src="');
-                  __out.push(__sanitize(wrmlData.docroot));
+                  __out.push('\n\t\t\t                <tr>\n\t\t\t\t\t\t\t\t<td class="list-index-value"><img class="list-index-icon" src="');
+                  __out.push(__sanitize(this.docroot));
                   __out.push('img/type/');
                   __out.push(__sanitize(elementType));
                   __out.push('.png" /> ');
                   __out.push(__sanitize(i));
-                  __out.push('</td>\n\n\n\n\t\t\t\t\t\t<td class="list-element-value">\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t');
+                  __out.push('</td>\n\n\n\n\t\t\t\t\t\t\t\t<td class="list-element-value">\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t');
                   if (elementType === "Text") {
-                    __out.push(' \n\t\t\t\t\n\t\t\t\t\t\t\t\t');
+                    __out.push(' \n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t');
                     if (elementSyntax === "URI") {
-                      __out.push(' \n\n\t\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="url" id="');
+                      __out.push(' \n\n\t\t\t\t\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t<input type="url" id="');
                       __out.push(__sanitize(inputDomId));
                       __out.push('" value="');
                       __out.push(__sanitize(elementValue));
-                      __out.push('">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-success" type="button">GET</button>\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t');
+                      __out.push('">\n\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-success" type="button">GET</button>\n\t\t\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t\t\t');
                     } else {
-                      __out.push('\n\t\t\t\t\t\t\t\t<input type="text" id="');
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t<input type="text" id="');
                       __out.push(__sanitize(inputDomId));
                       __out.push('" value="');
                       __out.push(__sanitize(elementValue));
-                      __out.push('">\t\t\t\t\n\t\t\t\t\t\t\t\t');
+                      __out.push('">\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t');
                     }
-                    __out.push('\n\n\t\t\t\t\t\t\t');
+                    __out.push('\n\n\t\t\t\t\t\t\t\t\t');
                   } else if (elementType === "Boolean") {
-                    __out.push(' \n\n\t\t\t\t\t\t\t<select id="');
+                    __out.push(' \n\n\t\t\t\t\t\t\t\t\t\t<select id="');
                     __out.push(__sanitize(inputDomId));
-                    __out.push('">\n\t\t\t\t\t\t\t\t');
+                    __out.push('">\n\t\t\t\t\t\t\t\t\t\t\t');
                     if (elementValue) {
-                      __out.push('\n\t\t\t\t\t\t\t\t<option selected="selected">true</option>\n\t\t\t\t\t\t\t\t<option>false</option>\n\t\t\t\t\t\t\t\t');
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t<option selected="selected">true</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option>false</option>\n\t\t\t\t\t\t\t\t\t\t\t');
                     } else {
-                      __out.push('\n\t\t\t\t\t\t\t\t<option>true</option>\n\t\t\t\t\t\t\t\t<option selected="selected">false</option>\n\t\t\t\t\t\t\t\t');
+                      __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t<option>true</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option selected="selected">false</option>\n\t\t\t\t\t\t\t\t\t\t\t');
                     }
-                    __out.push('\n\t\t\t\t\t\t\t</select>\n\n\n\t\t\t\t\t\t\t');
+                    __out.push('\n\t\t\t\t\t\t\t\t\t\t</select>\n\n\n\t\t\t\t\t\t\t\t\t');
                   } else if (elementType === "Long" || elementType === "Integer") {
-                    __out.push(' \n\t\t\t\t\t\t\t<input type="number" id="');
+                    __out.push(' \n\t\t\t\t\t\t\t\t\t\t<input type="number" id="');
                     __out.push(__sanitize(inputDomId));
                     __out.push('" value="');
                     __out.push(__sanitize(elementValue));
-                    __out.push('">\n\n\t\t\t\t\t\t\t');
+                    __out.push('">\n\n\t\t\t\t\t\t\t\t\t');
                   } else if (elementType === "Model") {
-                    __out.push(' \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t');
+                    __out.push(' \n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t');
                     modelElementTitle = elementValue[modelElementTitleSlotName];
-                    __out.push('\n\n\n\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t<input type="text" id="');
+                    __out.push('\n\n\n\t\t\t\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t\t\t\t<input id="');
                     __out.push(__sanitize(inputDomId));
-                    __out.push('" value="');
+                    __out.push('" type="text" value="');
                     __out.push(__sanitize(modelElementTitle));
-                    __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t  \t\t\t\t\n\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\n\t\t\t\t\t\t\t');
+                    __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t\t\t\t  \t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t\t');
+                  } else if (elementType === "SingleSelect") {
+                    __out.push('\n\n\t\t\t\t\t\t\t\t\t\t<select id="');
+                    __out.push(__sanitize(inputDomId));
+                    __out.push('">\n\t\t\t\t\t\t\t\t\t\t\t<option selected="selected">');
+                    __out.push(__sanitize(elementValue));
+                    __out.push('</option>\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t');
                   }
-                  __out.push('\n\n\t\t\t\t\t\t</td>\n\n\t                </tr>\n\t\t\t\t\t');
+                  __out.push('\n\n\t\t\t\t\t\t\t\t</td>\n\n\t\t\t                </tr>\n\n\t\t\t\t\t\t');
                 }
-                __out.push('\n\n\t\t\t\t');
+                __out.push('\n\n\t\t\t\t\t\t');
               } else {
-                __out.push('\n\t                <tr>\n\t                  <td colspan="2"><i>Empty</i></td>\t                  \n\t                </tr>\t\t\t\t\n\t\t\t\t');
+                __out.push('\n\t\t\t                <tr>\n\t\t\t                  <td colspan="2"><i>Empty</i></td>\t                  \n\t\t\t                </tr>\t\t\t\t\n\t\t\t\t\t\t');
               }
-              __out.push('\n\n            \t</tbody>\n\n            </table>\n\n\n\t\t\t');
+              __out.push('\n\n\t            \t</tbody>\n\n\t            </table>\n\n\n\t\t\t');
             } else if (slotType === "Model") {
               __out.push(' \t\t\t\n\t\t\t');
-              modelSchema = slot != null ? slot.schema : void 0;
+              modelSchema = slot.schema;
               __out.push('\n\t\t\t');
               modelTitleSlotName = modelSchema != null ? modelSchema.titleSlotName : void 0;
               __out.push('\n\t\t\t');
@@ -2041,6 +2161,33 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
               __out.push(' - ');
               __out.push(__sanitize(modelTitle));
               __out.push('" readonly="readonly">\t\t\t\t\n  \t\t\t\t\n\n\t\t\t\t<div class="btn-group">\n\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\n\t\t\t</div>\t\n\n\t\t\t');
+            } else if (slotType === "SingleSelect") {
+              __out.push('\n\n\t\t\t\t<select id="');
+              __out.push(__sanitize(slotName));
+              __out.push('">\n\n\t\t\t\t');
+              choices = slot.choices;
+              __out.push('\n\t\t\t\t');
+              choiceValues = choices != null ? choices.values : void 0;
+              __out.push('\n\t\t\t\t');
+              selectedValue = slotValue ? slotValue : slot.defaultValue;
+              __out.push('\n\n\t\t\t\t');
+              for (_j = 0, _len1 = choiceValues.length; _j < _len1; _j++) {
+                choiceValue = choiceValues[_j];
+                __out.push('\n\t\t\t\t\t');
+                selectedAttribute = "";
+                __out.push('\n\n\t\t\t\t\t');
+                if (choiceValue === selectedValue) {
+                  __out.push('\n\t\t\t\t\t\t');
+                  selectedAttribute = "selected=selected";
+                  __out.push('\n\t\t\t\t\t');
+                }
+                __out.push('\n\n\t\t\t\t\t<option ');
+                __out.push(__sanitize(selectedAttribute));
+                __out.push('>');
+                __out.push(__sanitize(choiceValue));
+                __out.push('</option>\n\t\t\t\t\n\t\t\t\t');
+              }
+              __out.push('\n\t\t\t\t\n\t\t\t\t</select>\n\n\t\t\t');
             }
             __out.push('   \n\n\n\t\t</fieldset>\n\n\t');
           }
@@ -2054,56 +2201,64 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
           _ref4 = this.schema.links;
           for (linkName in _ref4) {
             link = _ref4[linkName];
-            __out.push('\n\t');
+            __out.push('\n\n\t\t');
             linkHref = (_ref5 = this.model[linkName]) != null ? _ref5.href : void 0;
+            __out.push('\n\n\t\t');
+            if (linkHref) {
+              __out.push('\n\n\t\t\t');
+              console.log("Link - name: " + linkName + " rel: " + link.rel);
+              __out.push('\n\n\t\t\t<form class="form-horizontal wrml-form model-form">\n\n\t\t\t\t<fieldset class="wrml-form-fieldset">\t\t\n\t\t\t\n\t\t\t\t\t<label class="wrml-form-field-label" for="');
+              __out.push(__sanitize(linkName));
+              __out.push('_href"><img class="wrml-form-field-label-icon" src="');
+              __out.push(__sanitize(this.docroot));
+              __out.push('img/type/Link.png" /> ');
+              __out.push(__sanitize(linkName));
+              __out.push('</label>\t\t\n\t\t  \n\t\t\t\t\t<div class="control-group">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="control-label" for="');
+              __out.push(__sanitize(linkName));
+              __out.push('_href">href</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="');
+              __out.push(__sanitize(linkName));
+              __out.push('_href" value="');
+              __out.push(__sanitize(linkHref));
+              __out.push('" class="model-link-href-input" type="url"  readonly="readonly">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              if (link.method === "GET") {
+                __out.push('\t\n\t\t\t\t\t\t\t\t<button class="btn btn-success" type="button">\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              } else if (link.method === "PUT") {
+                __out.push('\t\n\t\t\t\t\t\t\t\t<button class="btn btn-warning" type="button">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              } else if (link.method === "POST") {
+                __out.push('\t\n\t\t\t\t\t\t\t\t<button class="btn btn-warning" type="button">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              } else if (link.method === "DELETE") {
+                __out.push('\t\n\t\t\t\t\t\t\t\t<button class="btn btn-danger" type="button">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              }
+              __out.push('\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t');
+              __out.push(__sanitize(link.method));
+              __out.push('</button>\n\n\t\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t<div class="control-group">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="control-label" for="');
+              __out.push(__sanitize(linkName));
+              __out.push('_rel">rel</label>\n\n\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t<input  id="');
+              __out.push(__sanitize(linkName));
+              __out.push('_rel" class="model-link-relation-input" type="text" value="');
+              __out.push(__sanitize(link.relationTitle));
+              __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t</div>\n\n\t\t\t\t\t\n\t\t\t\t\t');
+              if (link.method === "PUT" || link.method === "POST") {
+                __out.push('\t\n\t\t\t\t\t<div class="control-group">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="control-label" for="');
+                __out.push(__sanitize(linkName));
+                __out.push('_entity">entity</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<div class="input-append">                    \n\t\t\t\t\t\t\t\t');
+                requestEntitySchemaTitle = link.requestSchemaTitle;
+                __out.push('\n\t\t\t\t\t\t\t\t<input id="');
+                __out.push(__sanitize(linkName));
+                __out.push('_entity" class="model-link-entity-input" type="text" placeholder="Specify ');
+                __out.push(__sanitize(requestEntitySchemaTitle));
+                __out.push(' request entity.">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
+              }
+              __out.push('\t\n\n\t\t\t\t</fieldset>\n\n\t\t\t</form>\t\t\n\t\t\n\t\t');
+            }
             __out.push('\n\n\t');
-            console.log("Link - name: " + linkName + " rel: " + link.rel);
-            __out.push('\n\n\n\t<form class="form-horizontal wrml-form model-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\t\t\n\t\n\t\t\t<label class="wrml-form-field-label" for="');
-            __out.push(__sanitize(linkName));
-            __out.push('_href"><img class="wrml-form-field-label-icon" src="');
-            __out.push(__sanitize(wrmlData.docroot));
-            __out.push('img/type/Link.png" /> ');
-            __out.push(__sanitize(linkName));
-            __out.push('</label>\t\t\n  \n\t\t\t<div class="control-group">\n\t\t\t\t\n\t\t\t\t<label class="control-label" for="');
-            __out.push(__sanitize(linkName));
-            __out.push('_href">href</label>\n\t\t\t\t\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\n\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<input type="url" id="');
-            __out.push(__sanitize(linkName));
-            __out.push('_href" value="');
-            __out.push(__sanitize(linkHref));
-            __out.push('" readonly="readonly">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            if (link.method === "GET") {
-              __out.push('\t\n\t\t\t\t\t\t<button class="btn btn-success" type="button">\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            } else if (link.method === "PUT") {
-              __out.push('\t\n\t\t\t\t\t\t<button class="btn btn-warning" type="button">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            } else if (link.method === "POST") {
-              __out.push('\t\n\t\t\t\t\t\t<button class="btn btn-warning" type="button">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            } else if (link.method === "DELETE") {
-              __out.push('\t\n\t\t\t\t\t\t<button class="btn btn-danger" type="button">\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            }
-            __out.push('\t\t\t\t\t\t\t\n\t\t\t\t\t\t');
-            __out.push(__sanitize(link.method));
-            __out.push('</button>\n\n\t\t\t\t\t</div>\t\n\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="control-group">\n\t\t\t\t\n\t\t\t\t<label class="control-label" for="');
-            __out.push(__sanitize(linkName));
-            __out.push('_rel">rel</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t<input type="text" id="');
-            __out.push(__sanitize(linkName));
-            __out.push('_rel" value="');
-            __out.push(__sanitize(link.relationTitle));
-            __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t</div>\t\n\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t\n\t\t\t');
-            if (link.method === "PUT" || link.method === "POST") {
-              __out.push('\t\n\t\t\t<div class="control-group">\n\t\t\t\t\n\t\t\t\t<label class="control-label" for="');
-              __out.push(__sanitize(linkName));
-              __out.push('_entity">entity</label>\n\t\t\t\t\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\n\n\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t<input type="text" id="');
-              __out.push(__sanitize(linkName));
-              __out.push('_entity" placeholder="Specify request model entity." readonly="readonly">\t\t\t\t\n\t\t  \t\t\t\t\n\n\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\t\n\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t');
-            }
-            __out.push('\t\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\t');
           }
           __out.push('\n\n\n\t\n</section>\n\n');
         }
       
         __out.push('\t\n\n<div class="section-divider">\n  <span>\n    Metadata\n  </span>\n</div>\n\n<section>\n\n\n\n\t<form class="wrml-form model-form">\n\t\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="schema"><img class="wrml-form-field-label-icon" src="');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        __out.push(__sanitize(this.docroot));
       
         __out.push('img/schema.png" /> Schema</label>\t\n\t\t\t<div class="input-append">\n  \t\t\t\t<input type="text" id="schema" value="');
       
@@ -2111,7 +2266,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
       
         __out.push('" readonly="readonly">\t\t\t\t\n  \t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t</fieldset>\n\n\t</form>\n\n\t<form class="wrml-form model-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        __out.push(__sanitize(this.docroot));
       
         __out.push('img/api.png" /> API</label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t<div class="input-append">\n\t\t\t\t<input type="text" id="api" value="');
       
@@ -2119,7 +2274,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
       
         __out.push('" readonly="readonly">\t\t\t\t\n  \t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t</fieldset>\n\n\t</form>\n\n\t<form class="wrml-form model-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        __out.push(__sanitize(this.docroot));
       
         __out.push('img/resource.png" /> Resource</label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t<div class="input-append">\n\t\t\t\t<input type="url" id="uriTemplate" value="');
       
@@ -2329,9 +2484,164 @@ this.Wrmldoc.module("RegistrationApp.Show", function(Show, App, Backbone, Marion
       (function() {
         __out.push('<section id="registration-introduction">\n\t\n\t<div class="row">\n\n\t\t<div class="span3">\n\t\t\t\n\t\t</div>\n\n\t\t<div class="span3">\n\t\t\t<img id="registration-wormle-standing" src="');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        __out.push(__sanitize(this.docroot));
       
         __out.push('img/wormle/standing.png" />\n\t\t</div>\n\n\t\t<div class="span6 registration-introduction-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right registration-introduction-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\n\t\t\t\t\t\t<h3 class="popover-title"><strong>Greetings User</strong></h3>\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tI am Wormle the Worm Wizard.\n\t\t\t\t\t\t\tI can help you find your way around this <strong>WRML</strong> REST API design tool.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\t<em>\n\t\t\t\t\t\t\t\tWho are you?\n\t\t\t\t\t\t\t</em>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal registration-introduction-form">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="username">User Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="username" autofocus="autofocus">\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="email">Email</label>\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="email" id="email" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="firstName">First Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="firstName" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="lastName">Last Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="lastName" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="password">Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="password" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="repeatPassword">Repeat Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="repeatPassword" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Register</button>\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</fieldset>\n\t\t\t\t\t</form>\t\t\n\n\t\t\t\t<div>\t\t\n\t\t\t\n\t\t\t</div>\n\n\n\t\t</div>\n\n\t</div>\n\n\n</section>\n');
+      
+      }).call(this);
+      
+    }).call(__obj);
+    __obj.safe = __objSafe, __obj.escape = __escape;
+    return __out.join('');
+  };
+}).call(this);
+// Generated by CoffeeScript 1.6.3
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+this.Wrmldoc.module("RelationApp", function(RelationApp, App, Backbone, Marionette, $, _) {
+  var API, _ref;
+  this.startWithParent = false;
+  RelationApp.Router = (function(_super) {
+    __extends(Router, _super);
+
+    function Router() {
+      _ref = Router.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    return Router;
+
+  })(Marionette.AppRouter);
+  API = {
+    show: function(wrmlData) {
+      return new RelationApp.Show.Controller(wrmlData);
+    }
+  };
+  return RelationApp.on("start", function(wrmlData) {
+    return API.show(wrmlData);
+  });
+});
+// Generated by CoffeeScript 1.6.3
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette, $, _) {
+  var _ref;
+  return Show.Controller = (function(_super) {
+    __extends(Controller, _super);
+
+    function Controller() {
+      _ref = Controller.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Controller.prototype.initialize = function(wrmlData) {
+      var showView;
+      showView = this.createShowView(wrmlData);
+      return this.show(showView);
+    };
+
+    Controller.prototype.createShowView = function(wrmlData) {
+      return new Show.Relation({
+        model: wrmlData
+      });
+    };
+
+    return Controller;
+
+  })(App.Controllers.Base);
+});
+// Generated by CoffeeScript 1.6.3
+var __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette, $, _) {
+  var _ref;
+  return Show.Relation = (function(_super) {
+    __extends(Relation, _super);
+
+    function Relation() {
+      _ref = Relation.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Relation.prototype.template = "relation/show/relation_show";
+
+    return Relation;
+
+  })(App.Views.ItemView);
+});
+(function() {
+  this.ecoTemplates || (this.ecoTemplates = {});
+  this.ecoTemplates["apps/relation/show/templates/relation_show"] = function(__obj) {
+    if (!__obj) __obj = {};
+    var __out = [], __capture = function(callback) {
+      var out = __out, result;
+      __out = [];
+      callback.call(this);
+      result = __out.join('');
+      __out = out;
+      return __safe(result);
+    }, __sanitize = function(value) {
+      if (value && value.ecoSafe) {
+        return value;
+      } else if (typeof value !== 'undefined' && value != null) {
+        return __escape(value);
+      } else {
+        return '';
+      }
+    }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+    __safe = __obj.safe = function(value) {
+      if (value && value.ecoSafe) {
+        return value;
+      } else {
+        if (!(typeof value !== 'undefined' && value != null)) value = '';
+        var result = new String(value);
+        result.ecoSafe = true;
+        return result;
+      }
+    };
+    if (!__escape) {
+      __escape = __obj.escape = function(value) {
+        return ('' + value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      };
+    }
+    (function() {
+      (function() {
+        __out.push('<section>\n\t\n\t<div id="relation-page-header">\n\t  <h1>\n\n\t  \t<img id="title-icon" src="');
+      
+        __out.push(__sanitize(this.documentIcon));
+      
+        __out.push('" />\n\t  \t<span class="wrml-title">');
+      
+        __out.push(__sanitize(this.documentTitle));
+      
+        __out.push('</span>\n\t  \t\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n<section id="relation-top-properties-section" class="relation-section">\n\n\n\t<form class="form-horizontal wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uri">URI</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="uri" type="url" value="');
+      
+        __out.push(__sanitize(this.model.uri));
+      
+        __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uniqueName">Unique Name</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="uniqueName" type="text" value="');
+      
+        __out.push(__sanitize(this.model.uniqueName));
+      
+        __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="title">Title</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="title" type="text" value="');
+      
+        __out.push(__sanitize(this.model.title));
+      
+        __out.push('" autofocus="autofocus">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="version">Version</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="version" type="number" value="');
+      
+        __out.push(__sanitize(this.model.version));
+      
+        __out.push('">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="description">Description</label>\t\n\t\t\t<textarea id="description">');
+      
+        __out.push(__sanitize(this.model.description));
+      
+        __out.push('</textarea>\n\t\t\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\n</section>\n');
       
       }).call(this);
       
@@ -2462,7 +2772,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
       
         __out.push('<section>\n\t\n\t<div id="schema-page-header">\n\t  <h1>\n\n\t  \t<img id="title-icon" src="');
       
-        __out.push(__sanitize(wrmlData.docroot));
+        __out.push(__sanitize(this.docroot));
       
         __out.push('img/schema.png" />');
       
@@ -2496,7 +2806,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
           for (i = _i = 0, _len = _ref1.length; _i < _len; i = ++_i) {
             baseSchema = _ref1[i];
             __out.push('\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t                <tr>\n\n\t\t\t\t\t\t\t\t<td class="schema-base-schema-input">\n\n\t\t\t\t\t\t\t\t<img class="schema-base-schema-icon" src="');
-            __out.push(__sanitize(wrmlData.docroot));
+            __out.push(__sanitize(this.docroot));
             __out.push('img/schema.png" />\n\n\t\t\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<input type="url" id="baseSchemaUri" value="');
             __out.push(__sanitize(baseSchema.title));
             __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Favorites</a></li>\n\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t</td>\n\n\t\t\t                </tr>\n\t\t\t\t\t\t\t');
@@ -2549,7 +2859,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
               __out.push('\n\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="');
               __out.push(__sanitize(propertyName));
               __out.push('"><img class="wrml-form-field-label-icon" src="');
-              __out.push(__sanitize(wrmlData.docroot));
+              __out.push(__sanitize(this.docroot));
               __out.push('img/type/');
               __out.push(__sanitize(propertyType));
               __out.push('.png" /></label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="');
@@ -2835,7 +3145,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
               __out.push('\n\n\t\t\t\t<form class="wrml-form schema-slot-name-form form-inline well">\n\t\t\t  \t\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="');
               __out.push(__sanitize(linkName));
               __out.push('"><img class="wrml-form-field-label-icon" src="');
-              __out.push(__sanitize(wrmlData.docroot));
+              __out.push(__sanitize(this.docroot));
               __out.push('img/type/Link.png" /></label>\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="');
               __out.push(__sanitize(linkName));
               __out.push('" value="');

@@ -4,20 +4,7 @@ $listIndexCellSpacing: 5px;
 $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 #main-region							
-{                                                                                                    
-	section									
-	{  
-		margin-top: 20px;
-		margin-bottom: 20px;  
-	}                                                                                
-
-	#title-icon 
-	{
-		margin-top: -5px;
-		margin-right: 10px;  
-		width: 48px;
-		height: 48px;
-	}
+{ 
 
 	#model-page-header
 	{
@@ -32,6 +19,14 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		border-bottom: 1px solid $black;
 		width: 940px;
 		background-color: $white;
+	}
+
+	#model-title-section
+	{
+		.untitled
+		{
+			font-style: italic;
+		}
 	}
 
 	#model-links
@@ -55,15 +50,23 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 			margin-left: $horizontalFormMarginLeft;
 			*margin-left: 0;		
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			textarea,
-			.uneditable-input 
+			.model-link-href-input
 			{
 				width: $horizontalFormTextInputWidth;
 			}
-		}			
+
+			.model-link-relation-input
+			{
+				width: 200px;
+			}
+
+			.model-link-entity-input
+			{
+				width: 400px;
+			}
+		}		
+
+	
 	}
 
 	.model-form
@@ -126,3 +129,4 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 	}
 
 }
+

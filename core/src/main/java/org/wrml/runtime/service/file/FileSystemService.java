@@ -413,26 +413,6 @@ public final class FileSystemService extends AbstractService
                 continue;
             }
 
-            /*
-            if (keyedSchemaUri.equals(documentSchemaUri))
-            {
-                final boolean alsoHasFiledSchemaUri = keyedSchemaUris.contains(filedSchemaUri);
-
-                if (alsoHasFiledSchemaUri)
-                {
-                    if (keyCount > 2)
-                    {
-                        continue;
-                    }
-
-                }
-                else if (keyCount > 1)
-                {
-                    continue;
-                }
-            }
-            */
-
             final Object keyValue = keys.getValue(keyedSchemaUri);
             final Path keyLinkPath = getKeyLinkPath(keyedSchemaUri, keyValue);
             if (keyLinkPath == null)

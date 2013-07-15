@@ -1,0 +1,82 @@
+<section>
+	
+	<div id="relation-page-header">
+	  <h1>
+
+	  	<img id="title-icon" src="<%= @documentIcon %>" />
+	  	<span class="wrml-title"><%= @documentTitle %></span>
+	  	
+	  </h1>
+	</div>
+
+	<div id="page-header-push">
+	</div>
+
+</section>
+
+<section id="relation-top-properties-section" class="relation-section">
+
+
+	<form class="form-horizontal wrml-form">
+
+		<fieldset class="wrml-form-fieldset">
+				  
+			<div class="control-group">								
+			
+				<label class="control-label" for="uri">URI</label>		
+
+				<div class="controls">												
+					<input id="uri" type="url" value="<%= @model.uri %>" readonly="readonly">																											
+				</div>	
+
+			</div>
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="uniqueName">Unique Name</label>		
+
+				<div class="controls">												
+					<input id="uniqueName" type="text" value="<%= @model.uniqueName %>" readonly="readonly">				
+				</div>	
+
+			</div>
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="title">Title</label>		
+
+				<div class="controls">												
+					<input id="title" type="text" value="<%= @model.title %>" autofocus="autofocus">
+				</div>	
+
+			</div>
+
+			<div class="control-group">								
+			
+				<label class="control-label" for="version">Version</label>		
+
+				<div class="controls">												
+					<input id="version" type="number" value="<%= @model.version %>">				
+				</div>	
+
+			</div>
+
+		</fieldset>
+
+	</form>		
+
+
+	<form class="wrml-form">
+
+		<fieldset class="wrml-form-fieldset">
+							
+			<label class="wrml-form-field-label" for="description">Description</label>	
+			<textarea id="description"><%= @model.description %></textarea>
+		
+		</fieldset>
+
+	</form>		
+
+
+
+</section>

@@ -153,6 +153,7 @@ public class WrmlServlet extends HttpServlet
             final Engine engine = new DefaultEngine();
             engine.init(engineConfig);
             setEngine(engine);
+            LOGGER.debug("Initialized WRML with: {}", engineConfig);
         }
         catch (IOException ex)
         {

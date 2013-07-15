@@ -180,7 +180,7 @@
 
 					<thead>
 						<tr>							
-							<th colspan="6"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/type/Reference.png" />References</th>							
+							<th colspan="10"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/type/Reference.png" />References</th>							
 						</tr>
 
 
@@ -189,7 +189,7 @@
 					<tbody>
 
 						<tr>							
-							<td colspan="6">
+							<td colspan="10">
 								<div class="btn-group">
 									<button class="btn btn-inverse" type="button">Add</button>
 								</div>
@@ -202,9 +202,10 @@
 
 						<% if references: %>
 
-							<tr>							
-								<th colspan="4">Concept</th>
-								<th colspan="1">Interaction Dialog</th>
+							<tr>
+								<th colspan="2">Relation</th>							
+								<th colspan="6">API Function</th>
+								<th colspan="1">Start Dialog</th>
 								<th colspan="1">Reference Actions</th>
 							</tr>
 
@@ -214,7 +215,24 @@
 
 								<tr>
 
-									<td colspan="4">							
+									<td colspan="2">							
+					
+										<div class="input-append">
+											<input class="api-relation-input" type="text" value="<%= reference.relationTitle %>" readonly="readonly">													
+											<div class="btn-group">
+												<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a tabindex="-1" href="#">Open</a></li>
+												</ul>
+											</div>		
+										</div>	
+
+									</td>		
+
+
+									<td colspan="6">							
 																	
 										<% signatureParts = reference.signature.split " " %>	
 
@@ -304,7 +322,150 @@
 
 					</tbody>
 				</table>
+
+				<% links = resource.links %>
+
+				<% console.log "Links: " + links %>
+
+				<% if links: %>
+
+					<% for linkSchemaName, link of links: %>
 					
+						<table class="table resource-table">
+
+							<thead>
+								<tr>							
+									<th colspan="13"><img class="api-resource-form-icon" src="<%= @docroot %>img/type/Link.png" /><%= linkSchemaName %> Links</th>							
+								</tr>
+							</thead>
+							
+							<tbody>
+
+								<tr>
+									<th colspan="2">Relation</th>							
+									<th colspan="6"><%= linkSchemaName %> Method</th>
+									<th colspan="1">Method</th>
+									<th colspan="4">Endpoint Resource</th>
+								</tr>
+
+								<% linkTemplates = link.linkTemplates %>
+								<% for linkName, linkTemplate of linkTemplates: %>
+									<% linkMethod = linkTemplate.method %>
+									<% console.log "Link Method: " + linkMethod %>
+
+									<tr>
+
+										<td colspan="2">							
+						
+											<div class="input-append">
+												<input class="api-relation-input" type="text" value="<%= linkTemplate.relationTitle %>" readonly="readonly">													
+												
+												<div class="btn-group">
+													<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+														<span class="caret"></span>
+													</button>
+													<ul class="dropdown-menu">
+														<li><a tabindex="-1" href="#">Open</a></li>
+													</ul>
+												</div>	
+
+											</div>	
+
+										</td>		
+
+
+										<td colspan="6">							
+																		
+											<% signatureParts = linkTemplate.signature.split " " %>	
+
+											<label class="signature">
+												
+												<span class="wrml-code-normal"><%= signatureParts[0] %>&nbsp;</span>													
+												<span class="wrml-code-method-<%= linkMethod %>"><%= signatureParts[1] %></span>		
+												<span class="wrml-code-normal"><%= signatureParts[2] %></span>		
+
+												<% parameterType = null %>
+												<% parameterName = null %>
+
+												<% for i in [3..signatureParts.length]: %>
+
+													<% parameterToken = signatureParts[i] %>
+
+													<% if parameterToken is ",": %>
+														
+														<span class="wrml-code-normal"><%= parameterToken %>&nbsp;</span>		
+
+														<% parameterType = null %>
+														<% parameterName = null %>
+
+													<% else if parameterToken is ")": %>
+
+														<span class="wrml-code-normal"><%= parameterToken %></span>		
+
+													<% else if not parameterType: %>																					
+														
+														<% parameterType = parameterToken %>
+														
+														<span class="wrml-code-normal"><%= parameterType %>&nbsp;</span>		
+													
+													<% else if not parameterName: %>																					
+													
+														<% parameterName = parameterToken %>
+
+														<span class="wrml-code-normal"><%= parameterName %></span>		
+
+													<% end %>
+
+												<% end %>											
+
+											</label>
+
+										</td>		
+
+										<td colspan="1">											
+											<label class="api-method-text"><%= linkMethod %></label>	
+										</td>
+
+										<td colspan="4">
+
+											<div class="input-append">
+
+												<input class="api-endpoint-input" type="text" value="<%= linkTemplate.endpoint?.fullPath %>" >
+												
+												<div class="btn-group">
+													<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+														<span class="caret"></span>
+													</button>
+													<ul class="dropdown-menu">
+														
+														<% if linkTemplate.endpoint: %>																								
+														<li><a tabindex="-1" href="#">Jump To</a></li>
+														<li class="divider"></li>
+														<li><a tabindex="-1" href="#">Clear</a></li>
+														<li class="divider"></li>
+														<% end %>
+														<li><a tabindex="-1" href="#">Recomended Resources</a></li>												
+														<li class="divider"></li>
+														<li><a tabindex="-1" href="#">All Resources</a></li>
+
+													</ul>
+												</div>
+
+											</div>
+													
+										</td>
+
+									</tr>
+							
+								<% end %>
+
+							</tbody>
+
+						</table>
+
+					<% end %>					
+
+				<% end %>					
 			</form>
 			
 

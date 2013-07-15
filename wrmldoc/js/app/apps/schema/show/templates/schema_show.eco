@@ -3,7 +3,7 @@
 	<div id="schema-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/schema.png" /><%= @schema.title %> 
+	  	<img id="title-icon" src="<%= @docroot %>img/schema.png" /><%= @schema.title %> 
 
 	  </h1>
 	</div>
@@ -117,7 +117,7 @@
 
 								<td class="schema-base-schema-input">
 
-								<img class="schema-base-schema-icon" src="<%= wrmlData.docroot %>img/schema.png" />
+								<img class="schema-base-schema-icon" src="<%= @docroot %>img/schema.png" />
 
 									<div class="input-append">					
 										<input type="url" id="baseSchemaUri" value="<%= baseSchema.title %>" readonly="readonly">				
@@ -229,7 +229,7 @@
 						
 						<div class="schema-slot-name controls span6">						
 
-							<label class="wrml-form-field-label" for="<%= propertyName %>"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/type/<%= propertyType %>.png" /></label>															
+							<label class="wrml-form-field-label" for="<%= propertyName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/<%= propertyType %>.png" /></label>															
 
 							<div class="input-append">					
 								<input class="schema-slot-name-input" type="text" id="<%= propertyName %>" value="<%= propertyName %>">
@@ -591,7 +591,7 @@
 						
 						<div class="schema-slot-name controls span6">						
 
-							<label class="wrml-form-field-label" for="<%= linkName %>"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/type/Link.png" /></label>
+							<label class="wrml-form-field-label" for="<%= linkName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Link.png" /></label>
 
 							<div class="input-append">					
 								<input class="schema-slot-name-input" type="text" id="<%= linkName %>" value="<%= linkName %>">

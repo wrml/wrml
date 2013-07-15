@@ -43,13 +43,19 @@ wrmldoc - A JS web app for WRML documentation generation.
 
                 "dotMin" : "{1}",
 
-                "schemaUri" : "{2}",
+                "documentTitle" : "{2}",
 
-                "model" : {3},
+                "documentIcon" : "{3}",
 
-                "schema" : {4},
+                "schemaUri" : "{4}",
 
-                "api" : {5}
+                "model" : {5},
+
+                "schema" : {6},
+
+                "api" : {7},
+
+                "relation" : {8}
 
             '}';
 
@@ -63,18 +69,14 @@ wrmldoc - A JS web app for WRML documentation generation.
 
         <meta charset="utf-8" />
 
-        <meta name="description" content="wrmldoc" />
-
-        <meta name="keywords" content="wrml, wormle, wrmldoc, zeitgeist, modern, WWW, Web, web resource, web development, HTML, CSS, JavaScript, HTML5, design, web services, web applications, computer books, programming, development, developer resources, REST API, RESTful, JSON, Schema" />
-
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
         <!-- The favicon -->
-        <link rel="shortcut icon" href="{0}img/shortcut.png" />
+        <link rel="shortcut icon" href="{3}" />
 
         <link rel="stylesheet" media="all" href="{0}css/wrmldoc{1}.css" />
 
-        <title>wrmldoc</title>
+        <title>{2} - wrmldoc</title>
 
     </head>
 

@@ -157,7 +157,7 @@ class ModelWriter
             throw new ModelWriterException(e.getMessage(), e, this);
         }
 
-        final PrinterModelGraph printerModelGraph = new PrinterModelGraph(model, writeOptions.getExcludedSchemaUris());
+        final PrinterModelGraph printerModelGraph = new PrinterModelGraph(model, writeOptions);
         final ModelNode rootModelNode = printerModelGraph.getRootModelNode();
 
         try

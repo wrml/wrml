@@ -40,6 +40,7 @@ import org.wrml.runtime.format.application.vnd.wrml.design.schema.SchemaDesignFo
 import org.wrml.runtime.rest.*;
 import org.wrml.runtime.schema.*;
 import org.wrml.runtime.syntax.SyntaxLoader;
+import org.wrml.util.UniqueName;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,6 +102,17 @@ public class WrmldocFormatter extends AbstractFormatter
         final URI schemaUri = model.getSchemaUri();
 
         final String dotMin = (_IsSourceCodeMinified) ? ".min" : "";
+        final String titleSlotName = SchemaDesignFormatter.getTitleSlotName(schemaUri, schemaLoader);
+        String documentTitle = "Untitled";
+        String documentIcon = _Docroot + "img/model.png";
+
+        if (StringUtils.isNotBlank(titleSlotName))
+        {
+            documentTitle = String.valueOf(model.getSlotValue(titleSlotName));
+        }
+
+        // TODO: Replace this ObjectMapper-based implementation with the construction of a WRML model that represents
+        // the wrmldoc "shell" data structure
 
         final ObjectMapper objectMapper = new ObjectMapper();
         try
@@ -109,6 +121,8 @@ public class WrmldocFormatter extends AbstractFormatter
             final String modelValue;
             final String schemaValue;
 
+            String linkRelationValue = EMPTY_OBJECT;
+
             if (model instanceof Schema)
             {
                 modelValue = EMPTY_OBJECT;
@@ -116,25 +130,44 @@ public class WrmldocFormatter extends AbstractFormatter
                 final Schema schema = (Schema) model;
                 final ObjectNode schemaNode = SchemaDesignFormatter.createSchemaDesignObjectNode(objectMapper, schema);
                 schemaValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaNode);
+
+                documentIcon = _Docroot + "img/schema.png";
             }
             else if (model instanceof Api)
             {
                 modelValue = EMPTY_OBJECT;
                 schemaValue = EMPTY_OBJECT;
+
+                documentIcon = _Docroot + "img/api.png";
+            }
+            else if (model instanceof LinkRelation)
+            {
+                modelValue = model.toString();
+
+
+                final ObjectNode linkRelationNode = buildLinkRelationNode(objectMapper, (LinkRelation) model);
+                linkRelationValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(linkRelationNode);
+
+                schemaValue = EMPTY_OBJECT;
+                documentIcon = _Docroot + "img/linkRelation.png";
             }
             else
             {
                 modelValue = model.toString();
 
-                final ObjectNode schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, schemaUri, schemaLoader, null);
+                final Keys schemaKeys = context.getApiLoader().buildDocumentKeys(schemaUri, schemaLoader.getSchemaSchemaUri());
+                final Schema schema = context.getModel(schemaKeys, schemaLoader.getSchemaDimensions());
+                final ObjectNode schemaNode = SchemaDesignFormatter.createSchemaDesignObjectNode(objectMapper, schema);
                 schemaValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaNode);
+
+
             }
 
             final ObjectNode apiNode = buildApiNode(objectMapper, model);
             final String apiValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(apiNode);
 
             final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
-            final String renderedPage = renderPage(pageTemplate, _Docroot, dotMin, schemaUri.toString(), modelValue, schemaValue, apiValue);
+            final String renderedPage = renderPage(pageTemplate, _Docroot, dotMin, documentTitle, documentIcon, schemaUri.toString(), modelValue, schemaValue, apiValue, linkRelationValue);
 
             IOUtils.write(renderedPage, out);
 
@@ -145,6 +178,8 @@ public class WrmldocFormatter extends AbstractFormatter
         }
 
     }
+
+
 
     public MessageFormat getTemplate(String templateName) throws IOException
     {
@@ -195,6 +230,7 @@ public class WrmldocFormatter extends AbstractFormatter
         apiNode.put(PropertyName.version.name(), api.getVersion());
 
         final Map<URI, ObjectNode> schemaNodes = new HashMap<>();
+        final Map<URI, LinkRelation> linkRelationCache = new HashMap<>();
 
         if (document instanceof Api)
         {
@@ -210,7 +246,7 @@ public class WrmldocFormatter extends AbstractFormatter
             final ArrayNode allResourcesNode = objectMapper.createArrayNode();
             for (final Resource resource : orderedResources.values())
             {
-                final ObjectNode resourceNode = buildResourceNode(objectMapper, schemaNodes, resource);
+                final ObjectNode resourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource);
                 allResourcesNode.add(resourceNode);
             }
 
@@ -218,14 +254,14 @@ public class WrmldocFormatter extends AbstractFormatter
         }
         else
         {
-            final ObjectNode endpointResourceNode = buildResourceNode(objectMapper, schemaNodes, endpointResource);
+            final ObjectNode endpointResourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, endpointResource);
             apiNode.put(PropertyName.resource.name(), endpointResourceNode);
         }
 
         return apiNode;
     }
 
-    protected ObjectNode buildResourceNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Resource resource)
+    protected ObjectNode buildResourceNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource)
     {
 
         final Context context = getContext();
@@ -248,24 +284,44 @@ public class WrmldocFormatter extends AbstractFormatter
         resourceNode.put(PropertyName.uriTemplate.name(), resource.getUriTemplate().getUriTemplateString());
 
         final URI defaultSchemaUri = resource.getDefaultSchemaUri();
-        String defaultSchemaName = null;
         Prototype defaultPrototype = null;
         if (defaultSchemaUri != null)
         {
-
             final ObjectNode defaultSchemaNode = getSchemaNode(objectMapper, schemaNodes, defaultSchemaUri, schemaLoader);
             resourceNode.put(PropertyName.defaultSchema.name(), defaultSchemaNode);
-
             defaultPrototype = schemaLoader.getPrototype(defaultSchemaUri);
-            defaultSchemaName = defaultSchemaNode.get(SchemaDesignFormatter.PropertyName.localName.name()).asText();
         }
+
+        final ArrayNode referencesNode = buildReferencesArrayNode(objectMapper, schemaNodes, linkRelationCache, resource, defaultPrototype);
+        if (referencesNode.size() > 0)
+        {
+            resourceNode.put(PropertyName.references.name(), referencesNode);
+        }
+
+        final ObjectNode linksNode = buildLinksNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource, defaultPrototype);
+        if (linksNode.size() > 0)
+        {
+            resourceNode.put(PropertyName.links.name(), linksNode);
+        }
+
+
+        return resourceNode;
+    }
+
+    protected ArrayNode buildReferencesArrayNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final Resource resource, final Prototype defaultPrototype)
+    {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
+
+        final URI defaultSchemaUri = (defaultPrototype != null) ? defaultPrototype.getSchemaUri() : null;
+        final String defaultSchemaName = (defaultPrototype != null) ? defaultPrototype.getUniqueName().getLocalName() : null;
 
         final ArrayNode referencesNode = objectMapper.createArrayNode();
 
         final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = resource.getReferenceTemplates();
         final Set<URI> referenceRelationUris = referenceTemplates.keySet();
-
-        final Map<URI, LinkRelation> linkRelationCache = new HashMap<>();
 
         if (referenceTemplates != null && !referenceTemplates.isEmpty())
         {
@@ -338,7 +394,7 @@ public class WrmldocFormatter extends AbstractFormatter
                                     if (!String.class.equals(parameterHeapType))
                                     {
                                         final Class<?> syntaxClass = (Class<?>) parameterHeapType;
-                                        parameterTypeString =  syntaxClass.getSimpleName();
+                                        parameterTypeString = syntaxClass.getSimpleName();
                                     }
                                     else
                                     {
@@ -384,19 +440,7 @@ public class WrmldocFormatter extends AbstractFormatter
                 {
 
                     final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
-                    final LinkRelation linkRelation;
-
-                    if (linkRelationCache.containsKey(linkRelationUri))
-                    {
-                        linkRelation = linkRelationCache.get(linkRelationUri);
-                    }
-                    else
-                    {
-
-                        final Keys linkRelationKeys = context.getApiLoader().buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
-                        linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
-                        linkRelationCache.put(linkRelationUri, linkRelation);
-                    }
+                    final LinkRelation linkRelation = getLinkRelation(linkRelationCache, linkRelationUri);
 
                     if (method != linkRelation.getMethod())
                     {
@@ -517,15 +561,240 @@ public class WrmldocFormatter extends AbstractFormatter
 
         }
 
+        return referencesNode;
+    }
 
-        if (referencesNode.size() > 0)
+
+    protected ObjectNode buildLinksNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource, final Prototype defaultPrototype)
+    {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
+
+        final URI defaultSchemaUri = (defaultPrototype != null) ? defaultPrototype.getSchemaUri() : null;
+
+        final ObjectNode linksNode = objectMapper.createObjectNode();
+
+        final Set<URI> responseSchemaUris = new HashSet<>();
+        if (defaultSchemaUri != null)
         {
-            resourceNode.put(PropertyName.references.name(), referencesNode);
+            responseSchemaUris.add(defaultSchemaUri);
+        }
+
+        for (final Method method : Method.values())
+        {
+            final Set<URI> methodResponseSchemaUris = resource.getResponseSchemaUris(method);
+            if (methodResponseSchemaUris != null && !methodResponseSchemaUris.isEmpty())
+            {
+                responseSchemaUris.addAll(methodResponseSchemaUris);
+            }
+        }
+
+        final ConcurrentHashMap<URI, LinkTemplate> linkTemplates = resource.getLinkTemplates();
+
+        for (final URI schemaUri : responseSchemaUris)
+        {
+            final Prototype prototype = schemaLoader.getPrototype(schemaUri);
+            final SortedMap<URI, LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots();
+            if (linkProtoSlots == null || linkProtoSlots.isEmpty())
+            {
+                continue;
+            }
+
+            final ObjectNode linkTemplatesNode = objectMapper.createObjectNode();
+
+            final Set<URI> linkRelationUris = linkProtoSlots.keySet();
+            for (final URI linkRelationUri : linkRelationUris)
+            {
+                final LinkProtoSlot linkProtoSlot = linkProtoSlots.get(linkRelationUri);
+
+                if (schemaLoader.getDocumentSchemaUri().equals(linkProtoSlot.getDeclaringSchemaUri()))
+                {
+                    // Skip over the built-in system-level link relations (which are all self-referential).
+                    continue;
+                }
+
+                final ObjectNode linkTemplateNode = objectMapper.createObjectNode();
+                final String linkSlotName = linkProtoSlot.getName();
+                linkTemplatesNode.put(linkSlotName, linkTemplateNode);
+
+                final LinkRelation linkRelation = getLinkRelation(linkRelationCache, linkRelationUri);
+                final Method method = linkRelation.getMethod();
+
+                linkTemplateNode.put(PropertyName.method.name(), method.getProtocolGivenName());
+                linkTemplateNode.put(PropertyName.rel.name(), syntaxLoader.formatSyntaxValue(linkRelationUri));
+                linkTemplateNode.put(PropertyName.relationTitle.name(), linkRelation.getTitle());
+
+                final URI responseSchemaUri;
+                final URI requestSchemaUri;
+
+                if (linkTemplates.containsKey(linkRelationUri))
+                {
+                    final LinkTemplate linkTemplate = linkTemplates.get(linkRelationUri);
+                    responseSchemaUri = linkTemplate.getResponseSchemaUri();
+                    requestSchemaUri = linkTemplate.getRequestSchemaUri();
+
+                    final UUID endPointId = linkTemplate.getEndPointId();
+                    if (endPointId != null)
+                    {
+                        final Resource endPointResource = apiNavigator.getResource(endPointId);
+
+                        final ObjectNode endPointNode = objectMapper.createObjectNode();
+
+                        endPointNode.put(PropertyName.id.name(), syntaxLoader.formatSyntaxValue(endPointId));
+                        endPointNode.put(PropertyName.pathSegment.name(), endPointResource.getPathSegment());
+                        endPointNode.put(PropertyName.fullPath.name(), endPointResource.getPathText());
+                        endPointNode.put(PropertyName.uriTemplate.name(), endPointResource.getUriTemplate().getUriTemplateString());
+
+                        linkTemplateNode.put(PropertyName.endpoint.name(), endPointNode);
+                    }
+
+                }
+                else
+                {
+                    responseSchemaUri = linkProtoSlot.getResponseSchemaUri();
+                    requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
+                }
+
+                if (responseSchemaUri != null)
+                {
+                    final ObjectNode responseSchemaNode = getSchemaNode(objectMapper, schemaNodes, responseSchemaUri, schemaLoader);
+                    linkTemplateNode.put(PropertyName.responseSchema.name(), responseSchemaNode);
+                }
+
+                if (requestSchemaUri != null)
+                {
+                    final ObjectNode requestSchemaNode = getSchemaNode(objectMapper, schemaNodes, requestSchemaUri, schemaLoader);
+                    linkTemplateNode.put(PropertyName.requestSchema.name(), requestSchemaNode);
+                }
+
+                final String signature = buildLinkSignature(linkSlotName, responseSchemaUri, requestSchemaUri, schemaUri);
+                linkTemplateNode.put(PropertyName.signature.name(), signature);
+            }
+
+            if (linkTemplatesNode.size() > 0)
+            {
+                final ObjectNode schemaNode = objectMapper.createObjectNode();
+                final ObjectNode schemaDetailsNode = getSchemaNode(objectMapper, schemaNodes, schemaUri, schemaLoader);
+                schemaNode.put(PropertyName.schema.name(), schemaDetailsNode);
+                schemaNode.put(PropertyName.linkTemplates.name(), linkTemplatesNode);
+                linksNode.put(prototype.getUniqueName().getLocalName(), schemaNode);
+            }
         }
 
 
-        return resourceNode;
+        return linksNode;
     }
+
+    private String buildLinkSignature(final String linkFunctionName, final URI responseSchemaUri, final URI requestSchemaUri, final URI thisSchemaUri)
+    {
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+        final StringBuilder signatureBuilder = new StringBuilder();
+
+        if (responseSchemaUri != null)
+        {
+            final Prototype responsePrototype = schemaLoader.getPrototype(responseSchemaUri);
+            final String responseSchemaName = responsePrototype.getUniqueName().getLocalName();
+            signatureBuilder.append(responseSchemaName);
+        }
+        else
+        {
+            signatureBuilder.append("void");
+        }
+
+        signatureBuilder.append(" ");
+
+        signatureBuilder.append(linkFunctionName).append(" ( ");
+
+        if (requestSchemaUri != null && !requestSchemaUri.equals(thisSchemaUri))
+        {
+            final Prototype requestPrototype = schemaLoader.getPrototype(requestSchemaUri);
+            final String requestSchemaName = requestPrototype.getUniqueName().getLocalName();
+
+            signatureBuilder.append(requestSchemaName);
+
+            signatureBuilder.append(" ");
+
+            final String parameterName = Character.toLowerCase(requestSchemaName.charAt(0)) + requestSchemaName.substring(1);
+            signatureBuilder.append(parameterName);
+        }
+
+        signatureBuilder.append(" ) ");
+
+        final String signature = signatureBuilder.toString();
+        return signature;
+    }
+
+
+    private ObjectNode buildLinkRelationNode(final ObjectMapper objectMapper,  final LinkRelation linkRelation)
+    {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
+
+        final ObjectNode linkRelationNode = objectMapper.createObjectNode();
+
+        linkRelationNode.put(PropertyName.uri.name(), syntaxLoader.formatSyntaxValue(linkRelation.getUri()));
+
+        final UniqueName linkRelationUniqueName = linkRelation.getUniqueName();
+        linkRelationNode.put(PropertyName.uniqueName.name(), syntaxLoader.formatSyntaxValue(linkRelationUniqueName));
+        linkRelationNode.put(PropertyName.title.name(), linkRelation.getTitle());
+
+        final String description = linkRelation.getDescription();
+        if (StringUtils.isNotBlank(description))
+        {
+            linkRelationNode.put(PropertyName.description.name(), description);
+        }
+
+        linkRelationNode.put(PropertyName.version.name(), linkRelation.getVersion());
+        linkRelationNode.put(PropertyName.method.name(), syntaxLoader.formatSyntaxValue(linkRelation.getMethod()));
+
+        final URI responseSchemaUri = linkRelation.getResponseSchemaUri();
+        if (responseSchemaUri != null)
+        {
+            final ObjectNode responseSchemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, responseSchemaUri, schemaLoader, null);
+            linkRelationNode.put(PropertyName.responseSchema.name(), responseSchemaNode);
+        }
+
+        final URI requestSchemaUri = linkRelation.getRequestSchemaUri();
+        if (requestSchemaUri != null)
+        {
+            final ObjectNode requestSchemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, requestSchemaUri, schemaLoader, null);
+            linkRelationNode.put(PropertyName.requestSchema.name(), requestSchemaNode);
+        }
+
+        final String linkRelationName = linkRelationUniqueName.getLocalName();
+        final String signature = buildLinkSignature(linkRelationName, responseSchemaUri, requestSchemaUri, null);
+        linkRelationNode.put(PropertyName.signature.name(), signature);
+
+        return linkRelationNode;
+    }
+
+    private LinkRelation getLinkRelation(final Map<URI, LinkRelation> linkRelationCache, final URI linkRelationUri)
+    {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+        final LinkRelation linkRelation;
+        if (linkRelationCache.containsKey(linkRelationUri))
+        {
+            linkRelation = linkRelationCache.get(linkRelationUri);
+        }
+        else
+        {
+            final Keys linkRelationKeys = context.getApiLoader().buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
+            linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
+            linkRelationCache.put(linkRelationUri, linkRelation);
+        }
+
+        return linkRelation;
+    }
+
 
     protected ObjectNode getSchemaNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final URI schemaUri, final SchemaLoader schemaLoader)
     {
@@ -585,9 +854,11 @@ public class WrmldocFormatter extends AbstractFormatter
         allResources,
         defaultSchema,
         description,
+        endpoint,
         fullPath,
         id,
         links,
+        linkTemplates,
         method,
         parentPath,
         pathSegment,
@@ -597,8 +868,10 @@ public class WrmldocFormatter extends AbstractFormatter
         requestSchema,
         resource,
         responseSchema,
+        schema,
         signature,
         title,
+        uniqueName,
         uri,
         uriTemplate,
         version;

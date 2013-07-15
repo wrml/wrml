@@ -63,7 +63,7 @@ $wrapMarginBottom: 0 - $footerHeightTotal;
 $formFieldSetMarginLeft: 60px;
 $formFieldSetMarginRight: 40px;
 
-$formTextInputWidth: $containerWidth - 70 - ($formFieldSetMarginLeft + $formFieldSetMarginRight);
+$formTextInputWidth: $containerWidth - 150 - ($formFieldSetMarginLeft + $formFieldSetMarginRight);
 $formTableWidth: $formTextInputWidth + 100;
 
 

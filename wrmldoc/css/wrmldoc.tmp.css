@@ -82,6 +82,9 @@ input[type="color"]:focus,
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 82, 82, 0.6); }
 
+.table {
+  border-bottom: 1px solid #dddddd; }
+
 .well {
   padding-bottom: 10px; }
 
@@ -119,8 +122,20 @@ input[type="color"]:focus,
     top: -0.60em;
     padding-right: 5px; }
 
-.readonly-label {
-  color: #999999; }
+.wrml-subtitle {
+  float: right;
+  font-size: 0px;
+  margin-top: 7px; }
+  .wrml-subtitle .wrml-subtitle-text {
+    vertical-align: middle;
+    font-weight: normal;
+    font-size: 22px;
+    color: #999999; }
+  .wrml-subtitle .wrml-subtitle-icon {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    display: inline; }
 
 .wrml-code-normal,
 .wrml-code-schema,
@@ -151,6 +166,15 @@ input[type="color"]:focus,
   height: auto !important;
   min-height: 100%;
   margin-bottom: -128px; }
+
+#main-region section {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+#main-region #title-icon {
+  margin-top: -5px;
+  margin-right: 8px;
+  width: 48px;
+  height: 48px; }
 
 #page-header-push {
   margin-top: 115px;
@@ -190,7 +214,7 @@ input[type="color"]:focus,
   .wrml-form input[type=url],
   .wrml-form textarea,
   .wrml-form .uneditable-input {
-    width: 770px; }
+    width: 690px; }
 
 .wrml-form-field-label {
   margin-left: -30px;
@@ -207,21 +231,13 @@ input[type="color"]:focus,
   margin-left: 60px;
   margin-right: 40px; }
 
-#main-region section {
-  margin-top: 20px;
-  margin-bottom: 20px; }
 #main-region .api-section fieldset {
-  margin-left: 20px;
+  margin-left: 10px;
   margin-right: 0px; }
 #main-region .api-section .wrml-form-field-label {
   margin-left: 0px; }
 #main-region .api-section .form-inline {
-  margin-left: 20px; }
-#main-region #title-icon {
-  margin-top: -5px;
-  margin-right: 10px;
-  width: 48px;
-  height: 48px; }
+  margin-left: 0px; }
 #main-region #api-page-header {
   top: 40px;
   position: fixed;
@@ -246,7 +262,7 @@ input[type="color"]:focus,
 #main-region #api-top-properties-section .controls {
   *display: inline-block;
   *padding-left: 20px;
-  margin-left: 120px;
+  margin-left: 50px;
   *margin-left: 0; }
   #main-region #api-top-properties-section .controls input[type=text],
   #main-region #api-top-properties-section .controls input[type=url],
@@ -295,22 +311,17 @@ input[type="color"]:focus,
         padding-left: 0px;
         padding-right: 0px;
         display: inline; }
+#main-region .wrml-form {
+  margin-left: 0px; }
 #main-region .api-resource-form {
   padding-top: 5px;
   padding-bottom: 5px;
-  padding-left: 33px; }
+  padding-left: 15px; }
   #main-region .api-resource-form .controls-row .api-resource-form-input-label {
     font-weight: normal;
     padding-top: 0px;
     vertical-align: middle;
     margin-top: 25px;
-    margin-left: 15px;
-    margin-right: 5px; }
-  #main-region .api-resource-form .controls-row .api-resource-form-checkbox-label {
-    font-weight: normal;
-    padding-top: 0px;
-    vertical-align: middle;
-    margin-top: 20px;
     margin-left: 15px;
     margin-right: 5px; }
   #main-region .api-resource-form .controls-row input[type="text"],
@@ -350,10 +361,11 @@ input[type="color"]:focus,
     padding-right: 5px;
     vertical-align: middle; }
 #main-region .resource-table {
-  width: 850px;
+  width: 900px;
   margin-top: 20px;
   margin-left: 8px;
-  margin-bottom: 10px; }
+  margin-bottom: 30px;
+  padding-bottom: 30px; }
   #main-region .resource-table th {
     font-weight: normal; }
   #main-region .resource-table td {
@@ -364,12 +376,19 @@ input[type="color"]:focus,
   #main-region .resource-table input[type=url],
   #main-region .resource-table select,
   #main-region .resource-table .uneditable-input {
-    width: 250px; }
+    margin-top: 5px; }
   #main-region .resource-table label {
     vertical-align: middle;
     margin-top: 5px; }
   #main-region .resource-table button {
     margin-top: 5px; }
+  #main-region .resource-table .api-relation-input {
+    width: 120px; }
+  #main-region .resource-table .api-endpoint-input {
+    width: 270px;
+    font-size: 10pt; }
+  #main-region .resource-table .api-method-text {
+    margin-top: 10px; }
   #main-region .resource-table .signature {
     margin-top: 10px; }
   #main-region .resource-table .signature {
@@ -477,14 +496,6 @@ input[type="color"]:focus,
     top: auto;
     margin-top: -30px; }
 
-#main-region section {
-  margin-top: 20px;
-  margin-bottom: 20px; }
-#main-region #title-icon {
-  margin-top: -5px;
-  margin-right: 10px;
-  width: 48px;
-  height: 48px; }
 #main-region #model-page-header {
   top: 40px;
   position: fixed;
@@ -496,6 +507,8 @@ input[type="color"]:focus,
   border-bottom: 1px solid black;
   width: 940px;
   background-color: white; }
+#main-region #model-title-section .untitled {
+  font-style: italic; }
 #main-region #model-links .control-label {
   float: left;
   width: 50px;
@@ -510,14 +523,14 @@ input[type="color"]:focus,
   *padding-left: 20px;
   margin-left: 60px;
   *margin-left: 0; }
-  #main-region #model-links .controls input[type=text],
-  #main-region #model-links .controls input[type=password],
-  #main-region #model-links .controls input[type=url],
-  #main-region #model-links .controls textarea,
-  #main-region #model-links .controls .uneditable-input {
-    width: 710px; }
+  #main-region #model-links .controls .model-link-href-input {
+    width: 630px; }
+  #main-region #model-links .controls .model-link-relation-input {
+    width: 200px; }
+  #main-region #model-links .controls .model-link-entity-input {
+    width: 400px; }
 #main-region .model-list-table {
-  width: 870px;
+  width: 790px;
   margin-bottom: 10px; }
   #main-region .model-list-table th {
     font-style: italic;
@@ -546,7 +559,7 @@ input[type="color"]:focus,
     #main-region .model-list-table td.list-element-value input[type=url],
     #main-region .model-list-table td.list-element-value textarea,
     #main-region .model-list-table td.list-element-value .uneditable-input {
-      width: 710px; }
+      width: 630px; }
 
 #registration-introduction {
   background-color: white;
@@ -572,9 +585,48 @@ input[type="color"]:focus,
 .registration-introduction-form fieldset {
   margin-left: -20px; }
 
-#main-region section {
-  margin-top: 20px;
-  margin-bottom: 20px; }
+#main-region .relation-section fieldset {
+  margin-left: 10px;
+  margin-right: 0px; }
+#main-region .relation-section .wrml-form-field-label {
+  margin-left: 0px; }
+#main-region .relation-section .form-inline {
+  margin-left: 0px; }
+#main-region #relation-page-header {
+  top: 40px;
+  position: fixed;
+  z-index: 1029;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid black;
+  width: 940px;
+  background-color: white; }
+#main-region #relation-top-properties-section .control-label {
+  float: left;
+  width: 100px;
+  padding-top: 5px;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 0px;
+  color: #333333;
+  display: inline; }
+#main-region #relation-top-properties-section .controls {
+  *display: inline-block;
+  *padding-left: 50px;
+  margin-left: 120px;
+  *margin-left: 0; }
+  #main-region #relation-top-properties-section .controls input[type=text],
+  #main-region #relation-top-properties-section .controls input[type=url],
+  #main-region #relation-top-properties-section .controls .uneditable-input {
+    width: 770px; }
+#main-region #relation-top-properties-section .wrml-form-field-label {
+  margin-top: 5px; }
+#main-region #relation-top-properties-section textarea {
+  width: 890px; }
+
 #main-region .schema-section fieldset {
   margin-left: 20px;
   margin-right: 0px; }
@@ -582,11 +634,6 @@ input[type="color"]:focus,
   margin-left: 0px; }
 #main-region .schema-section .form-inline {
   margin-left: 20px; }
-#main-region #title-icon {
-  margin-top: -5px;
-  margin-right: 10px;
-  width: 48px;
-  height: 48px; }
 #main-region #schema-page-header {
   top: 40px;
   position: fixed;
@@ -630,7 +677,9 @@ input[type="color"]:focus,
   #main-region #schema-base-schema-form .uneditable-input {
     width: 250px; }
 #main-region #schema-base-schema-table {
-  margin-top: 20px; }
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 30px; }
   #main-region #schema-base-schema-table .schema-base-schema-icon {
     width: 20px;
     height: 20px;
@@ -712,7 +761,7 @@ input[type="color"]:focus,
   #main-region .schema-slot-form .controls-row input[type=url],
   #main-region .schema-slot-form .controls-row select,
   #main-region .schema-slot-form .controls-row .uneditable-input {
-    width: 250px; }
+    width: 200px; }
   #main-region .schema-slot-form .controls-row textarea {
     width: 650px; }
   #main-region .schema-slot-form .controls-row input.schema-slot-form-input-short {

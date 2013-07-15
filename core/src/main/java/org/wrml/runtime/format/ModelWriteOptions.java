@@ -34,6 +34,15 @@ public class ModelWriteOptions
 
     private Set<URI> _ExcludedSchemaUris;
 
+    private boolean _DocumentKeyExcludedIfSecondary;
+
+    private boolean _EmbeddedDocumentUriExcluded;
+
+    private boolean _LinksExcluded;
+
+    private boolean _CollectionsExcluded;
+
+
     public ModelWriteOptions()
     {
         _PrettyPrint = false;
@@ -59,4 +68,51 @@ public class ModelWriteOptions
         _PrettyPrint = prettyPrint;
     }
 
+    public boolean isCollectionsExcluded()
+    {
+
+        return _CollectionsExcluded;
+    }
+
+    public void setCollectionsExcluded(final boolean collectionsExcluded)
+    {
+
+        _CollectionsExcluded = collectionsExcluded;
+    }
+
+    public boolean isDocumentKeyExcludedIfSecondary()
+    {
+
+        return _DocumentKeyExcludedIfSecondary;
+    }
+
+    public void setDocumentKeyExcludedIfSecondary(final boolean documentKeyExcludedIfSecondary)
+    {
+
+        _DocumentKeyExcludedIfSecondary = documentKeyExcludedIfSecondary;
+    }
+
+    public boolean isEmbeddedDocumentUriExcluded()
+    {
+
+        return _EmbeddedDocumentUriExcluded;
+    }
+
+    public void setEmbeddedDocumentUriExcluded(final boolean embeddedDocumentUriExcluded)
+    {
+
+        _EmbeddedDocumentUriExcluded = embeddedDocumentUriExcluded;
+    }
+
+    public boolean isLinksExcluded()
+    {
+
+        return _LinksExcluded;
+    }
+
+    public void setLinksExcluded(final boolean linksExcluded)
+    {
+
+        _LinksExcluded = linksExcluded;
+    }
 }
