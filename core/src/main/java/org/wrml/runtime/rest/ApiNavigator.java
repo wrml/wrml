@@ -371,6 +371,10 @@ public class ApiNavigator
      */
     public Resource getResource(final UUID resourceTemplateId)
     {
+        if ((resourceTemplateId == null) || !(_AllResources.containsKey(resourceTemplateId)))
+        {
+            return null;
+        }
 
         return _AllResources.get(resourceTemplateId);
     }

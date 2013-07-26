@@ -344,6 +344,7 @@ public final class ApiBuilder
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final URI documentSchemaUriConstant = schemaLoader.getDocumentSchemaUri();
         final Prototype prototype = schemaLoader.getPrototype(defaultSchemaUri);
         final UUID resourceTemplateId = resourceTemplate.getUniqueId();
         final SortedMap<String, URI> schemaLinkRelationUris = prototype.getLinkRelationUris();
@@ -360,11 +361,16 @@ public final class ApiBuilder
             final Keys linkRelationKeys = apiLoader.buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
             final LinkRelation linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
 
+            if (linkRelation == null)
+            {
+                throw new NullPointerException("The link relation: " + linkRelationUri + " was not found");
+            }
+
             final Method method = linkRelation.getMethod();
             if (method == Method.Save)
             {
                 final URI linkRelationRequestSchemaUri = linkRelation.getRequestSchemaUri();
-                if (linkRelationRequestSchemaUri == null || linkRelationRequestSchemaUri.equals(defaultSchemaUri))
+                if (linkRelationRequestSchemaUri == null || linkRelationRequestSchemaUri.equals(defaultSchemaUri) || linkRelationRequestSchemaUri.equals(documentSchemaUriConstant))
                 {
                     linkTemplate.setRequestSchemaUri(defaultSchemaUri);
                     linkTemplate.setEndPointId(resourceTemplateId);
@@ -379,7 +385,7 @@ public final class ApiBuilder
             if (method == Method.Get || method == Method.Save)
             {
                 final URI linkRelationResponseSchemaUri = linkRelation.getResponseSchemaUri();
-                if (linkRelationResponseSchemaUri == null || linkRelationResponseSchemaUri.equals(defaultSchemaUri))
+                if (linkRelationResponseSchemaUri == null || linkRelationResponseSchemaUri.equals(defaultSchemaUri) || linkRelationResponseSchemaUri.equals(documentSchemaUriConstant))
                 {
                     linkTemplate.setResponseSchemaUri(defaultSchemaUri);
                     linkTemplate.setEndPointId(resourceTemplateId);

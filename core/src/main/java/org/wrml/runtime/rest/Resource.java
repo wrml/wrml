@@ -184,12 +184,18 @@ public class Resource implements Comparable<Resource>
 
                 // Each reference has an associate link relation which is it's "metafunction".
 
-                final SchemaLoader schemaLoader = apiLoader.getContext().getSchemaLoader();
+                final SchemaLoader schemaLoader = context.getSchemaLoader();
+                final URI documentSchemaUriConstant = schemaLoader.getDocumentSchemaUri();
 
                 final Keys relKeys = apiLoader.buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
 
                 final Dimensions relDimensions = apiNavigator.getLinkRelationDimensions();
                 final LinkRelation rel = context.getModel(relKeys, relDimensions);
+
+                if (rel == null)
+                {
+                    throw new ResourceException("The link relation: " + linkRelationUri + " was not found", null, this);
+                }
 
                 // The interaction method associated with the link relation matches the parameter.
 
@@ -219,7 +225,7 @@ public class Resource implements Comparable<Resource>
 
                 // The reference's link relation may have defined a generic, reusable argument type
                 final URI relRequestSchemaUri = rel.getRequestSchemaUri();
-                if (relRequestSchemaUri != null)
+                if (relRequestSchemaUri != null && !documentSchemaUriConstant.equals(relRequestSchemaUri))
                 {
                     requestSchemaUris.add(relRequestSchemaUri);
                 }
@@ -240,7 +246,7 @@ public class Resource implements Comparable<Resource>
 
                 // The reference's link relation may have defined a generic, reusable response type
                 final URI relResponseSchemaUri = rel.getResponseSchemaUri();
-                if (relResponseSchemaUri != null)
+                if (relResponseSchemaUri != null && !documentSchemaUriConstant.equals(relResponseSchemaUri))
                 {
                     responseSchemaUris.add(relResponseSchemaUri);
                 }

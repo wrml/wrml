@@ -605,7 +605,7 @@ input[type="color"]:focus,
   background-color: white; }
 #main-region #relation-top-properties-section .control-label {
   float: left;
-  width: 100px;
+  width: 150px;
   padding-top: 5px;
   text-align: left;
   font-weight: bold;
@@ -616,16 +616,25 @@ input[type="color"]:focus,
 #main-region #relation-top-properties-section .controls {
   *display: inline-block;
   *padding-left: 50px;
-  margin-left: 120px;
+  margin-left: 150px;
   *margin-left: 0; }
   #main-region #relation-top-properties-section .controls input[type=text],
   #main-region #relation-top-properties-section .controls input[type=url],
   #main-region #relation-top-properties-section .controls .uneditable-input {
-    width: 770px; }
+    width: 570px; }
+  #main-region #relation-top-properties-section .controls .signature {
+    margin-top: 5px;
+    font-size: 0px; }
+    #main-region #relation-top-properties-section .controls .signature span {
+      font-size: 14px;
+      margin: 0px;
+      padding: 0px; }
 #main-region #relation-top-properties-section .wrml-form-field-label {
   margin-top: 5px; }
 #main-region #relation-top-properties-section textarea {
-  width: 890px; }
+  width: 805px; }
+#main-region #relation-method-form {
+  margin-top: 20px; }
 
 #main-region .schema-section fieldset {
   margin-left: 20px;

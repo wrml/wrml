@@ -241,8 +241,6 @@ input[type="color"]:focus,
 	}
 }
 
-
-
 .wrml-code-normal, 
 .wrml-code-schema, 
 .wrml-code-method-GET, 
@@ -1073,7 +1071,7 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		.control-label  
 		{
 			float: left;
-			width: 100px;
+			width: 150px;
 			padding-top: 5px;
 			text-align: left;			
 			font-weight: bold;
@@ -1088,16 +1086,28 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 		{
 			*display: inline-block;
 			*padding-left: 50px;
-			margin-left: 120px;
-			*margin-left: 0;		
+			margin-left: 150px;
+			*margin-left: 0;
 
 			input[type=text],
 			input[type=url],
 			.uneditable-input 
 			{
-				width: $containerWidth - 170;
+				width: $containerWidth - 370;
 			}
 
+			.signature
+			{
+				margin-top: 5px;
+				font-size: 0px;			
+
+				span
+				{				
+					font-size: 14px;
+					margin: 0px;
+					padding: 0px;
+				}
+			}
 		}	
 
 		.wrml-form-field-label  
@@ -1107,9 +1117,14 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 		textarea,
 		{
-			width: $containerWidth - 50;
+			width: $containerWidth - 135;
 		}
 
+	}
+
+	#relation-method-form 
+	{
+		margin-top: 20px;				
 	}
 
 }

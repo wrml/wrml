@@ -751,7 +751,7 @@ public class WrmldocFormatter extends AbstractFormatter
         }
 
         linkRelationNode.put(PropertyName.version.name(), linkRelation.getVersion());
-        linkRelationNode.put(PropertyName.method.name(), syntaxLoader.formatSyntaxValue(linkRelation.getMethod()));
+        linkRelationNode.put(PropertyName.method.name(), linkRelation.getMethod().getProtocolGivenName());
 
         final URI responseSchemaUri = linkRelation.getResponseSchemaUri();
         if (responseSchemaUri != null)

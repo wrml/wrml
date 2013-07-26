@@ -609,18 +609,18 @@ public class DefaultApiLoader implements ApiLoader
             linkRelation.setUri(systemLinkRelation.getUri());
             linkRelation.setTitle(uniqueName.getLocalName());
 
-            // TODO: Fix the system API designs so that this doesn't break them.
-            /*
+
             if (systemLinkRelation == SystemLinkRelation.self)
             {
                 linkRelation.setResponseSchemaUri(documentSchemaUri);
             }
+
             else if (systemLinkRelation == SystemLinkRelation.save)
             {
                 linkRelation.setResponseSchemaUri(documentSchemaUri);
                 linkRelation.setRequestSchemaUri(documentSchemaUri);
             }
-            */
+
 
             loadLinkRelation(linkRelation);
         }

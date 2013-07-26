@@ -77,6 +77,168 @@
 
 	</form>		
 
+	<form id="relation-method-form" class="form-horizontal wrml-form">
+
+		<% relationMethod = @relation.method %>				
+		<% methods = ["GET", "PUT", "DELETE", "POST"] %>	
+		<% selectedMethod = if relationMethod then relationMethod else methods[0] %>			
+
+		<fieldset class="wrml-form-fieldset">
+				  
+			<div class="control-group">								
+			
+				<label class="control-label" for="method">Method</label>		
+
+				<div class="controls">												
+					<select id="method">
+
+						<% for method in methods: %>
+							<% selectedAttribute = "" %>
+
+							<% if method is selectedMethod: %>
+								<% selectedAttribute = "selected=selected" %>
+							<% end %>
+
+							<option <%= selectedAttribute %>><%= method %></option>
+						
+						<% end %>
+				
+					</select>
+
+				</div>	
+
+			</div>
+
+			<% if selectedMethod isnt "DELETE": %>
+
+				<div class="control-group">			
+					
+					<label class="control-label" for="responseSchema">Response Schema</label>
+
+					<div class="controls">	
+
+						<div class="input-append">					
+							<% responseSchemaTitle = @relation.responseSchema?.title %>
+							<input id="responseSchema" type="text" value="<%= responseSchemaTitle %>" readonly="readonly">
+			  				
+							<div class="btn-group">
+								<button class="btn btn-inverse" type="button">Open</button>
+								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a tabindex="-1" href="#">Open</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">Clear</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">History</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">Favorites</a></li>
+								</ul>
+							</div>
+
+						</div>	
+					
+					</div>
+
+				</div>
+			<% end %>
+
+			<% if selectedMethod isnt "GET" and selectedMethod isnt "DELETE": %>
+			
+				<div class="control-group">			
+					
+					<label class="control-label" for="requestSchema">Request Schema</label>
+
+					<div class="controls">	
+
+						<div class="input-append">					
+							<% requestSchemaTitle = @relation.requestSchema?.title %>
+							<input id="requestSchema" type="text" value="<%= requestSchemaTitle %>" readonly="readonly">
+			  				
+							<div class="btn-group">
+								<button class="btn btn-inverse" type="button">Open</button>
+								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a tabindex="-1" href="#">Open</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">Clear</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">History</a></li>
+									<li class="divider"></li>
+									<li><a tabindex="-1" href="#">Favorites</a></li>
+								</ul>
+							</div>
+
+						</div>	
+
+					</div>	
+
+				</div>
+			<% end %>
+
+
+			<div class="control-group">			
+				
+				<label class="control-label" for="requestSchema">Signature</label>
+
+				<div class="controls">
+
+					<% signatureParts = @relation.signature.split " " %>	
+
+					<label class="signature">
+						
+						<span class="wrml-code-normal"><%= signatureParts[0] %>&nbsp;</span>													
+						<span class="wrml-code-method-<%= selectedMethod %>"><%= signatureParts[1] %></span>		
+						<span class="wrml-code-normal"><%= signatureParts[2] %></span>		
+
+						<% parameterType = null %>
+						<% parameterName = null %>
+
+						<% for i in [3..signatureParts.length]: %>
+
+							<% parameterToken = signatureParts[i] %>
+
+							<% if parameterToken is ",": %>
+								
+								<span class="wrml-code-normal"><%= parameterToken %>&nbsp;</span>		
+
+								<% parameterType = null %>
+								<% parameterName = null %>
+
+							<% else if parameterToken is ")": %>
+
+								<span class="wrml-code-normal"><%= parameterToken %></span>		
+
+							<% else if not parameterType: %>																					
+								
+								<% parameterType = parameterToken %>
+								
+								<span class="wrml-code-normal"><%= parameterType %>&nbsp;</span>		
+							
+							<% else if not parameterName: %>																					
+							
+								<% parameterName = parameterToken %>
+
+								<span class="wrml-code-normal"><%= parameterName %></span>		
+
+							<% end %>
+
+						<% end %>											
+
+					</label>
+
+				</div>	
+
+			</div>
+
+		</fieldset>
+
+	</form>		
+
+
 
 
 </section>
