@@ -1,0 +1,90 @@
+<% resourceTitle = "Resource" %>
+<section id="resourceNotFound-page-header-section">
+		
+	
+	<div id="resourceNotFound-page-header">
+	  
+	  <h1>
+
+	  	<img id="title-icon" src="<%= @documentIcon %>" />
+	  	<span class="wrml-title"><%= @documentTitle %></span>
+
+	  </h1>
+	</div>
+
+	<div id="page-header-push">
+
+		<% if @model.description: %>	
+		<div class="well">
+			<p>
+			<%= @model.description %>
+			</p>	
+		</div>
+		<% end %>	
+
+	</div>
+
+</section>
+
+<section id="resourceNotFound">
+	
+	<div class="row">
+
+		<div class="span3">
+		</div>
+
+		<div class="span2">
+			<img id="resourceNotFound-wormle" src="<%= @docroot %>img/wormle/facing-right-from-hole.png" />
+		</div>
+
+		<div class="span5 resourceNotFound-workflow">
+
+			<div class="row">
+			
+				<div class="span4 resourceNotFound-workflow-element">
+					
+					<div class="popover right resourceNotFound-speech-bubble">
+						<div class="arrow"></div>						
+						<div class="popover-content">
+						<p>
+							Do you wish to design a new <strong><%= resourceTitle %></strong>?							
+						</p>
+					</div>
+				
+				</div>
+			
+			</div>
+			
+			<div class="row">
+
+				<div class="span4 resourceNotFound-workflow-element">
+					
+					<form class="form-horizontal resourceNotFound-form">
+
+						<fieldset>			
+								  
+							<div class="control-group">								
+							
+								<div class="controls">												
+									<button class="resourceNotFound-form-button btn btn-inverse" type="button">Create New <%= resourceTitle %></button>
+								</div>	
+
+							</div>
+
+						</fieldset>
+					</form>		
+
+				<div>		
+			
+			</div>
+
+		</div>
+
+		<div class="span7">
+		</div>
+
+
+	</div>
+
+
+</section>

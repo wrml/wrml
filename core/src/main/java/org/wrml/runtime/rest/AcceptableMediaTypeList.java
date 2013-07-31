@@ -26,6 +26,7 @@ package org.wrml.runtime.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wrml.model.rest.CommonHeader;
 import org.wrml.runtime.rest.MediaType.MediaTypeException;
 
 import java.util.ArrayList;

@@ -28,13 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
-import org.wrml.model.rest.Api;
-import org.wrml.model.rest.Document;
-import org.wrml.model.rest.Link;
-import org.wrml.model.rest.LinkRelation;
-import org.wrml.model.rest.LinkTemplate;
-import org.wrml.model.rest.Method;
-import org.wrml.model.rest.ResourceTemplate;
+import org.wrml.model.rest.*;
+import org.wrml.model.rest.status.Status;
 import org.wrml.model.schema.Schema;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
@@ -45,14 +40,7 @@ import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.util.AsciiArt;
 
 import java.net.URI;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -364,13 +352,13 @@ public class ApiNavigator
 
     /**
      * Get the Resource with the specified id. A {@link Resource} is the runtime counterpart/equivalent of a {@link ResourceTemplate}.
-     * 
-     * @param resourceTemplateId
-     *            The {@link URI} that identifies the {@link Resource}'s associated {@link ResourceTemplate}.
+     *
+     * @param resourceTemplateId The {@link URI} that identifies the {@link Resource}'s associated {@link ResourceTemplate}.
      * @return The {@link Resource} associated with the specified {@link ResourceTemplate}'s id.
      */
     public Resource getResource(final UUID resourceTemplateId)
     {
+
         if ((resourceTemplateId == null) || !(_AllResources.containsKey(resourceTemplateId)))
         {
             return null;
@@ -398,11 +386,7 @@ public class ApiNavigator
 
         if (results == null || results.isEmpty())
         {
-            final URI apiUri = getApiUri();
-            ApiNavigator.LOG.error("1 This ApiNavigator has charted \"{}\", which is not a match for the specified URI: {}", new Object[] {apiUri, uri});
-
-            throw new ApiNavigatorException("This ApiNavigator has charted \"" + apiUri + "\", which is not a match for the specified URI: " + uri + ".", null, this,
-                    Status.NOT_FOUND);
+            return null;
         }
 
         final ResourceMatchResult result = results.first();
@@ -418,7 +402,7 @@ public class ApiNavigator
         if (results == null || results.isEmpty())
         {
             final URI apiUri = getApiUri();
-            ApiNavigator.LOG.error("2 This ApiNavigator has charted \"{}\", which is not a match for the specified URI: {}", new Object[] {apiUri, uri});
+            ApiNavigator.LOG.error("2 This ApiNavigator has charted \"{}\", which is not a match for the specified URI: {}", new Object[]{apiUri, uri});
             throw new ApiNavigatorException("This ApiNavigator has charted \"" + apiUri + "\", which is not a match for the specified URI: " + uri + ".", null, this,
                     Status.NOT_FOUND);
         }
@@ -706,7 +690,7 @@ public class ApiNavigator
     private SortedSet<ResourceMatchResult> match(final URI uri)
     {
 
-        ApiNavigator.LOG.debug("Attempting match on URI {}", new Object[] {uri});
+        ApiNavigator.LOG.debug("Attempting match on URI {}", new Object[]{uri});
 
         if (uri == null)
         {

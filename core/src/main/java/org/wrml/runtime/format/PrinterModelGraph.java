@@ -28,6 +28,7 @@ import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.Embedded;
 import org.wrml.model.rest.Link;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.schema.*;

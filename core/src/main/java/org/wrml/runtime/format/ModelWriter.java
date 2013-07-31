@@ -33,7 +33,7 @@ import org.wrml.runtime.format.PrinterModelGraph.ModelReferenceNode;
 import org.wrml.runtime.format.PrinterModelGraph.Node;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.runtime.schema.ValueType;
+import org.wrml.model.schema.ValueType;
 
 import java.io.IOException;
 import java.io.OutputStream;

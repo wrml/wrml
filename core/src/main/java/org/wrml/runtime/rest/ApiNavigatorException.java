@@ -24,6 +24,8 @@
  */
 package org.wrml.runtime.rest;
 
+import org.wrml.model.rest.status.Status;
+
 /**
  * The {@link ApiNavigator}'s associated error type.
  */

@@ -22,12 +22,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wrml.runtime.rest;
+package org.wrml.model.rest.status;
 
 /**
  * http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10
  */
-// Generated from a Web Resource Schema
 public enum Status
 {
 

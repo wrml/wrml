@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.wrml.model.rest.AggregateDocument;
 import org.wrml.model.rest.Document;
 import org.wrml.model.schema.Schema;
+import org.wrml.model.schema.ValueType;
 import org.wrml.util.JavaBean;
 import org.wrml.util.JavaBean.Property;
 import org.wrml.util.JavaMethod;

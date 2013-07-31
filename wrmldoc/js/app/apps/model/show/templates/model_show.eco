@@ -228,7 +228,7 @@
 													<li class="divider"></li>
 													<li><a tabindex="-1" href="#">History</a></li>
 													<li class="divider"></li>
-													<li><a tabindex="-1" href="#">Favorites</a></li>
+													<li><a tabindex="-1" href="#">Bookmarks</a></li>
 												</ul>
 											</div>
 
@@ -281,7 +281,7 @@
 						<li class="divider"></li>
 						<li><a tabindex="-1" href="#">History</a></li>
 						<li class="divider"></li>
-						<li><a tabindex="-1" href="#">Favorites</a></li>
+						<li><a tabindex="-1" href="#">Bookmarks</a></li>
 					</ul>
 				</div>
 
@@ -414,7 +414,7 @@
 										<li class="divider"></li>
 										<li><a tabindex="-1" href="#">History</a></li>
 										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">Favorites</a></li>
+										<li><a tabindex="-1" href="#">Bookmarks</a></li>
 									</ul>
 								</div>
 
@@ -463,32 +463,38 @@
 
 	</form>
 
-	<form class="wrml-form model-form">
+	<% if @api.title: %>
 
-		<fieldset class="wrml-form-fieldset">
-							
-			<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/api.png" /> API</label>																	
-			<div class="input-append">
-				<input type="text" id="api" value="<%= @api.title %>" readonly="readonly">				
-  				<button class="btn btn-inverse" type="button">Open</button>
-			</div>																
+		<form class="wrml-form model-form">
+
+			<fieldset class="wrml-form-fieldset">
+								
+				<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/api.png" /> API</label>																	
+				<div class="input-append">
+					<input type="text" id="api" value="<%= @api.title %>" readonly="readonly">				
+	  				<button class="btn btn-inverse" type="button">Open</button>
+				</div>																
+				
+			</fieldset>
+
+		</form>
+	
+	<% end %>	
+	<% if @api.resource: %>
+
+		<form class="wrml-form model-form">
+
+			<fieldset class="wrml-form-fieldset">
+								
+				<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /> Resource</label>																	
+				<div class="input-append">
+					<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">																							 		
+	  				<button class="btn btn-inverse" type="button">Open</button>
+				</div>																
 			
-		</fieldset>
+			</fieldset>
+		</form>		
 
-	</form>
-
-	<form class="wrml-form model-form">
-
-		<fieldset class="wrml-form-fieldset">
-							
-			<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /> Resource</label>																	
-			<div class="input-append">
-				<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">																							 		
-  				<button class="btn btn-inverse" type="button">Open</button>
-			</div>																
-		
-		</fieldset>
-	</form>		
-
+	<% end %>	
 </section>
 

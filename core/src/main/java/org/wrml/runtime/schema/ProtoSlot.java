@@ -25,6 +25,7 @@
 package org.wrml.runtime.schema;
 
 import org.wrml.model.schema.Slot;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 
 import java.lang.annotation.Annotation;

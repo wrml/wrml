@@ -31,7 +31,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.wrml.model.Model;
 import org.wrml.model.rest.*;
+import org.wrml.model.rest.status.ApiNotFoundErrorReport;
+import org.wrml.model.rest.status.DocumentNotFoundErrorReport;
+import org.wrml.model.rest.status.ErrorReport;
+import org.wrml.model.rest.status.ResourceNotFoundErrorReport;
 import org.wrml.model.schema.Schema;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.Keys;
@@ -151,6 +156,23 @@ public class WrmldocFormatter extends AbstractFormatter
                 schemaValue = EMPTY_OBJECT;
                 documentIcon = _Docroot + "img/linkRelation.png";
             }
+            else if (model instanceof ErrorReport)
+            {
+                modelValue = model.toString();
+                schemaValue = EMPTY_OBJECT;
+                if (model instanceof ApiNotFoundErrorReport)
+                {
+                    documentIcon = _Docroot + "img/apiNotFound.png";
+                }
+                else if (model instanceof ResourceNotFoundErrorReport)
+                {
+                    documentIcon = _Docroot + "img/resourceNotFound.png";
+                }
+                else if (model instanceof DocumentNotFoundErrorReport)
+                {
+                    documentIcon = _Docroot + "img/documentNotFound.png";
+                }
+            }
             else
             {
                 modelValue = model.toString();
@@ -178,7 +200,6 @@ public class WrmldocFormatter extends AbstractFormatter
         }
 
     }
-
 
 
     public MessageFormat getTemplate(String templateName) throws IOException
@@ -689,6 +710,7 @@ public class WrmldocFormatter extends AbstractFormatter
 
     private String buildLinkSignature(final String linkFunctionName, final URI responseSchemaUri, final URI requestSchemaUri, final URI thisSchemaUri)
     {
+
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
@@ -729,7 +751,7 @@ public class WrmldocFormatter extends AbstractFormatter
     }
 
 
-    private ObjectNode buildLinkRelationNode(final ObjectMapper objectMapper,  final LinkRelation linkRelation)
+    private ObjectNode buildLinkRelationNode(final ObjectMapper objectMapper, final LinkRelation linkRelation)
     {
 
         final Context context = getContext();

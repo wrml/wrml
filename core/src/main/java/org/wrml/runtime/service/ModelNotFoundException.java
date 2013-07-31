@@ -24,9 +24,7 @@
  */
 package org.wrml.runtime.service;
 
-import org.wrml.runtime.rest.Status;
-import org.wrml.runtime.service.Service;
-import org.wrml.runtime.service.ServiceException;
+import org.wrml.model.rest.status.Status;
 
 public class ModelNotFoundException extends ServiceException
 {

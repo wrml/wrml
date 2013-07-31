@@ -26,6 +26,7 @@ package org.wrml.runtime;
 
 import com.rits.cloning.Cloner;
 import org.wrml.model.Model;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.DefaultModel.ModelState;
 import org.wrml.runtime.schema.*;
 

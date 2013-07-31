@@ -22,14 +22,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wrml.runtime.schema;
+package org.wrml.model.schema;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.wrml.model.Abstract;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.Link;
-import org.wrml.model.schema.*;
 import org.wrml.runtime.CompositeKey;
 
 import java.lang.reflect.ParameterizedType;
@@ -310,7 +309,7 @@ public enum ValueType
         return ValueType.TYPE_MAP.containsKey(rawJavaType);
     }
 
-    final static Class<?> getRawType(final Type type)
+    public final static Class<?> getRawType(final Type type)
     {
 
         final Class<?> rawType;

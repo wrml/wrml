@@ -1,0 +1,137 @@
+<% documentTitle = "Document" %>
+<section id="documentNotFound-page-header-section">
+		
+	
+	<div id="documentNotFound-page-header">
+	  
+	  <h1>
+
+	  	<img id="title-icon" src="<%= @documentIcon %>" />
+	  	<span class="wrml-title"><%= @documentTitle %></span>
+
+	  </h1>
+	</div>
+
+	<div id="page-header-push">
+
+		<% if @model.description: %>	
+		<div class="well">
+			<p>
+			<%= @model.description %>
+			</p>	
+		</div>
+		<% end %>	
+
+	</div>
+
+</section>
+
+<section id="documentNotFound">
+	
+	<div class="row">
+
+
+		<div class="span2">
+			<img id="documentNotFound-wormle" src="<%= @docroot %>img/wormle/facing-right-from-hole.png" />
+		</div>
+
+		<div class="span10 documentNotFound-workflow">
+
+			<div class="row">
+			
+				<div class="span10 documentNotFound-workflow-element">
+					
+					<div class="popover right documentNotFound-speech-bubble">
+						<div class="arrow"></div>						
+						<div class="popover-content">
+						<p>
+							Do you wish to create a new <strong><%= documentTitle %></strong>?							
+						</p>
+					</div>
+				
+				</div>
+			
+			</div>
+			
+			<div class="row">
+
+				<div class="span10 documentNotFound-workflow-element">
+					
+					<form class="documentNotFound-form form-horizontal">
+
+						<fieldset>	
+						
+							<div class="control-group">										  
+								<label class="control-label" for="schema"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/schema.png" /> Schema</label>	
+
+								<div class="controls">												
+									<div class="input-append">
+						  				<input id="schema" type="text" value="<%= @model.defaultSchemaTitle %>" readonly="readonly">				
+						  				
+										<div class="btn-group">
+											<button class="btn btn-inverse" type="button">Open</button>
+											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+											<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a tabindex="-1" href="#">Open</a></li>
+												<li class="divider"></li>
+												<li><a tabindex="-1" href="#">Clear</a></li>
+												<li class="divider"></li>
+												<li><a tabindex="-1" href="#">History</a></li>
+												<li class="divider"></li>
+												<li><a tabindex="-1" href="#">Bookmarks</a></li>
+											</ul>
+										</div>
+
+									</div>		
+
+			
+
+
+								</div>	
+							</div>	
+
+							<div class="control-group">		
+								<label class="control-label" for="uri"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Text.png" /> URI</label>																	
+								  
+								<div class="controls">												
+									<input id="uri" type="text" value="<%= @model.requestUri %>" readonly="readonly">
+								</div>	
+							</div>	
+
+							<% if @model.surrogateKeyValues and @model.surrogateKeyValues.length > 0: %>
+								<% for surrogateKeyValue in @model.surrogateKeyValues: %>
+    
+									<div class="control-group">		
+										<label class="control-label" for="<%= surrogateKeyValue.name %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/<%= surrogateKeyValue.valueType %>.png" /> <%= surrogateKeyValue.name %></label>																											  
+										<div class="controls">												
+											<input id="<%= surrogateKeyValue.name %>" type="text" value="<%= surrogateKeyValue.textValue %>" readonly="readonly">
+										</div>	
+									</div>	
+
+								<% end %>
+							<% end %>
+
+							<div class="control-group">								
+							
+								<div class="controls">												
+									<button class="documentNotFound-form-button btn btn-inverse" type="button">Create New <%= documentTitle %></button>
+								</div>	
+
+							</div>
+
+						</fieldset>
+					</form>		
+
+				<div>		
+			
+			</div>
+
+		</div>
+
+
+	</div>
+
+
+</section>

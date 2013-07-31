@@ -26,8 +26,7 @@ package org.wrml.model.rest;
 
 import org.wrml.model.Described;
 import org.wrml.model.Model;
-import org.wrml.runtime.rest.CommonHeader;
-import org.wrml.runtime.rest.Status;
+import org.wrml.model.rest.status.Status;
 import org.wrml.runtime.rest.UriTemplate;
 
 import java.util.List;
@@ -51,7 +50,7 @@ public interface ResourceOptions extends Model, Described
 
     /**
      * @param status
-     *            - a RESTful {@link Status}.
+     *            - a RESTful {@link org.wrml.model.rest.status.Status}.
      */
     void setStatus(Status status);
 

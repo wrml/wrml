@@ -24,7 +24,7 @@
  */
 package org.wrml.runtime.service;
 
-import org.wrml.runtime.rest.Status;
+import org.wrml.model.rest.status.Status;
 
 /**
  * <p>

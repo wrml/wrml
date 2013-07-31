@@ -24,6 +24,7 @@
  */
 package org.wrml.runtime.schema;
 
+import org.wrml.model.schema.ValueType;
 import org.wrml.util.JavaBean;
 
 import java.lang.reflect.Type;
@@ -31,7 +32,7 @@ import java.net.URI;
 
 /**
  * <p>
- * The runtime representation of {@link CollectionSlot}, which is a {@link ValueType#List} ({@link java.util.List}) slot
+ * The runtime representation of {@link CollectionSlot}, which is a {@link org.wrml.model.schema.ValueType#List} ({@link java.util.List}) slot
  * with elements that derive from {@link org.wrml.model.Model} and are <i>dynamically</i> added to the slot based upon
  * the results of a <i>search</i> that is performed upon request of the slot's containing {@link org.wrml.model.Model},
  * which is known as the "referrer".

@@ -31,7 +31,7 @@ import org.wrml.model.Model;
 import org.wrml.model.rest.Link;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Keys;
-import org.wrml.runtime.schema.ValueType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.action.WerminalAction;

@@ -28,6 +28,7 @@ import org.wrml.model.rest.Method;
 import org.wrml.model.schema.LinkValue;
 import org.wrml.model.schema.Schema;
 import org.wrml.model.schema.ValueSourceType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.util.JavaMethod;
 
 import java.lang.annotation.Annotation;

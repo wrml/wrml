@@ -26,10 +26,7 @@ package org.wrml.server;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -59,6 +56,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
+@Ignore
 public class WrmlServletTest
 {
 

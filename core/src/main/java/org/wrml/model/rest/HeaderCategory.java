@@ -22,16 +22,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wrml.model;
+package org.wrml.model.rest;
 
-public interface Alert extends Named, Titled, Described, Model
+// Generated from a Web Resource Schema
+public enum HeaderCategory
 {
 
-    String getCategory();
+    GENERAL("General"),
+    REQUEST("Request"),
+    RESPONSE("Response"),
+    ENTITY("Entity"),
+    EXTENSION("Extension");
 
-    String getDetails();
+    private final String _Name;
 
-    String getMessage();
+    private HeaderCategory(final String name)
+    {
+        _Name = name;
+    }
 
-    String getType();
+    public String getName()
+    {
+        return _Name;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
+
 }

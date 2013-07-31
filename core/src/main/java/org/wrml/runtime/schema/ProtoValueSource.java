@@ -27,6 +27,7 @@ package org.wrml.runtime.schema;
 import org.apache.commons.lang3.StringUtils;
 import org.wrml.model.Model;
 import org.wrml.model.schema.ValueSourceType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.syntax.SyntaxLoader;

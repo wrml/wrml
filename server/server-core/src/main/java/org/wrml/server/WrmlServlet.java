@@ -33,13 +33,17 @@ import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
 import org.wrml.model.format.Format;
 import org.wrml.model.rest.Api;
+import org.wrml.model.rest.CommonHeader;
 import org.wrml.model.rest.Method;
+import org.wrml.model.rest.status.*;
 import org.wrml.runtime.*;
 import org.wrml.runtime.format.FormatLoader;
 import org.wrml.runtime.format.ModelReadingException;
 import org.wrml.runtime.format.ModelWriterException;
 import org.wrml.runtime.rest.*;
 import org.wrml.runtime.rest.MediaType.MediaTypeException;
+import org.wrml.runtime.schema.PropertyProtoSlot;
+import org.wrml.runtime.schema.Prototype;
 import org.wrml.util.PropertyUtil;
 
 import javax.servlet.ServletConfig;
@@ -160,27 +164,6 @@ public class WrmlServlet extends HttpServlet
             throw new ServletException("Unable to initialize servlet.", ex);
         }
 
-        //
-        // TODO: Uncomment this when the broken merge is unbroken
-        //
-        /*
-        String exceptionMapConfigFilePath = servletConfig.getInitParameter(EXCEPTION_MAP_CONFIG_KEY);
-        if (!StringUtils.isEmpty(exceptionMapConfigFilePath))
-        {
-            ObjectMapper mapper = new ObjectMapper();
-            try
-            {
-                InputStream is = new FileInputStream(exceptionMapConfigFilePath);
-                this.exceptionMap = mapper.readValue(is, ExceptionMap.class);
-            }
-            catch (Exception e)
-            {
-                throw new ServletException("Error reading exception map config file", e);
-            }
-        }
-        */
-
-
         LOGGER.info("WRML SERVLET INITIALIZED --------------------------------------------------");
     }
 
@@ -229,6 +212,9 @@ public class WrmlServlet extends HttpServlet
         // Determine the HTTP interaction method.
         final Method method = Method.fromProtocolGivenName(request.getMethod().toUpperCase());
 
+        final String acceptHeaderStringValue = request.getHeader(HttpHeaders.ACCEPT);
+        final List<MediaType> acceptableMediaTypes = new AcceptableMediaTypeList(acceptHeaderStringValue);
+
         try
         {
             // Determine the identity of the request's resource "endpoint".
@@ -237,7 +223,8 @@ public class WrmlServlet extends HttpServlet
             final ApiNavigator apiNavigator = apiLoader.getParentApiNavigator(requestUri);
             if (apiNavigator == null)
             {
-                throw new ServletException("A 404. No parent WRML REST API was found for requested URI: " + requestUri);
+                final ApiNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(ApiNotFoundErrorReport.class, requestUri, null);
+                throw new WrmlServletException(notFoundErrorReport);
             }
 
             final Api api = apiNavigator.getApi();
@@ -247,11 +234,9 @@ public class WrmlServlet extends HttpServlet
             final Resource endpointResource = apiNavigator.getResource(requestUri);
             if (endpointResource == null)
             {
-                throw new ServletException("A 404. The WRML REST API (" + api.getTitle() + ") doesn't define a resource that matches the requested URI: " + requestUri);
+                final ResourceNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(ResourceNotFoundErrorReport.class, requestUri, api);
+                throw new WrmlServletException(notFoundErrorReport);
             }
-
-            final String acceptHeaderStringValue = request.getHeader(HttpHeaders.ACCEPT);
-            final List<MediaType> acceptableMediaTypes = new AcceptableMediaTypeList(acceptHeaderStringValue);
 
             // Build the Model query objects; the Keys (URI and other identities) and Dimensions ("header" metadata).
             final Dimensions dimensions = buildDimensions(request, method, requestUri, api, acceptableMediaTypes);
@@ -263,16 +248,93 @@ public class WrmlServlet extends HttpServlet
             // Read the request entity (with PUT or POST) as a model that will be passed as a parameter.
             final Model parameterModel = readModelFromRequestEntity(request, method, requestUri);
 
-            //LOGGER.debug("Request method ["  + method.getProtocolGivenName() + "] passed parameter Model\n: " + parameterModel);
+            if (parameterModel != null)
+            {
+                LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] passed parameter Model\n: " + parameterModel);
+            }
 
             // Delegate to the WRML runtime to service the request from here.
             final Model responseModel = context.request(method, keys, dimensions, parameterModel);
 
-            LOGGER.debug("Request method ["  + method.getProtocolGivenName() + "] returning response Model: \n" + responseModel);
+            if (responseModel == null)
+            {
+                LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] URI: " + requestUri + " returned a null Model.");
 
-            // Figure out how to respond
-            delegateResponse(requestUri, method, responseModel, response, acceptableMediaTypes);
 
+                switch (method)
+                {
+                    case Get:
+                    {
+                        final DocumentNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(DocumentNotFoundErrorReport.class, requestUri, api);
+                        final URI defaultSchemaUri = dimensions.getSchemaUri();
+                        final Prototype defaultSchemaPrototype = context.getSchemaLoader().getPrototype(defaultSchemaUri);
+                        notFoundErrorReport.setDefaultSchemaUri(defaultSchemaUri);
+                        notFoundErrorReport.setDefaultSchemaTitle(defaultSchemaPrototype.getTitle());
+
+                        if (keys.getCount() > 1)
+                        {
+
+                            final Set<Parameter> surrogateKeyComponents = apiNavigator.getSurrogateKeyComponents(requestUri, defaultSchemaPrototype);
+                            if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty())
+                            {
+                                for (final Parameter surrogateKeyComponent : surrogateKeyComponents)
+                                {
+                                    final SurrogateKeyValue surrogateKeyValue = context.newModel(SurrogateKeyValue.class);
+                                    final String keySlotName = surrogateKeyComponent.getName();
+                                    surrogateKeyValue.setName(keySlotName);
+                                    surrogateKeyValue.setTextValue(surrogateKeyComponent.getValue());
+
+                                    final PropertyProtoSlot propertyProtoSlot = defaultSchemaPrototype.getProtoSlot(keySlotName);
+                                    surrogateKeyValue.setDeclaringSchemaUri(propertyProtoSlot.getDeclaringSchemaUri());
+                                    surrogateKeyValue.setValueType(propertyProtoSlot.getValueType());
+
+                                    notFoundErrorReport.getSurrogateKeyValues().add(surrogateKeyValue);
+                                }
+                            }
+                        }
+
+                        throw new WrmlServletException(notFoundErrorReport);
+                        //break;
+                    }
+                    case Save:
+                    {
+                        throw new ServletException("A 400. The save operation didn't return a response representation for the requested URI: " + requestUri);
+                        //break;
+                    }
+
+                    default:
+
+                        writeVoid(response);
+                        break;
+                }
+
+            }
+            else
+            {
+                LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] returning response Model: \n" + responseModel);
+
+                try
+                {
+                    writeModelAsResponseEntity(response, responseModel, acceptableMediaTypes, method);
+                }
+                catch (final ModelWriterException | MediaTypeException e)
+                {
+                    throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + responseModel + "]).", e);
+                }
+            }
+
+
+        }
+        catch (final WrmlServletException wse)
+        {
+            try
+            {
+                writeModelAsResponseEntity(response, wse.getErrorReport(), acceptableMediaTypes, method);
+            }
+            catch (Exception e)
+            {
+                throw new IOException("Failed to write error report to HTTP response output stream.", e);
+            }
         }
         catch (final Exception e)
         {
@@ -283,6 +345,45 @@ public class WrmlServlet extends HttpServlet
             // TODO, map a response in the function call?
             writeException(e, response, !method.isEntityAllowedInResponseMessage());
         }
+    }
+
+    private <T extends NotFoundErrorReport> T createNotFoundErrorReport(final Class<T> notFoundErrorType, final URI requestUri, final Api api)
+    {
+
+        final Context context = getContext();
+        final NotFoundErrorReport notFoundErrorReport = context.newModel(notFoundErrorType);
+        notFoundErrorReport.setStatus(Status.NOT_FOUND);
+        notFoundErrorReport.setRequestUri(requestUri);
+
+        final String title;
+        final String description;
+
+        if (notFoundErrorReport instanceof ApiNotFoundErrorReport)
+        {
+            title = "API Not Found";
+            description = "No parent WRML REST API was found for requested URI: " + requestUri;
+        }
+        else if (notFoundErrorReport instanceof ResourceNotFoundErrorReport)
+        {
+            title = "Resource Not Found";
+            description = "The WRML REST API (" + api.getTitle() + ") does not define a resource that matches the requested URI: " + requestUri;
+            ((ResourceNotFoundErrorReport) notFoundErrorReport).setParentApiUri(api.getUri());
+        }
+        else if (notFoundErrorReport instanceof DocumentNotFoundErrorReport)
+        {
+            title = "Document Not Found";
+            description = "The WRML REST API (" + api.getTitle() + ") does not have a document that matches the requested URI: " + requestUri;
+            ((DocumentNotFoundErrorReport) notFoundErrorReport).setParentApiUri(api.getUri());
+        }
+        else
+        {
+            title = null;
+            description = null;
+        }
+
+        notFoundErrorReport.setTitle(title);
+        notFoundErrorReport.setDescription(description);
+        return (T) notFoundErrorReport;
     }
 
     /**
@@ -361,7 +462,7 @@ public class WrmlServlet extends HttpServlet
 
     /**
      * Build the WRML {@link Dimensions} object that, within the WRML runtime, will represent many of the same
-     * "metadata" ideas that HTTP has delcared {@link org.wrml.runtime.rest.CommonHeader}s.
+     * "metadata" ideas that HTTP has delcared {@link org.wrml.model.rest.CommonHeader}s.
      *
      * @param request              The {@link HttpServletRequest} that holds the metadata that is needed for the {@link Dimensions}.
      * @param method               The requested interaction {@link Method}.
@@ -498,45 +599,6 @@ public class WrmlServlet extends HttpServlet
         return Arrays.asList(listElementArray);
     }
 
-    /**
-     * TODO: Add Javadoc comments.
-     *
-     * @param location
-     * @param method
-     * @param responseModel
-     * @param response
-     * @param acceptableMediaTypes
-     * @throws IOException
-     * @throws ServletException
-     */
-    void delegateResponse(final URI location, final Method method, final Model responseModel, final HttpServletResponse response, final List<MediaType> acceptableMediaTypes)
-            throws IOException, ServletException
-    {
-        // TODO flesh out Method/Model/Status mapping
-        // TODO inlcude exception handling here?
-        if (responseModel == null)
-        {
-            if (method.isEntityAllowedInResponseMessage() || method.equals(Method.Metadata))
-            {
-                writeNotFound(response);
-            }
-            else
-            {
-                writeVoid(response);
-            }
-        }
-        else
-        {
-            try
-            {
-                writeModelAsResponseEntity(response, responseModel, acceptableMediaTypes, !method.isEntityAllowedInResponseMessage());
-            }
-            catch (final ModelWriterException | MediaTypeException e)
-            {
-                throw new ServletException("Failed to write model to HTTP response output stream (URI = " + location + ", Model = [" + responseModel + "]).", e);
-            }
-        }
-    }
 
     Model readModelFromRequestEntity(final HttpServletRequest request, final Method requestMethod, final URI uri) throws ServletException
     {
@@ -660,33 +722,6 @@ public class WrmlServlet extends HttpServlet
         return requestSchemaUri;
     }
 
-    //
-    // TODO: Uncomment this when the broken merge is unbroken
-    //
-    /*
-    private void writeException(final HttpServletRequest request, final HttpServletResponse response, final Exception error) throws IOException
-    {
-
-        final Method method = Method.fromProtocolGivenName(request.getMethod().toUpperCase());
-        try
-        {
-            Context context = getContext();
-            final List<MediaType> accepts = new AcceptableMediaTypeList(request.getHeader(HttpHeaders.ACCEPT));
-            ExceptionMapEntry eme = exceptionMap.map(request.getMethod(), error);
-            Alert alertModel = context.newModel(Alert.class);
-            alertModel.setSlotValue("category", eme.getCattegory());
-            alertModel.setSlotValue("message", eme.formatMessage(error));
-            alertModel.setSlotValue("type", eme.getType());
-            alertModel.setSlotValue("details", eme.formatDetails(error));
-            writeModel(eme.getHttpStatusCode(), response, alertModel, accepts, !method.isEntityAllowedInResponseMessage());
-        }
-        catch (Exception e)
-        {
-            writeException(e, response, !method.isEntityAllowedInResponseMessage());
-        }
-    }
-    */
-
     private void writeException(final Exception e, final HttpServletResponse response, final boolean noBody) throws IOException
     {
 
@@ -704,16 +739,19 @@ public class WrmlServlet extends HttpServlet
 
                 final OutputStream responseOut = response.getOutputStream();
 
-                IOUtils.write((e.getMessage()), responseOut);
-                responseOut.flush();
-                responseOut.close();
+                if (responseOut != null)
+                {
+                    IOUtils.write((e.getMessage()), responseOut);
+                    responseOut.flush();
+                    responseOut.close();
+                }
             }
         }
 
         response.flushBuffer();
     }
 
-    void writeModelAsResponseEntity(final HttpServletResponse response, final Model responseModel, final List<MediaType> acceptableMediaTypes, final boolean noBody) throws MediaTypeException, ServletException, IOException
+    void writeModelAsResponseEntity(final HttpServletResponse response, final Model responseModel, final List<MediaType> acceptableMediaTypes, final Method method) throws MediaTypeException, ServletException, IOException
     {
 
         // Set the content type
@@ -725,7 +763,7 @@ public class WrmlServlet extends HttpServlet
         final String contentTypeHeaderValue = responseEntityMediaType.toContentType();
         response.setContentType(contentTypeHeaderValue);
 
-        LOGGER.debug("Responding with Content-Type: "  + contentTypeHeaderValue);
+        LOGGER.debug("Responding with Content-Type: " + contentTypeHeaderValue);
 
         // Set the locale
         final Dimensions responseDimensions = responseModel.getDimensions();
@@ -738,6 +776,7 @@ public class WrmlServlet extends HttpServlet
         // Set the status
         response.setStatus(HttpServletResponse.SC_OK);
 
+        final boolean noBody = !method.isEntityAllowedInResponseMessage();
         if (noBody)
         {
             response.setContentLength(0);

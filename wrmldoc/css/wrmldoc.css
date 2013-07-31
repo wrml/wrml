@@ -6388,11 +6388,12 @@ input[type="color"]:focus,
   font-weight: bold;
   margin-top: 5px;
   vertical-align: middle; }
-  .wrml-form-field-label .wrml-form-field-label-icon {
-    width: 20px;
-    height: 20px;
-    padding-right: 2px;
-    display: inline; }
+
+.wrml-form-field-label-icon {
+  width: 20px;
+  height: 20px;
+  padding-right: 2px;
+  display: inline; }
 
 .wrml-form-fieldset {
   margin-left: 60px;
@@ -6563,6 +6564,109 @@ input[type="color"]:focus,
     #main-region .resource-table .signature span {
       margin: 0px;
       padding: 0px; }
+
+#main-region #apiNotFound-page-header-section {
+  margin-bottom: 0px; }
+#main-region #apiNotFound-page-header {
+  top: 40px;
+  position: fixed;
+  z-index: 1029;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid black;
+  width: 940px;
+  background-color: white; }
+#main-region #page-header-push {
+  margin-bottom: 0px; }
+#main-region .well {
+  margin-bottom: 5px; }
+#main-region #apiNotFound {
+  margin-top: 0px;
+  background-color: white;
+  padding-top: 0px; }
+#main-region #apiNotFound-wormle {
+  float: right;
+  width: 100px;
+  height: 493px; }
+#main-region .apiNotFound-workflow {
+  margin-top: 200px; }
+#main-region .apiNotFound-workflow-element {
+  margin-top: 40px;
+  margin-left: 0px; }
+#main-region .apiNotFound-speech-bubble {
+  position: relative;
+  display: block;
+  float: right;
+  max-width: 350px;
+  margin-left: -30px;
+  padding: 10px; }
+  #main-region .apiNotFound-speech-bubble p {
+    margin-bottom: 0px; }
+#main-region .apiNotFound-form fieldset {
+  margin-left: 0px; }
+  #main-region .apiNotFound-form fieldset .control-group .controls {
+    margin-left: 0px; }
+  #main-region .apiNotFound-form fieldset .apiNotFound-form-button {
+    margin-left: 80px; }
+
+#main-region #documentNotFound-page-header-section {
+  margin-bottom: 0px; }
+#main-region #documentNotFound-page-header {
+  top: 40px;
+  position: fixed;
+  z-index: 1029;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid black;
+  width: 940px;
+  background-color: white; }
+#main-region #page-header-push {
+  margin-bottom: 0px; }
+#main-region .well {
+  margin-bottom: 5px; }
+#main-region #documentNotFound {
+  margin-top: 0px;
+  background-color: white;
+  padding-top: 0px; }
+#main-region #documentNotFound-wormle {
+  float: right;
+  width: 100px;
+  height: 493px; }
+#main-region .documentNotFound-workflow {
+  margin-top: 100px; }
+#main-region .documentNotFound-workflow-element {
+  margin-top: 40px;
+  margin-left: 0px; }
+#main-region .documentNotFound-speech-bubble {
+  position: relative;
+  display: block;
+  float: left;
+  max-width: 400px;
+  margin-left: 30px;
+  padding: 10px; }
+  #main-region .documentNotFound-speech-bubble p {
+    margin-bottom: 0px; }
+#main-region .documentNotFound-form fieldset {
+  margin-left: 0px; }
+  #main-region .documentNotFound-form fieldset .control-group .control-label {
+    display: inline-block;
+    margin-left: 0px;
+    font-weight: bold;
+    vertical-align: middle; }
+  #main-region .documentNotFound-form fieldset .control-group .controls {
+    margin-left: 0px; }
+    #main-region .documentNotFound-form fieldset .control-group .controls input {
+      margin-left: 10px;
+      width: 350px; }
+  #main-region .documentNotFound-form fieldset .documentNotFound-form-button {
+    margin-top: 20px;
+    margin-left: 80px; }
+#main-region .wrml-form-field-label {
+  margin-left: 0px; }
 
 /*
  * WRML - Web Resource Modeling Language
@@ -6802,6 +6906,52 @@ input[type="color"]:focus,
   width: 805px; }
 #main-region #relation-method-form {
   margin-top: 20px; }
+
+#main-region #resourceNotFound-page-header-section {
+  margin-bottom: 0px; }
+#main-region #resourceNotFound-page-header {
+  top: 40px;
+  position: fixed;
+  z-index: 1029;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid black;
+  width: 940px;
+  background-color: white; }
+#main-region #page-header-push {
+  margin-bottom: 0px; }
+#main-region .well {
+  margin-bottom: 5px; }
+#main-region #resourceNotFound {
+  margin-top: 0px;
+  background-color: white;
+  padding-top: 0px; }
+#main-region #resourceNotFound-wormle {
+  float: right;
+  width: 100px;
+  height: 493px; }
+#main-region .resourceNotFound-workflow {
+  margin-top: 200px; }
+#main-region .resourceNotFound-workflow-element {
+  margin-top: 40px;
+  margin-left: 0px; }
+#main-region .resourceNotFound-speech-bubble {
+  position: relative;
+  display: block;
+  float: right;
+  max-width: 400px;
+  margin-left: -30px;
+  padding: 10px; }
+  #main-region .resourceNotFound-speech-bubble p {
+    margin-bottom: 0px; }
+#main-region .resourceNotFound-form fieldset {
+  margin-left: 0px; }
+  #main-region .resourceNotFound-form fieldset .control-group .controls {
+    margin-left: 0px; }
+  #main-region .resourceNotFound-form fieldset .resourceNotFound-form-button {
+    margin-left: 80px; }
 
 #main-region .schema-section fieldset {
   margin-left: 20px;

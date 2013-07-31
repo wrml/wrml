@@ -33,10 +33,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.Mockito;
+import org.wrml.model.rest.status.Status;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Engine;
 import org.wrml.runtime.EngineTest;
-import org.wrml.runtime.rest.Status;
 import org.wrml.runtime.rest.UriTemplate;
 
 import java.util.ArrayList;

@@ -26,6 +26,7 @@ package org.wrml.runtime.schema;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.wrml.model.Model;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.util.JavaBean.Property;
 

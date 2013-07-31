@@ -1,0 +1,102 @@
+
+#main-region							
+{ 
+
+	#apiNotFound-page-header-section
+	{
+
+		margin-bottom: 0px;		 
+	}
+
+	#apiNotFound-page-header
+	{
+		 
+		top: $navbarHeight;
+		position: fixed;
+		z-index: 1029;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		margin-top: 0px;
+		margin-bottom: 0px;		 
+		border-bottom: 1px solid $black;
+		width: 940px;
+		background-color: $white;
+
+	}
+
+	#page-header-push
+	{
+		margin-bottom: 0px;		 
+	}
+
+	.well 
+	{
+		margin-bottom: 5px;		 
+	}
+
+	#apiNotFound
+	{	 
+		margin-top: 0px;
+		background-color: $white;
+		padding-top: 0px;	
+	}
+
+	#apiNotFound-wormle
+	{
+		float: right;
+		width: 100px;
+		height: 493px;
+	}
+
+	.apiNotFound-workflow
+	{
+		margin-top: 200px;	
+	}
+
+	.apiNotFound-workflow-element 
+	{
+		margin-top: 40px;
+		margin-left: 0px;
+	}
+
+	.apiNotFound-speech-bubble
+	{
+        position: relative;
+        display: block;
+        float: right;
+        max-width: 350px;
+        margin-left: -30px;
+		padding: 10px;		
+
+		p
+        {
+        	margin-bottom: 0px;		
+        }
+
+	}
+
+	.apiNotFound-form
+	{
+		fieldset
+		{
+			margin-left: 0px;
+
+			.control-group
+			{
+				.controls
+				{
+					margin-left: 0px;
+				}
+			}
+
+			.apiNotFound-form-button
+			{
+				margin-left: 80px;
+			}
+
+
+		}
+	}
+
+}
+

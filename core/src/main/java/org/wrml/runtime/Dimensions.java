@@ -69,9 +69,6 @@ public interface Dimensions extends Serializable
 
     /**
      * An <i>optional</i> map of metadata "headers" associated with these {@link Dimensions}.
-     *
-     * @see org.wrml.runtime.rest.HeaderCategory
-     * @see org.wrml.runtime.rest.CommonHeader
      */
     SortedMap<String, String> getMetadata();
 

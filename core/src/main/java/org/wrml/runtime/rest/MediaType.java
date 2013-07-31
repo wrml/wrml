@@ -25,6 +25,7 @@
 package org.wrml.runtime.rest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.wrml.model.rest.CommonHeader;
 
 import java.util.HashMap;
 import java.util.Map;

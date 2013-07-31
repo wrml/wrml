@@ -133,7 +133,7 @@
 									<li class="divider"></li>
 									<li><a tabindex="-1" href="#">History</a></li>
 									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Favorites</a></li>
+									<li><a tabindex="-1" href="#">Bookmarks</a></li>
 								</ul>
 							</div>
 
@@ -145,7 +145,7 @@
 			<% end %>
 
 			<% if selectedMethod isnt "GET" and selectedMethod isnt "DELETE": %>
-			
+
 				<div class="control-group">			
 					
 					<label class="control-label" for="requestSchema">Request Schema</label>
@@ -168,7 +168,7 @@
 									<li class="divider"></li>
 									<li><a tabindex="-1" href="#">History</a></li>
 									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Favorites</a></li>
+									<li><a tabindex="-1" href="#">Bookmarks</a></li>
 								</ul>
 							</div>
 

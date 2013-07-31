@@ -44,6 +44,7 @@ import org.wrml.model.Filed;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.Method;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.*;
 import org.wrml.runtime.format.application.schema.json.JsonSchemaLoader;
 import org.wrml.runtime.rest.ApiLoader;

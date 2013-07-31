@@ -29,6 +29,7 @@ import org.wrml.model.format.Format;
 import org.wrml.model.rest.LinkRelation;
 import org.wrml.model.schema.Choices;
 import org.wrml.model.schema.Schema;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.Keys;

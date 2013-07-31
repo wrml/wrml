@@ -45,21 +45,28 @@
 
 		schemaUri = App.wrmlData.get "schemaUri" 
 
-		# App.module("RegistrationApp").start(App.wrmlData)	
-
+		#App.module("RegistrationApp").start(App.wrmlData)	
 		
-		if schemaUri == "http://schema.api.wrml.org/org/wrml/model/schema/Schema" 
+		if schemaUri is "http://schema.api.wrml.org/org/wrml/model/schema/Schema" 
 			App.module("SchemaApp").start(App.wrmlData)	
 
-		else if schemaUri == "http://schema.api.wrml.org/org/wrml/model/rest/Api" 
+		else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/Api" 
 			App.module("ApiApp").start(App.wrmlData)	
 
-		else if schemaUri == "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation" 
+		else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation" 
 			App.module("RelationApp").start(App.wrmlData)	
+
+		else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ApiNotFoundErrorReport" 
+			App.module("ApiNotFoundApp").start(App.wrmlData)	
+
+		else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ResourceNotFoundErrorReport" 
+			App.module("ResourceNotFoundApp").start(App.wrmlData)	
+
+		else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/DocumentNotFoundErrorReport" 
+			App.module("DocumentNotFoundApp").start(App.wrmlData)	
 
 		else
 			App.module("ModelApp").start(App.wrmlData)	
-				
 		
 		App.module("FooterApp").start(App.wrmlData)
 		

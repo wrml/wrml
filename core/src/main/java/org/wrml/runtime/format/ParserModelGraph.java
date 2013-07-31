@@ -45,10 +45,9 @@ import org.wrml.runtime.schema.PropertyProtoSlot;
 import org.wrml.runtime.schema.ProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.runtime.schema.ValueType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.syntax.SyntaxHandler;
 import org.wrml.runtime.syntax.SyntaxLoader;
-import java.util.List;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.slf4j.Logger;

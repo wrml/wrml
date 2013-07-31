@@ -1,0 +1,90 @@
+<% apiTitle = "API" %>
+<section id="apiNotFound-page-header-section">
+		
+	
+	<div id="apiNotFound-page-header">
+	  
+	  <h1>
+
+	  	<img id="title-icon" src="<%= @documentIcon %>" />
+	  	<span class="wrml-title"><%= @documentTitle %></span>
+
+	  </h1>
+	</div>
+
+	<div id="page-header-push">
+
+		<% if @model.description: %>	
+		<div class="well">
+			<p>
+			<%= @model.description %>
+			</p>	
+		</div>
+		<% end %>	
+
+	</div>
+
+</section>
+
+<section id="apiNotFound">
+	
+	<div class="row">
+
+		<div class="span3">
+		</div>
+
+		<div class="span2">
+			<img id="apiNotFound-wormle" src="<%= @docroot %>img/wormle/facing-right-from-hole.png" />
+		</div>
+
+		<div class="span5 apiNotFound-workflow">
+
+			<div class="row">
+			
+				<div class="span4 apiNotFound-workflow-element">
+					
+					<div class="popover right apiNotFound-speech-bubble">
+						<div class="arrow"></div>						
+						<div class="popover-content">
+						<p>
+							Do you wish to design a new <strong><%= apiTitle %></strong>?							
+						</p>
+					</div>
+				
+				</div>
+			
+			</div>
+			
+			<div class="row">
+
+				<div class="span4 apiNotFound-workflow-element">
+					
+					<form class="form-horizontal apiNotFound-form">
+
+						<fieldset>			
+								  
+							<div class="control-group">								
+							
+								<div class="controls">												
+									<button class="apiNotFound-form-button btn btn-inverse" type="button">Create New <%= apiTitle %></button>
+								</div>	
+
+							</div>
+
+						</fieldset>
+					</form>		
+
+				<div>		
+			
+			</div>
+
+		</div>
+
+		<div class="span5">
+		</div>
+
+
+	</div>
+
+
+</section>

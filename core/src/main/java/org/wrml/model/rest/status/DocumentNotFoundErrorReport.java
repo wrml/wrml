@@ -22,34 +22,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wrml.runtime.rest;
+package org.wrml.model.rest.status;
 
-// Generated from a Web Resource Schema
-public enum HeaderCategory
+import java.net.URI;
+import java.util.List;
+
+public interface DocumentNotFoundErrorReport extends NotFoundErrorReport
 {
 
-    GENERAL("General"),
-    REQUEST("Request"),
-    RESPONSE("Response"),
-    ENTITY("Entity"),
-    EXTENSION("Extension");
+    URI getParentApiUri();
 
-    private final String _Name;
+    URI setParentApiUri(final URI parentApiUri);
 
-    private HeaderCategory(final String name)
-    {
-        _Name = name;
-    }
+    URI getDefaultSchemaUri();
 
-    public String getName()
-    {
-        return _Name;
-    }
+    URI setDefaultSchemaUri(final URI defaultSchemaUri);
 
-    @Override
-    public String toString()
-    {
-        return getName();
-    }
+    String getDefaultSchemaTitle();
 
+    String setDefaultSchemaTitle(final String defaultSchemaTitle);
+
+    List<SurrogateKeyValue> getSurrogateKeyValues();
 }

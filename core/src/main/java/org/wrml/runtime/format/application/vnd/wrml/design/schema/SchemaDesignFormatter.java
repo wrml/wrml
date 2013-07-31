@@ -37,6 +37,7 @@ import org.wrml.model.rest.Document;
 import org.wrml.model.rest.LinkRelation;
 import org.wrml.model.rest.Method;
 import org.wrml.model.schema.Schema;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.Keys;

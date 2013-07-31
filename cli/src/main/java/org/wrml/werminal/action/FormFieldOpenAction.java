@@ -39,7 +39,7 @@ import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.rest.ApiNavigator;
 import org.wrml.runtime.rest.Resource;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.runtime.schema.ValueType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.component.FormField;
 import org.wrml.werminal.component.WerminalTextBox;

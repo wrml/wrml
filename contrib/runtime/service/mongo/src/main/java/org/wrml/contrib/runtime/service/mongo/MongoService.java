@@ -39,7 +39,7 @@ import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.format.SystemFormat;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.runtime.schema.ValueType;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.search.SearchCriteria;
 import org.wrml.runtime.service.AbstractService;
 import org.wrml.runtime.service.ServiceConfiguration;
