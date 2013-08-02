@@ -4,9 +4,9 @@
         "apiLoader" :
         {
             "apis" :
-            [
-                "http://wizard.example.api.wrml.org"
-            ]
+                [
+                    "http://demo.api.wrml.org/wizardapi"
+                ]
         },
 
         "schemaLoader" :
@@ -23,42 +23,42 @@
         "serviceLoader" :
         {
             "services" :
-            [
-                {
-                    "name" : "JVM",
-                    "implementation" : "org.wrml.runtime.service.resource.JavaResourceService",
-                    "settings" :
+                [
                     {
-                        "resourceOwnerClassName" : "org.wrml.runtime.Context",
-                        "resourceRootDirectoryPath" : "resources/test/models"
-                    }
-                },
-                {
-                    "name" : "File",
-                    "implementation" : "org.wrml.runtime.service.file.FileSystemService",
-                    "settings" :
+                        "name" : "JVM",
+                        "implementation" : "org.wrml.runtime.service.resource.JavaResourceService",
+                        "settings" :
+                        {
+                            "resourceOwnerClassName" : "org.wrml.runtime.Context",
+                            "resourceRootDirectoryPath" : "resources/test/models"
+                        }
+                    },
                     {
-                        "rootDirectory" : "/etc/wrml/models"
-                    }
-                },
-                {
-                    "name" : "Mongo",
-                    "implementation" : "org.wrml.contrib.runtime.service.mongo.MongoService",
-                    "settings" :
+                        "name" : "File",
+                        "implementation" : "org.wrml.runtime.service.file.FileSystemService",
+                        "settings" :
+                        {
+                            "rootDirectory" : "/etc/wrml/models"
+                        }
+                    },
                     {
+                        "name" : "Mongo",
+                        "implementation" : "org.wrml.contrib.runtime.service.mongo.MongoService",
+                        "settings" :
+                        {
 
-                    }
-                },
-                {
-                    "name" : "ApiDesigner",
-                    "implementation" : "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
-                    "settings" :
+                        }
+                    },
                     {
-                        "apiUri" : "http://design.api.wrml.org"
+                        "name" : "ApiDesigner",
+                        "implementation" : "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
+                        "settings" :
+                        {
+                            "apiUri" : "http://design.api.wrml.org"
+                        }
                     }
-                }
 
-            ],
+                ],
 
             "serviceMapping" :
             {

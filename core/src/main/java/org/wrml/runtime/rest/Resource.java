@@ -24,36 +24,21 @@
  */
 package org.wrml.runtime.rest;
 
+import com.google.common.collect.ComparisonChain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
-import org.wrml.model.rest.Api;
-import org.wrml.model.rest.LinkRelation;
-import org.wrml.model.rest.LinkTemplate;
-import org.wrml.model.rest.Method;
-import org.wrml.model.rest.ResourceTemplate;
+import org.wrml.model.rest.*;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.Keys;
-import org.wrml.runtime.schema.LinkProtoSlot;
-import org.wrml.runtime.schema.ProtoValueSource;
-import org.wrml.runtime.schema.Prototype;
-import org.wrml.runtime.schema.SchemaLoader;
+import org.wrml.runtime.schema.*;
 import org.wrml.runtime.syntax.SyntaxLoader;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import com.google.common.collect.ComparisonChain;
 
 /**
  * A runtime manifestation of a specific {@link Api}'s specific {@link ResourceTemplate} (REST API URI tree node).
@@ -265,6 +250,7 @@ public class Resource implements Comparable<Resource>
 
     private final String getFullPath(final Resource parentResource)
     {
+
         final StringBuffer sb = new StringBuffer();
         boolean appendPathSeparator = true;
 
@@ -293,9 +279,12 @@ public class Resource implements Comparable<Resource>
         return sb.toString();
     }
 
-    /** @return a flattened {@link List} of all child and sub-child {@link Resource}s (recursive). */
+    /**
+     * @return a flattened {@link List} of all child and sub-child {@link Resource}s (recursive).
+     */
     public List<Resource> getAllChildResources()
     {
+
         final List<Resource> allChildResources = new LinkedList<>();
         final List<ResourceTemplate> childResourceTemplates = this._ResourceTemplate.getChildren();
         for (final ResourceTemplate childResourceTemplate : childResourceTemplates)
@@ -587,12 +576,137 @@ public class Resource implements Comparable<Resource>
     @Override
     public String toString()
     {
+
         return String.format(TO_STRING_FORMAT, getResourceTemplateId(), _UriTemplate, _FullPath);
     }
 
     @Override
     public int compareTo(final Resource otherResource)
     {
+
         return ComparisonChain.start().compare(this._FullPath, otherResource._FullPath).result();
+    }
+
+    public URI getDefaultDocumentUri()
+    {
+
+        final UriTemplate uriTemplate = getUriTemplate();
+
+
+        final String[] parameterNames = uriTemplate.getParameterNames();
+        final Map<String, Object> parameterMap = new LinkedHashMap<>();
+
+        if (parameterNames != null && parameterNames.length > 0)
+        {
+
+            final Api api = getApiNavigator().getApi();
+            final Context context = api.getContext();
+            final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+            final URI defaultSchemaUri = getDefaultSchemaUri();
+            final Prototype defaultPrototype = (defaultSchemaUri != null) ? schemaLoader.getPrototype(defaultSchemaUri) : null;
+
+            for (int i = 0; i < parameterNames.length; i++)
+            {
+                final String parameterName = parameterNames[i];
+
+                URI keyedSchemaUri = null;
+
+                if (defaultPrototype != null)
+                {
+                    final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
+                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
+                    {
+                        keyedSchemaUri = defaultSchemaUri;
+                    }
+                }
+
+                if (keyedSchemaUri == null)
+                {
+
+                    final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = getReferenceTemplates();
+
+                    if (referenceTemplates != null && !referenceTemplates.isEmpty())
+                    {
+
+                        final Set<URI> referenceLinkRelationUris = getReferenceLinkRelationUris(Method.Get);
+                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty())
+                        {
+                            for (URI linkRelationUri : referenceLinkRelationUris)
+                            {
+                                final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
+                                final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
+                                final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
+                                if (responseSchemaPrototype != null)
+                                {
+                                    final Set<String> allKeySlotNames = responseSchemaPrototype.getAllKeySlotNames();
+                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
+                                    {
+                                        keyedSchemaUri = responseSchemaUri;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Object defaultValue = null;
+
+                if (keyedSchemaUri != null)
+                {
+
+                    final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
+                    final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
+                    if (keyProtoSlot instanceof PropertyProtoSlot)
+                    {
+                        final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
+
+                        // TODO: Allow more fine grain control of the default parameter value
+
+                        defaultValue = keyPropertyProtoSlot.getDefaultValue();
+
+                        if (defaultValue == null)
+                        {
+                            defaultValue = keyPropertyProtoSlot.getValueType().getDefaultValue();
+                        }
+
+                    }
+                }
+
+                parameterMap.put(parameterName, defaultValue);
+            }
+        }
+
+        return uriTemplate.evaluate(parameterMap, true);
+    }
+
+    public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype)
+    {
+
+        final Set<URI> responseSchemaUris = getResponseSchemaUris(Method.Get);
+        if (responseSchemaUris == null)
+        {
+            return null;
+        }
+
+        boolean isCompatibleResource = false;
+        for (final URI responseSchemaUri : responseSchemaUris)
+        {
+            if (prototype.isAssignableFrom(responseSchemaUri))
+            {
+                isCompatibleResource = true;
+                break;
+            }
+        }
+
+        if (!isCompatibleResource)
+        {
+            return null;
+        }
+
+        final UriTemplate uriTemplate = getUriTemplate();
+        return uriTemplate.getParameters(uri);
+
     }
 }

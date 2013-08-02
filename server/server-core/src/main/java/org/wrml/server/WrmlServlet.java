@@ -274,7 +274,7 @@ public class WrmlServlet extends HttpServlet
                         if (keys.getCount() > 1)
                         {
 
-                            final Set<Parameter> surrogateKeyComponents = apiNavigator.getSurrogateKeyComponents(requestUri, defaultSchemaPrototype);
+                            final Set<Parameter> surrogateKeyComponents = endpointResource.getSurrogateKeyComponents(requestUri, defaultSchemaPrototype);
                             if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty())
                             {
                                 for (final Parameter surrogateKeyComponent : surrogateKeyComponents)

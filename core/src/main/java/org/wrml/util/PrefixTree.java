@@ -24,15 +24,10 @@
  */
 package org.wrml.util;
 
-import java.util.List;
-
 public interface PrefixTree<T>
 {
-    public void setPath(String path, T value);
-    
-    public T matchPath(String path);
-    
-//    public String getPathSeparator();
-//    
-//    public List<String> segmentPath(String path); 
+    public void setPathValue(String path, T value);
+
+    public T getPathValue(String path);
+
 }

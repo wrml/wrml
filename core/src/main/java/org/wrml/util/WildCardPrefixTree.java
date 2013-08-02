@@ -24,115 +24,63 @@
  */
 package org.wrml.util;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * A {@link PrefixTree} that allows a wildcard (*) segment at the end of the path to allow multiple paths to "match" the same value.
+ *
+ * @param <T> The value type of the tree's {@link PrefixTreeNode}s.
+ */
 public class WildCardPrefixTree<T> extends PrefixTreeBase<T>
 {
-    public static final String WILDCARD = "*";
-    
-    private final PrefixTreeNode<T> head;
-
-    private final boolean allowNonterminalWildcards;
-
-    public WildCardPrefixTree(final boolean allowNonterminalWildcards)
-    {
-        head = new PrefixTreeNode<>();
-        this.allowNonterminalWildcards = allowNonterminalWildcards;
-    }
-
-    public void setPath(final String path, final T value)
-    {
-        PrefixTreeNode node = head;
-        final List<String> segments = segmentPath(path);
-
-        for (int i = 0; i < segments.size(); i++)
-        {
-            final String segment = segments.get(i);
-
-            // is this the right place for this?
-            if (!allowNonterminalWildcards && segment.equals(WildCardPrefixTree.WILDCARD)
-                    && (i + 1) < segments.size())
-            {
-                throw new RuntimeException(
-                        "Bad path provided to construct a mapping with only terminal wildcards.\n" + path);
-            }
-
-            if (node.hasLink(segment))
-            {
-                node = node.getLink(segment);
-            }
-            else
-            {
-                node = node.addLink(segment, null);
-            }
-        }
-
-        node.setValue(value);
-    }
-
-    public String deepPrint()
-    {
-        final Set<String> paths = head.deepPrint('/');
-        final StringBuilder sb = new StringBuilder();
-        for (final String p : paths)
-        {
-            sb.append(p).append('\n');
-        }
-        return sb.toString();
-    }
+    public static final String WILDCARD_SEGMENT = "*";
 
     @Override
-    public T matchPath(final String path)
+    public T getPathValue(final String path)
     {
+
+        // TODO: Replace with regex?
+
         final List<String> segments = segmentPath(path);
-        final List<String> captures = new LinkedList<String>();
-        return matchPathExtraWilds(head, segments, captures);
-    }
+        PrefixTreeNode<T> node = getRoot();
 
-    /**
-     * This method will allow a capture group to be used for more than one segment,
-     * but only at the end of the match, and only as a last resort.
-     * 
-     * @param path
-     *            the uri path, complete with /, to match
-     * @param captures
-     *            a List of Strings in which to record wildcard matches
-     * @return the List of Services at the final node which matched the path
-     */
-    private T matchPathExtraWilds(final PrefixTreeNode<T> node, final List<String> segments,
-            final List<String> captures)
-    {
-        if (segments.isEmpty())
+        PrefixTreeNode<T> wildCardNode = null;
+
+        final int segmentCount = segments.size();
+        for (int i = 0; i < segmentCount; i++)
         {
-            return node.getValue();
-        }
 
-        T value = null;
-        final String segment = segments.remove(0);
-
-        if (node.hasLink(segment))
-        {
-            value = matchPathExtraWilds(node.getLink(segment), segments, captures);
-        }
-
-        if (null == value)
-        {
-            if (node.hasLink(WildCardPrefixTree.WILDCARD))
+            if (node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT))
             {
-                if (captures != null)
-                {
-                    captures.add(segment);
-                    captures.addAll(segments);
-                }
-                
-                value = node.getLink(WildCardPrefixTree.WILDCARD).getValue();
+                wildCardNode = node.getChild(WildCardPrefixTree.WILDCARD_SEGMENT);
+            }
+
+            final String segment = segments.get(i);
+
+            if (node.hasChild(segment))
+            {
+                node = node.getChild(segment);
+            }
+            else if (i == segmentCount - 1)
+            {
+                // Back up to wildcard node (or null if none existed)
+                node = wildCardNode;
             }
         }
 
-        segments.add(0, segment);
+        if (node == null)
+        {
+            // No matches
+            return null;
+        }
 
-        return value;
+        // So path values that exactly match a prefix will also match the "empty" wildcard (*)
+        if (node != wildCardNode && node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT))
+        {
+            node = node.getChild(WildCardPrefixTree.WILDCARD_SEGMENT);
+        }
+
+        return node.getValue();
     }
+
 }

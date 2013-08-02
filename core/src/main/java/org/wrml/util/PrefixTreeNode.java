@@ -25,41 +25,40 @@
 package org.wrml.util;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PrefixTreeNode<T>
 {
-    protected final Map<String, PrefixTreeNode<T>> _Links;
+    protected final ConcurrentHashMap<String, PrefixTreeNode<T>> _Children;
 
     private T _Value;
 
-    public static final PrefixTreeNode EMPTY_NODE = new PrefixTreeNode();
-
     public PrefixTreeNode()
     {
-        _Links = new HashMap<>();
-        _Value = null;
+        this(null);
     }
 
     public PrefixTreeNode(final T value)
     {
-        _Links = new HashMap<String, PrefixTreeNode<T>>();
+        _Children = new ConcurrentHashMap<>();
         _Value = value;
     }
 
-    public PrefixTreeNode addLink(final String segment, final T value)
+    public PrefixTreeNode addChild(final String segment, final T value)
     {
-        final PrefixTreeNode<T> newNode = new PrefixTreeNode<>(value);
-        _Links.put(segment, newNode);
 
-        return newNode;
+        final PrefixTreeNode<T> childNode = new PrefixTreeNode<>(value);
+        _Children.put(segment, childNode);
+
+        return childNode;
     }
 
-    public Set<String> deepPrint(final char separator)
+    public Set<String> deepPrint(final String separator)
     {
+
         final Set<String> paths = new TreeSet<String>();
 
         if (_Value != null)
@@ -67,17 +66,17 @@ public class PrefixTreeNode<T>
             paths.add(_Value.toString());
         }
 
-        for (final String s : _Links.keySet())
+        for (final String s : _Children.keySet())
         {
-            for (final String subp : _Links.get(s).deepPrint(separator))
+            for (final String segment : _Children.get(s).deepPrint(separator))
             {
-                if (subp.isEmpty())
+                if (segment.isEmpty())
                 {
                     paths.add(s);
                 }
                 else
                 {
-                    paths.add(s + separator + subp);
+                    paths.add(s + separator + segment);
                 }
             }
         }
@@ -85,50 +84,46 @@ public class PrefixTreeNode<T>
         return paths;
     }
 
-    public PrefixTreeNode<T> getLink(final String segment)
+    public PrefixTreeNode<T> getChild(final String segment)
     {
-        if (hasLink(segment))
+
+        if (hasChild(segment))
         {
-            return _Links.get(segment);
+            return _Children.get(segment);
         }
-        else
-        {
-            return EMPTY_NODE;
-        }
+
+        return null;
     }
 
     public T getValue()
     {
+
         return _Value;
     }
 
-    public boolean hasLink(final String segment)
+    public boolean hasChild(final String segment)
     {
-        if (_Links.containsKey(segment))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
+        return _Children.containsKey(segment);
     }
 
     public void setValue(final T value)
     {
+
         _Value = value;
     }
 
     @Override
     public String toString()
     {
+
         final StringBuilder sb = new StringBuilder("Value: [");
         if (_Value != null)
         {
             sb.append(_Value.toString());
         }
-        sb.append("]\nPaths: [");
-        for (final String link : _Links.keySet())
+        sb.append("]\nChildren: [");
+        for (final String link : _Children.keySet())
         {
             sb.append(link).append(", ");
         }

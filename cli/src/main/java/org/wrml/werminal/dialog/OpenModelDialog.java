@@ -39,7 +39,6 @@ import org.wrml.runtime.Context;
 import org.wrml.runtime.Keys;
 import org.wrml.runtime.KeysBuilder;
 import org.wrml.runtime.rest.ApiLoader;
-import org.wrml.runtime.rest.SystemApi;
 import org.wrml.runtime.schema.ProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
@@ -593,12 +592,12 @@ public class OpenModelDialog extends WerminalWindow
             final Prototype documentPrototype = schemaLoader.getPrototype(documentSchemaUri);
             addKeyInput(schemaUri, documentPrototype, keys);
 
-            if (Schema.class.equals(schemaInterface))
+            final WerminalTextBox textBox = _KeyInputs.get(documentSchemaUri);
+            uri = getWerminal().getDefaultDocumentUri(schemaUri);
+            if (uri != null)
             {
-                final WerminalTextBox textBox = _KeyInputs.get(documentSchemaUri);
-                textBox.setText(SystemApi.Schema.getUri().toString() + "/com/example");
+                textBox.setText(uri.toString());
                 uri = (URI) textBox.getValue();
-
             }
         }
 

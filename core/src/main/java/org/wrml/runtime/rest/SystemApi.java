@@ -24,9 +24,9 @@
  */
 package org.wrml.runtime.rest;
 
-import org.wrml.model.schema.Choices;
-
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -53,6 +53,16 @@ public enum SystemApi
             "The WRML System Choices REST API.", UUID.fromString("A2D3C31F-D45A-4920-8505-765202A1D4E8"), UUID
             .fromString("8AC96AA9-B439-4227-A0AB-6C2EEF5909DA"));
 
+    private static final Map<URI, SystemApi> SYSTEM_API_URIS = new HashMap<>();
+
+    static
+    {
+        final SystemApi[] systemApis = SystemApi.values();
+        for (final SystemApi systemApi : systemApis)
+        {
+            SYSTEM_API_URIS.put(systemApi.getUri(), systemApi);
+        }
+    }
 
     private final URI _Uri;
 
@@ -109,4 +119,8 @@ public enum SystemApi
         return _Uri;
     }
 
+    public static boolean isSystemApiUri(final URI apiUri)
+    {
+        return SYSTEM_API_URIS.containsKey(apiUri);
+    }
 }

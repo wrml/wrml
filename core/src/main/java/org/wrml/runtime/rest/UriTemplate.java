@@ -107,6 +107,11 @@ public class UriTemplate
 
     public URI evaluate(final Map<String, Object> parameterMap)
     {
+        return evaluate(parameterMap, false);
+    }
+
+    public URI evaluate(final Map<String, Object> parameterMap, final boolean allowNulls)
+    {
 
         final URI staticUri = getStaticUri();
         if (staticUri != null)
@@ -129,12 +134,22 @@ public class UriTemplate
         for (final String templateParamName : _ParamNames)
         {
             final Object templateParamValue = parameterMap.get(templateParamName);
+            final String templateParamStringValue;
             if (templateParamValue == null)
             {
-                return null;
+                if (allowNulls)
+                {
+                    templateParamStringValue = "null";
+                }
+                else
+                {
+                    return null;
+                }
             }
-
-            final String templateParamStringValue = syntaxLoader.formatSyntaxValue(templateParamValue);
+            else
+            {
+                templateParamStringValue = syntaxLoader.formatSyntaxValue(templateParamValue);
+            }
 
             matchResult = matchResult.replace("(?<" + templateParamName + ">\\S+)", templateParamStringValue);
         }

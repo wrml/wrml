@@ -79,6 +79,8 @@ public class ApiNavigator
 
     private final ConcurrentHashMap<UUID, Resource> _AllResources;
 
+    private ConcurrentHashMap<URI, Set<Resource>> _RepresentativeResources;
+
     private final Resource _Docroot;
 
     private final SortedSet<ResourceMatchResult> _DocrootResults;
@@ -107,6 +109,8 @@ public class ApiNavigator
         _Api = api;
 
         _AllResources = new ConcurrentHashMap<UUID, Resource>();
+
+        _RepresentativeResources = new ConcurrentHashMap<URI, Set<Resource>>();
 
         final Context context = api.getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -343,6 +347,17 @@ public class ApiNavigator
         _LinkRelationDimensions = linkRelationDimensions;
     }
 
+    public Set<Resource> getRepresentativeResources(final URI schemaUri)
+    {
+
+        if (schemaUri != null && _RepresentativeResources.containsKey(schemaUri))
+        {
+            return _RepresentativeResources.get(schemaUri);
+        }
+
+        return null;
+    }
+
     public Resource getResource(final URI uri)
     {
 
@@ -411,31 +426,9 @@ public class ApiNavigator
 
         for (final ResourceMatchResult result : results)
         {
-            final Resource endPointResource = result.getResource();
 
-            final Set<URI> responseSchemaUris = endPointResource.getResponseSchemaUris(Method.Get);
-            if (responseSchemaUris == null)
-            {
-                continue;
-            }
-
-            boolean isCompatibleResource = false;
-            for (final URI responseSchemaUri : responseSchemaUris)
-            {
-                if (prototype.isAssignableFrom(responseSchemaUri))
-                {
-                    isCompatibleResource = true;
-                    break;
-                }
-            }
-
-            if (!isCompatibleResource)
-            {
-                continue;
-            }
-
-            final UriTemplate uriTemplate = endPointResource.getUriTemplate();
-            surrogateKeyComponents = uriTemplate.getParameters(uri);
+            final Resource resource = result.getResource();
+            surrogateKeyComponents = resource.getSurrogateKeyComponents(uri, prototype);
 
             if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty())
             {
@@ -659,6 +652,10 @@ public class ApiNavigator
         }
 
         _AllResources.put(resourceTemplateId, resource);
+
+        updateRepresentativeResources(resource, Method.Get);
+        updateRepresentativeResources(resource, Method.Invoke);
+
         final List<ResourceTemplate> subresourceTemplates = resourceTemplate.getChildren();
 
         for (final ResourceTemplate subresourceTemplate : subresourceTemplates)
@@ -668,6 +665,41 @@ public class ApiNavigator
             addResource(subresource);
         }
 
+    }
+
+    private void updateRepresentativeResources(final Resource resource, final Method requestMethod)
+    {
+
+        final URI defaultSchemaUri = resource.getDefaultSchemaUri();
+        Set<URI> responseSchemaUris = resource.getResponseSchemaUris(requestMethod);
+        if (responseSchemaUris == null)
+        {
+            if (defaultSchemaUri != null)
+            {
+                responseSchemaUris = new LinkedHashSet<>();
+                responseSchemaUris.add(defaultSchemaUri);
+            }
+            else {
+                return;
+            }
+
+        }
+
+        for (final URI schemaUri : responseSchemaUris)
+        {
+            final Set<Resource> resourceSet;
+            if (_RepresentativeResources.containsKey(schemaUri))
+            {
+                resourceSet = _RepresentativeResources.get(schemaUri);
+            }
+            else
+            {
+                resourceSet = new LinkedHashSet<>();
+                _RepresentativeResources.put(schemaUri, resourceSet);
+            }
+
+            resourceSet.add(resource);
+        }
     }
 
     private Dimensions getSchemaDimensions()
@@ -701,14 +733,17 @@ public class ApiNavigator
 
         final URI apiUri = getApiUri();
 
-        if (!uri.toString().startsWith(apiUri.toString()))
+        final String requestUriString = uri.toString();
+        final String apiUriString =  apiUri.toString();
+
+        if (!requestUriString.startsWith(apiUriString))
         {
             ApiNavigator.LOG.error("4 This ApiNavigator has charted \"" + apiUri + "\", which does not manage the specified resource (" + uri + ")");
             throw new ApiNavigatorException("This ApiNavigator has charted \"" + apiUri + "\", which does not manage the specified resource (" + uri + ")", null, this,
                     Status.NOT_FOUND);
         }
 
-        final String path = uri.getPath();
+        final String path = requestUriString.substring(apiUriString.length());
 
         final SortedSet<ResourceMatchResult> results = matchPath(path);
 
@@ -855,6 +890,7 @@ public class ApiNavigator
         }
 
     }
+
 
     private static class ResourceMatchResult implements Comparable<ResourceMatchResult>
     {

@@ -48,8 +48,12 @@ import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.*;
 import org.wrml.runtime.format.application.schema.json.JsonSchemaLoader;
 import org.wrml.runtime.rest.ApiLoader;
+import org.wrml.runtime.rest.Resource;
 import org.wrml.runtime.rest.SystemApi;
-import org.wrml.runtime.schema.*;
+import org.wrml.runtime.schema.ProtoSlot;
+import org.wrml.runtime.schema.Prototype;
+import org.wrml.runtime.schema.PrototypeException;
+import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.util.PropertyUtil;
 import org.wrml.util.UniqueName;
@@ -713,19 +717,40 @@ public class Werminal extends TerminalApp
         return stringValue;
     }
 
-    public void newModelWindow(final URI schemaUri)
+    public void newModelWindow(final URI schemaUri, final FormField formField)
     {
 
         LOG.debug("NewModelWindow created with schemaUri [{}]", schemaUri);
 
-        // Get the engine's default context and schema loader
         final Context context = getContext();
+        final Model model = context.newModel(schemaUri);
 
-        final Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
+        if (model instanceof Document)
+        {
+            final URI defaultUri = getDefaultDocumentUri(schemaUri);
+            ((Document) model).setUri(defaultUri);
+        }
 
-        final Model model = context.newModel(dimensions);
+        if (formField != null)
+        {
+            formField.getFieldValueTextBox().setValue(model, false);
+        }
 
         openModelWindow(model);
+    }
+
+    public URI getDefaultDocumentUri(final URI schemaUri)
+    {
+        final Context context = getContext();
+        final ApiLoader apiLoader = context.getApiLoader();
+        final Set<Resource> representativeResources = apiLoader.getRepresentativeResources(schemaUri);
+        if (representativeResources != null && !representativeResources.isEmpty())
+        {
+            final Resource firstResource = representativeResources.iterator().next();
+            return firstResource.getDefaultDocumentUri();
+        }
+
+        return null;
     }
 
     public void openListDialog(final FormField listFormField)

@@ -5,7 +5,7 @@
         {
             "apis" :
                 [
-                    "http://wizard.example.api.wrml.org"
+                    "http://demo.api.wrml.org/wizardapi"
                 ]
         },
 

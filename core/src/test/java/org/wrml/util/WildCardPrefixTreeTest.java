@@ -46,15 +46,13 @@ public class WildCardPrefixTreeTest
     
     private String PATH_1_VAL = "natasha";
     
-    private String PATH_2 = "*/russian";
-    
     private String PATH_2_VAL = "borris";
 
     @Before
     public void setUp()
     {
 
-        _Tree = new WildCardPrefixTree<>(false);
+        _Tree = new WildCardPrefixTree<>();
     }
 
     @After
@@ -67,7 +65,7 @@ public class WildCardPrefixTreeTest
     @Test
     public void blankDeepPrint()
     {
-        String rep = _Tree.deepPrint();
+        String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
         assertTrue(rep.equals(""));
     }
@@ -75,8 +73,8 @@ public class WildCardPrefixTreeTest
     @Test
     public void simpleDeepPrint()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
-        String rep = _Tree.deepPrint();
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
+        String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
         assertTrue(rep.equals(PATH_1 + ApiNavigator.PATH_SEPARATOR + PATH_1_VAL + "\n"));
     }
@@ -84,28 +82,19 @@ public class WildCardPrefixTreeTest
     @Test
     public void setPath()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
     }
     
     @Test
     public void setPathTwice()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
-        _Tree.setPath(PATH_1, PATH_2_VAL);
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
+        _Tree.setPathValue(PATH_1, PATH_2_VAL);
         
-        String val =_Tree.matchPath(PATH_1);
+        String val =_Tree.getPathValue(PATH_1);
         assertEquals(val, PATH_2_VAL);
     }
-    
-    /**
-     * The instance is initialized not to allow non-terminal wilds.
-     * Make sure we find this exceptional.
-     */
-    @Test(expected=RuntimeException.class)
-    public void setPathNonTerminalWild()
-    {
-        _Tree.setPath(PATH_2, PATH_2_VAL);
-    }
+
 
     @Test
     public void addAndMatch()
@@ -113,7 +102,7 @@ public class WildCardPrefixTreeTest
 
         setPath();
 
-        String match = _Tree.matchPath(PATH_1);
+        String match = _Tree.getPathValue(PATH_1);
 
         assertTrue(match != null);
         assertTrue(match.equals(PATH_1_VAL));
@@ -125,7 +114,7 @@ public class WildCardPrefixTreeTest
 
         setPath();
 
-        String match = _Tree.matchPath(PATH_1);
+        String match = _Tree.getPathValue(PATH_1);
 
         assertTrue(match != null);
         assertTrue(match.equals(PATH_1_VAL));

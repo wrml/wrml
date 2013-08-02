@@ -38,6 +38,7 @@ import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.util.AsciiArt;
 import org.wrml.util.UniqueName;
+import org.wrml.util.WildCardPrefixTree;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -53,22 +54,17 @@ public class DefaultApiLoader implements ApiLoader
 
     private final ConcurrentHashMap<URI, Api> _Apis;
 
+    private final WildCardPrefixTree<ApiNavigator> _ApiNavigators;
+
     private final ConcurrentHashMap<URI, LinkRelation> _LinkRelations;
-
-    private final ConcurrentHashMap<URI, ApiNavigator> _SystemApiNavigators;
-
-    private final ConcurrentHashMap<URI, ApiNavigator> _ApiNavigators;
 
     private Context _Context;
 
     public DefaultApiLoader()
     {
-
-        _Apis = new ConcurrentHashMap<URI, Api>();
-        _LinkRelations = new ConcurrentHashMap<URI, LinkRelation>();
-
-        _SystemApiNavigators = new ConcurrentHashMap<URI, ApiNavigator>();
-        _ApiNavigators = new ConcurrentHashMap<URI, ApiNavigator>();
+        _Apis = new ConcurrentHashMap<>();
+        _ApiNavigators = new WildCardPrefixTree<>();
+        _LinkRelations = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -237,12 +233,13 @@ public class DefaultApiLoader implements ApiLoader
     public final ApiNavigator getLoadedApiNavigator(final URI apiUri)
     {
 
-        if (_SystemApiNavigators.containsKey(apiUri))
+        if (apiUri == null)
         {
-            return _SystemApiNavigators.get(apiUri);
+            throw new NullPointerException("The uri is null; cannot locate the loaded REST API.");
         }
 
-        return _ApiNavigators.get(apiUri);
+        final String apiNavigatorPath = apiUri.toString();
+        return _ApiNavigators.getPathValue(apiNavigatorPath);
     }
 
     @Override
@@ -302,15 +299,33 @@ public class DefaultApiLoader implements ApiLoader
             throw new NullPointerException("The uri is null; cannot locate the parent REST API.");
         }
 
-        // TODO: Change this code to allow for REST API's with arbitrary paths (WRML-276)
-        URI parentApiUri = URIUtils.resolve(uri, ApiNavigator.DOCROOT_PATH).normalize();
-        final String uriString = parentApiUri.toString();
-        if (uriString.endsWith("/"))
+        return getLoadedApiNavigator(uri);
+    }
+
+    @Override
+    public Set<Resource> getRepresentativeResources(final URI schemaUri)
+    {
+
+        final Set<Resource> representativeResources = new LinkedHashSet<>();
+        final Set<URI> allApiUris = getLoadedApiUris();
+
+        for (final URI apiUri : allApiUris)
         {
-            parentApiUri = URI.create(uriString.substring(0, uriString.length() - 1));
+            final ApiNavigator apiNavigator = getLoadedApiNavigator(apiUri);
+
+            if (apiNavigator == null)
+            {
+                continue;
+            }
+
+            final Set<Resource> apiRepresentativeResources = apiNavigator.getRepresentativeResources(schemaUri);
+            if (apiRepresentativeResources != null)
+            {
+                representativeResources.addAll(apiRepresentativeResources);
+            }
         }
 
-        return getLoadedApiNavigator(parentApiUri);
+        return representativeResources;
     }
 
     @Override
@@ -345,18 +360,26 @@ public class DefaultApiLoader implements ApiLoader
             throw new ApiLoaderException("The API's URI cannot be null.", null, this);
         }
 
-        if (_SystemApiNavigators.containsKey(apiUri))
-        {
-            // The API's URI matches a pre-loaded System API.
-            return _SystemApiNavigators.get(apiUri);
-        }
-
         _Apis.put(apiUri, api);
 
         final ApiNavigator apiNavigator = new ApiNavigator(api);
-        _ApiNavigators.put(apiUri, apiNavigator);
+        String apiNavigatorPath = createApiNavigatorPath(apiUri.toString());
+        _ApiNavigators.setPathValue(apiNavigatorPath, apiNavigator);
         return apiNavigator;
     }
+
+    private String createApiNavigatorPath(final String uriString)
+    {
+        String apiNavigatorPath = uriString;
+        if (!apiNavigatorPath.endsWith("/"))
+        {
+            apiNavigatorPath += "/";
+        }
+
+        apiNavigatorPath += WildCardPrefixTree.WILDCARD_SEGMENT;
+        return apiNavigatorPath;
+    }
+
 
     @Override
     public ApiNavigator loadApi(final URI apiUri)
@@ -581,12 +604,7 @@ public class DefaultApiLoader implements ApiLoader
              */
 
             final Api api = apiBuilder.toApi();
-            final URI apiUri = api.getUri();
-
-            _Apis.put(apiUri, api);
-
-            final ApiNavigator systemApiNavigator = new ApiNavigator(api);
-            _SystemApiNavigators.put(apiUri, systemApiNavigator);
+            loadApi(api);
         }
     }
 

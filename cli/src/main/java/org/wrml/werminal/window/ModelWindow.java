@@ -176,20 +176,6 @@ public class ModelWindow extends FormPanelWindow
 
         }
 
-        if (_Model instanceof Schema)
-        {
-            final Schema schema = (Schema) _Model;
-            final URI uri = schema.getUri();
-            if (uri == null)
-            {
-
-                final URI newSchemaUri = werminal.createSchemaUri("MyNewSchema");
-
-                final FormField documentKeyFormField = getFormField(Document.SLOT_NAME_URI);
-                documentKeyFormField.getFieldValueTextBox().setText(newSchemaUri.toString());
-            }
-        }
-
         updateLoadButton();
 
     }

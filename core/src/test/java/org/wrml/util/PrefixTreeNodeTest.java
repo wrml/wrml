@@ -50,7 +50,7 @@ public class PrefixTreeNodeTest
     public void emptyNodeToStringTest()
     {
         String emptyNode = _Node.toString();
-        Assert.assertEquals("Value: []\nPaths: []", emptyNode);
+        Assert.assertEquals("Value: []\nChildren: []", emptyNode);
     }
     
     @Test
@@ -59,7 +59,7 @@ public class PrefixTreeNodeTest
         _Node.setValue(VALUE_1);
         
         String node = _Node.toString();
-        Assert.assertEquals("Value: [" + VALUE_1 + "]\nPaths: []", node);
+        Assert.assertEquals("Value: [" + VALUE_1 + "]\nChildren: []", node);
     }
     
     @Test
@@ -75,21 +75,19 @@ public class PrefixTreeNodeTest
     }
     
     @Test
-    public void getEmptyLink()
+    public void getNullChild()
     {
-        PrefixTreeNode<String> node = _Node.getLink(SEGMENT_1);
-        Assert.assertNotNull(node);
-        Assert.assertEquals(node, PrefixTreeNode.EMPTY_NODE);
+        PrefixTreeNode<String> node = _Node.getChild(SEGMENT_1);
+        Assert.assertNull(node);
     }
     
     @Test
-    public void getSetLink()
+    public void getNonNullChild()
     {
-        PrefixTreeNode<String> node = _Node.addLink(SEGMENT_1, VALUE_1);
+        PrefixTreeNode<String> node = _Node.addChild(SEGMENT_1, VALUE_1);
         Assert.assertNotNull(node);
-        Assert.assertNotEquals(node, PrefixTreeNode.EMPTY_NODE);
         
-        PrefixTreeNode<String> node2 = _Node.getLink(SEGMENT_1);
+        PrefixTreeNode<String> node2 = _Node.getChild(SEGMENT_1);
         Assert.assertNotNull(node2);
         Assert.assertEquals(node2, node);
     }
@@ -98,10 +96,10 @@ public class PrefixTreeNodeTest
     public void fullToString()
     {
         _Node.setValue(VALUE_1);
-        _Node.addLink(SEGMENT_1, VALUE_2);
+        _Node.addChild(SEGMENT_1, VALUE_2);
         
         String rep = _Node.toString();
-        Assert.assertEquals("Value: [borris]\nPaths: [address, ]", rep);
+        Assert.assertEquals("Value: [borris]\nChildren: [address, ]", rep);
     }
     
     @Test
@@ -109,9 +107,9 @@ public class PrefixTreeNodeTest
     {
         
         _Node.setValue(VALUE_1);
-        _Node.addLink(SEGMENT_1, VALUE_2);
+        _Node.addChild(SEGMENT_1, VALUE_2);
         
-        Set<String> paths = _Node.deepPrint(ApiNavigator.PATH_SEPARATOR_CHAR);
+        Set<String> paths = _Node.deepPrint(WildCardPrefixTree.DEFAULT_PATH_SEPARATOR);
         Assert.assertEquals(paths.toString(), "[address/natasha, borris]");
     }
 }

@@ -78,7 +78,7 @@ public class NewModelAction extends CloseBeforeAction
         newModelDialog.getSchemaUriHistoryCheckBoxList().addItems(historyItems);
 
         newModelDialog.setSchemaUri(schemaUri);
-        werminal.showWindow(newModelDialog, Position.CENTER);
+        werminal.newModelWindow(schemaUri, null);
 
         return true;
     }
@@ -130,9 +130,7 @@ public class NewModelAction extends CloseBeforeAction
 
             try
             {
-                final Model newModel = context.newModel(schemaUri);
-                formField.getFieldValueTextBox().setValue(newModel, false);
-                werminal.openModelWindow(newModel);
+                werminal.newModelWindow(schemaUri, formField);
             }
             catch (final Exception t)
             {

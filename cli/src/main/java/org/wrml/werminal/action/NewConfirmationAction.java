@@ -59,7 +59,7 @@ public class NewConfirmationAction extends CloseBeforeAction
             return false;
         }
 
-        werminal.newModelWindow(schemaUri);
+        werminal.newModelWindow(schemaUri, null);
 
         return true;
     }

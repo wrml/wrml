@@ -24,34 +24,106 @@
  */
 package org.wrml.util;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import org.wrml.runtime.rest.ApiNavigator;
+import java.util.*;
 
 public abstract class PrefixTreeBase<T> implements PrefixTree<T>
 {
-    public static final String PATH_SEPARATOR = ApiNavigator.PATH_SEPARATOR;
-    
+    public static final String DEFAULT_PATH_SEPARATOR = "/";
+
+    public static final String PROTOCOL_PREFIX = "://";
+
+    private final PrefixTreeNode<T> _RootNode;
+
+    private final String _PathSeparator;
+
+    public PrefixTreeBase()
+    {
+        this(DEFAULT_PATH_SEPARATOR);
+    }
+
+    public PrefixTreeBase(final String pathSeparator)
+    {
+        _PathSeparator = pathSeparator;
+        _RootNode = new PrefixTreeNode<>();
+    }
+
+
     public String getPathSeparator()
     {
-        return PATH_SEPARATOR;
+        return _PathSeparator;
     }
-    
-    List<String> segmentPath(final String path)
+
+    public PrefixTreeNode<T> getRoot()
     {
-        String tPath = path.trim();
-        if (path.endsWith(getPathSeparator()))
+
+        return _RootNode;
+    }
+
+    @Override
+    public void setPathValue(final String path, final T value)
+    {
+
+        PrefixTreeNode node = getRoot();
+        final List<String> segments = segmentPath(path);
+
+        for (final String segment : segments)
         {
-            tPath = tPath.substring(0, path.length() - 1);
-        }
-        if (path.startsWith(getPathSeparator()))
-        {
-            tPath = tPath.substring(1);
+            if (node.hasChild(segment))
+            {
+                node = node.getChild(segment);
+            }
+            else
+            {
+                node = node.addChild(segment, null);
+            }
         }
 
-        final List<String> segments = new LinkedList<String>(
-                Arrays.asList(tPath.split(getPathSeparator())));
+        node.setValue(value);
+    }
+
+    public String toString()
+    {
+
+        final String pathSeparator = getPathSeparator();
+        final Set<String> paths = getRoot().deepPrint(pathSeparator);
+        final StringBuilder sb = new StringBuilder();
+        for (final String p : paths)
+        {
+            sb.append(p).append('\n');
+        }
+        return sb.toString();
+    }
+
+    protected List<String> segmentPath(final String path)
+    {
+
+        final String pathSeparator = getPathSeparator();
+
+        String trimmedPath = path.trim();
+
+        final int protocolPrefixIndex = trimmedPath.indexOf(PROTOCOL_PREFIX);
+        if (protocolPrefixIndex >= 0)
+        {
+            trimmedPath = trimmedPath.substring(protocolPrefixIndex + PROTOCOL_PREFIX.length());
+        }
+
+        if (trimmedPath.endsWith(pathSeparator))
+        {
+            trimmedPath = trimmedPath.substring(0, trimmedPath.length() - 1);
+        }
+
+        if (trimmedPath.startsWith(pathSeparator))
+        {
+            trimmedPath = trimmedPath.substring(1);
+        }
+
+        String[] segmentArray = trimmedPath.split(pathSeparator);
+        if (segmentArray.length == 0)
+        {
+            return Collections.EMPTY_LIST;
+        }
+
+        final List<String> segments = new LinkedList<>(Arrays.asList(segmentArray));
         return segments;
     }
 }

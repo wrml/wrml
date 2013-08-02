@@ -38,11 +38,11 @@ public class SimplePrefixTreeTest
 
     private String PATH_1 = "moose/squirrel";
 
-    private String PATH_1_PRE = PrefixTreeBase.PATH_SEPARATOR + PATH_1;
+    private String PATH_1_PRE = PrefixTreeBase.DEFAULT_PATH_SEPARATOR + PATH_1;
     
-    private String PATH_1_POST = PATH_1 + PrefixTreeBase.PATH_SEPARATOR;
+    private String PATH_1_POST = PATH_1 + PrefixTreeBase.DEFAULT_PATH_SEPARATOR;
     
-    private String PATH_1_PREPOST = PrefixTreeBase.PATH_SEPARATOR + PATH_1 + PrefixTreeBase.PATH_SEPARATOR;
+    private String PATH_1_PREPOST = PrefixTreeBase.DEFAULT_PATH_SEPARATOR + PATH_1 + PrefixTreeBase.DEFAULT_PATH_SEPARATOR;
     
     private String PATH_1_VAL = "natasha";
     
@@ -66,7 +66,7 @@ public class SimplePrefixTreeTest
     @Test
     public void blankDeepPrint()
     {
-        String rep = _Tree.deepPrint();
+        String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
         assertTrue(rep.equals(""));
     }
@@ -74,8 +74,8 @@ public class SimplePrefixTreeTest
     @Test
     public void simpleDeepPrint()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
-        String rep = _Tree.deepPrint();
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
+        String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
         assertTrue(rep.equals(PATH_1 + ApiNavigator.PATH_SEPARATOR + PATH_1_VAL + "\n"));
     }
@@ -83,16 +83,16 @@ public class SimplePrefixTreeTest
     @Test
     public void setPath()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
     }
     
     @Test
     public void setPathTwice()
     {
-        _Tree.setPath(PATH_1, PATH_1_VAL);
-        _Tree.setPath(PATH_1, PATH_2_VAL);
+        _Tree.setPathValue(PATH_1, PATH_1_VAL);
+        _Tree.setPathValue(PATH_1, PATH_2_VAL);
         
-        String val =_Tree.matchPath(PATH_1);
+        String val =_Tree.getPathValue(PATH_1);
         assertEquals(val, PATH_2_VAL);
     }
     
@@ -101,7 +101,7 @@ public class SimplePrefixTreeTest
      */
     public void setPathNonTerminalWild()
     {
-        _Tree.setPath(PATH_2, PATH_2_VAL);
+        _Tree.setPathValue(PATH_2, PATH_2_VAL);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SimplePrefixTreeTest
 
         setPath();
 
-        String match = _Tree.matchPath(PATH_1);
+        String match = _Tree.getPathValue(PATH_1);
 
         assertTrue(match != null);
         assertTrue(match.equals(PATH_1_VAL));
@@ -122,7 +122,7 @@ public class SimplePrefixTreeTest
 
         setPath();
 
-        String match = _Tree.matchPath(PATH_1);
+        String match = _Tree.getPathValue(PATH_1);
 
         assertTrue(match != null);
         assertTrue(match.equals(PATH_1_VAL));

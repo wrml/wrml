@@ -118,6 +118,11 @@ public interface ApiLoader extends Loader
     ApiNavigator getParentApiNavigator(final URI uri) throws ApiLoaderException;
 
     /**
+     * Returns the set of {@link Resource}s that represent the specified {@link Schema} {@link URI}.
+     */
+    Set<Resource> getRepresentativeResources(final URI schemaUri);
+
+    /**
      * Loads/reloads the specified {@link Api}, returning the newly created {@link ApiNavigator}.
      */
     ApiNavigator loadApi(final Api api) throws ApiLoaderException;
@@ -137,6 +142,7 @@ public interface ApiLoader extends Loader
      * Loads/reloads the specified {@link LinkRelation}, by it's {@link Document} key ({@link URI}) value.
      */
     LinkRelation loadLinkRelation(final URI linkRelationUri) throws ApiLoaderException;
+
 
 
 }

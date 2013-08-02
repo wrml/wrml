@@ -27,66 +27,25 @@ package org.wrml.util;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A {@link PrefixTree} that allows simple, "literal" paths to "match" a value.
+ *
+ * @param <T> The value type of the tree's {@link PrefixTreeNode}s.
+ */
 public class SimplePrefixTree<T> extends PrefixTreeBase<T>
 {
-    private final PrefixTreeNode<T> head;
-
-    public SimplePrefixTree()
-    {
-        head = new PrefixTreeNode<>();
-    }
 
     @Override
-    public void setPath(final String path, final T value)
-    {
-        PrefixTreeNode node = head;
-        final List<String> segments = segmentPath(path);
-
-        for (int i = 0; i < segments.size(); i++)
-        {
-            final String segment = segments.get(i);
-
-            if (node.hasLink(segment))
-            {
-                node = node.getLink(segment);
-            }
-            else
-            {
-                node = node.addLink(segment, null);
-            }
-        }
-
-        node.setValue(value);
-    }
-
-    public String deepPrint()
-    {
-        final Set<String> paths = head.deepPrint('/');
-        final StringBuilder sb = new StringBuilder();
-        for (final String p : paths)
-        {
-            sb.append(p).append('\n');
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public T matchPath(final String path)
-    {
-        return matchPathIter(path);
-    }
-
-    private T matchPathIter(final String path)
+    public T getPathValue(final String path)
     {
         final List<String> segments = segmentPath(path);
-        PrefixTreeNode<T> node = head;
+        PrefixTreeNode<T> node = getRoot();
 
-        for (int i = 0; i < segments.size(); i++)
+        for (final String segment : segments)
         {
-            final String segment = segments.get(i);
-            if (node.hasLink(segment))
+            if (node.hasChild(segment))
             {
-                node = node.getLink(segment);
+                node = node.getChild(segment);
             }
             else
             {
@@ -96,4 +55,5 @@ public class SimplePrefixTree<T> extends PrefixTreeBase<T>
 
         return node.getValue();
     }
+
 }
