@@ -1757,11 +1757,11 @@ this.Wrmldoc.module("DocumentNotFoundApp.Show", function(Show, App, Backbone, Ma
       
         __out.push(__sanitize(this.docroot));
       
-        __out.push('img/schema.png" /> Schema</label>\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t  \t\t\t\t<input id="schema" type="text" value="');
+        __out.push('img/schema.png" /> Schema</label>\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t  \t\t\t\t<input id="schema" type="text" value="');
       
         __out.push(__sanitize(this.model.defaultSchemaTitle));
       
-        __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Open</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Clear</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">History</a></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Bookmarks</a></li>\n\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t\t</div>\t\t\n\n\t\t\t\n\n\n\t\t\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="uri"><img class="wrml-form-field-label-icon" src="');
+        __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="uri"><img class="wrml-form-field-label-icon" src="');
       
         __out.push(__sanitize(this.docroot));
       

@@ -65,30 +65,9 @@
 								<label class="control-label" for="schema"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/schema.png" /> Schema</label>	
 
 								<div class="controls">												
-									<div class="input-append">
-						  				<input id="schema" type="text" value="<%= @model.defaultSchemaTitle %>" readonly="readonly">				
-						  				
-										<div class="btn-group">
-											<button class="btn btn-inverse" type="button">Open</button>
-											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-											<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a tabindex="-1" href="#">Open</a></li>
-												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">Clear</a></li>
-												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">History</a></li>
-												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">Bookmarks</a></li>
-											</ul>
-										</div>
-
-									</div>		
-
-			
-
-
+									
+					  				<input id="schema" type="text" value="<%= @model.defaultSchemaTitle %>" readonly="readonly">				
+					  				
 								</div>	
 							</div>	
 

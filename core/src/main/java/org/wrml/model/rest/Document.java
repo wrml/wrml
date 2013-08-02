@@ -80,7 +80,7 @@ public interface Document extends Abstract
      * @return The "entity tag" string for this instance.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP/1.1 Entity Tags</a>
      */
-    @Description("Gets an opaque string representation of the Document's current state.")
+    @Description("An opaque string representation of the Document's current state.")
     String getCacheTag();
 
     /**
@@ -114,7 +114,7 @@ public interface Document extends Abstract
      * </p>
      */
     @Title("URI")
-    @Description("Get's this Document's \"universal document identifier\" as a URI.")
+    @Description("This Document's \"universal document identifier\" as a URI.")
     URI getUri();
 
     @LinkSlot(linkRelationUri = "http://relation.api.wrml.org/org/wrml/relation/save", method = Method.Save)
