@@ -29,6 +29,8 @@ import com.mongodb.util.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
+import org.wrml.model.schema.ComparisonOperator;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.CompositeKey;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
@@ -39,8 +41,8 @@ import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.format.SystemFormat;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.search.SearchCriteria;
+import org.wrml.runtime.search.SearchCriterion;
 import org.wrml.runtime.service.AbstractService;
 import org.wrml.runtime.service.ServiceConfiguration;
 import org.wrml.runtime.service.ServiceException;
@@ -52,10 +54,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * The marvellous mongoDB as a WRML Service.
@@ -247,17 +247,89 @@ public class MongoService extends AbstractService
     public Set<Model> search(final SearchCriteria searchCriteria) throws UnsupportedOperationException
     {
 
+        // Identify the mongo collection to query.
+        final Dimensions resultDimensions = searchCriteria.getResultDimensions();
+
+        final URI schemaUri = resultDimensions.getSchemaUri();
+        final String collectionName = convertToCollectionName(schemaUri);
+        if (!_Mongo.collectionExists(collectionName))
+        {
+            LOG.debug(getConfiguration().getName() + " - Collection does not exist. Name:\n" + collectionName);
+            return null;
+        }
+
+        final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
+        if (mongoCollection == null)
+        {
+            // Should not happen
+            LOG.error(getConfiguration().getName() + " - Collection should exist. Name:\n" + collectionName);
+            return null;
+        }
+
+        // Build the mongo query object.
+        final DBObject mongoQuery = createMongoQuery(searchCriteria);
+        if (mongoQuery == null)
+        {
+            LOG.warn(getConfiguration().getName() + " - Query could not be created for: " + searchCriteria);
+            return null;
+        }
+
+        // Build the mongo projection (fields to return).
+        DBObject mongoKeys = null;
+        final Set<String> projectionSlotNames = searchCriteria.getProjectionSlotNames();
+        if (projectionSlotNames != null && !projectionSlotNames.isEmpty())
+        {
+            for (final String projectionSlotName : projectionSlotNames)
+            {
+                mongoKeys.put(projectionSlotName, 1);
+            }
+        }
+
+        // Query mongo
+        final DBCursor cursor = mongoCollection.find(mongoQuery, mongoKeys);
+        final int resultLimit = searchCriteria.getResultLimit();
+
+        if (resultLimit > 0)
+        {
+            cursor.limit(resultLimit);
+        }
+
+        // TODO: Support skipping to an offset
+        //cursor.skip(offset);
+
+        // Build model results
         final Set<Model> resultSet = new LinkedHashSet<>();
 
+        try
+        {
+            while (cursor.hasNext())
+            {
+                final DBObject mongoObject = cursor.next();
+                final Model model;
 
-        final QueryBuilder mongoQueryBuilder = new QueryBuilder();
+                try
+                {
+                    model = convertToModel(mongoObject, null, resultDimensions);
+                    // Note: Context will set URI value in Document models.
+                }
+                catch (ModelReadingException e)
+                {
+                    LOG.error(e.getMessage(), e);
+                    continue;
+                }
 
-
-        // TODO: Implement search
-
+                resultSet.add(model);
+            }
+        }
+        finally
+        {
+            cursor.close();
+        }
 
         return resultSet;
     }
+
+
 
     @Override
     protected void initFromConfiguration(final ServiceConfiguration config)
@@ -362,6 +434,153 @@ public class MongoService extends AbstractService
         }
 
         return mongoKeys;
+    }
+
+    private DBObject createMongoQuery(final SearchCriteria searchCriteria)
+    {
+
+        QueryBuilder queryBuilder = null;
+
+        final List<SearchCriterion> and = searchCriteria.getAnd();
+        if (and != null && !and.isEmpty())
+        {
+
+            queryBuilder = new QueryBuilder();
+
+            for (final SearchCriterion searchCriterion : and)
+            {
+
+                final String referenceSlot =  searchCriterion.getReferenceSlot();
+                queryBuilder.and(referenceSlot);
+                addQueryCriterion(searchCriterion, queryBuilder);
+
+            }
+
+        }
+
+        final List<SearchCriterion> or = searchCriteria.getOr();
+        if (or != null && !or.isEmpty())
+        {
+
+            final DBObject[] orQueryCriterionArray = new DBObject[or.size()];
+            for (int i = 0; i < or.size(); i++)
+            {
+                final SearchCriterion searchCriterion = or.get(i);
+                final String referenceSlot =  searchCriterion.getReferenceSlot();
+                final QueryBuilder orQueryCriterionBuilder = QueryBuilder.start(referenceSlot);
+                addQueryCriterion(searchCriterion, orQueryCriterionBuilder);
+                orQueryCriterionArray[i] = orQueryCriterionBuilder.get();
+            }
+
+            final QueryBuilder orQueryBuilder = new QueryBuilder();
+            orQueryBuilder.or(orQueryCriterionArray);
+
+            if (queryBuilder != null)
+            {
+                // AND the OR clause together with the AND query
+                queryBuilder.and(orQueryBuilder.get());
+            }
+            else
+            {
+                queryBuilder = orQueryBuilder;
+            }
+        }
+
+        if (queryBuilder == null)
+        {
+            return null;
+        }
+
+        final DBObject mongoQuery = queryBuilder.get();
+        return mongoQuery;
+    }
+
+    private void addQueryCriterion(final SearchCriterion searchCriterion, final QueryBuilder queryBuilder)
+    {
+
+        final ComparisonOperator comparisonOperator = searchCriterion.getComparisonOperator();
+        final Object comparisonValue = searchCriterion.getComparisonValue();
+        switch (comparisonOperator)
+        {
+
+            case containsAll:
+            {
+                queryBuilder.all(comparisonValue);
+                break;
+            }
+
+            case equalTo:
+            {
+                queryBuilder.equals(comparisonValue);
+                break;
+            }
+
+            case equalToAny:
+            {
+                queryBuilder.in(comparisonValue);
+                break;
+            }
+
+            case exists:
+            {
+                queryBuilder.exists(true);
+                break;
+            }
+
+            case greaterThan:
+            {
+                queryBuilder.greaterThan(comparisonValue);
+                break;
+            }
+
+            case greaterThanOrEqualTo:
+            {
+                queryBuilder.greaterThanEquals(comparisonValue);
+                break;
+            }
+
+            case lessThan:
+            {
+                queryBuilder.lessThan(comparisonValue);
+                break;
+            }
+
+            case lessThanOrEqualTo:
+            {
+                queryBuilder.lessThanEquals(comparisonValue);
+                break;
+            }
+
+            case notEqualTo:
+            {
+                queryBuilder.notEquals(comparisonValue);
+                break;
+            }
+
+            case notEqualToAny:
+            {
+                queryBuilder.notIn(comparisonValue);
+                break;
+            }
+
+            case notExists:
+            {
+                queryBuilder.exists(false);
+                break;
+            }
+
+            case regex:
+            {
+                final Pattern regexPattern = searchCriterion.getRegexPattern();
+                if (regexPattern != null)
+                {
+                    queryBuilder.regex(regexPattern);
+                }
+
+                break;
+            }
+
+        }
     }
 
     private String convertToCollectionName(final URI schemaUri)

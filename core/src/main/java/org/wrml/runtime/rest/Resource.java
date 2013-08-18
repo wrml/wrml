@@ -309,10 +309,99 @@ public class Resource implements Comparable<Resource>
         return _ApiNavigator;
     }
 
-    public Set<URI> getRequestSchemaUris(final Method requestMethod)
+
+    public URI getDefaultDocumentUri()
     {
 
-        return _ReferenceTemplateMethodToRequestSchemaUrisMap.get(requestMethod);
+        final UriTemplate uriTemplate = getUriTemplate();
+
+
+        final String[] parameterNames = uriTemplate.getParameterNames();
+        final Map<String, Object> parameterMap = new LinkedHashMap<>();
+
+        if (parameterNames != null && parameterNames.length > 0)
+        {
+
+            final Api api = getApiNavigator().getApi();
+            final Context context = api.getContext();
+            final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+            final URI defaultSchemaUri = getDefaultSchemaUri();
+            final Prototype defaultPrototype = (defaultSchemaUri != null) ? schemaLoader.getPrototype(defaultSchemaUri) : null;
+
+            for (int i = 0; i < parameterNames.length; i++)
+            {
+                final String parameterName = parameterNames[i];
+
+                URI keyedSchemaUri = null;
+
+                if (defaultPrototype != null)
+                {
+                    final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
+                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
+                    {
+                        keyedSchemaUri = defaultSchemaUri;
+                    }
+                }
+
+                if (keyedSchemaUri == null)
+                {
+
+                    final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = getReferenceTemplates();
+
+                    if (referenceTemplates != null && !referenceTemplates.isEmpty())
+                    {
+
+                        final Set<URI> referenceLinkRelationUris = getReferenceLinkRelationUris(Method.Get);
+                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty())
+                        {
+                            for (URI linkRelationUri : referenceLinkRelationUris)
+                            {
+                                final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
+                                final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
+                                final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
+                                if (responseSchemaPrototype != null)
+                                {
+                                    final Set<String> allKeySlotNames = responseSchemaPrototype.getAllKeySlotNames();
+                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
+                                    {
+                                        keyedSchemaUri = responseSchemaUri;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Object defaultValue = null;
+
+                if (keyedSchemaUri != null)
+                {
+
+                    final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
+                    final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
+                    if (keyProtoSlot instanceof PropertyProtoSlot)
+                    {
+                        final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
+
+                        // TODO: Allow more fine grain control of the default parameter value
+
+                        defaultValue = keyPropertyProtoSlot.getDefaultValue();
+
+                        if (defaultValue == null)
+                        {
+                            defaultValue = keyPropertyProtoSlot.getValueType().getDefaultValue();
+                        }
+
+                    }
+                }
+
+                parameterMap.put(parameterName, defaultValue);
+            }
+        }
+
+        return uriTemplate.evaluate(parameterMap, true);
     }
 
     public URI getDefaultSchemaUri()
@@ -320,6 +409,39 @@ public class Resource implements Comparable<Resource>
 
         return getResourceTemplate().getDefaultSchemaUri();
     }
+
+    public URI getDocumentUri(final Document document)
+    {
+
+        final UriTemplate uriTemplate = getUriTemplate();
+        final String[] parameterNames = uriTemplate.getParameterNames();
+        if (parameterNames == null)
+        {
+            return uriTemplate.evaluate(null);
+        }
+        else
+        {
+            final Map<String, Object> parameterMap = new LinkedHashMap<>();
+            for (final String parameterName : parameterNames)
+            {
+                if (!document.containsSlotValue(parameterName))
+                {
+                    return null;
+                }
+
+                Object parameterValue = document.getSlotValue(parameterName);
+                if (parameterValue == null)
+                {
+                    return null;
+                }
+
+                parameterMap.put(parameterName, parameterValue);
+            }
+            return uriTemplate.evaluate(parameterMap);
+        }
+
+    }
+
 
     /**
      * A mapping of {@link LinkRelation} id ({@link URI}) to {@link LinkTemplate} model instance. This (conceptual) set
@@ -416,6 +538,12 @@ public class Resource implements Comparable<Resource>
         return _ReferenceTemplates;
     }
 
+    public Set<URI> getRequestSchemaUris(final Method requestMethod)
+    {
+
+        return _ReferenceTemplateMethodToRequestSchemaUrisMap.get(requestMethod);
+    }
+
     public ResourceTemplate getResourceTemplate()
     {
 
@@ -442,7 +570,7 @@ public class Resource implements Comparable<Resource>
      * Generates the "href" URI used to refer to this resource from the specified referrer {@link Model} instance using
      * the specified {@link LinkRelation} {@link URI} value.
      */
-    public URI getUri(final Model referrer, final URI referenceRelationUri)
+    public URI getHrefUri(final Model referrer, final URI referenceRelationUri)
     {
 
         if (referrer == null)
@@ -477,8 +605,19 @@ public class Resource implements Comparable<Resource>
             // Get the Link slot's bindings, which may be used to provide an alternative source for one or more URI
             // template parameter values.
             final Prototype referrerPrototype = referrer.getPrototype();
-            final LinkProtoSlot linkProtoSlot = referrerPrototype.getLinkProtoSlots().get(referenceRelationUri);
-            final Map<String, ProtoValueSource> linkSlotBindings = linkProtoSlot.getLinkSlotBindings();
+
+            final SortedMap<URI, LinkProtoSlot> linkProtoSlots = referrerPrototype.getLinkProtoSlots();
+
+            Map<String, ProtoValueSource> linkSlotBindings = null;
+
+            if (linkProtoSlots != null && !linkProtoSlots.isEmpty())
+            {
+                final LinkProtoSlot linkProtoSlot = linkProtoSlots.get(referenceRelationUri);
+                if (linkProtoSlot != null)
+                {
+                    linkSlotBindings = linkProtoSlot.getLinkSlotBindings();
+                }
+            }
 
             parameterMap = new LinkedHashMap<>(uriTemplateParameterNames.length);
 
@@ -487,7 +626,7 @@ public class Resource implements Comparable<Resource>
 
                 final Object paramValue;
 
-                if (linkSlotBindings.containsKey(paramName))
+                if (linkSlotBindings != null && linkSlotBindings.containsKey(paramName))
                 {
                     // The link slot has declared a binding to an alternate source for this URI template parameter's
                     // value.
@@ -587,99 +726,6 @@ public class Resource implements Comparable<Resource>
         return ComparisonChain.start().compare(this._FullPath, otherResource._FullPath).result();
     }
 
-    public URI getDefaultDocumentUri()
-    {
-
-        final UriTemplate uriTemplate = getUriTemplate();
-
-
-        final String[] parameterNames = uriTemplate.getParameterNames();
-        final Map<String, Object> parameterMap = new LinkedHashMap<>();
-
-        if (parameterNames != null && parameterNames.length > 0)
-        {
-
-            final Api api = getApiNavigator().getApi();
-            final Context context = api.getContext();
-            final SchemaLoader schemaLoader = context.getSchemaLoader();
-
-            final URI defaultSchemaUri = getDefaultSchemaUri();
-            final Prototype defaultPrototype = (defaultSchemaUri != null) ? schemaLoader.getPrototype(defaultSchemaUri) : null;
-
-            for (int i = 0; i < parameterNames.length; i++)
-            {
-                final String parameterName = parameterNames[i];
-
-                URI keyedSchemaUri = null;
-
-                if (defaultPrototype != null)
-                {
-                    final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
-                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                    {
-                        keyedSchemaUri = defaultSchemaUri;
-                    }
-                }
-
-                if (keyedSchemaUri == null)
-                {
-
-                    final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = getReferenceTemplates();
-
-                    if (referenceTemplates != null && !referenceTemplates.isEmpty())
-                    {
-
-                        final Set<URI> referenceLinkRelationUris = getReferenceLinkRelationUris(Method.Get);
-                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty())
-                        {
-                            for (URI linkRelationUri : referenceLinkRelationUris)
-                            {
-                                final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
-                                final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
-                                final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
-                                if (responseSchemaPrototype != null)
-                                {
-                                    final Set<String> allKeySlotNames = responseSchemaPrototype.getAllKeySlotNames();
-                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                                    {
-                                        keyedSchemaUri = responseSchemaUri;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Object defaultValue = null;
-
-                if (keyedSchemaUri != null)
-                {
-
-                    final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
-                    final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
-                    if (keyProtoSlot instanceof PropertyProtoSlot)
-                    {
-                        final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
-
-                        // TODO: Allow more fine grain control of the default parameter value
-
-                        defaultValue = keyPropertyProtoSlot.getDefaultValue();
-
-                        if (defaultValue == null)
-                        {
-                            defaultValue = keyPropertyProtoSlot.getValueType().getDefaultValue();
-                        }
-
-                    }
-                }
-
-                parameterMap.put(parameterName, defaultValue);
-            }
-        }
-
-        return uriTemplate.evaluate(parameterMap, true);
-    }
 
     public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype)
     {

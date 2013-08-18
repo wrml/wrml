@@ -189,19 +189,24 @@ public interface Context
     /**
      * Reads a Model, conforming to the specified {@link Dimensions}, associated with the specified {@link Keys} from the specified {@link InputStream}, which is assumed to be
      * formatted with the identified {@link Format}.
+     *
+     * @param in The {@link InputStream} to read the {@link Model} from.
+     * @param rootModelKeys The optional {@link Keys} of the {@link Model} to read.  This value may be <code>null</code>.
+     * @param rootModelDimensions The {@link Dimensions} metadata that describes the type and structure of {@link Model} to read.
+     * @param formatUri The URI of the {@link Format} that identifies the format of the {@link Model} data within the {@link InputStream}.
      */
     <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions, final URI formatUri) throws ModelReadingException;
 
     /**
      * Reads a Model, conforming to the specified {@link Schema}, associated with the specified {@link URI} (key) from the specified {@link InputStream}, which is assumed to be
      * formatted with the identified {@link Format}.
+     *
+     * @param in The {@link InputStream} to read the {@link Model} from.
+     * @param uri The optional {@link URI} of the {@link org.wrml.model.rest.Document} model to read.  This value may be <code>null</code>.
+     * @param schemaUri The URI of the {@link Schema} that identifies the type of {@link Model} to read.
+     * @param formatUri The URI of the {@link Format} that identifies the format of the {@link Model} data within the {@link InputStream}.
      */
     <M extends Model> M readModel(final InputStream in, final URI uri, final URI schemaUri, final URI formatUri) throws ModelReadingException;
-
-    // TODO: The WrmlServlet needs to create & init Dimensions
-    // TODO: Remove this once we have resolved: https://wrmlorg.jira.com/browse/WRML-360
-    @Deprecated
-    <M extends Model> M request(final Method requestMethod, final URI uri, URI schemaUri, final Model parameter);
 
     /**
      * Requests a Model, conforming to the specified Dimensions, associated with the specified {@link Keys} using the specified request {@link Method} (which may optionally accept

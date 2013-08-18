@@ -33,7 +33,7 @@ import org.wrml.runtime.schema.DefaultValue;
  * the link's <i>referrer</i> and its <i>referenced</i> endpoint (both are typically {@link org.wrml.model.rest.Document}s).
  * </p>
  * <p>
- * The reference slot is expected to be a {@link org.wrml.runtime.schema.Key} slot that is used as a {@link org.wrml.runtime.rest.UriTemplate} parameter when linking.
+ * The reference slot is expected to be a key slot that is used as a {@link org.wrml.runtime.rest.UriTemplate} parameter when linking.
  * Note that a {@link LinkValueBinding} is not necessary in cases where the referenced document slot's name is the same name as the referrer's slot that holds the link "binding" value.
  * This <i>same slot name</i> case is considered a <i>natural</i> link binding and is enabled by default.
  * </p>
@@ -46,7 +46,7 @@ public interface LinkValueBinding extends Model
      * The slot, within the link's referenced document, that is <i>bound</i> by this {@link LinkValueBinding}.
      * </p>
      * <p>
-     * Note that the reference slot is expected to be a {@link org.wrml.runtime.schema.Key} slot that is used as a {@link org.wrml.runtime.rest.UriTemplate} parameter when linking.
+     * Note that the reference slot is expected to be a key slot that is used as a {@link org.wrml.runtime.rest.UriTemplate} parameter when linking.
      * </p>
      *
      * @return The slot, within the link's referenced document, that is <i>bound</i> by this {@link LinkValueBinding}.

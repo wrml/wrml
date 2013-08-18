@@ -26,6 +26,8 @@ package org.wrml.runtime.search;
 
 import org.wrml.model.schema.ComparisonOperator;
 
+import java.util.regex.Pattern;
+
 /**
  * TODO: Javadoc
  */
@@ -74,13 +76,26 @@ public interface SearchCriterion
 
     /**
      * <p>
+     * The {@link String} representation of the regular expression pattern value to be used in conjunction with the {@link ComparisonOperator#regex} comparison operator.
+     * </p>
+     * <p>
+     * The default value is an empty {@link String}, indicating no pattern.
+     * </p>
+     *
+     * @return The {@link String} representation of the regular expression pattern value to be used in conjunction with the {@link ComparisonOperator#regex} comparison operator.
+     */
+    String getRegex();
+
+    /**
+     * <p>
      * The regular expression pattern value to be used in conjunction with the {@link ComparisonOperator#regex} comparison operator.
      * </p>
      * <p>
-     * The default value is an empty {@link String} indicating no pattern.
+     * The default value is <code>null</code>, indicating no pattern.
      * </p>
      *
      * @return The regular expression pattern value to be used in conjunction with the {@link ComparisonOperator#regex} comparison operator.
      */
-    String getRegex();
+    Pattern getRegexPattern();
+
 }

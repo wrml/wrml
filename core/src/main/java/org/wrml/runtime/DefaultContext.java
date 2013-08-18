@@ -448,26 +448,6 @@ public class DefaultContext implements Context
     }
 
     @Override
-    @Deprecated
-    public final <M extends Model> M request(final Method requestMethod, final URI uri, URI schemaUri, final Model parameter)
-    {
-        // Default the schemaUri
-        if (schemaUri == null)
-        {
-            schemaUri = _ApiLoader.getDefaultResponseSchemaUri(requestMethod, uri);
-        }
-
-        if (schemaUri == null)
-        {
-            throw new ContextException("The method used is not supported by the api. METHOD [" + requestMethod + "], resource [" + uri + "]", this);
-        }
-
-        final Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
-        final Keys keys = _ApiLoader.buildDocumentKeys(uri, schemaUri);
-        return request(requestMethod, keys, dimensions, parameter);
-    }
-
-    @Override
     public final <M extends Model> M request(final Method requestMethod, final Keys keys, final Dimensions dimensions, final Model parameter)
     {
 
@@ -928,7 +908,6 @@ public class DefaultContext implements Context
             return;
         }
 
-        final Context context = _SchemaLoader.getContext();
         final ApiNavigator apiNavigator = _ApiLoader.getParentApiNavigator(uri);
 
         if (apiNavigator == null)
@@ -957,7 +936,7 @@ public class DefaultContext implements Context
                 continue;
             }
 
-            final URI href = endpointResource.getUri(document, linkRelationUri);
+            final URI href = endpointResource.getHrefUri(document, linkRelationUri);
             if (href == null)
             {
                 // Exclude Links that have null href values.
@@ -1103,60 +1082,27 @@ public class DefaultContext implements Context
 
                 for (final Model model : resultSet)
                 {
+                    final String originServiceName = service.getConfiguration().getName();
+                    model.setOriginServiceName(originServiceName);
+
                     if (model instanceof Document)
                     {
-                        final URI uri = endpointResource.getUri(model, linkRelationUri);
-                        ((Document) model).setUri(uri);
+                        final Document document = (Document) model;
+                        final URI uri = endpointResource.getDocumentUri(document);
+                        document.setUri(uri);
                     }
 
                     initManagedSlots(model);
                 }
 
                 final List<Model> collection = (List<Model>) referrer.getSlotValue(collectionSlotName);
+                collection.clear();
                 collection.addAll(resultSet);
+
             }
         }
     }
 
-    /*
-     * 
-     * // Part of the HATEOAS automation. Searches for *system* documents matching the specified criteria.
-     * 
-     * protected final void searchForLinkedSystemDocuments(final SearchCriteria searchCriteria, final SearchResult searchResult) {
-     * 
-     * final Document document = searchCriteria.getReferrer(); if (!(document instanceof UniquelyNamed)) { return; }
-     * 
-     * final UniqueName namespace = ((UniquelyNamed) document).getUniqueName();
-     * 
-     * Dimensions dimensions = null; SortedSet<UniqueName> uniqueNames = null;
-     * 
-     * final SchemaLoader schemaLoader = getSchemaLoader(); final URI schemaUri = searchCriteria.getResultSchemaUri(); final URI referenceLinkRelationUri =
-     * searchCriteria.getReferenceLinkRelationUri();
-     * 
-     * if (SystemLinkRelation.element.getUri().equals(referenceLinkRelationUri)) { if (schemaUri.equals(schemaLoader.getSchemaSchemaUri())) { uniqueNames =
-     * schemaLoader.getSchemaNames(namespace); dimensions = schemaLoader.getSchemaDimensions(); } }
-     * 
-     * if (SystemLinkRelation.child.getUri().equals(referenceLinkRelationUri)) { if (schemaUri.equals(schemaLoader.getSchemaNamespaceSchemaUri())) { uniqueNames =
-     * schemaLoader.getSchemaSubnamespaces(namespace); dimensions = schemaLoader.getSchemaNamespaceDimensions(); } }
-     * 
-     * if (uniqueNames == null || uniqueNames.isEmpty()) { return; }
-     * 
-     * for (final UniqueName uniqueName : uniqueNames) {
-     * 
-     * final Keys keys = new KeysBuilder(schemaUri, uniqueName).toKeys();
-     * 
-     * if (searchCriteria.isEmbedded()) {
-     * 
-     * final Model model = getModel(keys, dimensions);
-     * 
-     * if (model != null) { searchResult.addMatch(model); }
-     * 
-     * } else { searchResult.addMatch(keys); }
-     * 
-     * }
-     * 
-     * }
-     */
 
     @Override
     public final <M extends Model> M optionsModel(final Model model)

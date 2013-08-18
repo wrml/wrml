@@ -35,6 +35,7 @@ import org.wrml.runtime.search.SearchCriterion;
 
 import java.net.URI;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -172,8 +173,9 @@ public final class ProtoSearchCriteria
             final Object comparisonValue = protoValueSource.getValue(referrer);
             final ComparisonOperator comparisonOperator = protoSearchCriterion.getComparisonOperator();
             final String regex = protoSearchCriterion.getRegex();
+            final Pattern regexPattern = protoSearchCriterion.getRegexPattern();
 
-            final SearchCriterion searchCriterion = new DefaultSearchCriterion(referenceSlot, comparisonValue, comparisonOperator, regex);
+            final SearchCriterion searchCriterion = new DefaultSearchCriterion(referenceSlot, comparisonValue, comparisonOperator, regex, regexPattern);
             searchCriterionList.add(searchCriterion);
         }
 
@@ -396,16 +398,20 @@ public final class ProtoSearchCriteria
 
         private final String _Regex;
 
+        private final Pattern _RegexPattern;
+
         DefaultSearchCriterion(final String referenceSlot,
                                final Object comparisonValue,
                                final ComparisonOperator comparisonOperator,
-                               final String regex)
+                               final String regex,
+                               final Pattern regexPattern)
         {
 
             _ReferenceSlot = referenceSlot;
             _ComparisonValue = comparisonValue;
             _ComparisonOperator = comparisonOperator;
             _Regex = regex;
+            _RegexPattern = regexPattern;
         }
 
         @Override
@@ -434,6 +440,13 @@ public final class ProtoSearchCriteria
         {
 
             return _Regex;
+        }
+
+        @Override
+        public Pattern getRegexPattern()
+        {
+
+            return _RegexPattern;
         }
     }
 

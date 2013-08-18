@@ -274,9 +274,9 @@ public class ResourceTest extends TestCase
     }
 
     @Test
-    public void testGetUri()
+    public void testGetHrefUri()
     {
-        assertNull(this._Resource.getUri(null, null));
+        assertNull(this._Resource.getHrefUri(null, null));
     }
 
     @Test

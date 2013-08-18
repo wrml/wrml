@@ -25,7 +25,6 @@
 package org.wrml.runtime.rest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIUtils;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Api;
 import org.wrml.model.rest.Document;
@@ -49,21 +48,21 @@ public class DefaultApiLoader implements ApiLoader
 {
 
     private static final String SYSTEM_API_DOCROOT_FULL_PATH = "/";
-
     private static final String SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH = SYSTEM_API_DOCROOT_FULL_PATH + "{uniqueName}";
 
-    private final ConcurrentHashMap<URI, Api> _Apis;
-
-    private final WildCardPrefixTree<ApiNavigator> _ApiNavigators;
-
-    private final ConcurrentHashMap<URI, LinkRelation> _LinkRelations;
 
     private Context _Context;
+
+    private final ConcurrentHashMap<URI, Api> _Apis;
+    private final ConcurrentHashMap<URI, ApiNavigator> _ApiNavigators;
+    private final WildCardPrefixTree<ApiNavigator> _ApiNavigatorTrie;
+    private final ConcurrentHashMap<URI, LinkRelation> _LinkRelations;
 
     public DefaultApiLoader()
     {
         _Apis = new ConcurrentHashMap<>();
-        _ApiNavigators = new WildCardPrefixTree<>();
+        _ApiNavigators = new ConcurrentHashMap<>();
+        _ApiNavigatorTrie = new WildCardPrefixTree<>();
         _LinkRelations = new ConcurrentHashMap<>();
     }
 
@@ -238,8 +237,12 @@ public class DefaultApiLoader implements ApiLoader
             throw new NullPointerException("The uri is null; cannot locate the loaded REST API.");
         }
 
-        final String apiNavigatorPath = apiUri.toString();
-        return _ApiNavigators.getPathValue(apiNavigatorPath);
+        if (_ApiNavigators.containsKey(apiUri))
+        {
+            return _ApiNavigators.get(apiUri);
+        }
+
+        return null;
     }
 
     @Override
@@ -299,7 +302,8 @@ public class DefaultApiLoader implements ApiLoader
             throw new NullPointerException("The uri is null; cannot locate the parent REST API.");
         }
 
-        return getLoadedApiNavigator(uri);
+        final String apiNavigatorPath = uri.toString();
+        return _ApiNavigatorTrie.getPathValue(apiNavigatorPath);
     }
 
     @Override
@@ -360,11 +364,13 @@ public class DefaultApiLoader implements ApiLoader
             throw new ApiLoaderException("The API's URI cannot be null.", null, this);
         }
 
-        _Apis.put(apiUri, api);
-
         final ApiNavigator apiNavigator = new ApiNavigator(api);
         String apiNavigatorPath = createApiNavigatorPath(apiUri.toString());
-        _ApiNavigators.setPathValue(apiNavigatorPath, apiNavigator);
+
+        _ApiNavigators.put(apiUri, apiNavigator);
+        _ApiNavigatorTrie.setPathValue(apiNavigatorPath, apiNavigator);
+        _Apis.put(apiUri, api);
+
         return apiNavigator;
     }
 
@@ -457,18 +463,7 @@ public class DefaultApiLoader implements ApiLoader
     @Override
     public String toString()
     {
-
         String result = AsciiArt.express(this);
-        /*if (StringUtils.isEmpty(result))
-        {
-            result = com.google.common.base.Objects.toStringHelper(this) //
-                    // .add("_Context", _Context) // infinite recursion SOE if included
-                    .add("_Apis", _Apis) //
-                    .add("_ApiNavigators", _ApiNavigators) //
-                    .add("_LinkRelations", _LinkRelations) //
-                    .add("_SystemApiNavigators", _SystemApiNavigators) //
-                    .toString();
-        } */
         return result;
     }
 

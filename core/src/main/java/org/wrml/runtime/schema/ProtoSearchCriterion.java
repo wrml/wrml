@@ -27,6 +27,8 @@ package org.wrml.runtime.schema;
 import org.wrml.model.schema.ComparisonOperator;
 import org.wrml.model.schema.ValueSourceType;
 
+import java.util.regex.Pattern;
+
 /**
  * <p>
  * A {@link ProtoSearchCriterion} may be used to filter/select the elements of a {@link org.wrml.model.Model}'s collection slot.
@@ -48,6 +50,8 @@ public final class ProtoSearchCriterion
 
     private final String _Regex;
 
+    private final Pattern _RegexPattern;
+
     ProtoSearchCriterion(final ProtoSearchCriteria protoSearchCriteria, final CollectionSlotCriterion criterion)
     {
 
@@ -66,6 +70,15 @@ public final class ProtoSearchCriterion
 
         _ComparisonOperator = criterion.operator();
         _Regex = criterion.regex();
+
+        if (_Regex == null || _Regex.isEmpty())
+        {
+            _RegexPattern = null;
+        }
+        else
+        {
+            _RegexPattern = Pattern.compile(_Regex);
+        }
     }
 
     public ProtoSearchCriteria getProtoSearchCriteria()
@@ -92,6 +105,12 @@ public final class ProtoSearchCriterion
         return _Regex;
     }
 
+
+    public Pattern getRegexPattern()
+    {
+
+        return _RegexPattern;
+    }
 
 }
 

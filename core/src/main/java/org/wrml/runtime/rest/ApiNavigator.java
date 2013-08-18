@@ -493,7 +493,7 @@ public class ApiNavigator
         if (uri == null)
         {
 
-            uri = endPointResource.getUri(referrer, referenceRelationUri);
+            uri = endPointResource.getHrefUri(referrer, referenceRelationUri);
 
             if (uri == null)
             {
