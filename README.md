@@ -2,9 +2,31 @@
   <img src="http://www.wrml.org/images/index-titleLogo.png"/>
 </p>
 
-#WRML#
+#About
+WRML, the Web Resource Modeling Language, is a domain-specific modeling language that's oriented toward the design of REST APIs. It is a formalization of common REST API design and implementation patterns found in modern application servers. 
 
-WRML, the Web Resource Modeling Language, is an open source software project (http://www.wrml.org) focused on providing REST API standards, frameworks, and tools to support the development of web-oriented, client-server applications.
+WRML is an open source software project (http://www.wrml.org) focused on providing REST API standards, frameworks, and tools to support the development of web-oriented, client-server applications.
+
+The initial implementation of the WRML runtime is Java-based, with the WrmlServlet providing the REST API engine that frees the service developer to focus on application logic.
+
+#Key Benefits
+
+* Loads and initializes REST API models (design metadata) to be routed and invoked
+
+* Routes requests to a configured “back-end” Service based upon the target API endpoint’s response document’s Schema
+
+* Generates hyperlinks in responses based upon the designs of the API and the response document’s Schema
+
+* Represents response documents using a configured Format (e.g. JSON)
+
+* To reduce the number of requests per screen, supports embedding linked document(s) within the requested document
+
+* To reduce the byte size of responses, supports omission of unused properties from the requested document
+
+* Exposes API and Schema metadata to automate generation of code and docs for clients and intermediaries
+
+
+#Getting Started
 
 *Getting started* with WRML means something a little bit different to each role involved in the creation of REST APIs.
 
