@@ -64,7 +64,6 @@ Download WRML
 
 	$> git clone git@github.com:espn/WRML.git
 
-Or download the ZIP file from: https://github.com/espn/WRML
 
 Install WRML
 ------------
