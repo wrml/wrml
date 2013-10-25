@@ -62,7 +62,7 @@ If not, it can be downloaded from: http://maven.apache.org/download.cgi
 Download WRML
 -------------
 
-	$> git clone git@github.com:espn/WRML.git
+	$> git clone git@github.com:wrml/wrml.git
 
 
 Install WRML
