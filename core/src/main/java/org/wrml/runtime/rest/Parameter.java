@@ -27,59 +27,50 @@ package org.wrml.runtime.rest;
 /**
  * A value that is named for identification while passing.
  */
-public final class Parameter implements Comparable<Parameter>
-{
+public final class Parameter implements Comparable<Parameter> {
 
     private String _Name;
 
     private String _Value;
 
-    public Parameter(final String name, final String value)
-    {
+    public Parameter(final String name, final String value) {
 
         _Name = name;
         _Value = value;
     }
 
     @Override
-    public int compareTo(final Parameter p)
-    {
+    public int compareTo(final Parameter p) {
 
-        if (p.getName() == null && _Name == null)
-        {
+        if (p.getName() == null && _Name == null) {
             return 0;
         }
 
         return _Name.compareTo(p.getName());
     }
 
-    public String getName()
-    {
+    public String getName() {
 
         return _Name;
     }
 
-    public void setName(final String name)
-    {
+    public void setName(final String name) {
 
         _Name = name;
     }
 
-    public String getValue()
-    {
+    public String getValue() {
 
         return _Value;
     }
 
-    public void setValue(final String value)
-    {
+    public void setValue(final String value) {
 
         _Value = value;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return "{ \"name\" : " + _Name + ", \"value\" : " + _Value + "}";
     }

@@ -30,7 +30,7 @@ $white: #FFFFFF;
 $red: #FF0000;
 $componentBackgroundColor: rgb(238, 238, 238);
 
-$foregroundColor:  #333333;
+$foregroundColor: #333333;
 $focusForegroundColor: $black;
 $focusBorderColor: rgba(82, 82, 82, 0.8);
 $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
@@ -49,12 +49,11 @@ $containerWidth: 940px;
 $navbarHeight: 40px;
 $cascadeMenuIconSpacing: 50px;
 
-
 $pageHeaderHeight: 75px;
 
-$footerMarginTop: 30px; 	
+$footerMarginTop: 30px;
 $footerBorderTopWidth: 1px;
-$footerPaddingTop: 17px; 	
+$footerPaddingTop: 17px;
 $footerHeight: 80px;
 $footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + $footerMarginTop;
 
@@ -66,37 +65,29 @@ $formFieldSetMarginRight: 40px;
 $formTextInputWidth: $containerWidth - 150 - ($formFieldSetMarginLeft + $formFieldSetMarginRight);
 $formTableWidth: $formTextInputWidth + 100;
 
-
 $horizontalFormLabelWidth: 50px;
 $horizontalFormControlSpacing: 10px;
 $horizontalFormMarginLeft: $horizontalFormLabelWidth + $horizontalFormControlSpacing;
 $horizontalFormTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
-
-
-
-html
-{
-	height: 100%;  	
+html {
+  height: 100%;
 }
 
-body								
-{  
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-	height: 100%;  	
-	
-}                                                                                  
+body {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  height: 100%;
 
-ul, ol, dl								
-{  
-	list-style-type: none;  
-}      
+}
+
+ul, ol, dl {
+  list-style-type: none;
+}
 
 // Remove this hack and replace with JS
-input:focus, textarea:focus 
-{ 
-	background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
-	background-size: contain;
+input:focus, textarea:focus {
+  background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
+  background-size: contain;
 }
 
 input,
@@ -104,7 +95,7 @@ button,
 select,
 textarea {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-}                                                                   
+}
 
 textarea,
 input[type="text"],
@@ -121,10 +112,9 @@ input[type="url"],
 input[type="search"],
 input[type="tel"],
 input[type="color"],
-.uneditable-input 
-{
-	//margin-top: 10px;
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+.uneditable-input {
+  //margin-top: 10px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 }
 
 textarea:focus,
@@ -142,25 +132,22 @@ input[type="url"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
-.uneditable-input:focus 
-{
+.uneditable-input:focus {
 
-	color: $focusForegroundColor;
-	border-color: $focusBorderColor;
+  color: $focusForegroundColor;
+  border-color: $focusBorderColor;
 
-	 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
 }
 
-.table 
-{	
-	border-bottom: 1px solid #dddddd;
+.table {
+  border-bottom: 1px solid #dddddd;
 }
 
-.well 
-{
-	padding-bottom: 10px;
+.well {
+  padding-bottom: 10px;
 }
 
 .container,
@@ -170,160 +157,133 @@ input[type="color"]:focus,
   width: $containerWidth;
 }
 
+.dropdown-menu {
 
-.dropdown-menu 
+  li {
+    a:hover, a:focus {
+      color: #ffffff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+      background-color: #363636;
+      *background-color: #222222;
+      background-image: -moz-linear-gradient(top, #444444, #222222);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
+      background-image: -webkit-linear-gradient(top, #444444, #222222);
+      background-image: -o-linear-gradient(top, #444444, #222222);
+      background-image: linear-gradient(to bottom, #444444, #222222);
+      background-repeat: repeat-x;
+      border-color: #222222 #222222 #000000;
+      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
+      filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    }
+  }
+}
+
+.section-divider {
+  height: 1px;
+  background-color: $sectionDividerColor;
+  margin-top: 40px;
+  margin-bottom: 30px;
+
+  span {
+    font-size: 21px;
+    background-color: $white;
+    position: relative;
+    top: -0.60em;
+    padding-right: 5px;
+  }
+}
+
+.readonly-label {
+  //color: $muted;
+}
+
+.wrml-subtitle {
+  float: right;
+  font-size: 0px;
+  margin-top: 7px;
+
+  .wrml-subtitle-text {
+    vertical-align: middle;
+    font-weight: normal;
+    font-size: 22px;
+    color: $muted;
+  }
+
+  .wrml-subtitle-icon {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    display: inline;
+  }
+}
+
+.wrml-code-normal,
+.wrml-code-schema,
+.wrml-code-method-GET,
+.wrml-code-method-PUT,
+.wrml-code-method-POST,
+.wrml-code-method-DELETE,
+.wrml-code-normal,
 {
-
-	li 
-	{
-		a:hover, a:focus 
-		{
-			color: #ffffff;
-			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-			background-color: #363636;
-			*background-color: #222222;
-			background-image: -moz-linear-gradient(top, #444444, #222222);
-			background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
-			background-image: -webkit-linear-gradient(top, #444444, #222222);
-			background-image: -o-linear-gradient(top, #444444, #222222);
-			background-image: linear-gradient(to bottom, #444444, #222222);
-			background-repeat: repeat-x;
-			border-color: #222222 #222222 #000000;
-			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
-			filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-		}			
-	}
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size: 12px;
 }
 
-.section-divider
-{
-	height: 1px; 
-	background-color: $sectionDividerColor; 
-	margin-top: 40px;
-	margin-bottom: 30px;
-
-	span
-	{
-		font-size: 21px;
-		background-color: $white; 
-		position: relative; 
-		top: -0.60em; 
-		padding-right: 5px;
-	}
+[class*='wrml-code-method-'] {
+  //font-weight: bold;
 }
 
-.readonly-label
-{
-	//color: $muted;	
+.wrml-code-schema {
+  color: $codeSchemaColor;
 }
 
-.wrml-subtitle
-{
-	float: right;	
-	font-size: 0px;	
-	margin-top: 7px;
-	
-	.wrml-subtitle-text
-	{		
-		vertical-align: middle;
-		font-weight: normal;
-		font-size: 22px;	
-		color: $muted;
-	}
-
-	.wrml-subtitle-icon
-	{			
-		margin-right: 5px;
-		width: 24px;
-		height: 24px;		
-		display: inline; 
-	}
+.wrml-code-method-GET {
+  color: $codeMethodGetColor;
 }
 
-.wrml-code-normal, 
-.wrml-code-schema, 
-.wrml-code-method-GET, 
-.wrml-code-method-PUT, 
-.wrml-code-method-POST, 
-.wrml-code-method-DELETE,  
-.wrml-code-normal, 
-{
-	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;			
-	font-size: 12px;
+.wrml-code-method-PUT {
+  color: $codeMethodPutColor;
 }
 
-[class*='wrml-code-method-']
-{
-	//font-weight: bold;
+.wrml-code-method-POST {
+  color: $codeMethodPostColor;
 }
 
-.wrml-code-schema
-{
-	color: $codeSchemaColor;
+.wrml-code-method-DELETE {
+  color: $codeMethodDeleteColor;
 }
 
-.wrml-code-method-GET
-{
-	color: $codeMethodGetColor;
+#wrap {
+  height: auto !important;
+  min-height: 100%;
+  margin-bottom: $wrapMarginBottom;
 }
 
-.wrml-code-method-PUT
-{
-	color: $codeMethodPutColor;
-}
+#main-region {
 
-.wrml-code-method-POST
-{
-	color: $codeMethodPostColor;
-}
+  section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-.wrml-code-method-DELETE
-{
-	color: $codeMethodDeleteColor;
-}
-
-
-#wrap											
-{  	
-	height: auto !important; 
-	min-height: 100%; 
-	margin-bottom: $wrapMarginBottom;	  	
-}  
-
-#main-region							
-{                    
-
-	section									
-	{  
-		margin-top: 20px;
-		margin-bottom: 20px;  
-	}                                                                                
-
-	#title-icon 
-	{
-		margin-top: -5px;
-		margin-right: 8px;  
-		width: 48px;
-		height: 48px;
-	}
+  #title-icon {
+    margin-top: -5px;
+    margin-right: 8px;
+    width: 48px;
+    height: 48px;
+  }
 
 }
-                 
 
-#page-header-push
-{
-	margin-top: $navbarHeight + $pageHeaderHeight;
-	margin-bottom: 40px;  
+#page-header-push {
+  margin-top: $navbarHeight + $pageHeaderHeight;
+  margin-bottom: 40px;
 }
 
-
-#push											
-{  
-	height: $footerHeightTotal;  
-}  
-
-
+#push {
+  height: $footerHeightTotal;
+}
 
 /*
  * WRML - Web Resource Modeling Language
@@ -350,577 +310,485 @@ input[type="color"]:focus,
  * limitations under the License.
  */
 
-.wrml-form 
-{
-	margin-bottom: 0px;
+.wrml-form {
+  margin-bottom: 0px;
 
-	input[type=text],
-	input[type=password],
-	input[type=url],
-	textarea,
-	.uneditable-input 
-	{
-		width: $formTextInputWidth;
-	}
+  input[type=text],
+  input[type=password],
+  input[type=url],
+  textarea,
+  .uneditable-input {
+    width: $formTextInputWidth;
+  }
 }
 
-.wrml-form-field-label
-{
-	margin-left: -30px;
-	font-weight: bold;	
-	margin-top: 5px;
-	vertical-align: middle;
+.wrml-form-field-label {
+  margin-left: -30px;
+  font-weight: bold;
+  margin-top: 5px;
+  vertical-align: middle;
 }
 
-.wrml-form-field-label-icon
-{		
-	width: 20px;
-	height: 20px;
-	padding-right: 2px;
-	display: inline; 		
+.wrml-form-field-label-icon {
+  width: 20px;
+  height: 20px;
+  padding-right: 2px;
+  display: inline;
 }
 
-.wrml-form-fieldset 
-{		
-	margin-left: $formFieldSetMarginLeft;
-	margin-right: $formFieldSetMarginRight;
+.wrml-form-fieldset {
+  margin-left: $formFieldSetMarginLeft;
+  margin-right: $formFieldSetMarginRight;
 
 }
 
+#main-region {
 
-#main-region							
-{ 
+  .api-section {
 
-	.api-section
-	{
+    fieldset {
+      margin-left: 10px;
+      margin-right: 0px;
+    }
 
-		fieldset 
-		{		
-			margin-left: 10px;
-			margin-right: 0px;
-		}
+    .wrml-form-field-label {
+      margin-left: 0px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-left: 0px;	
-		}
+    .form-inline {
+      margin-left: 0px;
+    }
+  }
 
-		.form-inline {
-			margin-left: 0px;	
-		}
-	}                                                                         
+  #api-page-header {
 
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#api-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #api-top-properties-section {
 
-	#api-top-properties-section
-	{
+    .control-label {
+      float: left;
+      width: 100px;
+      padding-top: 5px;
+      text-align: left;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-left: 0px;
+      color: $foregroundColor;
+      display: inline;
+    }
 
-		.control-label  
-		{
-			float: left;
-			width: 100px;
-			padding-top: 5px;
-			text-align: left;			
-			font-weight: bold;
-			margin-top: 0px;
-			margin-left: 0px;
-			color: $foregroundColor;
-			display: inline;	
-		}
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: 50px;
+      *margin-left: 0;
 
+      input[type=text],
+      input[type=url],
+      .uneditable-input {
+        width: $containerWidth - 170;
+      }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: 50px;
-			*margin-left: 0;		
+    }
 
-			input[type=text],
-			input[type=url],
-			.uneditable-input 
-			{
-				width: $containerWidth - 170;
-			}
+    .wrml-form-field-label {
+      margin-top: 5px;
+    }
 
-		}	
+    textarea,
+    {
+      width: $containerWidth - 50;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-top: 5px;			
-		}
+  }
 
-		textarea,
-		{
-			width: $containerWidth - 50;
-		}
+  #api-resources-section {
+    .wrml-form-field-label {
+      margin-top: 5px;
+      vertical-align: middle;
+      margin-left: 0px;
+    }
+  }
 
-	}
+  .api-resource-divider {
+    height: 1px;
+    display: inline;
+    background-color: #dddddd;
+    width: 350px;
+    margin-top: 15px;
+    vertical-align: middle;
+  }
 
+  .api-resource-segment-input {
+    font-weight: bold;
+    width: 200px;
+    border: 1px solid #ebebeb;
 
-	#api-resources-section
-	{
-		.wrml-form-field-label  
-		{			
-			margin-top: 5px;			
-			vertical-align: middle;
-			margin-left: 0px;
-		}	
-	}
+    :focus {
+      color: $focusForegroundColor;
+      border-color: $focusBorderColor;
 
-	.api-resource-divider
-	{
-		height: 1px; 
-		display: inline; 
-		background-color: #dddddd;	
-		width: 350px;
-		margin-top: 15px;		
-		vertical-align: middle;
-	}
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+    }
+  }
 
-	.api-resource-segment-input
-	{
-		font-weight: bold;	
-		width: 200px;
-		border: 1px solid #ebebeb;
+  .api-resource-segment-form {
+    margin-top: 30px;
+    margin-left: 0px;
+    padding-bottom: 19px;
+    margin-bottom: 0px;
 
-		:focus 
-		{
-			color: $focusForegroundColor;
-			border-color: $focusBorderColor;
+    .api-resource-segment {
+      margin-left: 0px;
 
-			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		}
-	}
+      .api-resource-parent-path-label {
+        padding-top: 10px;
+        font-weight: normal;
+        vertical-align: middle;
+        color: $muted;
 
+        .api-resource-parent-path-icon {
+          width: 16px;
+          height: 16px;
+          padding-left: 0px;
+          padding-right: 0px;
+          display: inline;
+        }
+      }
+    }
+  }
 
-	.api-resource-segment-form
-	{
-		margin-top: 30px;
-		margin-left: 0px;
-		padding-bottom: 19px;
-		margin-bottom: 0px;
+  .wrml-form {
+    margin-left: 0px;
+  }
 
-		.api-resource-segment
-		{
-			margin-left: 0px;
+  .api-resource-form {
 
-			.api-resource-parent-path-label
-			{
-				padding-top: 10px;	
-				font-weight: normal;	
-				vertical-align: middle;
-				color: $muted;	
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
 
-				.api-resource-parent-path-icon
-				{
-					width: 16px;
-					height: 16px;
-					padding-left: 0px;
-					padding-right: 0px;
-					display: inline; 
-				}
-			}
-		}
-	}
+    .controls-row {
 
-	.wrml-form
-	{
-		margin-left: 0px;			
-	}
+      .api-resource-form-input-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 25px;
+        margin-left: 15px;
+        margin-right: 5px;
 
-	.api-resource-form
-	{
+      }
 
+      input[type="text"],
+      input[type="password"],
+      input[type="datetime"],
+      input[type="datetime-local"],
+      input[type="date"],
+      input[type="month"],
+      input[type="time"],
+      input[type="week"],
+      input[type="number"],
+      input[type="email"],
+      input[type="url"],
+      input[type="search"],
+      input[type="tel"],
+      input[type="color"],
+      select,
+      textarea,
+      button,
+      .uneditable-input {
+        margin-top: 20px;
+      }
 
-		padding-top: 5px;	
-		padding-bottom: 5px;	
-		padding-left: 15px;
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      select,
+      .uneditable-input {
+        width: 250px;
+      }
 
-		.controls-row 
-		{
+      textarea {
+        width: 650px;
+      }
 
-			.api-resource-form-input-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 25px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
+      input.api-resource-form-input-short,
+      {
+        width: 100px;
+      }
+    }
 
-			}
+    .api-resource-form-icon {
+      width: 16px;
+      height: 16px;
+      margin-top: -3px;
+      margin-bottom: 0px;
+      padding-right: 5px;
+      vertical-align: middle;
+    }
 
-			input[type="text"],
-			input[type="password"],
-			input[type="datetime"],
-			input[type="datetime-local"],
-			input[type="date"],
-			input[type="month"],
-			input[type="time"],
-			input[type="week"],
-			input[type="number"],
-			input[type="email"],
-			input[type="url"],
-			input[type="search"],
-			input[type="tel"],
-			input[type="color"],
-			select,
-			textarea,
-			button,
-			.uneditable-input 
-			{
-				margin-top: 20px;
-			}
+  }
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			select,
-			.uneditable-input 
-			{
-				width: 250px;
-			}		
+  .resource-table {
 
-			textarea
-			{
-				width: 650px;
-			}
+    width: 900px;
 
+    margin-top: 20px;
+    margin-left: 8px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
 
+    th {
+      font-weight: normal;
+    }
 
-			input.api-resource-form-input-short,
-			{
-				width: 100px;	
-			}
-		}
+    td {
+      padding-top: 15px;
+      padding-bottom: 15px;
 
-		.api-resource-form-icon
-		{		
-			width: 16px;
-			height: 16px;
-			margin-top: -3px;
-			margin-bottom: 0px;
-			padding-right: 5px;
-			vertical-align: middle;						
-		}
+    }
 
-	}
+    input[type=text],
+    input[type=password],
+    input[type=url],
+    select,
+    .uneditable-input {
+      margin-top: 5px;
+    }
 
-	.resource-table
-	{
+    label {
+      vertical-align: middle;
+      margin-top: 5px;
+    }
 
-		width: 900px;
-		
-		margin-top: 20px;
-		margin-left: 8px;
-		margin-bottom: 30px;
-		padding-bottom: 30px;
-				
-		th {			
-			font-weight: normal;			
-		}
+    button {
+      margin-top: 5px;
+    }
 
-		td 
-		{
-			padding-top: 15px;
-			padding-bottom: 15px;
-			
-		}
+    .api-relation-input {
+      width: 120px;
 
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		select,
-		.uneditable-input 
-		{
-			margin-top: 5px;			
-		}	
+    }
 
-		label
-		{
-			vertical-align: middle;
-			margin-top: 5px;			
-		}
+    .api-endpoint-input {
+      width: 270px;
+      font-size: 10pt;
+    }
 
-		button
-		{
-			margin-top: 5px;
-		}
+    .api-method-text {
+      margin-top: 10px;
+    }
 
-		.api-relation-input 
-		{
-			width: 120px;
+    .signature {
+      margin-top: 10px;
+    }
 
-		}
+    .signature {
+      font-size: 0px;
 
-		.api-endpoint-input 
-		{
-			width: 270px;
-			font-size: 10pt;
-		}
+      span {
+        margin: 0px;
+        padding: 0px;
+      }
+    }
 
-		.api-method-text
-		{
-			margin-top: 10px;			
-		}
-
-		.signature
-		{
-			margin-top: 10px;
-		}
-
-		.signature
-		{
-			font-size: 0px;			
-
-			span
-			{
-				margin: 0px;
-				padding: 0px;
-			}
-		}
-
-
-
-
-	}
+  }
 }
 
-#main-region							
-{ 
+#main-region {
 
-	#apiNotFound-page-header-section
-	{
+  #apiNotFound-page-header-section {
 
-		margin-bottom: 0px;		 
-	}
+    margin-bottom: 0px;
+  }
 
-	#apiNotFound-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 0px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
+  #apiNotFound-page-header {
 
-	}
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
 
-	#page-header-push
-	{
-		margin-bottom: 0px;		 
-	}
+  }
 
-	.well 
-	{
-		margin-bottom: 5px;		 
-	}
+  #page-header-push {
+    margin-bottom: 0px;
+  }
 
-	#apiNotFound
-	{	 
-		margin-top: 0px;
-		background-color: $white;
-		padding-top: 0px;	
-	}
+  .well {
+    margin-bottom: 5px;
+  }
 
-	#apiNotFound-wormle
-	{
-		float: right;
-		width: 100px;
-		height: 493px;
-	}
+  #apiNotFound {
+    margin-top: 0px;
+    background-color: $white;
+    padding-top: 0px;
+  }
 
-	.apiNotFound-workflow
-	{
-		margin-top: 200px;	
-	}
+  #apiNotFound-wormle {
+    float: right;
+    width: 100px;
+    height: 493px;
+  }
 
-	.apiNotFound-workflow-element 
-	{
-		margin-top: 40px;
-		margin-left: 0px;
-	}
+  .apiNotFound-workflow {
+    margin-top: 200px;
+  }
 
-	.apiNotFound-speech-bubble
-	{
-        position: relative;
-        display: block;
-        float: right;
-        max-width: 350px;
-        margin-left: -30px;
-		padding: 10px;		
+  .apiNotFound-workflow-element {
+    margin-top: 40px;
+    margin-left: 0px;
+  }
 
-		p
-        {
-        	margin-bottom: 0px;		
+  .apiNotFound-speech-bubble {
+    position: relative;
+    display: block;
+    float: right;
+    max-width: 350px;
+    margin-left: -30px;
+    padding: 10px;
+
+    p {
+      margin-bottom: 0px;
+    }
+
+  }
+
+  .apiNotFound-form {
+    fieldset {
+      margin-left: 0px;
+
+      .control-group {
+        .controls {
+          margin-left: 0px;
+        }
+      }
+
+      .apiNotFound-form-button {
+        margin-left: 80px;
+      }
+
+    }
+  }
+
+}
+
+#main-region {
+
+  #documentNotFound-page-header-section {
+
+    margin-bottom: 0px;
+  }
+
+  #documentNotFound-page-header {
+
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
+
+  #page-header-push {
+    margin-bottom: 0px;
+  }
+
+  .well {
+    margin-bottom: 5px;
+  }
+
+  #documentNotFound {
+    margin-top: 0px;
+    background-color: $white;
+    padding-top: 0px;
+  }
+
+  #documentNotFound-wormle {
+    float: right;
+    width: 100px;
+    height: 493px;
+  }
+
+  .documentNotFound-workflow {
+    margin-top: 100px;
+  }
+
+  .documentNotFound-workflow-element {
+    margin-top: 40px;
+    margin-left: 0px;
+  }
+
+  .documentNotFound-speech-bubble {
+    position: relative;
+    display: block;
+    float: left;
+    max-width: 400px;
+    margin-left: 30px;
+    padding: 10px;
+
+    p {
+      margin-bottom: 0px;
+    }
+  }
+
+  .documentNotFound-form {
+    fieldset {
+      margin-left: 0px;
+
+      .control-group {
+        .control-label {
+          display: inline-block;
+          margin-left: 0px;
+          font-weight: bold;
+          vertical-align: middle;
         }
 
-	}
+        .controls {
+          margin-left: 0px;
 
-	.apiNotFound-form
-	{
-		fieldset
-		{
-			margin-left: 0px;
-
-			.control-group
-			{
-				.controls
-				{
-					margin-left: 0px;
-				}
-			}
-
-			.apiNotFound-form-button
-			{
-				margin-left: 80px;
-			}
-
-
-		}
-	}
-
-}
-
-
-#main-region							
-{ 
-
-	#documentNotFound-page-header-section
-	{
-
-		margin-bottom: 0px;		 
-	}
-
-	#documentNotFound-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 0px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
-
-	#page-header-push
-	{
-		margin-bottom: 0px;		 
-	}
-
-	.well 
-	{
-		margin-bottom: 5px;		 
-	}
-
-	#documentNotFound
-	{	 
-		margin-top: 0px;
-		background-color: $white;
-		padding-top: 0px;	
-	}
-
-	#documentNotFound-wormle
-	{
-		float: right;
-		width: 100px;
-		height: 493px;
-	}
-
-	.documentNotFound-workflow
-	{
-		margin-top: 100px;	
-	}
-
-	.documentNotFound-workflow-element 
-	{
-		margin-top: 40px;
-		margin-left: 0px;
-	}
-
-	.documentNotFound-speech-bubble
-	{
-        position: relative;
-        display: block;
-        float: left;
-        max-width: 400px;
-        margin-left: 30px;
-		padding: 10px;		
-
-        p
-        {
-        	margin-bottom: 0px;		
+          input {
+            margin-left: 10px;
+            width: 350px;
+          }
         }
-	}
+      }
 
-	.documentNotFound-form
-	{
-		fieldset
-		{
-			margin-left: 0px;			
+      .documentNotFound-form-button {
+        margin-top: 20px;
+        margin-left: 80px;
+      }
 
-			.control-group
-			{
-				.control-label
-				{
-					display: inline-block;					
-					margin-left: 0px;
-					font-weight: bold;
-					vertical-align: middle; 
-				}
+    }
+  }
 
-				.controls
-				{					
-					margin-left: 0px;					
-
-					input
-					{
-						margin-left: 10px;
-						width: 350px;
-					}
-				}
-			}
-
-			.documentNotFound-form-button
-			{	
-				margin-top: 20px;			
-				margin-left: 80px;
-			}
-
-
-		}
-	}
-
-	.wrml-form-field-label 
-	{
-		margin-left: 0px;
-	}
+  .wrml-form-field-label {
+    margin-left: 0px;
+  }
 
 }
 
@@ -949,27 +817,27 @@ input[type="color"]:focus,
  * limitations under the License.
  */
 
-#footer-region			
-{  
+#footer-region {
 
-	height: $footerHeight; 
+  height: $footerHeight;
 
-	margin-top: $footerMarginTop;
-	padding-top: $footerPaddingTop; 	
-	
-	text-align: center;
-	font-size: 75%;
+  margin-top: $footerMarginTop;
+  padding-top: $footerPaddingTop;
 
-	color: $red;		
-	background-color: $black; 	
+  text-align: center;
+  font-size: 75%;
 
-	border-top: $footerBorderTopWidth solid $red;  
+  color: $red;
+  background-color: $black;
 
-	a, a:hover, a:active
-	{
-		color: $white;
-	}
-}/*
+  border-top: $footerBorderTopWidth solid $red;
+
+  a, a:hover, a:active {
+    color: $white;
+  }
+}
+
+/*
  * WRML - Web Resource Modeling Language
  *  __     __   ______   __    __   __
  * /\ \  _ \ \ /\  == \ /\ "-./  \ /\ \
@@ -994,720 +862,610 @@ input[type="color"]:focus,
  * limitations under the License.
  */
 
-#header-region		
-{
-	padding-top: $navbarHeight;
+#header-region {
+  padding-top: $navbarHeight;
 
-	.navbar-inner
-	{
-		height: $navbarHeight;
-		border-bottom: 1px solid $red;  
-	}
+  .navbar-inner {
+    height: $navbarHeight;
+    border-bottom: 1px solid $red;
+  }
 
-	#logo					
-	{  
+  #logo {
 
-		width: 25px; 
-		height: 25px; 	
-		margin-left: 5px;				
-	}
-	
-	.brand 
-	{
-		color: $red;		
-		font-weight: 500; 
-	}
+    width: 25px;
+    height: 25px;
+    margin-left: 5px;
+  }
 
-	.caret
-	{  
-		border-top-color: $white;		
-		border-bottom-color: $white;		
-	}
+  .brand {
+    color: $red;
+    font-weight: 500;
+  }
 
-	a.dropdown-toggle
-	{  
-		color: $white;		
-	}
+  .caret {
+    border-top-color: $white;
+    border-bottom-color: $white;
+  }
 
-	a.dropdown-toggle:focus, a.dropdown-toggle:hover						
-	{  
-		color: $red;	
+  a.dropdown-toggle {
+    color: $white;
+  }
 
-		.caret
-		{  
-			border-top-color: $red;		
-			border-bottom-color: $red;		
-		}	
-	}
+  a.dropdown-toggle:focus, a.dropdown-toggle:hover {
+    color: $red;
 
-	.dropdown-menu {
-		li {
-			a {			
-				span
-				{
-					margin-left: $cascadeMenuIconSpacing;
-					color: $white;	
-				}
-			}					
-		}
-	}
-	
+    .caret {
+      border-top-color: $red;
+      border-bottom-color: $red;
+    }
+  }
 
-	// Add cascade menu support to Bootstrap
-	.nav li.dropdown ul.dropdown-menu li:HOVER ul 
-	{
-		display:block; 
-		position:absolute; 
-		left:100%;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		border-radius: 3px;
-	}
+  .dropdown-menu {
+    li {
+      a {
+        span {
+          margin-left: $cascadeMenuIconSpacing;
+          color: $white;
+        }
+      }
+    }
+  }
 
+  // Add cascade menu support to Bootstrap
+  .nav li.dropdown ul.dropdown-menu li:HOVER ul {
+    display: block;
+    position: absolute;
+    left: 100%;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+  }
 
-	.nav li.dropdown ul.dropdown-menu ul 
-	{
-		display: none;
-		float:right;
-		position: relative;
-		top: auto;
-		margin-top: -30px;
-	}
-
+  .nav li.dropdown ul.dropdown-menu ul {
+    display: none;
+    float: right;
+    position: relative;
+    top: auto;
+    margin-top: -30px;
+  }
 
 }
+
 $listIndexHeaderWidth: $formFieldSetMarginRight;
 $listIndexCellSpacing: 5px;
 $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
-#main-region							
-{ 
+#main-region {
 
-	#model-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #model-page-header {
 
-	#model-title-section
-	{
-		.untitled
-		{
-			font-style: italic;
-		}
-	}
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#model-links
-	{
-		.control-label  
-		{
-			float: left;
-			width: $horizontalFormLabelWidth;
-			padding-top: 5px;
-			text-align: right;			
-			font-weight: normal;
-			margin-top: 0px;
-			color: $muted;		
-			display: inline;	
-		}
+  #model-title-section {
+    .untitled {
+      font-style: italic;
+    }
+  }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: $horizontalFormMarginLeft;
-			*margin-left: 0;		
+  #model-links {
+    .control-label {
+      float: left;
+      width: $horizontalFormLabelWidth;
+      padding-top: 5px;
+      text-align: right;
+      font-weight: normal;
+      margin-top: 0px;
+      color: $muted;
+      display: inline;
+    }
 
-			.model-link-href-input
-			{
-				width: $horizontalFormTextInputWidth;
-			}
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: $horizontalFormMarginLeft;
+      *margin-left: 0;
 
-			.model-link-relation-input
-			{
-				width: 200px;
-			}
+      .model-link-href-input {
+        width: $horizontalFormTextInputWidth;
+      }
 
-			.model-link-entity-input
-			{
-				width: 400px;
-			}
-		}		
+      .model-link-relation-input {
+        width: 200px;
+      }
 
-	
-	}
+      .model-link-entity-input {
+        width: 400px;
+      }
+    }
 
-	.model-form
-	{
+  }
 
-	}
+  .model-form {
 
-	.model-list-table
-	{
+  }
 
-		width: $formTableWidth;
-		margin-bottom: 10px;
+  .model-list-table {
 
-		th {
-			font-style: italic;
-			font-weight: normal;
-		}
+    width: $formTableWidth;
+    margin-bottom: 10px;
 
-		th.list-index-header 
-		{
-			width: $listIndexHeaderWidth; 
-			text-align: right;
-			padding-right: $listIndexCellSpacing;
-			margin-right: 0px;  		
-		}
+    th {
+      font-style: italic;
+      font-weight: normal;
+    }
 
-		.list-index-icon
-		{		
-			width: 16px;
-			height: 16px;
-			padding-right: $listIndexCellSpacing;
-			display: inline; 
-			margin-top: -2px;		
-		}
+    th.list-index-header {
+      width: $listIndexHeaderWidth;
+      text-align: right;
+      padding-right: $listIndexCellSpacing;
+      margin-right: 0px;
+    }
 
-		td.list-index-value
-		{
-			padding-top: 25px;
-			padding-right: $listIndexCellSpacing;
-			margin-right: 0px;
-			text-align: right;
-			color: $muted;	
-		}
+    .list-index-icon {
+      width: 16px;
+      height: 16px;
+      padding-right: $listIndexCellSpacing;
+      display: inline;
+      margin-top: -2px;
+    }
 
-		td.list-element-value
-		{
+    td.list-index-value {
+      padding-top: 25px;
+      padding-right: $listIndexCellSpacing;
+      margin-right: 0px;
+      text-align: right;
+      color: $muted;
+    }
 
-			padding-top: 20px;
+    td.list-element-value {
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			textarea,
-			.uneditable-input 
-			{
-				width: $listValueTextInputWidth;
-			}
-		
-		}
-	}
+      padding-top: 20px;
+
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      textarea,
+      .uneditable-input {
+        width: $listValueTextInputWidth;
+      }
+
+    }
+  }
 
 }
 
-
-#registration-introduction
-{	 
-	background-color: $white;
-	padding-top: 50px;	
+#registration-introduction {
+  background-color: $white;
+  padding-top: 50px;
 }
 
-#registration-wormle-standing
-{
-	width: 160px;
-	height: 780px;
+#registration-wormle-standing {
+  width: 160px;
+  height: 780px;
 }
 
-.registration-introduction-workflow
-{
-	margin-top: 140px;	
+.registration-introduction-workflow {
+  margin-top: 140px;
 }
 
-.registration-introduction-workflow-element 
-{
-	margin-top: 50px;
+.registration-introduction-workflow-element {
+  margin-top: 50px;
 }
 
-.registration-introduction-speech-bubble
-{
-        position: relative;
-        display: block;
-        float: left;
-        max-width: 350px;
-        margin-left: -50px;
+.registration-introduction-speech-bubble {
+  position: relative;
+  display: block;
+  float: left;
+  max-width: 350px;
+  margin-left: -50px;
 }
 
-.registration-introduction-form
-{
-	fieldset
-	{
-		margin-left: -20px;
-	}
+.registration-introduction-form {
+  fieldset {
+    margin-left: -20px;
+  }
 }
 
+#main-region {
 
-#main-region							
-{ 
+  .relation-section {
 
-	.relation-section
-	{
+    fieldset {
+      margin-left: 10px;
+      margin-right: 0px;
+    }
 
-		fieldset 
-		{		
-			margin-left: 10px;
-			margin-right: 0px;
-		}
+    .wrml-form-field-label {
+      margin-left: 0px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-left: 0px;	
-		}
+    .form-inline {
+      margin-left: 0px;
+    }
+  }
 
-		.form-inline {
-			margin-left: 0px;	
-		}
-	}                                                                         
+  #relation-page-header {
 
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#relation-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #relation-top-properties-section {
 
-	#relation-top-properties-section
-	{
+    .control-label {
+      float: left;
+      width: 150px;
+      padding-top: 5px;
+      text-align: left;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-left: 0px;
+      color: $foregroundColor;
+      display: inline;
+    }
 
-		.control-label  
-		{
-			float: left;
-			width: 150px;
-			padding-top: 5px;
-			text-align: left;			
-			font-weight: bold;
-			margin-top: 0px;
-			margin-left: 0px;
-			color: $foregroundColor;
-			display: inline;	
-		}
+    .controls {
+      *display: inline-block;
+      *padding-left: 50px;
+      margin-left: 150px;
+      *margin-left: 0;
 
+      input[type=text],
+      input[type=url],
+      .uneditable-input {
+        width: $containerWidth - 370;
+      }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 50px;
-			margin-left: 150px;
-			*margin-left: 0;
+      .signature {
+        margin-top: 5px;
+        font-size: 0px;
 
-			input[type=text],
-			input[type=url],
-			.uneditable-input 
-			{
-				width: $containerWidth - 370;
-			}
-
-			.signature
-			{
-				margin-top: 5px;
-				font-size: 0px;			
-
-				span
-				{				
-					font-size: 14px;
-					margin: 0px;
-					padding: 0px;
-				}
-			}
-		}	
-
-		.wrml-form-field-label  
-		{
-			margin-top: 5px;			
-		}
-
-		textarea,
-		{
-			width: $containerWidth - 135;
-		}
-
-	}
-
-	#relation-method-form 
-	{
-		margin-top: 20px;				
-	}
-
-}
-
-#main-region							
-{ 
-
-	#resourceNotFound-page-header-section
-	{
-
-		margin-bottom: 0px;		 
-	}
-
-	#resourceNotFound-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 0px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-
-	}
-
-	#page-header-push
-	{
-		margin-bottom: 0px;		 			
-	}
-
-	.well 
-	{
-		margin-bottom: 5px;		 
-	}
-
-	#resourceNotFound
-	{	 
-		margin-top: 0px;
-		background-color: $white;
-		padding-top: 0px;	
-	}
-
-	#resourceNotFound-wormle
-	{
-		float: right;
-		width: 100px;
-		height: 493px;
-	}
-
-	.resourceNotFound-workflow
-	{
-		margin-top: 200px;	
-	}
-
-	.resourceNotFound-workflow-element 
-	{
-		margin-top: 40px;
-		margin-left: 0px;
-	}
-
-	.resourceNotFound-speech-bubble
-	{
-        position: relative;
-        display: block;
-        float: right;
-        max-width: 400px;
-        margin-left: -30px;
-		padding: 10px;		
-
-		p
-        {
-        	margin-bottom: 0px;		
+        span {
+          font-size: 14px;
+          margin: 0px;
+          padding: 0px;
         }
+      }
+    }
 
-	}
+    .wrml-form-field-label {
+      margin-top: 5px;
+    }
 
-	.resourceNotFound-form
-	{
-		fieldset
-		{
-			margin-left: 0px;
+    textarea,
+    {
+      width: $containerWidth - 135;
+    }
 
-			.control-group
-			{
-				.controls
-				{
-					margin-left: 0px;
-				}
-			}
+  }
 
-			.resourceNotFound-form-button
-			{
-				margin-left: 80px;
-			}
-
-
-		}
-	}
+  #relation-method-form {
+    margin-top: 20px;
+  }
 
 }
 
+#main-region {
 
+  #resourceNotFound-page-header-section {
+
+    margin-bottom: 0px;
+  }
+
+  #resourceNotFound-page-header {
+
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+
+  }
+
+  #page-header-push {
+    margin-bottom: 0px;
+  }
+
+  .well {
+    margin-bottom: 5px;
+  }
+
+  #resourceNotFound {
+    margin-top: 0px;
+    background-color: $white;
+    padding-top: 0px;
+  }
+
+  #resourceNotFound-wormle {
+    float: right;
+    width: 100px;
+    height: 493px;
+  }
+
+  .resourceNotFound-workflow {
+    margin-top: 200px;
+  }
+
+  .resourceNotFound-workflow-element {
+    margin-top: 40px;
+    margin-left: 0px;
+  }
+
+  .resourceNotFound-speech-bubble {
+    position: relative;
+    display: block;
+    float: right;
+    max-width: 400px;
+    margin-left: -30px;
+    padding: 10px;
+
+    p {
+      margin-bottom: 0px;
+    }
+
+  }
+
+  .resourceNotFound-form {
+    fieldset {
+      margin-left: 0px;
+
+      .control-group {
+        .controls {
+          margin-left: 0px;
+        }
+      }
+
+      .resourceNotFound-form-button {
+        margin-left: 80px;
+      }
+
+    }
+  }
+
+}
 
 $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
-#main-region							
-{ 
+#main-region {
 
-	.schema-section
-	{
+  .schema-section {
 
-		fieldset 
-		{		
-			margin-left: 20px;
-			margin-right: 0px;
-		}
+    fieldset {
+      margin-left: 20px;
+      margin-right: 0px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-left: 0px;	
-		}
+    .wrml-form-field-label {
+      margin-left: 0px;
+    }
 
-		.form-inline {
-			margin-left: 20px;	
-		}
-	}                                                                         
+    .form-inline {
+      margin-left: 20px;
+    }
+  }
 
+  #schema-page-header {
 
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#schema-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #schema-top-properties-section {
 
-	#schema-top-properties-section
-	{
+    .control-label {
+      float: left;
+      width: 100px;
+      padding-top: 5px;
+      text-align: left;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-left: 0px;
+      color: $foregroundColor;
+      display: inline;
+    }
 
-		.control-label  
-		{
-			float: left;
-			width: 100px;
-			padding-top: 5px;
-			text-align: left;			
-			font-weight: bold;
-			margin-top: 0px;
-			margin-left: 0px;
-			color: $foregroundColor;
-			display: inline;	
-		}
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: 120px;
+      *margin-left: 0;
 
+      input[type=text],
+      input[type=url],
+      .uneditable-input {
+        width: $containerWidth - 170;
+      }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: 120px;
-			*margin-left: 0;		
+    }
 
-			input[type=text],
-			input[type=url],
-			.uneditable-input 
-			{
-				width: $containerWidth - 170;
-			}
+    .wrml-form-field-label {
+      margin-top: 5px;
+    }
 
-		}	
+    textarea,
+    {
+      width: $containerWidth - 50;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-top: 5px;			
-		}
+  }
 
-		textarea,
-		{
-			width: $containerWidth - 50;
-		}
+  #schema-base-schema-form {
+    margin-bottom: 0px;
 
-	}
+    input[type=text],
+    input[type=password],
+    input[type=url],
+    textarea,
+    .uneditable-input {
+      width: 250px;
+    }
 
-	#schema-base-schema-form 
-	{
-		margin-bottom: 0px;
+  }
 
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
-		{
-			width: 250px;
-		}
+  #schema-base-schema-table {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
 
-	}
+    .schema-base-schema-icon {
+      width: 20px;
+      height: 20px;
+      padding-right: 5px;
+      display: inline;
+      margin-top: -6px;
+    }
 
-	#schema-base-schema-table 
-	{
-		margin-top: 20px;	
-		margin-bottom: 30px;
-		padding-bottom: 30px;
+    td.schema-base-schema-input {
 
-		.schema-base-schema-icon
-		{		
-			width: 20px;
-			height: 20px;
-			padding-right: 5px;
-			display: inline; 
-			margin-top: -6px;		
-		}
+      padding-top: 20px;
 
-		td.schema-base-schema-input
-		{
+    }
+  }
 
-			padding-top: 20px;
+  #schema-base-schema-canvas {
+    margin-top: 50px;
+    border: 1px solid #dddddd;
+  }
 
-		}
-	}
+  #schema-properties-section {
+    .wrml-form-field-label {
+      margin-top: 5px;
+      vertical-align: middle;
+      margin-left: 0px;
+    }
+  }
 
-	#schema-base-schema-canvas
-	{
-		margin-top: 50px;	
-		border: 1px solid #dddddd;
-	}
+  .schema-slot-divider {
+    height: 1px;
+    display: inline;
+    background-color: #dddddd;
+    width: 350px;
+    margin-top: 15px;
+    vertical-align: middle;
+  }
 
-	#schema-properties-section
-	{
-		.wrml-form-field-label  
-		{			
-			margin-top: 5px;			
-			vertical-align: middle;
-			margin-left: 0px;
-		}	
-	}
+  .schema-slot-name-input {
+    font-weight: bold;
+    width: 350px;
+    border: 1px solid #ebebeb;
 
-	.schema-slot-divider
-	{
-		height: 1px; 
-		display: inline; 
-		background-color: #dddddd;	
-		width: 350px;
-		margin-top: 15px;		
-		vertical-align: middle;
-	}
+    :focus {
+      color: $focusForegroundColor;
+      border-color: $focusBorderColor;
 
-	.schema-slot-name-input
-	{
-		font-weight: bold;	
-		width: 350px;
-		border: 1px solid #ebebeb;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+    }
+  }
 
-		:focus 
-		{
-			color: $focusForegroundColor;
-			border-color: $focusBorderColor;
+  .schema-slot-name-form {
+    margin-top: 30px;
+    margin-left: 0px;
+    padding-bottom: 19px;
+    margin-bottom: 0px;
 
-			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		}
-	}
+    .schema-slot-name {
+      margin-left: 0px;
+    }
+  }
 
+  .schema-slot-form {
 
-	.schema-slot-name-form
-	{
-		margin-top: 30px;
-		margin-left: 0px;
-		padding-bottom: 19px;
-		margin-bottom: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 33px;
 
-		.schema-slot-name
-		{
-			margin-left: 0px;
-		}
-	}
+    .controls-row {
 
-	.schema-slot-form
-	{
+      .schema-slot-form-input-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 25px;
+        margin-left: 15px;
+        margin-right: 5px;
 
-		padding-top: 5px;	
-		padding-bottom: 5px;	
-		padding-left: 33px;
+      }
 
-		.controls-row 
-		{
+      .schema-slot-form-checkbox-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 20px;
+        margin-left: 15px;
+        margin-right: 5px;
+      }
 
-			.schema-slot-form-input-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 25px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
+      input[type="text"],
+      input[type="password"],
+      input[type="datetime"],
+      input[type="datetime-local"],
+      input[type="date"],
+      input[type="month"],
+      input[type="time"],
+      input[type="week"],
+      input[type="number"],
+      input[type="email"],
+      input[type="url"],
+      input[type="search"],
+      input[type="tel"],
+      input[type="color"],
+      select,
+      textarea,
+      button,
+      .uneditable-input {
+        margin-top: 20px;
+      }
 
-			}
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      select,
+      .uneditable-input {
+        width: 200px;
+      }
 
-			.schema-slot-form-checkbox-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 20px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
-			}
+      textarea {
+        width: 650px;
+      }
 
-			input[type="text"],
-			input[type="password"],
-			input[type="datetime"],
-			input[type="datetime-local"],
-			input[type="date"],
-			input[type="month"],
-			input[type="time"],
-			input[type="week"],
-			input[type="number"],
-			input[type="email"],
-			input[type="url"],
-			input[type="search"],
-			input[type="tel"],
-			input[type="color"],
-			select,
-			textarea,
-			button,
-			.uneditable-input 
-			{
-				margin-top: 20px;
-			}
+      input.schema-slot-form-input-short,
+      {
+        width: 100px;
+      }
+    }
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			select,
-			.uneditable-input 
-			{
-				width: 200px;
-			}		
-
-			textarea
-			{
-				width: 650px;
-			}
-
-
-
-			input.schema-slot-form-input-short,
-			{
-				width: 100px;	
-			}
-		}
-
-	}
+  }
 
 }

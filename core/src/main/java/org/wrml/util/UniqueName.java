@@ -57,8 +57,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see java.net.URI#getPath()
  * @see java.nio.file.Path
  */
-public final class UniqueName implements Comparable<UniqueName>, Serializable
-{
+public final class UniqueName implements Comparable<UniqueName>, Serializable {
 
     public static final char NAME_SEPARATOR_CHAR = '/';
 
@@ -68,12 +67,10 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
 
     // private static final Logger LOGGER = LoggerFactory.getLogger(UniqueName.class);
 
-    public static Comparator<UniqueName> ALPHA_ORDER = new Comparator<UniqueName>()
-    {
+    public static Comparator<UniqueName> ALPHA_ORDER = new Comparator<UniqueName>() {
 
         @Override
-        public int compare(final UniqueName uniqueName1, final UniqueName uniqueName2)
-        {
+        public int compare(final UniqueName uniqueName1, final UniqueName uniqueName2) {
 
             return ComparisonChain.start().compare(uniqueName1.getFullName(), uniqueName2.getFullName()).result();
         }
@@ -90,143 +87,114 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
 
     private Integer _HashCode;
 
-    public UniqueName(final String uniqueNameString)
-    {
+    public UniqueName(final String uniqueNameString) {
 
-        if (StringUtils.isEmpty(uniqueNameString) || uniqueNameString.equals(UniqueName.NAME_SEPARATOR))
-        {
+        if (StringUtils.isEmpty(uniqueNameString) || uniqueNameString.equals(UniqueName.NAME_SEPARATOR)) {
             _Namespace = "";
             _LocalName = "";
         }
-        else if (uniqueNameString.endsWith(UniqueName.NAME_SEPARATOR))
-        {
+        else if (uniqueNameString.endsWith(UniqueName.NAME_SEPARATOR)) {
             _Namespace = uniqueNameString.substring(0, uniqueNameString.length() - 1);
             _LocalName = "";
         }
-        else
-        {
+        else {
             final int lastSeparator = uniqueNameString.lastIndexOf(UniqueName.NAME_SEPARATOR_CHAR);
 
-            if (lastSeparator < 1)
-            {
+            if (lastSeparator < 1) {
                 _Namespace = uniqueNameString;
                 _LocalName = "";
             }
-            else
-            {
+            else {
                 _Namespace = uniqueNameString.substring(0, lastSeparator);
                 _LocalName = uniqueNameString.substring(lastSeparator + 1);
             }
         }
     }
 
-    public UniqueName(final String namespace, final String localName)
-    {
+    public UniqueName(final String namespace, final String localName) {
 
         _Namespace = (namespace != null) ? namespace : "";
         _LocalName = (localName != null) ? localName : "";
     }
 
-    public UniqueName(final String part1, final String part2, final String... otherParts)
-    {
+    public UniqueName(final String part1, final String part2, final String... otherParts) {
 
         this(part1 + NAME_SEPARATOR + part2 + NAME_SEPARATOR + StringUtils.join(otherParts, NAME_SEPARATOR_CHAR));
     }
 
-    public UniqueName(final UniqueName namespace, final String localName)
-    {
+    public UniqueName(final UniqueName namespace, final String localName) {
 
         this((namespace != null) ? namespace.toString() : null, localName);
     }
 
-    public UniqueName(final URI uri)
-    {
+    public UniqueName(final URI uri) {
 
         this(StringUtils.stripStart(uri.getPath(), "/"));
     }
 
-    public static UniqueName createTemporaryUniqueName()
-    {
+    public static UniqueName createTemporaryUniqueName() {
 
         return new UniqueName("temp" + UniqueName.NAME_SEPARATOR + "Temp" + __TemporaryLocalNameCounter.getAndIncrement());
     }
 
     @Override
-    public final int compareTo(final UniqueName other)
-    {
+    public final int compareTo(final UniqueName other) {
 
         return UniqueName.ALPHA_ORDER.compare(this, other);
     }
 
-    public boolean equalNamespaces(final UniqueName otherUniqueName)
-    {
+    public boolean equalNamespaces(final UniqueName otherUniqueName) {
 
-        if (this == otherUniqueName)
-        {
+        if (this == otherUniqueName) {
             return true;
         }
-        if (otherUniqueName == null)
-        {
+        if (otherUniqueName == null) {
             return false;
         }
-        if (_Namespace == null)
-        {
-            if (otherUniqueName._Namespace != null)
-            {
+        if (_Namespace == null) {
+            if (otherUniqueName._Namespace != null) {
                 return false;
             }
         }
-        else if (!_Namespace.equals(otherUniqueName._Namespace))
-        {
+        else if (!_Namespace.equals(otherUniqueName._Namespace)) {
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean equals(final Object other)
-    {
+    public boolean equals(final Object other) {
 
-        if (this == other)
-        {
+        if (this == other) {
             return true;
         }
-        if (other == null)
-        {
+        if (other == null) {
             return false;
         }
-        if (getClass() != other.getClass())
-        {
+        if (getClass() != other.getClass()) {
             return false;
         }
         final UniqueName otherUniqueName = (UniqueName) other;
-        if (_LocalName == null)
-        {
-            if (otherUniqueName._LocalName != null)
-            {
+        if (_LocalName == null) {
+            if (otherUniqueName._LocalName != null) {
                 return false;
             }
         }
-        else if (!_LocalName.equals(otherUniqueName._LocalName))
-        {
+        else if (!_LocalName.equals(otherUniqueName._LocalName)) {
             return false;
         }
-        if (_Namespace == null)
-        {
-            if (otherUniqueName._Namespace != null)
-            {
+        if (_Namespace == null) {
+            if (otherUniqueName._Namespace != null) {
                 return false;
             }
         }
-        else if (!_Namespace.equals(otherUniqueName._Namespace))
-        {
+        else if (!_Namespace.equals(otherUniqueName._Namespace)) {
             return false;
         }
         return true;
     }
 
-    public String getLocalName()
-    {
+    public String getLocalName() {
 
         return _LocalName;
     }
@@ -236,8 +204,7 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
      *
      * @return the forward slash-separated (/) namespace (path) string without a leading or a trailing forward slash.
      */
-    public String getNamespace()
-    {
+    public String getNamespace() {
 
         return _Namespace;
     }
@@ -249,34 +216,27 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
      *
      * @return <code>namespace + / + localName</code>
      */
-    public String getFullName()
-    {
+    public String getFullName() {
 
-        if (_FullName == null)
-        {
+        if (_FullName == null) {
             final String namespace = getNamespace();
             final String localName = getLocalName();
 
-            if (namespace != null && localName != null)
-            {
+            if (namespace != null && localName != null) {
                 String suffix = localName.trim();
-                if (!suffix.isEmpty())
-                {
+                if (!suffix.isEmpty()) {
                     suffix = UniqueName.NAME_SEPARATOR + suffix;
                 }
 
                 _FullName = namespace + suffix;
             }
-            else if (namespace == null && localName == null)
-            {
+            else if (namespace == null && localName == null) {
                 _FullName = "";
             }
-            else if (namespace == null && localName != null)
-            {
+            else if (namespace == null && localName != null) {
                 _FullName = localName;
             }
-            else
-            {
+            else {
                 _FullName = namespace;
             }
 
@@ -286,11 +246,9 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
-        if (_HashCode == null)
-        {
+        if (_HashCode == null) {
             _HashCode = Objects.hashCode(this._LocalName, this._Namespace, this._FullName);
         }
 
@@ -298,8 +256,7 @@ public final class UniqueName implements Comparable<UniqueName>, Serializable
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getFullName();
     }

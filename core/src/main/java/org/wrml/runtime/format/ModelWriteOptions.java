@@ -27,8 +27,7 @@ package org.wrml.runtime.format;
 import java.net.URI;
 import java.util.Set;
 
-public class ModelWriteOptions
-{
+public class ModelWriteOptions {
 
     private boolean _PrettyPrint;
 
@@ -43,75 +42,67 @@ public class ModelWriteOptions
     private boolean _CollectionsExcluded;
 
 
-    public ModelWriteOptions()
-    {
+    public ModelWriteOptions() {
+
         _PrettyPrint = false;
     }
 
-    public Set<URI> getExcludedSchemaUris()
-    {
+    public Set<URI> getExcludedSchemaUris() {
+
         return _ExcludedSchemaUris;
     }
 
-    public boolean isPrettyPrint()
-    {
+    public boolean isPrettyPrint() {
+
         return _PrettyPrint;
     }
 
-    public void setExcludedSchemaUris(final Set<URI> excludedSchemaUris)
-    {
+    public void setExcludedSchemaUris(final Set<URI> excludedSchemaUris) {
+
         _ExcludedSchemaUris = excludedSchemaUris;
     }
 
-    public void setPrettyPrint(final boolean prettyPrint)
-    {
+    public void setPrettyPrint(final boolean prettyPrint) {
+
         _PrettyPrint = prettyPrint;
     }
 
-    public boolean isCollectionsExcluded()
-    {
+    public boolean isCollectionsExcluded() {
 
         return _CollectionsExcluded;
     }
 
-    public void setCollectionsExcluded(final boolean collectionsExcluded)
-    {
+    public void setCollectionsExcluded(final boolean collectionsExcluded) {
 
         _CollectionsExcluded = collectionsExcluded;
     }
 
-    public boolean isDocumentKeyExcludedIfSecondary()
-    {
+    public boolean isDocumentKeyExcludedIfSecondary() {
 
         return _DocumentKeyExcludedIfSecondary;
     }
 
-    public void setDocumentKeyExcludedIfSecondary(final boolean documentKeyExcludedIfSecondary)
-    {
+    public void setDocumentKeyExcludedIfSecondary(final boolean documentKeyExcludedIfSecondary) {
 
         _DocumentKeyExcludedIfSecondary = documentKeyExcludedIfSecondary;
     }
 
-    public boolean isEmbeddedDocumentUriExcluded()
-    {
+    public boolean isEmbeddedDocumentUriExcluded() {
 
         return _EmbeddedDocumentUriExcluded;
     }
 
-    public void setEmbeddedDocumentUriExcluded(final boolean embeddedDocumentUriExcluded)
-    {
+    public void setEmbeddedDocumentUriExcluded(final boolean embeddedDocumentUriExcluded) {
 
         _EmbeddedDocumentUriExcluded = embeddedDocumentUriExcluded;
     }
 
-    public boolean isLinksExcluded()
-    {
+    public boolean isLinksExcluded() {
 
         return _LinksExcluded;
     }
 
-    public void setLinksExcluded(final boolean linksExcluded)
-    {
+    public void setLinksExcluded(final boolean linksExcluded) {
 
         _LinksExcluded = linksExcluded;
     }

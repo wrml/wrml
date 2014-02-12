@@ -26,18 +26,15 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class ShowListMenuAction extends WerminalAction
-{
+public class ShowListMenuAction extends WerminalAction {
 
-    public ShowListMenuAction(final Werminal werminal)
-    {
+    public ShowListMenuAction(final Werminal werminal) {
 
         super(werminal, "Menu...");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         werminal.showWindow(werminal.getListMenuBarWindow());

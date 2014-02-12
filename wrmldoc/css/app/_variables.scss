@@ -30,7 +30,7 @@ $white: #FFFFFF;
 $red: #FF0000;
 $componentBackgroundColor: rgb(238, 238, 238);
 
-$foregroundColor:  #333333;
+$foregroundColor: #333333;
 $focusForegroundColor: $black;
 $focusBorderColor: rgba(82, 82, 82, 0.8);
 $focusBorderGradientColor: rgba(82, 82, 82, 0.6);
@@ -49,12 +49,11 @@ $containerWidth: 940px;
 $navbarHeight: 40px;
 $cascadeMenuIconSpacing: 50px;
 
-
 $pageHeaderHeight: 75px;
 
-$footerMarginTop: 30px; 	
+$footerMarginTop: 30px;
 $footerBorderTopWidth: 1px;
-$footerPaddingTop: 17px; 	
+$footerPaddingTop: 17px;
 $footerHeight: 80px;
 $footerHeightTotal: $footerHeight + $footerPaddingTop + $footerBorderTopWidth + $footerMarginTop;
 
@@ -65,7 +64,6 @@ $formFieldSetMarginRight: 40px;
 
 $formTextInputWidth: $containerWidth - 150 - ($formFieldSetMarginLeft + $formFieldSetMarginRight);
 $formTableWidth: $formTextInputWidth + 100;
-
 
 $horizontalFormLabelWidth: 50px;
 $horizontalFormControlSpacing: 10px;

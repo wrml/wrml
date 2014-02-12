@@ -44,21 +44,17 @@ import java.io.InvalidObjectException;
 import java.io.OutputStream;
 import java.net.URI;
 
-public class JsonSchemaFormatter extends AbstractFormatter
-{
+public class JsonSchemaFormatter extends AbstractFormatter {
 
 
-    public JsonSchemaFormatter()
-    {
+    public JsonSchemaFormatter() {
 
     }
 
     @Override
-    public boolean isApplicableTo(final URI schemaUri)
-    {
+    public boolean isApplicableTo(final URI schemaUri) {
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return false;
         }
         final Context context = getContext();
@@ -69,8 +65,7 @@ public class JsonSchemaFormatter extends AbstractFormatter
 
     @SuppressWarnings("unchecked")
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException, UnsupportedOperationException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException, UnsupportedOperationException {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -78,25 +73,21 @@ public class JsonSchemaFormatter extends AbstractFormatter
         final URI uri = rootModelKeys.getValue(schemaLoader.getDocumentSchemaUri());
         final URI schemaUri = rootModelDimensions.getSchemaUri();
 
-        if (!isApplicableTo(schemaUri))
-        {
+        if (!isApplicableTo(schemaUri)) {
             throw new UnsupportedOperationException(getClass().getSimpleName() + " can be used to read and write schemas only (" + schemaLoader.getSchemaSchemaUri() + ")");
         }
 
         final JsonSchemaLoader jsonSchemaLoader = schemaLoader.getJsonSchemaLoader();
         JsonSchema jsonSchema;
         Schema wrmlSchema = null;
-        try
-        {
+        try {
             jsonSchema = jsonSchemaLoader.load(in, uri);
             wrmlSchema = schemaLoader.load(jsonSchema, schemaLoader.getDocumentSchemaUri());
-            if (wrmlSchema == null)
-            {
+            if (wrmlSchema == null) {
                 throw new InvalidObjectException("Unable to deserialize InputStream to Model");
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new ModelReadingException(getClass().getSimpleName()
                     + " encounter an error while attempting to read a JSON Schema (" + uri + ").  Message: "
                     + e.getMessage(), null, this);
@@ -106,14 +97,12 @@ public class JsonSchemaFormatter extends AbstractFormatter
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException, UnsupportedOperationException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException, UnsupportedOperationException {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
-        if (!(model instanceof Schema))
-        {
+        if (!(model instanceof Schema)) {
             throw new UnsupportedOperationException(getClass().getSimpleName() + " can be used to read and write schemas only (" + schemaLoader.getSchemaSchemaUri() + ")");
         }
 
@@ -121,12 +110,10 @@ public class JsonSchemaFormatter extends AbstractFormatter
         final ObjectWriter objectWriter = new ObjectMapper().writer(new DefaultPrettyPrinter());
         final JsonSchema jsonSchema = schemaLoader.getJsonSchemaLoader().load(wrmlSchema);
 
-        try
-        {
+        try {
             objectWriter.writeValue(out, jsonSchema.getRootNode());
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ModelWritingException(getClass().getSimpleName()
                     + " encounter an error while attempting to write a JSON Schema (" + model + ").  Message: "
                     + e.getMessage(), null, this);

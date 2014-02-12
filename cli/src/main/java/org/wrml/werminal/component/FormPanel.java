@@ -32,8 +32,7 @@ import org.wrml.werminal.window.FormPanelWindow;
 import java.util.Map;
 import java.util.Set;
 
-public class FormPanel extends WerminalPanel
-{
+public class FormPanel extends WerminalPanel {
 
 
     private final int _FieldsPerPanel;
@@ -41,26 +40,22 @@ public class FormPanel extends WerminalPanel
     private final Map<String, FormField> _FormFields;
 
 
-    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields)
-    {
+    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields) {
 
         this(werminal, title, formFields, null, null, formFields.size());
     }
 
-    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final int fieldsPerPanel)
-    {
+    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final int fieldsPerPanel) {
 
         this(werminal, title, formFields, null, null, fieldsPerPanel);
     }
 
-    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final WerminalAction nextAction, final WerminalAction previousAction)
-    {
+    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final WerminalAction nextAction, final WerminalAction previousAction) {
 
         this(werminal, title, formFields, nextAction, previousAction, FormPanelWindow.FIELDS_PER_PANEL);
     }
 
-    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final WerminalAction nextAction, final WerminalAction previousAction, final int fieldsPerPanel)
-    {
+    public FormPanel(final Werminal werminal, final String title, final Map<String, FormField> formFields, final WerminalAction nextAction, final WerminalAction previousAction, final int fieldsPerPanel) {
 
         super(werminal, title, nextAction, previousAction);
 
@@ -69,61 +64,51 @@ public class FormPanel extends WerminalPanel
         render();
     }
 
-    public void addFormField(final FormField formField)
-    {
+    public void addFormField(final FormField formField) {
 
         _FormFields.put(formField.getFieldName(), formField);
         render();
     }
 
-    public final int getFieldCount()
-    {
+    public final int getFieldCount() {
 
         return _FormFields.size();
     }
 
-    public int getFieldsPerPanel()
-    {
+    public int getFieldsPerPanel() {
 
         return _FieldsPerPanel;
     }
 
-    public final Set<String> getFieldNames()
-    {
+    public final Set<String> getFieldNames() {
 
         return _FormFields.keySet();
     }
 
-    public final FormField getFormField(final String fieldName)
-    {
+    public final FormField getFormField(final String fieldName) {
 
         return _FormFields.get(fieldName);
     }
 
     @Override
-    protected void render()
-    {
+    protected void render() {
 
         super.render();
         renderForm();
         addComponent(new EmptySpace(0, 1));
     }
 
-    protected final void renderForm()
-    {
+    protected final void renderForm() {
 
-        if (_FormFields != null && !_FormFields.isEmpty())
-        {
+        if (_FormFields != null && !_FormFields.isEmpty()) {
 
-            for (final String fieldName : _FormFields.keySet())
-            {
+            for (final String fieldName : _FormFields.keySet()) {
                 final FormField formField = _FormFields.get(fieldName);
                 addComponent(formField);
             }
 
             final int invisibleFieldCount = getFieldsPerPanel() - _FormFields.size();
-            for (int i = 0; i < invisibleFieldCount; i++)
-            {
+            for (int i = 0; i < invisibleFieldCount; i++) {
                 addComponent(new EmptySpace(0, 3));
             }
 

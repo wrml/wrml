@@ -33,15 +33,13 @@ import java.io.PrintStream;
 /**
  * TODO: Finish this class
  */
-public class SchemaInterfacePrinter implements ClassVisitor
-{
+public class SchemaInterfacePrinter implements ClassVisitor {
 
     private final Schema _Schema;
 
     private final PrintStream _PrintStream;
 
-    public SchemaInterfacePrinter(final Schema schema, final OutputStream out)
-    {
+    public SchemaInterfacePrinter(final Schema schema, final OutputStream out) {
 
         _Schema = schema;
 
@@ -50,14 +48,12 @@ public class SchemaInterfacePrinter implements ClassVisitor
 
     }
 
-    public PrintStream getPrintStream()
-    {
+    public PrintStream getPrintStream() {
 
         return _PrintStream;
     }
 
-    public Schema getSchema()
-    {
+    public Schema getSchema() {
 
         return _Schema;
     }
@@ -68,63 +64,54 @@ public class SchemaInterfacePrinter implements ClassVisitor
                       final String name,
                       final String signature,
                       final String superName,
-                      final String[] interfaces)
-    {
+                      final String[] interfaces) {
 
         _PrintStream.println(name + " extends " + superName + " {");
 
     }
 
     @Override
-    public void visitSource(final String s, final String s2)
-    {
+    public void visitSource(final String s, final String s2) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void visitOuterClass(final String s, final String s2, final String s3)
-    {
+    public void visitOuterClass(final String s, final String s2, final String s3) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(final String s, final boolean b)
-    {
+    public AnnotationVisitor visitAnnotation(final String s, final boolean b) {
 
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void visitAttribute(final Attribute attribute)
-    {
+    public void visitAttribute(final Attribute attribute) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void visitInnerClass(final String s, final String s2, final String s3, final int i)
-    {
+    public void visitInnerClass(final String s, final String s2, final String s3, final int i) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value)
-    {
+    public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value) {
 
         _PrintStream.println(" " + desc + " " + name);
         return null;
     }
 
     @Override
-    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions)
-    {
+    public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
 
         _PrintStream.println(" " + name + desc);
         return null;
     }
 
     @Override
-    public void visitEnd()
-    {
+    public void visitEnd() {
 
         _PrintStream.println("}");
     }

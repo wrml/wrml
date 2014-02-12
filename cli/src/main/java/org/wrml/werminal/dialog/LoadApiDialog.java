@@ -41,8 +41,7 @@ import org.wrml.werminal.window.WerminalWindow;
 
 import java.net.URI;
 
-public class LoadApiDialog extends WerminalWindow
-{
+public class LoadApiDialog extends WerminalWindow {
 
     final LoadApiDialogConfirmationAction _ConfirmAction;
 
@@ -52,8 +51,7 @@ public class LoadApiDialog extends WerminalWindow
 
     private boolean _Cancelled;
 
-    public LoadApiDialog(final Werminal werminal, final String title)
-    {
+    public LoadApiDialog(final Werminal werminal, final String title) {
 
         super(werminal, title);
 
@@ -77,36 +75,30 @@ public class LoadApiDialog extends WerminalWindow
 
     }
 
-    public URI getApiUri()
-    {
+    public URI getApiUri() {
 
         return _ApiUriTextBox.getValue();
     }
 
-    public void setApiUri(final URI apiUri)
-    {
+    public void setApiUri(final URI apiUri) {
 
         _ApiUriTextBox.setValue(apiUri);
     }
 
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
 
         return _Cancelled;
     }
 
-    class LoadApiDialogCancelAction extends CancelAction
-    {
+    class LoadApiDialogCancelAction extends CancelAction {
 
-        public LoadApiDialogCancelAction(final Werminal werminal)
-        {
+        public LoadApiDialogCancelAction(final Werminal werminal) {
 
             super(werminal);
         }
 
         @Override
-        protected boolean doIt()
-        {
+        protected boolean doIt() {
 
             _Cancelled = true;
             return super.doIt();
@@ -114,19 +106,16 @@ public class LoadApiDialog extends WerminalWindow
 
     }
 
-    class LoadApiDialogConfirmationAction extends CloseAfterAction
-    {
+    class LoadApiDialogConfirmationAction extends CloseAfterAction {
 
 
-        public LoadApiDialogConfirmationAction(final Werminal werminal)
-        {
+        public LoadApiDialogConfirmationAction(final Werminal werminal) {
 
             super(werminal, "OK");
         }
 
         @Override
-        protected boolean doIt()
-        {
+        protected boolean doIt() {
 
             _Cancelled = false;
 
@@ -137,19 +126,16 @@ public class LoadApiDialog extends WerminalWindow
             final LoadApiDialog loadApiDialog = werminal.getLoadApiDialog();
 
             final URI apiUri = loadApiDialog.getApiUri();
-            if (apiUri == null)
-            {
+            if (apiUri == null) {
                 werminal.showError("\nPlease enter the (root) URI value to identify the REST API.\n\n ");
                 return false;
             }
 
-            try
-            {
+            try {
                 final ApiNavigator apiNavigator = apiLoader.loadApi(apiUri);
                 return (apiNavigator != null);
             }
-            catch (ApiLoaderException e)
-            {
+            catch (ApiLoaderException e) {
                 werminal.showError("\nFailed to load REST API metadata from URI:\n\n\t" + apiUri + "\n\nFailure detail message:\n\n" + e.getMessage() + "\n\nPlease enter the (root) URI value to identify the REST API.\n\n ");
                 return false;
             }

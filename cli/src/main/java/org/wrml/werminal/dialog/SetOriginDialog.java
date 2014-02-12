@@ -41,13 +41,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class SetOriginDialog extends WerminalWindow
-{
+public class SetOriginDialog extends WerminalWindow {
 
     private final OriginValuesCheckBoxList _OriginValuesCheckBoxList;
 
-    public SetOriginDialog(final Werminal werminal, final String title, final WerminalAction confirmAction, final WerminalAction dismissAction)
-    {
+    public SetOriginDialog(final Werminal werminal, final String title, final WerminalAction confirmAction, final WerminalAction dismissAction) {
 
         super(werminal, title);
 
@@ -64,14 +62,12 @@ public class SetOriginDialog extends WerminalWindow
         addComponent(footerToolBar);
     }
 
-    public final String getSelectedValue()
-    {
+    public final String getSelectedValue() {
 
         return (String) _OriginValuesCheckBoxList.getItemAt(_OriginValuesCheckBoxList.getCheckedItemIndex());
     }
 
-    public final void setSelectedValue(final String selectedValue)
-    {
+    public final void setSelectedValue(final String selectedValue) {
 
         _OriginValuesCheckBoxList.clearItems();
 
@@ -84,13 +80,11 @@ public class SetOriginDialog extends WerminalWindow
         final SortedSet<String> sortedServiceNames = new TreeSet<>(serviceNames);
 
         int index = 0;
-        for (final String serviceName : sortedServiceNames)
-        {
+        for (final String serviceName : sortedServiceNames) {
 
             _OriginValuesCheckBoxList.addItem(serviceName);
 
-            if (serviceName.equals(selectedValue))
-            {
+            if (serviceName.equals(selectedValue)) {
                 _OriginValuesCheckBoxList.setCheckedItemIndex(index);
             }
 
@@ -100,33 +94,27 @@ public class SetOriginDialog extends WerminalWindow
 
     }
 
-    public static class OriginValuesCheckBoxList extends RadioCheckBoxList
-    {
+    public static class OriginValuesCheckBoxList extends RadioCheckBoxList {
 
         private final TerminalAppKeyboardInteraction _KeyboardInteraction;
 
-        public OriginValuesCheckBoxList(final Werminal werminal, final WerminalAction confirmAction)
-        {
+        public OriginValuesCheckBoxList(final Werminal werminal, final WerminalAction confirmAction) {
 
             _KeyboardInteraction = new TerminalAppKeyboardInteraction(werminal, confirmAction, true);
         }
 
         @Override
-        public Result keyboardInteraction(final Key key)
-        {
+        public Result keyboardInteraction(final Key key) {
 
-            if (!isVisible())
-            {
+            if (!isVisible()) {
                 return Result.EVENT_HANDLED;
             }
 
-            if (key.getKind() == Key.Kind.Enter)
-            {
+            if (key.getKind() == Key.Kind.Enter) {
                 super.keyboardInteraction(key);
             }
 
-            if (_KeyboardInteraction.handleKeyboardInteraction(key))
-            {
+            if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                 return Result.EVENT_HANDLED;
             }
 

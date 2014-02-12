@@ -31,34 +31,31 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class EngineTest
-{
+public class EngineTest {
 
     /**
      * NOTE: This is a JVM-based (e.g jar-contained) resource path.
      */
     public static final String WRML_CONFIG_RESOURCE = "resources/test/wrml.json";
-    
-    public static final String WRML_CONFIG_API_RESOURCE = "resources/test/wrml-api.json";
-    
-    
 
-    public static final Engine createTestEngine() throws IOException
-    {
+    public static final String WRML_CONFIG_API_RESOURCE = "resources/test/wrml-api.json";
+
+
+    public static final Engine createTestEngine() throws IOException {
+
         return createTestEngine(EngineTest.class, WRML_CONFIG_RESOURCE);
     }
 
-    public static final Engine createTestEngine(final Class<?> forClass, final String wrmlConfigResource) throws IOException
-    {
+    public static final Engine createTestEngine(final Class<?> forClass, final String wrmlConfigResource) throws IOException {
 
         final Engine engine = new DefaultEngine();
         final EngineConfiguration config = EngineConfiguration.load(forClass, wrmlConfigResource);
         engine.init(config);
         return engine;
     }
-    
-    public static final Engine createTestEngine(final EngineConfiguration config)
-    {
+
+    public static final Engine createTestEngine(final EngineConfiguration config) {
+
         final Engine engine = new DefaultEngine();
         engine.init(config);
         return engine;
@@ -67,36 +64,33 @@ public class EngineTest
     private Engine _Engine;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         _Engine = EngineTest.createTestEngine();
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
         _Engine = null;
     }
 
     @Test(expected = EngineException.class)
-    public void initParamConfigNullFailure()
-    {
+    public void initParamConfigNullFailure() {
 
         final Engine engine = new DefaultEngine();
         engine.init(null);
     }
 
     @Test
-    public void engineNotNull()
-    {
+    public void engineNotNull() {
+
         Assert.assertNotNull(_Engine);
     }
 
 
     @Test
-    public void contextNotNull()
-    {
+    public void contextNotNull() {
 
         final Context context = _Engine.getContext();
         Assert.assertNotNull(context);
@@ -104,26 +98,22 @@ public class EngineTest
     }
 
     @Test
-    public void configNotNull()
-    {
+    public void configNotNull() {
 
         final EngineConfiguration config = _Engine.getConfig();
         Assert.assertNotNull(config);
     }
 
 
-
     @Test
-    public void reloadContextResultNotNull()
-    {
+    public void reloadContextResultNotNull() {
 
         final Context reloadedContext = _Engine.reloadContext();
         Assert.assertNotNull(reloadedContext);
     }
 
     @Test
-    public void reloadContextResultNotEqual()
-    {
+    public void reloadContextResultNotEqual() {
 
         final Context originalContext = _Engine.getContext();
         final Context reloadedContext = _Engine.reloadContext();
@@ -132,8 +122,8 @@ public class EngineTest
     }
 
     @Test
-    public void testWithApi() throws IOException
-    {
+    public void testWithApi() throws IOException {
+
         _Engine = createTestEngine(EngineTest.class, WRML_CONFIG_API_RESOURCE);
         Assert.assertNotNull(_Engine);
     }

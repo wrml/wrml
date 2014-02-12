@@ -24,9 +24,7 @@
  */
 package org.wrml.runtime;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,44 +33,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.wrml.model.Model;
 import org.wrml.model.format.Format;
-import org.wrml.model.rest.Api;
-import org.wrml.model.rest.Document;
-import org.wrml.model.rest.Link;
-import org.wrml.model.rest.LinkRelation;
-import org.wrml.model.rest.LinkTemplate;
-import org.wrml.model.rest.ResourceTemplate;
-import org.wrml.model.schema.BooleanValue;
-import org.wrml.model.schema.Choices;
-import org.wrml.model.schema.DateValue;
-import org.wrml.model.schema.DoubleValue;
-import org.wrml.model.schema.IntegerValue;
-import org.wrml.model.schema.ListValue;
-import org.wrml.model.schema.LongValue;
-import org.wrml.model.schema.ModelValue;
-import org.wrml.model.schema.Schema;
-import org.wrml.model.schema.SingleSelectValue;
-import org.wrml.model.schema.Slot;
-import org.wrml.model.schema.Syntax;
-import org.wrml.model.schema.TextValue;
-import org.wrml.model.schema.Value;
+import org.wrml.model.rest.*;
+import org.wrml.model.schema.*;
 import org.wrml.runtime.format.SystemFormat;
-import org.wrml.runtime.rest.ApiLoader;
-import org.wrml.runtime.rest.ApiNavigator;
-import org.wrml.runtime.rest.Resource;
-import org.wrml.runtime.rest.ResourceTest;
-import org.wrml.runtime.rest.SystemApi;
-import org.wrml.runtime.rest.SystemLinkRelation;
+import org.wrml.runtime.rest.*;
 import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.runtime.syntax.SystemSyntax;
 
 import java.io.IOException;
 import java.net.URI;
 
-import junit.framework.TestCase;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(BlockJUnit4ClassRunner.class)
-public class ContextTest extends TestCase
-{
+public class ContextTest extends TestCase {
 
     public static final String TEST_RESOURCE_PATH = "/org/wrml/test/";
 
@@ -100,8 +75,8 @@ public class ContextTest extends TestCase
 
     private Context _Context;
 
-    public static <M extends Model> M getModelResource(final Context context, final URI uri, final Dimensions dimensions) throws IOException
-    {
+    public static <M extends Model> M getModelResource(final Context context, final URI uri, final Dimensions dimensions) throws IOException {
+
         final ApiLoader apiLoader = context.getApiLoader();
         final Keys keys = apiLoader.buildDocumentKeys(uri, dimensions.getSchemaUri());
         return context.getModel(keys, dimensions);
@@ -109,243 +84,212 @@ public class ContextTest extends TestCase
 
     /**
      * A factory method intended to provide a test {@link Context} to other {@code *Test} classes for integration tests.
-     * 
+     *
      * @return a {@link Context} (via {@link EngineTest#createTestEngine()}) for integration tests.
      * @throws IOException
      */
-    public static Context createTestContext() throws IOException
-    {
+    public static Context createTestContext() throws IOException {
+
         return EngineTest.createTestEngine().getContext();
     }
 
     @Before
     @Override
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         _Context = createTestContext();
     }
 
     @After
     @Override
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
+
         _Context = null;
     }
 
     @Test(expected = ContextException.class)
-    public void initParamConfigNullFailure()
-    {
+    public void initParamConfigNullFailure() {
 
         final Context context = new DefaultContext();
         context.init(null);
     }
 
     @Test
-    public void contextNotNull()
-    {
+    public void contextNotNull() {
 
         assertNotNull(_Context);
     }
 
     @Test
-    public void configNotNull()
-    {
+    public void configNotNull() {
 
         assertNotNull(_Context.getConfig());
     }
 
     @Test
-    public void apiLoaderNotNull()
-    {
+    public void apiLoaderNotNull() {
 
         assertNotNull(_Context.getApiLoader());
     }
 
     @Test
-    public void formatLoaderNotNull()
-    {
+    public void formatLoaderNotNull() {
 
         assertNotNull(_Context.getFormatLoader());
     }
 
     @Test
-    public void modelBuilderNotNull()
-    {
+    public void modelBuilderNotNull() {
 
         assertNotNull(_Context.getModelBuilder());
     }
 
     @Test
-    public void schemaLoaderNotNull()
-    {
+    public void schemaLoaderNotNull() {
 
         assertNotNull(_Context.getSchemaLoader());
     }
 
     @Test
-    public void serviceLoaderNotNull()
-    {
+    public void serviceLoaderNotNull() {
 
         assertNotNull(_Context.getServiceLoader());
     }
 
     @Test
-    public void syntaxLoaderNotNull()
-    {
+    public void syntaxLoaderNotNull() {
 
         assertNotNull(_Context.getSyntaxLoader());
     }
 
     @Test
-    public void cacheIsNull()
-    {
+    public void cacheIsNull() {
 
         assertNull(_Context.getModelCache());
     }
 
     @Test
-    public void newModelSyntaxNotNull()
-    {
+    public void newModelSyntaxNotNull() {
 
         assertNotNull(_Context.newModel(Syntax.class));
     }
 
     @Test
-    public void newModelSchemaNotNull()
-    {
+    public void newModelSchemaNotNull() {
 
         assertNotNull(_Context.newModel(Schema.class));
     }
 
     @Test
-    public void newModelSlotNotNull()
-    {
+    public void newModelSlotNotNull() {
 
         assertNotNull(_Context.newModel(Slot.class));
     }
 
     @Test
-    public void newModelTextValueNotNull()
-    {
+    public void newModelTextValueNotNull() {
 
         assertNotNull(_Context.newModel(TextValue.class));
     }
 
     @Test
-    public void newModelBooleanValueNotNull()
-    {
+    public void newModelBooleanValueNotNull() {
 
         assertNotNull(_Context.newModel(BooleanValue.class));
     }
 
     @Test
-    public void newModelIntegerValueNotNull()
-    {
+    public void newModelIntegerValueNotNull() {
 
         assertNotNull(_Context.newModel(IntegerValue.class));
     }
 
     @Test
-    public void newModelModelValueNotNull()
-    {
+    public void newModelModelValueNotNull() {
 
         assertNotNull(_Context.newModel(ModelValue.class));
     }
 
     @Test
-    public void newModelListValueNotNull()
-    {
+    public void newModelListValueNotNull() {
 
         assertNotNull(_Context.newModel(ListValue.class));
     }
 
     @Test
-    public void newModelDateValueNotNull()
-    {
+    public void newModelDateValueNotNull() {
 
         assertNotNull(_Context.newModel(DateValue.class));
     }
 
     @Test
-    public void newModelDoubleValueNotNull()
-    {
+    public void newModelDoubleValueNotNull() {
 
         assertNotNull(_Context.newModel(DoubleValue.class));
     }
 
     @Test
-    public void newModelLongValueNotNull()
-    {
+    public void newModelLongValueNotNull() {
 
         assertNotNull(_Context.newModel(LongValue.class));
     }
 
     @Test
-    public void newModelSingleSelectValueNotNull()
-    {
+    public void newModelSingleSelectValueNotNull() {
 
         assertNotNull(_Context.newModel(SingleSelectValue.class));
     }
 
     @Test
-    public void newModelChoicesNotNull()
-    {
+    public void newModelChoicesNotNull() {
 
         assertNotNull(_Context.newModel(Choices.class));
     }
 
     @Test(expected = ModelBuilderException.class)
-    public void newModelValueAbstractFailure()
-    {
+    public void newModelValueAbstractFailure() {
         // Value directly extends Abstract (marking it as an "abstract" interface), which means that it is illegal to create new instances.
         _Context.newModel(Value.class);
     }
 
     @Test
-    public void newModelApiNotNull()
-    {
+    public void newModelApiNotNull() {
 
         assertNotNull(_Context.newModel(Api.class));
     }
 
     @Test
-    public void newModelLinkRelationNotNull()
-    {
+    public void newModelLinkRelationNotNull() {
 
         assertNotNull(_Context.newModel(LinkRelation.class));
     }
 
     @Test
-    public void newModelLinkTemplateNotNull()
-    {
+    public void newModelLinkTemplateNotNull() {
 
         assertNotNull(_Context.newModel(LinkTemplate.class));
     }
 
     @Test
-    public void newModelResourceTemplateNotNull()
-    {
+    public void newModelResourceTemplateNotNull() {
 
         assertNotNull(_Context.newModel(ResourceTemplate.class));
     }
 
     @Test
-    public void newModelLinkNotNull()
-    {
+    public void newModelLinkNotNull() {
 
         assertNotNull(_Context.newModel(Link.class));
     }
 
     @Test
-    public void newModelFormatNotNull()
-    {
+    public void newModelFormatNotNull() {
 
         assertNotNull(_Context.newModel(Format.class));
     }
 
     @Test
-    public void getModelSystemSchemaSchema()
-    {
+    public void getModelSystemSchemaSchema() {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final URI uri = schemaLoader.getSchemaSchemaUri();
@@ -364,8 +308,7 @@ public class ContextTest extends TestCase
     }
 
     @Test
-    public void getModelSystemLinkRelationApi()
-    {
+    public void getModelSystemLinkRelationApi() {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final URI uri = SystemApi.LinkRelation.getUri();
@@ -385,8 +328,7 @@ public class ContextTest extends TestCase
     }
 
     @Test
-    public void getModelSystemFormatJson()
-    {
+    public void getModelSystemFormatJson() {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final URI uri = SystemFormat.json.getFormatUri();
@@ -407,8 +349,7 @@ public class ContextTest extends TestCase
 
     // TODO: Make this work
     @Test
-    public void getModelSystemSyntaxUuid()
-    {
+    public void getModelSystemSyntaxUuid() {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final URI uri = SystemSyntax.UUID.getSyntaxUri();
@@ -428,8 +369,7 @@ public class ContextTest extends TestCase
     }
 
     @Test
-    public void getModelSystemLinkRelationSelf()
-    {
+    public void getModelSystemLinkRelationSelf() {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final URI uri = SystemLinkRelation.self.getUri();
@@ -449,20 +389,20 @@ public class ContextTest extends TestCase
     }
 
     @Test(expected = ContextException.class)
-    public void testOptionsModelNull()
-    {
+    public void testOptionsModelNull() {
+
         _Context.optionsModel(null);
         fail("expected ContextException");
     }
 
     /**
      * Test for {@link Context#optionsModel(Model)}.
-     * <p>
+     * <p/>
      * Without the call to {@link #createTestContext()}, this could be a self-contained unit test.
      */
     @Test
-    public void testOptionsModel() throws Exception
-    {
+    public void testOptionsModel() throws Exception {
+
         DefaultContext context = (DefaultContext) createTestContext();
         ApiLoader mockApiLoader = mock(ApiLoader.class);
         ApiNavigator mockApiNavigator = mock(ApiNavigator.class);
@@ -482,15 +422,15 @@ public class ContextTest extends TestCase
 
     @Test
     @Ignore
-    public void testOptionsNodeLevel()
-    {
+    public void testOptionsNodeLevel() {
+
         fail("TODO: WRML-484"); // TODO: WRML-484
     }
 
     @Test
     @Ignore
-    public void testOptionsRootLevel()
-    {
+    public void testOptionsRootLevel() {
+
         fail("TODO: WRML-483"); // TODO: WRML-483
     }
 

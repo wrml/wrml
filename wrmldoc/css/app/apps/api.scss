@@ -1,314 +1,266 @@
-#main-region							
-{ 
+#main-region {
 
-	.api-section
-	{
+  .api-section {
 
-		fieldset 
-		{		
-			margin-left: 10px;
-			margin-right: 0px;
-		}
+    fieldset {
+      margin-left: 10px;
+      margin-right: 0px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-left: 0px;	
-		}
+    .wrml-form-field-label {
+      margin-left: 0px;
+    }
 
-		.form-inline {
-			margin-left: 0px;	
-		}
-	}                                                                         
+    .form-inline {
+      margin-left: 0px;
+    }
+  }
 
+  #api-page-header {
 
-	#api-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#api-top-properties-section
-	{
+  #api-top-properties-section {
 
-		.control-label  
-		{
-			float: left;
-			width: 100px;
-			padding-top: 5px;
-			text-align: left;			
-			font-weight: bold;
-			margin-top: 0px;
-			margin-left: 0px;
-			color: $foregroundColor;
-			display: inline;	
-		}
+    .control-label {
+      float: left;
+      width: 100px;
+      padding-top: 5px;
+      text-align: left;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-left: 0px;
+      color: $foregroundColor;
+      display: inline;
+    }
 
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: 50px;
+      *margin-left: 0;
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: 50px;
-			*margin-left: 0;		
+      input[type=text],
+      input[type=url],
+      .uneditable-input {
+        width: $containerWidth - 170;
+      }
 
-			input[type=text],
-			input[type=url],
-			.uneditable-input 
-			{
-				width: $containerWidth - 170;
-			}
+    }
 
-		}	
+    .wrml-form-field-label {
+      margin-top: 5px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-top: 5px;			
-		}
+    textarea,
+    {
+      width: $containerWidth - 50;
+    }
 
-		textarea,
-		{
-			width: $containerWidth - 50;
-		}
+  }
 
-	}
+  #api-resources-section {
+    .wrml-form-field-label {
+      margin-top: 5px;
+      vertical-align: middle;
+      margin-left: 0px;
+    }
+  }
 
+  .api-resource-divider {
+    height: 1px;
+    display: inline;
+    background-color: #dddddd;
+    width: 350px;
+    margin-top: 15px;
+    vertical-align: middle;
+  }
 
-	#api-resources-section
-	{
-		.wrml-form-field-label  
-		{			
-			margin-top: 5px;			
-			vertical-align: middle;
-			margin-left: 0px;
-		}	
-	}
+  .api-resource-segment-input {
+    font-weight: bold;
+    width: 200px;
+    border: 1px solid #ebebeb;
 
-	.api-resource-divider
-	{
-		height: 1px; 
-		display: inline; 
-		background-color: #dddddd;	
-		width: 350px;
-		margin-top: 15px;		
-		vertical-align: middle;
-	}
+    :focus {
+      color: $focusForegroundColor;
+      border-color: $focusBorderColor;
 
-	.api-resource-segment-input
-	{
-		font-weight: bold;	
-		width: 200px;
-		border: 1px solid #ebebeb;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+    }
+  }
 
-		:focus 
-		{
-			color: $focusForegroundColor;
-			border-color: $focusBorderColor;
+  .api-resource-segment-form {
+    margin-top: 30px;
+    margin-left: 0px;
+    padding-bottom: 19px;
+    margin-bottom: 0px;
 
-			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		}
-	}
+    .api-resource-segment {
+      margin-left: 0px;
 
+      .api-resource-parent-path-label {
+        padding-top: 10px;
+        font-weight: normal;
+        vertical-align: middle;
+        color: $muted;
 
-	.api-resource-segment-form
-	{
-		margin-top: 30px;
-		margin-left: 0px;
-		padding-bottom: 19px;
-		margin-bottom: 0px;
+        .api-resource-parent-path-icon {
+          width: 16px;
+          height: 16px;
+          padding-left: 0px;
+          padding-right: 0px;
+          display: inline;
+        }
+      }
+    }
+  }
 
-		.api-resource-segment
-		{
-			margin-left: 0px;
+  .wrml-form {
+    margin-left: 0px;
+  }
 
-			.api-resource-parent-path-label
-			{
-				padding-top: 10px;	
-				font-weight: normal;	
-				vertical-align: middle;
-				color: $muted;	
+  .api-resource-form {
 
-				.api-resource-parent-path-icon
-				{
-					width: 16px;
-					height: 16px;
-					padding-left: 0px;
-					padding-right: 0px;
-					display: inline; 
-				}
-			}
-		}
-	}
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
 
-	.wrml-form
-	{
-		margin-left: 0px;			
-	}
+    .controls-row {
 
-	.api-resource-form
-	{
+      .api-resource-form-input-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 25px;
+        margin-left: 15px;
+        margin-right: 5px;
 
+      }
 
-		padding-top: 5px;	
-		padding-bottom: 5px;	
-		padding-left: 15px;
+      input[type="text"],
+      input[type="password"],
+      input[type="datetime"],
+      input[type="datetime-local"],
+      input[type="date"],
+      input[type="month"],
+      input[type="time"],
+      input[type="week"],
+      input[type="number"],
+      input[type="email"],
+      input[type="url"],
+      input[type="search"],
+      input[type="tel"],
+      input[type="color"],
+      select,
+      textarea,
+      button,
+      .uneditable-input {
+        margin-top: 20px;
+      }
 
-		.controls-row 
-		{
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      select,
+      .uneditable-input {
+        width: 250px;
+      }
 
-			.api-resource-form-input-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 25px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
+      textarea {
+        width: 650px;
+      }
 
-			}
+      input.api-resource-form-input-short,
+      {
+        width: 100px;
+      }
+    }
 
-			input[type="text"],
-			input[type="password"],
-			input[type="datetime"],
-			input[type="datetime-local"],
-			input[type="date"],
-			input[type="month"],
-			input[type="time"],
-			input[type="week"],
-			input[type="number"],
-			input[type="email"],
-			input[type="url"],
-			input[type="search"],
-			input[type="tel"],
-			input[type="color"],
-			select,
-			textarea,
-			button,
-			.uneditable-input 
-			{
-				margin-top: 20px;
-			}
+    .api-resource-form-icon {
+      width: 16px;
+      height: 16px;
+      margin-top: -3px;
+      margin-bottom: 0px;
+      padding-right: 5px;
+      vertical-align: middle;
+    }
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			select,
-			.uneditable-input 
-			{
-				width: 250px;
-			}		
+  }
 
-			textarea
-			{
-				width: 650px;
-			}
+  .resource-table {
 
+    width: 900px;
 
+    margin-top: 20px;
+    margin-left: 8px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
 
-			input.api-resource-form-input-short,
-			{
-				width: 100px;	
-			}
-		}
+    th {
+      font-weight: normal;
+    }
 
-		.api-resource-form-icon
-		{		
-			width: 16px;
-			height: 16px;
-			margin-top: -3px;
-			margin-bottom: 0px;
-			padding-right: 5px;
-			vertical-align: middle;						
-		}
+    td {
+      padding-top: 15px;
+      padding-bottom: 15px;
 
-	}
+    }
 
-	.resource-table
-	{
+    input[type=text],
+    input[type=password],
+    input[type=url],
+    select,
+    .uneditable-input {
+      margin-top: 5px;
+    }
 
-		width: 900px;
-		
-		margin-top: 20px;
-		margin-left: 8px;
-		margin-bottom: 30px;
-		padding-bottom: 30px;
-				
-		th {			
-			font-weight: normal;			
-		}
+    label {
+      vertical-align: middle;
+      margin-top: 5px;
+    }
 
-		td 
-		{
-			padding-top: 15px;
-			padding-bottom: 15px;
-			
-		}
+    button {
+      margin-top: 5px;
+    }
 
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		select,
-		.uneditable-input 
-		{
-			margin-top: 5px;			
-		}	
+    .api-relation-input {
+      width: 120px;
 
-		label
-		{
-			vertical-align: middle;
-			margin-top: 5px;			
-		}
+    }
 
-		button
-		{
-			margin-top: 5px;
-		}
+    .api-endpoint-input {
+      width: 270px;
+      font-size: 10pt;
+    }
 
-		.api-relation-input 
-		{
-			width: 120px;
+    .api-method-text {
+      margin-top: 10px;
+    }
 
-		}
+    .signature {
+      margin-top: 10px;
+    }
 
-		.api-endpoint-input 
-		{
-			width: 270px;
-			font-size: 10pt;
-		}
+    .signature {
+      font-size: 0px;
 
-		.api-method-text
-		{
-			margin-top: 10px;			
-		}
+      span {
+        margin: 0px;
+        padding: 0px;
+      }
+    }
 
-		.signature
-		{
-			margin-top: 10px;
-		}
-
-		.signature
-		{
-			font-size: 0px;			
-
-			span
-			{
-				margin: 0px;
-				padding: 0px;
-			}
-		}
-
-
-
-
-	}
+  }
 }

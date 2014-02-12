@@ -25,13 +25,13 @@
 package org.wrml.model.schema;
 
 import org.wrml.runtime.schema.DefaultValue;
+
 import java.util.List;
 
 /**
  * The WRML representation of the <code>long</code> (or {@link Long}) primitive type.
  */
-public interface LongValue extends Inextensible, NumericValue
-{
+public interface LongValue extends Inextensible, NumericValue {
 
     /**
      * <p>

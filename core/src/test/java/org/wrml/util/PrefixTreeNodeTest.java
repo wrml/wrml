@@ -24,91 +24,89 @@
  */
 package org.wrml.util;
 
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.wrml.runtime.rest.ApiNavigator;
 
-public class PrefixTreeNodeTest 
-{
+import java.util.Set;
+
+public class PrefixTreeNodeTest {
     private static final String VALUE_1 = "borris";
-    
+
     private static final String VALUE_2 = "natasha";
-    
+
     private static final String SEGMENT_1 = "address";
-    
+
     private PrefixTreeNode<String> _Node;
-    
+
     @Before
-    public void init()
-    {
+    public void init() {
+
         _Node = new PrefixTreeNode<>();
     }
-    
+
     @Test
-    public void emptyNodeToStringTest()
-    {
+    public void emptyNodeToStringTest() {
+
         String emptyNode = _Node.toString();
         Assert.assertEquals("Value: []\nChildren: []", emptyNode);
     }
-    
+
     @Test
-    public void setValue()
-    {
+    public void setValue() {
+
         _Node.setValue(VALUE_1);
-        
+
         String node = _Node.toString();
         Assert.assertEquals("Value: [" + VALUE_1 + "]\nChildren: []", node);
     }
-    
+
     @Test
-    public void getSetValue()
-    {
+    public void getSetValue() {
+
         String node = _Node.getValue();
         Assert.assertNull(node);
-        
+
         _Node.setValue(VALUE_1);
         node = _Node.getValue();
-        
+
         Assert.assertEquals(VALUE_1, node);
     }
-    
+
     @Test
-    public void getNullChild()
-    {
+    public void getNullChild() {
+
         PrefixTreeNode<String> node = _Node.getChild(SEGMENT_1);
         Assert.assertNull(node);
     }
-    
+
     @Test
-    public void getNonNullChild()
-    {
+    public void getNonNullChild() {
+
         PrefixTreeNode<String> node = _Node.addChild(SEGMENT_1, VALUE_1);
         Assert.assertNotNull(node);
-        
+
         PrefixTreeNode<String> node2 = _Node.getChild(SEGMENT_1);
         Assert.assertNotNull(node2);
         Assert.assertEquals(node2, node);
     }
-    
+
     @Test
-    public void fullToString()
-    {
+    public void fullToString() {
+
         _Node.setValue(VALUE_1);
         _Node.addChild(SEGMENT_1, VALUE_2);
-        
+
         String rep = _Node.toString();
         Assert.assertEquals("Value: [borris]\nChildren: [address, ]", rep);
     }
-    
+
     @Test
-    public void deepPrintTest()
-    {
-        
+    public void deepPrintTest() {
+
         _Node.setValue(VALUE_1);
         _Node.addChild(SEGMENT_1, VALUE_2);
-        
+
         Set<String> paths = _Node.deepPrint(WildCardPrefixTree.DEFAULT_PATH_SEPARATOR);
         Assert.assertEquals(paths.toString(), "[address/natasha, borris]");
     }

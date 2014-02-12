@@ -23,40 +23,35 @@
  * limitations under the License.
  */
 
-.wrml-form 
-{
-	margin-bottom: 0px;
+.wrml-form {
+  margin-bottom: 0px;
 
-	input[type=text],
-	input[type=password],
-	input[type=url],
-	textarea,
-	.uneditable-input 
-	{
-		width: $formTextInputWidth;
-	}
+  input[type=text],
+  input[type=password],
+  input[type=url],
+  textarea,
+  .uneditable-input {
+    width: $formTextInputWidth;
+  }
 }
 
-.wrml-form-field-label
-{
-	margin-left: -30px;
-	font-weight: bold;	
-	margin-top: 5px;
-	vertical-align: middle;
+.wrml-form-field-label {
+  margin-left: -30px;
+  font-weight: bold;
+  margin-top: 5px;
+  vertical-align: middle;
 }
 
-.wrml-form-field-label-icon
-{		
-	width: 20px;
-	height: 20px;
-	padding-right: 2px;
-	display: inline; 		
+.wrml-form-field-label-icon {
+  width: 20px;
+  height: 20px;
+  padding-right: 2px;
+  display: inline;
 }
 
-.wrml-form-fieldset 
-{		
-	margin-left: $formFieldSetMarginLeft;
-	margin-right: $formFieldSetMarginRight;
+.wrml-form-fieldset {
+  margin-left: $formFieldSetMarginLeft;
+  margin-right: $formFieldSetMarginRight;
 
 }
 

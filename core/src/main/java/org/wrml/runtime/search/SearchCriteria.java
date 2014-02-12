@@ -36,8 +36,7 @@ import java.util.Set;
  * @see org.wrml.runtime.schema.ProtoSearchCriteria#buildSearchCriteria(org.wrml.model.Model)
  * @see org.wrml.runtime.service.Service#search(SearchCriteria)
  */
-public interface SearchCriteria
-{
+public interface SearchCriteria {
 
     /**
      * TODO: Javadoc

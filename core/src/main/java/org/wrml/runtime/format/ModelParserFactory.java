@@ -27,8 +27,7 @@ package org.wrml.runtime.format;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface ModelParserFactory
-{
+public interface ModelParserFactory {
 
     ModelParser createModelParser(InputStream in) throws IOException, ModelParserException;
 

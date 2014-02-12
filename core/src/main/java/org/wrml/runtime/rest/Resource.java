@@ -43,8 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A runtime manifestation of a specific {@link Api}'s specific {@link ResourceTemplate} (REST API URI tree node).
  */
-public class Resource implements Comparable<Resource>
-{
+public class Resource implements Comparable<Resource> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Resource.class);
 
@@ -99,16 +98,13 @@ public class Resource implements Comparable<Resource>
      * used by the runtime for "pattern matching" (request routing by the framework).
      * </p>
      */
-    Resource(final ApiNavigator apiNavigator, final ResourceTemplate resourceTemplate, final Resource parentResource)
-    {
+    Resource(final ApiNavigator apiNavigator, final ResourceTemplate resourceTemplate, final Resource parentResource) {
 
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             throw new ResourceException("The apiNavigator may not be null", null, this);
         }
 
-        if (resourceTemplate == null)
-        {
+        if (resourceTemplate == null) {
             throw new ResourceException("The resource template may not be null", null, this);
         }
 
@@ -116,12 +112,10 @@ public class Resource implements Comparable<Resource>
         _ResourceTemplate = resourceTemplate;
         _ParentResource = parentResource;
         _FullPath = getFullPath(parentResource);
-        if (_ParentResource != null)
-        {
+        if (_ParentResource != null) {
             _ParentPath = _ParentResource.getPathText();
         }
-        else
-        {
+        else {
             _ParentPath = null;
         }
 
@@ -151,18 +145,15 @@ public class Resource implements Comparable<Resource>
         final UUID resourceTemplateId = _ResourceTemplate.getUniqueId();
 
         final List<LinkTemplate> linkTemplates = api.getLinkTemplates();
-        for (final LinkTemplate linkTemplate : linkTemplates)
-        {
+        for (final LinkTemplate linkTemplate : linkTemplates) {
 
             final URI linkRelationUri = linkTemplate.getLinkRelationUri();
-            if (linkRelationUri == null)
-            {
+            if (linkRelationUri == null) {
                 continue;
             }
 
             final UUID endPointId = linkTemplate.getEndPointId();
-            if (endPointId != null && endPointId.equals(resourceTemplateId))
-            {
+            if (endPointId != null && endPointId.equals(resourceTemplateId)) {
                 _ReferenceTemplates.put(linkRelationUri, linkTemplate);
 
                 final LinkTemplate reference = linkTemplate;
@@ -177,8 +168,7 @@ public class Resource implements Comparable<Resource>
                 final Dimensions relDimensions = apiNavigator.getLinkRelationDimensions();
                 final LinkRelation rel = context.getModel(relKeys, relDimensions);
 
-                if (rel == null)
-                {
+                if (rel == null) {
                     throw new ResourceException("The link relation: " + linkRelationUri + " was not found", null, this);
                 }
 
@@ -186,16 +176,14 @@ public class Resource implements Comparable<Resource>
 
                 final Method requestMethod = rel.getMethod();
 
-                if (!_ReferenceTemplateMethodToLinkRelationUrisMap.containsKey(requestMethod))
-                {
+                if (!_ReferenceTemplateMethodToLinkRelationUrisMap.containsKey(requestMethod)) {
                     _ReferenceTemplateMethodToLinkRelationUrisMap.put(requestMethod, new LinkedHashSet<URI>());
                 }
 
                 final Set<URI> linkRelationUris = _ReferenceTemplateMethodToLinkRelationUrisMap.get(requestMethod);
                 linkRelationUris.add(linkRelationUri);
 
-                if (!_ReferenceTemplateMethodToRequestSchemaUrisMap.containsKey(requestMethod))
-                {
+                if (!_ReferenceTemplateMethodToRequestSchemaUrisMap.containsKey(requestMethod)) {
                     _ReferenceTemplateMethodToRequestSchemaUrisMap.put(requestMethod, new LinkedHashSet<URI>());
                 }
 
@@ -203,20 +191,17 @@ public class Resource implements Comparable<Resource>
 
                 // The API's reference template may have defined its own API-specific argument type
                 final URI referenceRequestSchemaUri = reference.getRequestSchemaUri();
-                if (referenceRequestSchemaUri != null)
-                {
+                if (referenceRequestSchemaUri != null) {
                     requestSchemaUris.add(referenceRequestSchemaUri);
                 }
 
                 // The reference's link relation may have defined a generic, reusable argument type
                 final URI relRequestSchemaUri = rel.getRequestSchemaUri();
-                if (relRequestSchemaUri != null && !documentSchemaUriConstant.equals(relRequestSchemaUri))
-                {
+                if (relRequestSchemaUri != null && !documentSchemaUriConstant.equals(relRequestSchemaUri)) {
                     requestSchemaUris.add(relRequestSchemaUri);
                 }
 
-                if (!_ReferenceTemplateMethodToResponseSchemaUriMap.containsKey(requestMethod))
-                {
+                if (!_ReferenceTemplateMethodToResponseSchemaUriMap.containsKey(requestMethod)) {
                     _ReferenceTemplateMethodToResponseSchemaUriMap.put(requestMethod, new LinkedHashSet<URI>());
                 }
 
@@ -224,23 +209,20 @@ public class Resource implements Comparable<Resource>
 
                 // The API's reference template may have defined its own API-specific response type
                 final URI referenceResponseSchemaUri = reference.getResponseSchemaUri();
-                if (referenceResponseSchemaUri != null)
-                {
+                if (referenceResponseSchemaUri != null) {
                     responseSchemaUris.add(referenceResponseSchemaUri);
                 }
 
                 // The reference's link relation may have defined a generic, reusable response type
                 final URI relResponseSchemaUri = rel.getResponseSchemaUri();
-                if (relResponseSchemaUri != null && !documentSchemaUriConstant.equals(relResponseSchemaUri))
-                {
+                if (relResponseSchemaUri != null && !documentSchemaUriConstant.equals(relResponseSchemaUri)) {
                     responseSchemaUris.add(relResponseSchemaUri);
                 }
 
             }
 
             final UUID referrerId = linkTemplate.getReferrerId();
-            if (referrerId != null && referrerId.equals(resourceTemplateId))
-            {
+            if (referrerId != null && referrerId.equals(resourceTemplateId)) {
                 _LinkTemplates.put(linkRelationUri, linkTemplate);
             }
 
@@ -248,31 +230,26 @@ public class Resource implements Comparable<Resource>
 
     }
 
-    private final String getFullPath(final Resource parentResource)
-    {
+    private final String getFullPath(final Resource parentResource) {
 
         final StringBuffer sb = new StringBuffer();
         boolean appendPathSeparator = true;
 
-        if (parentResource != null && parentResource.getPathText() != null)
-        {
+        if (parentResource != null && parentResource.getPathText() != null) {
             final String text = parentResource.getPathText();
             sb.append(text);
-            if (text.endsWith(ApiNavigator.PATH_SEPARATOR))
-            {
+            if (text.endsWith(ApiNavigator.PATH_SEPARATOR)) {
                 appendPathSeparator = false;
             }
         }
 
-        if (appendPathSeparator)
-        {
+        if (appendPathSeparator) {
             sb.append(ApiNavigator.PATH_SEPARATOR);
         }
 
         final String pathSegment = getPathSegment();
 
-        if (StringUtils.isNotEmpty(pathSegment))
-        {
+        if (StringUtils.isNotEmpty(pathSegment)) {
             sb.append(pathSegment);
         }
 
@@ -282,16 +259,13 @@ public class Resource implements Comparable<Resource>
     /**
      * @return a flattened {@link List} of all child and sub-child {@link Resource}s (recursive).
      */
-    public List<Resource> getAllChildResources()
-    {
+    public List<Resource> getAllChildResources() {
 
         final List<Resource> allChildResources = new LinkedList<>();
         final List<ResourceTemplate> childResourceTemplates = this._ResourceTemplate.getChildren();
-        for (final ResourceTemplate childResourceTemplate : childResourceTemplates)
-        {
+        for (final ResourceTemplate childResourceTemplate : childResourceTemplates) {
             final Resource childResource = this._ApiNavigator.getResource(childResourceTemplate.getUniqueId());
-            if (childResource != null)
-            {
+            if (childResource != null) {
                 allChildResources.add(childResource);
                 allChildResources.addAll(childResource.getAllChildResources());
             }
@@ -303,15 +277,13 @@ public class Resource implements Comparable<Resource>
     /**
      * @return the {@link ApiNavigator} that owns this {@link Resource}.
      */
-    public ApiNavigator getApiNavigator()
-    {
+    public ApiNavigator getApiNavigator() {
 
         return _ApiNavigator;
     }
 
 
-    public URI getDefaultDocumentUri()
-    {
+    public URI getDefaultDocumentUri() {
 
         final UriTemplate uriTemplate = getUriTemplate();
 
@@ -319,8 +291,7 @@ public class Resource implements Comparable<Resource>
         final String[] parameterNames = uriTemplate.getParameterNames();
         final Map<String, Object> parameterMap = new LinkedHashMap<>();
 
-        if (parameterNames != null && parameterNames.length > 0)
-        {
+        if (parameterNames != null && parameterNames.length > 0) {
 
             final Api api = getApiNavigator().getApi();
             final Context context = api.getContext();
@@ -329,42 +300,33 @@ public class Resource implements Comparable<Resource>
             final URI defaultSchemaUri = getDefaultSchemaUri();
             final Prototype defaultPrototype = (defaultSchemaUri != null) ? schemaLoader.getPrototype(defaultSchemaUri) : null;
 
-            for (int i = 0; i < parameterNames.length; i++)
-            {
+            for (int i = 0; i < parameterNames.length; i++) {
                 final String parameterName = parameterNames[i];
 
                 URI keyedSchemaUri = null;
 
-                if (defaultPrototype != null)
-                {
+                if (defaultPrototype != null) {
                     final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
-                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                    {
+                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
                         keyedSchemaUri = defaultSchemaUri;
                     }
                 }
 
-                if (keyedSchemaUri == null)
-                {
+                if (keyedSchemaUri == null) {
 
                     final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = getReferenceTemplates();
 
-                    if (referenceTemplates != null && !referenceTemplates.isEmpty())
-                    {
+                    if (referenceTemplates != null && !referenceTemplates.isEmpty()) {
 
                         final Set<URI> referenceLinkRelationUris = getReferenceLinkRelationUris(Method.Get);
-                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty())
-                        {
-                            for (URI linkRelationUri : referenceLinkRelationUris)
-                            {
+                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty()) {
+                            for (URI linkRelationUri : referenceLinkRelationUris) {
                                 final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
                                 final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
                                 final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
-                                if (responseSchemaPrototype != null)
-                                {
+                                if (responseSchemaPrototype != null) {
                                     final Set<String> allKeySlotNames = responseSchemaPrototype.getAllKeySlotNames();
-                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                                    {
+                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
                                         keyedSchemaUri = responseSchemaUri;
                                         break;
                                     }
@@ -376,21 +338,18 @@ public class Resource implements Comparable<Resource>
 
                 Object defaultValue = null;
 
-                if (keyedSchemaUri != null)
-                {
+                if (keyedSchemaUri != null) {
 
                     final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
                     final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
-                    if (keyProtoSlot instanceof PropertyProtoSlot)
-                    {
+                    if (keyProtoSlot instanceof PropertyProtoSlot) {
                         final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
 
                         // TODO: Allow more fine grain control of the default parameter value
 
                         defaultValue = keyPropertyProtoSlot.getDefaultValue();
 
-                        if (defaultValue == null)
-                        {
+                        if (defaultValue == null) {
                             defaultValue = keyPropertyProtoSlot.getValueType().getDefaultValue();
                         }
 
@@ -404,34 +363,27 @@ public class Resource implements Comparable<Resource>
         return uriTemplate.evaluate(parameterMap, true);
     }
 
-    public URI getDefaultSchemaUri()
-    {
+    public URI getDefaultSchemaUri() {
 
         return getResourceTemplate().getDefaultSchemaUri();
     }
 
-    public URI getDocumentUri(final Document document)
-    {
+    public URI getDocumentUri(final Document document) {
 
         final UriTemplate uriTemplate = getUriTemplate();
         final String[] parameterNames = uriTemplate.getParameterNames();
-        if (parameterNames == null)
-        {
+        if (parameterNames == null) {
             return uriTemplate.evaluate(null);
         }
-        else
-        {
+        else {
             final Map<String, Object> parameterMap = new LinkedHashMap<>();
-            for (final String parameterName : parameterNames)
-            {
-                if (!document.containsSlotValue(parameterName))
-                {
+            for (final String parameterName : parameterNames) {
+                if (!document.containsSlotValue(parameterName)) {
                     return null;
                 }
 
                 Object parameterValue = document.getSlotValue(parameterName);
-                if (parameterValue == null)
-                {
+                if (parameterValue == null) {
                     return null;
                 }
 
@@ -448,52 +400,44 @@ public class Resource implements Comparable<Resource>
      * of {@link LinkTemplate}s represent the ways in which we may link to (reference) resources.
      *
      * @return A map of link relation id to link template, which communicates the ways that this {@link Resource} may
-     *         reference other {@link Resource}s.
+     * reference other {@link Resource}s.
      */
-    public ConcurrentHashMap<URI, LinkTemplate> getLinkTemplates()
-    {
+    public ConcurrentHashMap<URI, LinkTemplate> getLinkTemplates() {
 
         return _LinkTemplates;
     }
 
-    public ConcurrentHashMap<String, Resource> getLiteralPathSubresources()
-    {
+    public ConcurrentHashMap<String, Resource> getLiteralPathSubresources() {
 
         return _LiteralPathSubresources;
     }
 
-    public Resource getParentResource()
-    {
+    public Resource getParentResource() {
 
         return _ParentResource;
     }
 
-    public List<Resource> getPath(final boolean includeDocroot)
-    {
+    public List<Resource> getPath(final boolean includeDocroot) {
 
         final List<Resource> path = new ArrayList<>();
         Resource parent = getParentResource();
 
-        if (!includeDocroot && parent == null)
-        {
+        if (!includeDocroot && parent == null) {
             return path;
         }
 
         path.add(this);
 
-        if (parent == null)
-        {
+        if (parent == null) {
             return path;
         }
 
-        while (parent != null)
-        {
+        while (parent != null) {
             path.add(parent);
             parent = parent.getParentResource();
         }
 
-        if (!includeDocroot)
-        {
+        if (!includeDocroot) {
             path.remove(path.size() - 1);
         }
 
@@ -502,26 +446,22 @@ public class Resource implements Comparable<Resource>
         return path;
     }
 
-    public String getPathSegment()
-    {
+    public String getPathSegment() {
 
         return this._ResourceTemplate.getPathSegment();
     }
 
-    public String getPathText()
-    {
+    public String getPathText() {
 
         return _FullPath;
     }
 
-    public String getParentPathText()
-    {
+    public String getParentPathText() {
 
         return _ParentPath;
     }
 
-    public Set<URI> getReferenceLinkRelationUris(final Method requestMethod)
-    {
+    public Set<URI> getReferenceLinkRelationUris(final Method requestMethod) {
 
         return _ReferenceTemplateMethodToLinkRelationUrisMap.get(requestMethod);
     }
@@ -532,36 +472,30 @@ public class Resource implements Comparable<Resource>
      *
      * @return The ways that we may be referenced by other resources.
      */
-    public ConcurrentHashMap<URI, LinkTemplate> getReferenceTemplates()
-    {
+    public ConcurrentHashMap<URI, LinkTemplate> getReferenceTemplates() {
 
         return _ReferenceTemplates;
     }
 
-    public Set<URI> getRequestSchemaUris(final Method requestMethod)
-    {
+    public Set<URI> getRequestSchemaUris(final Method requestMethod) {
 
         return _ReferenceTemplateMethodToRequestSchemaUrisMap.get(requestMethod);
     }
 
-    public ResourceTemplate getResourceTemplate()
-    {
+    public ResourceTemplate getResourceTemplate() {
 
         return _ResourceTemplate;
     }
 
-    public UUID getResourceTemplateId()
-    {
+    public UUID getResourceTemplateId() {
 
-        if (_ResourceTemplate == null)
-        {
+        if (_ResourceTemplate == null) {
             return null;
         }
         return _ResourceTemplate.getUniqueId();
     }
 
-    public Set<URI> getResponseSchemaUris(final Method requestMethod)
-    {
+    public Set<URI> getResponseSchemaUris(final Method requestMethod) {
 
         return _ReferenceTemplateMethodToResponseSchemaUriMap.get(requestMethod);
     }
@@ -570,11 +504,9 @@ public class Resource implements Comparable<Resource>
      * Generates the "href" URI used to refer to this resource from the specified referrer {@link Model} instance using
      * the specified {@link LinkRelation} {@link URI} value.
      */
-    public URI getHrefUri(final Model referrer, final URI referenceRelationUri)
-    {
+    public URI getHrefUri(final Model referrer, final URI referenceRelationUri) {
 
-        if (referrer == null)
-        {
+        if (referrer == null) {
             return null;
         }
 
@@ -584,8 +516,7 @@ public class Resource implements Comparable<Resource>
          */
 
         final UriTemplate uriTemplate = getUriTemplate();
-        if (uriTemplate == null)
-        {
+        if (uriTemplate == null) {
             return null;
         }
 
@@ -599,8 +530,7 @@ public class Resource implements Comparable<Resource>
 
         Map<String, Object> parameterMap = null;
 
-        if (uriTemplateParameterNames != null && uriTemplateParameterNames.length > 0)
-        {
+        if (uriTemplateParameterNames != null && uriTemplateParameterNames.length > 0) {
 
             // Get the Link slot's bindings, which may be used to provide an alternative source for one or more URI
             // template parameter values.
@@ -610,31 +540,26 @@ public class Resource implements Comparable<Resource>
 
             Map<String, ProtoValueSource> linkSlotBindings = null;
 
-            if (linkProtoSlots != null && !linkProtoSlots.isEmpty())
-            {
+            if (linkProtoSlots != null && !linkProtoSlots.isEmpty()) {
                 final LinkProtoSlot linkProtoSlot = linkProtoSlots.get(referenceRelationUri);
-                if (linkProtoSlot != null)
-                {
+                if (linkProtoSlot != null) {
                     linkSlotBindings = linkProtoSlot.getLinkSlotBindings();
                 }
             }
 
             parameterMap = new LinkedHashMap<>(uriTemplateParameterNames.length);
 
-            for (final String paramName : uriTemplateParameterNames)
-            {
+            for (final String paramName : uriTemplateParameterNames) {
 
                 final Object paramValue;
 
-                if (linkSlotBindings != null && linkSlotBindings.containsKey(paramName))
-                {
+                if (linkSlotBindings != null && linkSlotBindings.containsKey(paramName)) {
                     // The link slot has declared a binding to an alternate source for this URI template parameter's
                     // value.
                     final ProtoValueSource valueSource = linkSlotBindings.get(paramName);
                     paramValue = valueSource.getValue(referrer);
                 }
-                else
-                {
+                else {
                     // By default, if the end point's UriTemplate has parameters (blanks) to fill in, then by convention
                     // we
                     // assume that the referrer model has the corresponding slot values to match the UriTemplate's
@@ -659,8 +584,7 @@ public class Resource implements Comparable<Resource>
 
     }
 
-    public UriTemplate getUriTemplate()
-    {
+    public UriTemplate getUriTemplate() {
 
         return _UriTemplate;
     }
@@ -668,14 +592,12 @@ public class Resource implements Comparable<Resource>
     /**
      * @return a sorted map of variable path child resources (i.e. {keySlotName})
      */
-    public ConcurrentHashMap<String, Resource> getVariablePathSubresources()
-    {
+    public ConcurrentHashMap<String, Resource> getVariablePathSubresources() {
 
         return _VariablePathSubresources;
     }
 
-    public boolean isDocroot()
-    {
+    public boolean isDocroot() {
 
         return (getParentResource() == null);
     }
@@ -686,68 +608,56 @@ public class Resource implements Comparable<Resource>
      *
      * @param subresource
      */
-    void addSubresource(final Resource subresource)
-    {
+    void addSubresource(final Resource subresource) {
 
         final String pathSegment = subresource.getPathSegment();
-        if (StringUtils.containsAny(pathSegment, '{'))
-        {
+        if (StringUtils.containsAny(pathSegment, '{')) {
             addVariablePathSubresource(pathSegment, subresource);
         }
-        else
-        {
+        else {
             addLiteralPathSubresource(pathSegment, subresource);
         }
     }
 
-    private void addLiteralPathSubresource(final String pathSegment, final Resource subresource)
-    {
+    private void addLiteralPathSubresource(final String pathSegment, final Resource subresource) {
 
         _LiteralPathSubresources.put(pathSegment, subresource);
     }
 
-    private void addVariablePathSubresource(final String pathSegment, final Resource subresource)
-    {
+    private void addVariablePathSubresource(final String pathSegment, final Resource subresource) {
 
         _VariablePathSubresources.put(pathSegment, subresource);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return String.format(TO_STRING_FORMAT, getResourceTemplateId(), _UriTemplate, _FullPath);
     }
 
     @Override
-    public int compareTo(final Resource otherResource)
-    {
+    public int compareTo(final Resource otherResource) {
 
         return ComparisonChain.start().compare(this._FullPath, otherResource._FullPath).result();
     }
 
 
-    public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype)
-    {
+    public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype) {
 
         final Set<URI> responseSchemaUris = getResponseSchemaUris(Method.Get);
-        if (responseSchemaUris == null)
-        {
+        if (responseSchemaUris == null) {
             return null;
         }
 
         boolean isCompatibleResource = false;
-        for (final URI responseSchemaUri : responseSchemaUris)
-        {
-            if (prototype.isAssignableFrom(responseSchemaUri))
-            {
+        for (final URI responseSchemaUri : responseSchemaUris) {
+            if (prototype.isAssignableFrom(responseSchemaUri)) {
                 isCompatibleResource = true;
                 break;
             }
         }
 
-        if (!isCompatibleResource)
-        {
+        if (!isCompatibleResource) {
             return null;
         }
 

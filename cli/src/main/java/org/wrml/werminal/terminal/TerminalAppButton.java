@@ -28,8 +28,7 @@ import com.googlecode.lanterna.gui.component.Button;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
-public class TerminalAppButton extends Button
-{
+public class TerminalAppButton extends Button {
 
     private final TerminalAppKeyboardInteraction _KeyboardInteraction;
 
@@ -37,33 +36,28 @@ public class TerminalAppButton extends Button
 
     private TerminalSize _PreferredSize;
 
-    public TerminalAppButton(final TerminalAppAction action)
-    {
+    public TerminalAppButton(final TerminalAppAction action) {
 
         super(action.getTitle());
         setAction(action);
         _KeyboardInteraction = new TerminalAppKeyboardInteraction(action.getApp(), action, true);
     }
 
-    public TerminalAppAction getAction()
-    {
+    public TerminalAppAction getAction() {
 
         return _Action;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) getAction().getApp();
     }
 
     @Override
-    public final TerminalSize getPreferredSize()
-    {
+    public final TerminalSize getPreferredSize() {
 
-        if (_PreferredSize == null)
-        {
+        if (_PreferredSize == null) {
             return super.getPreferredSize();
         }
 
@@ -71,16 +65,13 @@ public class TerminalAppButton extends Button
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
-        if (_KeyboardInteraction.handleKeyboardInteraction(key))
-        {
+        if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
             return Result.EVENT_HANDLED;
         }
 
@@ -88,23 +79,20 @@ public class TerminalAppButton extends Button
 
     }
 
-    public void setAction(final TerminalAppAction action)
-    {
+    public void setAction(final TerminalAppAction action) {
 
         _Action = action;
         setText(_Action.getTitle());
     }
 
     @Override
-    public final void setPreferredSize(final TerminalSize preferredSize)
-    {
+    public final void setPreferredSize(final TerminalSize preferredSize) {
 
         _PreferredSize = preferredSize;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return "TerminalButton (" + super.toString() + ")";
     }

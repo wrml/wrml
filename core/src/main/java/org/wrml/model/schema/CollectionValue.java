@@ -45,8 +45,7 @@ import java.util.List;
  * @see org.wrml.runtime.search.SearchCriteria
  * @see org.wrml.runtime.service.Service#search(org.wrml.runtime.search.SearchCriteria)
  */
-public interface CollectionValue extends Primitive, Inextensible, ListValue
-{
+public interface CollectionValue extends Primitive, Inextensible, ListValue {
 
     /**
      * <p>

@@ -24,19 +24,13 @@
  */
 package org.wrml.runtime.format;
 
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import org.apache.commons.lang3.reflect.TypeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.Embedded;
-
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.DimensionsBuilder;
@@ -45,27 +39,29 @@ import org.wrml.runtime.schema.PropertyProtoSlot;
 import org.wrml.runtime.schema.ProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.syntax.SyntaxHandler;
 import org.wrml.runtime.syntax.SyntaxLoader;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.*;
 
 /**
  * An abstract representation of a serialized graph of WRML models, which sort
  * of resembles a DOM.
  */
-public final class ParserModelGraph extends ModelGraph
-{
+public final class ParserModelGraph extends ModelGraph {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParserModelGraph.class);
 
-    /** The keys to apply to the graph's root model. */
+    /**
+     * The keys to apply to the graph's root model.
+     */
     private final Keys _RootModelKeys;
 
-    /** The dimensions to apply to the graph's root model. */
+    /**
+     * The dimensions to apply to the graph's root model.
+     */
     private final DimensionsBuilder _RootModelDimensionsBuilder;
 
     /**
@@ -74,38 +70,44 @@ public final class ParserModelGraph extends ModelGraph
      */
     private final LinkedList<ScopeType> _ScopeStack;
 
-    /** Follows the focus of the graph's models. */
+    /**
+     * Follows the focus of the graph's models.
+     */
     private final LinkedList<Model> _ModelStack;
 
-    /** Follows the focus of the graph's (REST) Document models. */
+    /**
+     * Follows the focus of the graph's (REST) Document models.
+     */
     private final LinkedList<Model> _DocumentStack;
 
-    /** Follows the bread-crumb-like scope of slots. */
+    /**
+     * Follows the bread-crumb-like scope of slots.
+     */
     private final LinkedList<String> _SlotNameStack;
 
-    /** Follows the nesting of lists. */
+    /**
+     * Follows the nesting of lists.
+     */
     private final LinkedList<List<Object>> _ListStack;
 
-    /** Follows the model dimensions. */
+    /**
+     * Follows the model dimensions.
+     */
     private final LinkedList<DimensionsBuilder> _DimensionsBuilderStack;
 
     private final Map<UUID, Model> _ShortcutModels;
 
     /**
      * Create a new model graph.
-     * 
-     * @param context
-     *            The context to operate within.
-     * 
-     * @param rootModelDimensions
-     *            The dimensions to use for the root model.
+     *
+     * @param context             The context to operate within.
+     * @param rootModelDimensions The dimensions to use for the root model.
      */
-    public ParserModelGraph(final Context context, final Keys rootModelKeys, final Dimensions rootModelDimensions)
-    {
+    public ParserModelGraph(final Context context, final Keys rootModelKeys, final Dimensions rootModelDimensions) {
+
         super(context);
 
-        if (rootModelDimensions == null)
-        {
+        if (rootModelDimensions == null) {
             throw new ModelGraphException("The root model dimensions cannot be null.", null, this);
         }
 
@@ -122,21 +124,20 @@ public final class ParserModelGraph extends ModelGraph
         _ShortcutModels = new HashMap<UUID, Model>();
     }
 
-    public Object endList()
-    {
+    public Object endList() {
+
         final List<Object> list = _ListStack.pop();
         _ScopeStack.pop();
 
         return endValue(list);
     }
 
-    public Model endModel()
-    {
+    public Model endModel() {
+
         final Model model = _ModelStack.pop();
         _ScopeStack.pop();
 
-        if (model instanceof Document)
-        {
+        if (model instanceof Document) {
             _DocumentStack.pop();
         }
 
@@ -146,16 +147,13 @@ public final class ParserModelGraph extends ModelGraph
     /**
      * Process a "raw" value (from a serialized model graph) into one that is
      * ready for the runtime.
-     * 
-     * @param rawValue
-     *            The "raw" value to process. A raw value is used in
-     *            serialization of model graphs.
-     * 
+     *
+     * @param rawValue The "raw" value to process. A raw value is used in
+     *                 serialization of model graphs.
      * @return The processed value, ready for runtime.
      */
     @SuppressWarnings("unchecked")
-    public Object endValue(final Object rawValue)
-    {
+    public Object endValue(final Object rawValue) {
 
         /*
          * As a special case for in-line model typing, WRML allows the
@@ -165,8 +163,7 @@ public final class ParserModelGraph extends ModelGraph
          * 
          * Compare the slot's name and update the Dimensions accordingly.
          */
-        if (!_SlotNameStack.isEmpty() && _SlotNameStack.peek().equals(Model.SLOT_NAME_SCHEMA_URI))
-        {
+        if (!_SlotNameStack.isEmpty() && _SlotNameStack.peek().equals(Model.SLOT_NAME_SCHEMA_URI)) {
             _DimensionsBuilderStack.peek().setSchemaUri(URI.create(String.valueOf(rawValue)));
             _SlotNameStack.pop();
             return null;
@@ -174,8 +171,7 @@ public final class ParserModelGraph extends ModelGraph
 
         Object runtimeValue = null;
         boolean isModel = false;
-        if (rawValue != null && rawValue instanceof Model)
-        {
+        if (rawValue != null && rawValue instanceof Model) {
             isModel = true;
 
             /*
@@ -185,24 +181,18 @@ public final class ParserModelGraph extends ModelGraph
             runtimeValue = convertRawModelValue((Model) rawValue);
         }
 
-        if (!_ScopeStack.isEmpty())
-        {
-            if (rawValue != null)
-            {
-                if (TypeUtils.isInstance(rawValue, String.class))
-                {
+        if (!_ScopeStack.isEmpty()) {
+            if (rawValue != null) {
+                if (TypeUtils.isInstance(rawValue, String.class)) {
                     runtimeValue = convertRawStringValue((String) rawValue);
                 }
-                else if (TypeUtils.isInstance(rawValue, Integer.class))
-                {
+                else if (TypeUtils.isInstance(rawValue, Integer.class)) {
                     runtimeValue = convertRawIntegerValue((Integer) rawValue);
                 }
-                else if (TypeUtils.isInstance(rawValue, List.class))
-                {
+                else if (TypeUtils.isInstance(rawValue, List.class)) {
                     runtimeValue = convertRawListValue((List<Object>) rawValue);
                 }
-                else if (!isModel)
-                {
+                else if (!isModel) {
                     /*
                      * The other "raw" types are equivalent to their "runtime" type
                      * counterparts; no conversion necessary.
@@ -213,51 +203,46 @@ public final class ParserModelGraph extends ModelGraph
 
             final ScopeType scopeType = _ScopeStack.peek();
 
-            switch (scopeType)
-            {
-            case Model:
-            {
+            switch (scopeType) {
+                case Model: {
                 /*
                  * The graph is focused on the parent model; meaning that a slot
                  * should be set.
                  */
-                final Model parentModel = _ModelStack.peek();
-                final String slotName = _SlotNameStack.peek();
+                    final Model parentModel = _ModelStack.peek();
+                    final String slotName = _SlotNameStack.peek();
 
-                if (!slotName.equals(Model.SLOT_NAME_HEAP_ID))
-                {
-                    parentModel.getSlotMap().put(slotName, runtimeValue);
-                }
-                else if (runtimeValue != null)
-                {
+                    if (!slotName.equals(Model.SLOT_NAME_HEAP_ID)) {
+                        parentModel.getSlotMap().put(slotName, runtimeValue);
+                    }
+                    else if (runtimeValue != null) {
 
-                    // Remove the started model from the stack
-                    _ModelStack.pop();
-                    // Push this model onto the stack
-                    final Model m = (Model) runtimeValue;
-                    _ModelStack.push(m);
-                }
+                        // Remove the started model from the stack
+                        _ModelStack.pop();
+                        // Push this model onto the stack
+                        final Model m = (Model) runtimeValue;
+                        _ModelStack.push(m);
+                    }
 
                 /*
                  * Now finished with this slot, shift focus.
                  */
-                _SlotNameStack.pop();
+                    _SlotNameStack.pop();
 
-                break;
-            }
-            case List:
-            {
+                    break;
+                }
+                case List: {
 
                 /*
                  * The graph is focused on a list; meaning that an element
                  * should be added.
                  */
 
-                final List<Object> list = _ListStack.peek();
-                list.add(runtimeValue);
+                    final List<Object> list = _ListStack.peek();
+                    list.add(runtimeValue);
 
-                break;
-            }
+                    break;
+                }
 
             } // End of switch
         }
@@ -266,8 +251,8 @@ public final class ParserModelGraph extends ModelGraph
     }
 
 
-    public Keys getRootModelKeys()
-    {
+    public Keys getRootModelKeys() {
+
         return _RootModelKeys;
     }
 
@@ -276,10 +261,9 @@ public final class ParserModelGraph extends ModelGraph
      * may not start graphs, so you must create a model and a slot before you
      * may create any graph lists.
      */
-    public void startList()
-    {
-        if (_ScopeStack.isEmpty() || _ModelStack.isEmpty() || _SlotNameStack.isEmpty())
-        {
+    public void startList() {
+
+        if (_ScopeStack.isEmpty() || _ModelStack.isEmpty() || _SlotNameStack.isEmpty()) {
             // TODO: Future, move hard-coded messages like this into a
             // "StringTable & MessageFormat" utility class
 
@@ -302,8 +286,8 @@ public final class ParserModelGraph extends ModelGraph
     /**
      * Create a new model and make it the focus of this graph.
      */
-    public void startModel()
-    {
+    public void startModel() {
+
         final Context context = getContext();
 
         /*
@@ -312,8 +296,7 @@ public final class ParserModelGraph extends ModelGraph
         final Model newModel = context.getModelBuilder().newModel();
         DimensionsBuilder newModelDimensionsBuilder = null;
 
-        if (_ScopeStack.isEmpty())
-        {
+        if (_ScopeStack.isEmpty()) {
             /*
              * This is the first model in the graph; the root model. The first
              * model's creation is how a graph begins.
@@ -332,8 +315,7 @@ public final class ParserModelGraph extends ModelGraph
 
             newModelDimensionsBuilder = _RootModelDimensionsBuilder;
         }
-        else
-        {
+        else {
             /*
              * Make an effort to find the best "default" schema id for the new
              * (child/nested) model by consulting the focused slot's prototype
@@ -358,8 +340,7 @@ public final class ParserModelGraph extends ModelGraph
             URI newModelSchemaUri = null;
 
             final URI parentSchemaUri = parentDimensionsBuilder.getSchemaUri();
-            if (parentSchemaUri != null)
-            {
+            if (parentSchemaUri != null) {
                 /*
                  * If the parent's schema URI is known, attempt to use it to
                  * determine the (default) schema URI of new model.
@@ -367,16 +348,13 @@ public final class ParserModelGraph extends ModelGraph
 
                 final SchemaLoader schemaLoader = context.getSchemaLoader();
                 final Prototype parentPrototype = schemaLoader.getPrototype(parentSchemaUri);
-                if (parentPrototype.getLinkRelationUri(slotName) != null)
-                {
+                if (parentPrototype.getLinkRelationUri(slotName) != null) {
                     newModelSchemaUri = schemaLoader.getTypeUri(ValueType.JAVA_TYPE_LINK);
                 }
-                else
-                {
+                else {
                     final ProtoSlot parentSlot = parentPrototype.getProtoSlot(slotName);
 
-                    if (parentSlot != null)
-                    {
+                    if (parentSlot != null) {
                         /*
                          * The prototype slot associated with the parent model's
                          * schema may help us determine the default schematic
@@ -385,31 +363,25 @@ public final class ParserModelGraph extends ModelGraph
 
                         final ScopeType scopeType = _ScopeStack.peek();
 
-                        switch (scopeType)
-                        {
-                        case Model:
-                        {
+                        switch (scopeType) {
+                            case Model: {
 
-                            if (parentSlot.getValueType() == ValueType.Model)
-                            {
-                                newModelSchemaUri = ((PropertyProtoSlot) parentSlot).getModelSchemaUri();
-                            }
-
-                            break;
-                        }
-                        case List:
-                        {
-                            if (parentSlot.getValueType() == ValueType.List)
-                            {
-                                final Type listElementType = ((PropertyProtoSlot) parentSlot).getListElementType();
-                                if (ValueType.isModelType(listElementType))
-                                {
-                                    newModelSchemaUri = ((PropertyProtoSlot) parentSlot).getListElementSchemaUri();
+                                if (parentSlot.getValueType() == ValueType.Model) {
+                                    newModelSchemaUri = ((PropertyProtoSlot) parentSlot).getModelSchemaUri();
                                 }
-                            }
 
-                            break;
-                        }
+                                break;
+                            }
+                            case List: {
+                                if (parentSlot.getValueType() == ValueType.List) {
+                                    final Type listElementType = ((PropertyProtoSlot) parentSlot).getListElementType();
+                                    if (ValueType.isModelType(listElementType)) {
+                                        newModelSchemaUri = ((PropertyProtoSlot) parentSlot).getListElementSchemaUri();
+                                    }
+                                }
+
+                                break;
+                            }
 
                         } // End of switch
                     }
@@ -433,21 +405,17 @@ public final class ParserModelGraph extends ModelGraph
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI schemaUri = newModelDimensions.getSchemaUri();
 
-        if (schemaUri != null)
-        {
+        if (schemaUri != null) {
             Class<?> schemaInterface;
-            try
-            {
+            try {
                 schemaInterface = schemaLoader.getSchemaInterface(schemaUri);
             }
-            catch (final ClassNotFoundException e)
-            {
+            catch (final ClassNotFoundException e) {
                 ParserModelGraph.LOG.error(e.getMessage(), e);
                 throw new ModelGraphException(e.getMessage(), e, this);
             }
 
-            if (TypeUtils.isAssignable(schemaInterface, Document.class))
-            {
+            if (TypeUtils.isAssignable(schemaInterface, Document.class)) {
                 _DocumentStack.push(newModel);
             }
         }
@@ -455,15 +423,13 @@ public final class ParserModelGraph extends ModelGraph
 
     /**
      * Create a new slot (must be called with model focus).
-     * 
-     * @param slotName
-     *            the name of the slot to create storage for within the graph's
-     *            focused model.
+     *
+     * @param slotName the name of the slot to create storage for within the graph's
+     *                 focused model.
      */
-    public void startSlot(final String slotName)
-    {
-        if (_ScopeStack.isEmpty() || _ModelStack.isEmpty() || (_ScopeStack.peek() != ScopeType.Model))
-        {
+    public void startSlot(final String slotName) {
+
+        if (_ScopeStack.isEmpty() || _ModelStack.isEmpty() || (_ScopeStack.peek() != ScopeType.Model)) {
             // TODO: Future, move hard-coded messages like this into a
             // "StringTable & MessageFormat" utility class
 
@@ -476,12 +442,11 @@ public final class ParserModelGraph extends ModelGraph
 
     }
 
-    private Object convertRawIntegerValue(final Integer rawValue)
-    {
+    private Object convertRawIntegerValue(final Integer rawValue) {
+
         final DimensionsBuilder dimensionsBuilder = _DimensionsBuilderStack.peek();
         final URI modelSchemaUri = dimensionsBuilder.getSchemaUri();
-        if (modelSchemaUri == null)
-        {
+        if (modelSchemaUri == null) {
             return rawValue;
         }
 
@@ -491,48 +456,39 @@ public final class ParserModelGraph extends ModelGraph
         final Prototype prototype = schemaLoader.getPrototype(modelSchemaUri);
         final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
         final Type slotType = protoSlot.getHeapValueType();
-        if (slotType.equals(Integer.class) || (slotType.equals(int.class) && rawValue != null))
-        {
+        if (slotType.equals(Integer.class) || (slotType.equals(int.class) && rawValue != null)) {
             return rawValue;
         }
 
         final ScopeType scopeType = _ScopeStack.peek();
 
-        switch (scopeType)
-        {
-        case Model:
-        {
+        switch (scopeType) {
+            case Model: {
 
-            if (slotType.equals(Long.class) || (slotType.equals(long.class) && rawValue != null))
-            {
-                return new Long(rawValue);
-            }
-            if (slotType.equals(Double.class) || (slotType.equals(double.class) && rawValue != null))
-            {
-                return new Double(rawValue);
-            }
-
-            break;
-        }
-        case List:
-        {
-
-            if (protoSlot.getValueType() == ValueType.List)
-            {
-                final Type listElementType = ((PropertyProtoSlot) protoSlot).getListElementType();
-                if (listElementType.equals(Long.class) || (listElementType.equals(long.class) && rawValue != null))
-                {
+                if (slotType.equals(Long.class) || (slotType.equals(long.class) && rawValue != null)) {
                     return new Long(rawValue);
                 }
-                if (listElementType.equals(Double.class) || (listElementType.equals(double.class) && rawValue != null))
-                {
+                if (slotType.equals(Double.class) || (slotType.equals(double.class) && rawValue != null)) {
                     return new Double(rawValue);
                 }
 
+                break;
             }
+            case List: {
 
-            break;
-        }
+                if (protoSlot.getValueType() == ValueType.List) {
+                    final Type listElementType = ((PropertyProtoSlot) protoSlot).getListElementType();
+                    if (listElementType.equals(Long.class) || (listElementType.equals(long.class) && rawValue != null)) {
+                        return new Long(rawValue);
+                    }
+                    if (listElementType.equals(Double.class) || (listElementType.equals(double.class) && rawValue != null)) {
+                        return new Double(rawValue);
+                    }
+
+                }
+
+                break;
+            }
 
         } // End of switch
 
@@ -544,29 +500,26 @@ public final class ParserModelGraph extends ModelGraph
 
     }
 
-    private Object convertRawListValue(final List<Object> rawValue)
-    {
+    private Object convertRawListValue(final List<Object> rawValue) {
+
         return rawValue;
     }
 
-    private Object convertRawModelValue(final Model model)
-    {
+    private Object convertRawModelValue(final Model model) {
+
         final DimensionsBuilder dimensionsBuilder = _DimensionsBuilderStack.pop();
 
         final URI schemaUri = dimensionsBuilder.getSchemaUri();
-        if (schemaUri == null || model == null)
-        {
+        if (schemaUri == null || model == null) {
             return model;
         }
 
         final Dimensions dimensions = dimensionsBuilder.toDimensions();
         final Model typedModel = model.newAlternate(dimensions);
 
-        if (typedModel instanceof Embedded)
-        {
+        if (typedModel instanceof Embedded) {
             final Model documentModel = _DocumentStack.peek();
-            if (documentModel == null)
-            {
+            if (documentModel == null) {
 
                 final ModelGraphException e = new ModelGraphException("Model: " + typedModel
                         + " must be embedded within a Document.", this);
@@ -581,12 +534,10 @@ public final class ParserModelGraph extends ModelGraph
             typedModel.setSlotValue(Embedded.SLOT_NAME_DOCUMENT_URI, uri);
         }
 
-        if (_ModelStack.isEmpty())
-        {
+        if (_ModelStack.isEmpty()) {
             // This is the root model, include all of its requested key values in the slot map.
             final Keys keys = getRootModelKeys();
-            if (keys != null)
-            {
+            if (keys != null) {
                 typedModel.initKeySlots(keys);
             }
         }
@@ -595,13 +546,12 @@ public final class ParserModelGraph extends ModelGraph
 
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Object convertRawStringValue(final String rawValue)
-    {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private Object convertRawStringValue(final String rawValue) {
+
         final DimensionsBuilder dimensionsBuilder = _DimensionsBuilderStack.peek();
         final URI schemaUri = dimensionsBuilder.getSchemaUri();
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return rawValue;
         }
 
@@ -609,21 +559,18 @@ public final class ParserModelGraph extends ModelGraph
         final String slotName = _SlotNameStack.peek();
 
         // Check if the slotName is heapId
-        if (slotName.equals(Model.SLOT_NAME_HEAP_ID) && scopeType.equals(ScopeType.Model))
-        {
+        if (slotName.equals(Model.SLOT_NAME_HEAP_ID) && scopeType.equals(ScopeType.Model)) {
             LOG.debug("Current slot is a Heap Id {}", rawValue);
             final UUID heapId = UUID.fromString(rawValue);
-            if (_ShortcutModels.containsKey(heapId))
-            {
+            if (_ShortcutModels.containsKey(heapId)) {
                 // Need to stuff this into the current model location....
 
                 return _ShortcutModels.get(heapId);
             }
-            else
-            {
+            else {
                 // Assumes scope type is Model
 
-                LOG.debug("Creating new model with schema {} with heapId {}", new Object[] { schemaUri, heapId });
+                LOG.debug("Creating new model with schema {} with heapId {}", new Object[]{schemaUri, heapId});
 
                 // Pull the created reference from the model stack and put into the map
                 final Model parentModel = _ModelStack.peek();
@@ -644,56 +591,44 @@ public final class ParserModelGraph extends ModelGraph
         final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
 
         final Type slotType = protoSlot.getHeapValueType();
-        if (slotType.equals(String.class))
-        {
+        if (slotType.equals(String.class)) {
             return rawValue;
         }
 
-        switch (scopeType)
-        {
-        case Model:
-        {
-            if (TypeUtils.isAssignable(slotType, Enum.class))
-            {
-                return Enum.valueOf((Class<Enum>) slotType, rawValue);
-            }
-            else if (slotType instanceof Class<?>)
-            {
-
-                final SyntaxHandler<?> syntaxHandler = syntaxLoader.getSyntaxHandler((Class<?>) slotType);
-                if (syntaxHandler != null)
-                {
-                    return syntaxHandler.parseSyntacticText(rawValue);
+        switch (scopeType) {
+            case Model: {
+                if (TypeUtils.isAssignable(slotType, Enum.class)) {
+                    return Enum.valueOf((Class<Enum>) slotType, rawValue);
                 }
-            }
+                else if (slotType instanceof Class<?>) {
 
-            break;
-        }
-        case List:
-        {
-
-            if (protoSlot.getValueType() == ValueType.List)
-            {
-                final Type listElementType = ((PropertyProtoSlot) protoSlot).getListElementType();
-                if (String.class.equals(listElementType))
-                {
-                    return rawValue;
-                }
-                else if (TypeUtils.isAssignable(listElementType, Enum.class))
-                {
-                    return Enum.valueOf((Class<Enum>) listElementType, rawValue);
-                }
-                else if (listElementType instanceof Class<?>)
-                {
-                    final SyntaxHandler<?> syntaxHandler = syntaxLoader.getSyntaxHandler((Class<?>) listElementType);
-                    if (syntaxHandler != null)
-                    {
+                    final SyntaxHandler<?> syntaxHandler = syntaxLoader.getSyntaxHandler((Class<?>) slotType);
+                    if (syntaxHandler != null) {
                         return syntaxHandler.parseSyntacticText(rawValue);
                     }
                 }
+
+                break;
             }
-            break;
-        }
+            case List: {
+
+                if (protoSlot.getValueType() == ValueType.List) {
+                    final Type listElementType = ((PropertyProtoSlot) protoSlot).getListElementType();
+                    if (String.class.equals(listElementType)) {
+                        return rawValue;
+                    }
+                    else if (TypeUtils.isAssignable(listElementType, Enum.class)) {
+                        return Enum.valueOf((Class<Enum>) listElementType, rawValue);
+                    }
+                    else if (listElementType instanceof Class<?>) {
+                        final SyntaxHandler<?> syntaxHandler = syntaxLoader.getSyntaxHandler((Class<?>) listElementType);
+                        if (syntaxHandler != null) {
+                            return syntaxHandler.parseSyntacticText(rawValue);
+                        }
+                    }
+                }
+                break;
+            }
 
         } // End of switch
 
@@ -704,8 +639,7 @@ public final class ParserModelGraph extends ModelGraph
         throw e;
     }
 
-    public enum ScopeType
-    {
+    public enum ScopeType {
         Model,
         List;
     }

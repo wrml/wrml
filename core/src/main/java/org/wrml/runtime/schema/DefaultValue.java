@@ -40,8 +40,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface DefaultValue
-{
+public @interface DefaultValue {
     /**
      * The default value (represented as a String) for the annotated slot.
      *

@@ -31,13 +31,11 @@ import java.util.List;
  *
  * @param <T> The value type of the tree's {@link PrefixTreeNode}s.
  */
-public class WildCardPrefixTree<T> extends PrefixTreeBase<T>
-{
+public class WildCardPrefixTree<T> extends PrefixTreeBase<T> {
     public static final String WILDCARD_SEGMENT = "*";
 
     @Override
-    public T getPathValue(final String path)
-    {
+    public T getPathValue(final String path) {
 
         // TODO: Replace with regex?
 
@@ -47,36 +45,30 @@ public class WildCardPrefixTree<T> extends PrefixTreeBase<T>
         PrefixTreeNode<T> wildCardNode = null;
 
         final int segmentCount = segments.size();
-        for (int i = 0; i < segmentCount; i++)
-        {
+        for (int i = 0; i < segmentCount; i++) {
 
-            if (node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT))
-            {
+            if (node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT)) {
                 wildCardNode = node.getChild(WildCardPrefixTree.WILDCARD_SEGMENT);
             }
 
             final String segment = segments.get(i);
 
-            if (node.hasChild(segment))
-            {
+            if (node.hasChild(segment)) {
                 node = node.getChild(segment);
             }
-            else if (i == segmentCount - 1)
-            {
+            else if (i == segmentCount - 1) {
                 // Back up to wildcard node (or null if none existed)
                 node = wildCardNode;
             }
         }
 
-        if (node == null)
-        {
+        if (node == null) {
             // No matches
             return null;
         }
 
         // So path values that exactly match a prefix will also match the "empty" wildcard (*)
-        if (node != wildCardNode && node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT))
-        {
+        if (node != wildCardNode && node.hasChild(WildCardPrefixTree.WILDCARD_SEGMENT)) {
             node = node.getChild(WildCardPrefixTree.WILDCARD_SEGMENT);
         }
 

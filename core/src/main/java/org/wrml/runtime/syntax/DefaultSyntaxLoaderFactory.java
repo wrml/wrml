@@ -26,11 +26,9 @@ package org.wrml.runtime.syntax;
 
 import org.wrml.runtime.Factory;
 
-public class DefaultSyntaxLoaderFactory implements Factory<SyntaxLoader>
-{
+public class DefaultSyntaxLoaderFactory implements Factory<SyntaxLoader> {
     @Override
-    public SyntaxLoader create()
-    {
+    public SyntaxLoader create() {
 
         return new DefaultSyntaxLoader();
     }

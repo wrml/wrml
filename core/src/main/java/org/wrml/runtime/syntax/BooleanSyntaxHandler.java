@@ -24,14 +24,12 @@
  */
 package org.wrml.runtime.syntax;
 
-public class BooleanSyntaxHandler extends SyntaxHandler<Boolean>
-{
+public class BooleanSyntaxHandler extends SyntaxHandler<Boolean> {
 
     @Override
-    public String formatSyntaxValue(final Boolean syntaxValue) throws SyntaxHandlerException
-    {
-        if (syntaxValue == null)
-        {
+    public String formatSyntaxValue(final Boolean syntaxValue) throws SyntaxHandlerException {
+
+        if (syntaxValue == null) {
             return "";
         }
 
@@ -39,10 +37,9 @@ public class BooleanSyntaxHandler extends SyntaxHandler<Boolean>
     }
 
     @Override
-    public Boolean parseSyntacticText(final String bValue) throws SyntaxHandlerException
-    {
-        if (bValue == null || bValue.isEmpty())
-        {
+    public Boolean parseSyntacticText(final String bValue) throws SyntaxHandlerException {
+
+        if (bValue == null || bValue.isEmpty()) {
             return null;
         }
 

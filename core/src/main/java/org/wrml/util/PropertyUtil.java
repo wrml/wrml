@@ -32,8 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 public class PropertyUtil {
 
     /**
-     * @param systemPropertyName
-     *            - the name specified using {@code -Dfoo=bar} style.
+     * @param systemPropertyName - the name specified using {@code -Dfoo=bar} style.
      * @return the property value or <code>null</code>.
      */
     public static final String getSystemProperty(final String systemPropertyName) {
@@ -48,13 +47,12 @@ public class PropertyUtil {
     }
 
     /**
-     * @param systemPropertyName
-     *            - the name specified using {@code -Dfoo=bar} style.
-     * @param defaultIfEmpty
-     *            - the value to default to if empty/null.
+     * @param systemPropertyName - the name specified using {@code -Dfoo=bar} style.
+     * @param defaultIfEmpty     - the value to default to if empty/null.
      * @return the property value, defaulting to {@code defaultIfEmpty}.
      */
     public static final String getSystemProperty(final String systemPropertyName, final String defaultIfEmpty) {
+
         String result = getSystemProperty(systemPropertyName);
         if (StringUtils.isEmpty(result)) {
             result = defaultIfEmpty;

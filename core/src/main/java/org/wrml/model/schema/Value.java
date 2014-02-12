@@ -25,7 +25,6 @@
 package org.wrml.model.schema;
 
 import org.wrml.model.Abstract;
-import org.wrml.model.Model;
 
 /**
  * <p>
@@ -33,8 +32,7 @@ import org.wrml.model.Model;
  * named {@link Slot}s.
  * </p>
  */
-public interface Value extends Abstract
-{
+public interface Value extends Abstract {
 
     /**
      * The WRML constant name for a Value's <i>default</i> slot.

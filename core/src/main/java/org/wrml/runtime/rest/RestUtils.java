@@ -46,8 +46,7 @@ import java.util.regex.Pattern;
 /**
  * Set of reusable utility functions related to REST.
  */
-public final class RestUtils
-{
+public final class RestUtils {
 
     public static final String DEFAULT_ENCODING = "UTF-8";
 
@@ -69,56 +68,45 @@ public final class RestUtils
 
     public static final Pattern CONTENT_TYPE_PARAM_SEP = Pattern.compile(";( )*([^;=]+)=(\"([^\"]+)(\"))?([^;]+)?");
 
-    public static final URI encodeUri(final URI uri)
-    {
+    public static final URI encodeUri(final URI uri) {
 
         String uriString;
-        try
-        {
+        try {
             uriString = URLEncoder.encode(uri.toString(), DEFAULT_ENCODING);
         }
-        catch (final UnsupportedEncodingException e)
-        {
+        catch (final UnsupportedEncodingException e) {
             return null;
         }
 
         return URI.create(uriString);
     }
 
-    public static MediaType extractMediaTypeFromContentTypeHeaderValue(String contentTypeHeaderValue)
-    {
+    public static MediaType extractMediaTypeFromContentTypeHeaderValue(String contentTypeHeaderValue) {
 
         MediaType mediaType = null;
 
-        if (contentTypeHeaderValue == null)
-        {
+        if (contentTypeHeaderValue == null) {
             return mediaType;
         }
 
         final Matcher contentWrap = CONTENT_TYPE.matcher(contentTypeHeaderValue);
 
-        if (contentWrap.find())
-        {
+        if (contentWrap.find()) {
             contentTypeHeaderValue = contentWrap.group(1);
             final Matcher content = CONTENT_TYPE_TYPE_PARAM_SEP.matcher(contentTypeHeaderValue);
-            if (content.find())
-            {
+            if (content.find()) {
                 final String majorType = content.group(1);
                 final String subType = content.group(2);
 
                 final Map<String, String> parameters = new HashMap<>();
                 final String params = content.group(4);
-                if (params != null && !params.equals(""))
-                {
+                if (params != null && !params.equals("")) {
                     final Matcher paramM = CONTENT_TYPE_PARAM_SEP.matcher(params);
-                    while (paramM.find())
-                    {
-                        if (paramM.group(4) != null)
-                        {
+                    while (paramM.find()) {
+                        if (paramM.group(4) != null) {
                             parameters.put(paramM.group(2), paramM.group(4));
                         }
-                        else
-                        {
+                        else {
                             parameters.put(paramM.group(2), paramM.group(6));
                         }
                     }
@@ -130,8 +118,7 @@ public final class RestUtils
         return mediaType;
     }
 
-    public static final MediaType extractMediaTypeFromDimensions(final Context context, final Dimensions dimensions)
-    {
+    public static final MediaType extractMediaTypeFromDimensions(final Context context, final Dimensions dimensions) {
 
         final URI defaultFormatUri = context.getFormatLoader().getDefaultFormatUri();
         final Map<String, String> mediaTypeParameters = new LinkedHashMap<>(6);
@@ -140,25 +127,21 @@ public final class RestUtils
         mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_FORMAT, defaultFormatUri.toString());
 
         final List<String> embeddedLinkSlotNames = dimensions.getEmbeddedLinkSlotNames();
-        if (embeddedLinkSlotNames != null && !embeddedLinkSlotNames.isEmpty())
-        {
+        if (embeddedLinkSlotNames != null && !embeddedLinkSlotNames.isEmpty()) {
             mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_EMBED,
                     RestUtils.formatListString(embeddedLinkSlotNames));
         }
 
         final List<String> excludedSlotNames = dimensions.getExcludedSlotNames();
-        if (excludedSlotNames != null && !excludedSlotNames.isEmpty())
-        {
+        if (excludedSlotNames != null && !excludedSlotNames.isEmpty()) {
             mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_EXCLUDE,
                     RestUtils.formatListString(excludedSlotNames));
         }
-        else
-        {
+        else {
             // INCLUDE and EXCLUDE are mutually exclusive paramaters, with precedence given to exclude (if both are
             // present).
             final List<String> includedSlotNames = dimensions.getIncludedSlotNames();
-            if (includedSlotNames != null && !includedSlotNames.isEmpty())
-            {
+            if (includedSlotNames != null && !includedSlotNames.isEmpty()) {
                 mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_INCLUDE,
                         RestUtils.formatListString(includedSlotNames));
             }
@@ -170,33 +153,28 @@ public final class RestUtils
         return mediaType;
     }
 
-    public static List<MediaType> extractMediaTypesFromAcceptHeaderValue(String acceptsHeaderValue)
-    {
+    public static List<MediaType> extractMediaTypesFromAcceptHeaderValue(String acceptsHeaderValue) {
 
         final List<MediaType> mediaTypes = new ArrayList<>();
 
-        if (acceptsHeaderValue == null)
-        {
+        if (acceptsHeaderValue == null) {
             return mediaTypes;
         }
 
         Matcher accept = ACCEPT.matcher(acceptsHeaderValue);
 
         // Remove front if present
-        if (accept.find())
-        {
+        if (accept.find()) {
             acceptsHeaderValue = accept.group(1);
         }
 
         accept = ACCEPT_MAJOR.matcher(acceptsHeaderValue);
 
-        while (accept.find())
-        {
+        while (accept.find()) {
             final String group = accept.group();
             final Matcher typeParam = ACCEPT_TYPE_PARAM_SEP.matcher(group);
 
-            if (typeParam.find())
-            {
+            if (typeParam.find()) {
                 final String uberType = typeParam.group(2);
                 final String uberParams = typeParam.group(3);
 
@@ -204,30 +182,24 @@ public final class RestUtils
 
                 String majorType = "";
                 String subType = "";
-                if (typeM.find())
-                {
+                if (typeM.find()) {
                     majorType = typeM.group(1);
                     subType = typeM.group(2);
                 }
 
                 final Map<String, String> parameters = new HashMap<>();
-                if (uberParams != null && !uberParams.equals(""))
-                {
+                if (uberParams != null && !uberParams.equals("")) {
                     final Matcher params = ACCEPT_PARAM.matcher(uberParams);
 
-                    while (params.find())
-                    {
+                    while (params.find()) {
                         final String param = params.group(2);
                         final Matcher paramSep = ACCEPT_PARAM_SEP.matcher(param);
 
-                        if (paramSep.find())
-                        {
-                            if (paramSep.group(3) != null)
-                            {
+                        if (paramSep.find()) {
+                            if (paramSep.group(3) != null) {
                                 parameters.put(paramSep.group(1), paramSep.group(3));
                             }
-                            else
-                            {
+                            else {
                                 parameters.put(paramSep.group(1), paramSep.group(5));
                             }
                         }
@@ -243,8 +215,7 @@ public final class RestUtils
         return mediaTypes;
     }
 
-    public static final Set<Header> extractRequestHeaders(final Context context, final Dimensions requestedDimensions)
-    {
+    public static final Set<Header> extractRequestHeaders(final Context context, final Dimensions requestedDimensions) {
 
         final Set<Header> headers = new LinkedHashSet<>();
         final String acceptHeaderValue = RestUtils.extractMediaTypeFromDimensions(context, requestedDimensions)
@@ -253,24 +224,20 @@ public final class RestUtils
         headers.add(acceptHeader);
 
         final URI referrerUri = requestedDimensions.getReferrerUri();
-        if (referrerUri != null)
-        {
+        if (referrerUri != null) {
             headers.add(new BasicHeader(CommonHeader.REFERER.getName(), referrerUri.toString()));
         }
 
         final Locale locale = requestedDimensions.getLocale();
-        if (locale != null)
-        {
+        if (locale != null) {
             final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
             final String languageHeaderValue = syntaxLoader.formatSyntaxValue(locale);
             headers.add(new BasicHeader(CommonHeader.ACCEPT_LANGUAGE.getName(), languageHeaderValue));
         }
 
         final Map<String, String> metadataMap = requestedDimensions.getMetadata();
-        if (metadataMap != null && !metadataMap.isEmpty())
-        {
-            for (final String metadataName : metadataMap.keySet())
-            {
+        if (metadataMap != null && !metadataMap.isEmpty()) {
+            for (final String metadataName : metadataMap.keySet()) {
                 final String metadataValue = metadataMap.get(metadataName);
                 final Header additionalHeader = new BasicHeader(metadataName, metadataValue);
                 headers.add(additionalHeader);
@@ -281,48 +248,39 @@ public final class RestUtils
     }
 
     public static final Dimensions extractResponseDimensions(final Context context, final HttpResponse response,
-                                                             final Dimensions requestedDimensions)
-    {
+                                                             final Dimensions requestedDimensions) {
 
         final DimensionsBuilder dimensionsBuilder = new DimensionsBuilder();
         URI schemaURI = null;
         final Header contentTypeHeader = response.getFirstHeader(CommonHeader.CONTENT_TYPE.getName());
-        if (contentTypeHeader != null)
-        {
+        if (contentTypeHeader != null) {
             final String contentTypeHeaderValue = contentTypeHeader.getValue();
             final MediaType mediaType = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentTypeHeaderValue);
-            if (mediaType != null)
-            {
+            if (mediaType != null) {
                 final String schemaUriString = mediaType.getParameter(SystemMediaType.PARAMETER_NAME_SCHEMA);
-                if (schemaUriString != null)
-                {
+                if (schemaUriString != null) {
                     schemaURI = URI.create(schemaUriString);
                 }
             }
         }
 
-        if (schemaURI == null)
-        {
+        if (schemaURI == null) {
             schemaURI = requestedDimensions.getSchemaUri();
         }
 
         dimensionsBuilder.setSchemaUri(schemaURI);
 
         final Header contentLanguageheader = response.getFirstHeader(CommonHeader.CONTENT_LANGUAGE.getName());
-        if (contentLanguageheader != null)
-        {
+        if (contentLanguageheader != null) {
             String languageTag = contentLanguageheader.getValue();
-            if (languageTag != null)
-            {
-                if (languageTag.contains(","))
-                {
+            if (languageTag != null) {
+                if (languageTag.contains(",")) {
                     languageTag = StringUtils.split(languageTag)[0];
                 }
 
                 final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
                 final Locale locale = syntaxLoader.parseSyntacticText(languageTag, Locale.class);
-                if (locale != null)
-                {
+                if (locale != null) {
                     dimensionsBuilder.setLocale(locale);
                 }
             }
@@ -331,29 +289,24 @@ public final class RestUtils
         return dimensionsBuilder.toDimensions();
     }
 
-    public static final SortedSet<Parameter> extractUriQueryParameters(final URI uri)
-    {
+    public static final SortedSet<Parameter> extractUriQueryParameters(final URI uri) {
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
         final String queryPart = uri.getQuery();
-        if (queryPart == null || queryPart.isEmpty())
-        {
+        if (queryPart == null || queryPart.isEmpty()) {
             return null;
         }
 
         final List<NameValuePair> nameValuePairs = URLEncodedUtils.parse(uri, DEFAULT_ENCODING);
-        if (nameValuePairs == null)
-        {
+        if (nameValuePairs == null) {
             return null;
         }
 
         final SortedSet<Parameter> queryParameters = new TreeSet<Parameter>();
-        for (final NameValuePair nameValuePair : nameValuePairs)
-        {
+        for (final NameValuePair nameValuePair : nameValuePairs) {
             final Parameter parameter = new Parameter(nameValuePair.getName(), nameValuePair.getValue());
             queryParameters.add(parameter);
         }
@@ -361,12 +314,10 @@ public final class RestUtils
         return queryParameters;
     }
 
-    public static final String getLastPathElement(final URI uri)
-    {
+    public static final String getLastPathElement(final URI uri) {
 
         final String path = uri.getPath();
-        if (StringUtils.isEmpty(path))
-        {
+        if (StringUtils.isEmpty(path)) {
             return path;
         }
 
@@ -375,8 +326,7 @@ public final class RestUtils
         return lastPathElement;
     }
 
-    private static final String formatListString(final List<String> list)
-    {
+    private static final String formatListString(final List<String> list) {
 
         return new StringBuilder("[").append(StringUtils.join(list, ", ")).append("]").toString();
     }

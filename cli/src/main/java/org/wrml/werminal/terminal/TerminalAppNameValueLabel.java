@@ -29,8 +29,7 @@ import com.googlecode.lanterna.gui.component.Label;
 import com.googlecode.lanterna.gui.layout.LinearLayout;
 import com.googlecode.lanterna.terminal.Terminal;
 
-public class TerminalAppNameValueLabel extends TerminalAppPanel
-{
+public class TerminalAppNameValueLabel extends TerminalAppPanel {
 
     private final Label _NameLabel;
 
@@ -39,8 +38,7 @@ public class TerminalAppNameValueLabel extends TerminalAppPanel
     public TerminalAppNameValueLabel(final TerminalApp app, final String name, final int nameWidth,
                                      final Terminal.Color nameColor, final boolean nameBold, final Alignment nameAlignment, final String value,
                                      final int valueWidth, final Terminal.Color valueColor, final boolean valueBold,
-                                     final Alignment valueAlignment)
-    {
+                                     final Alignment valueAlignment) {
 
         super(app, "", new Border.Invisible(), Orientation.HORISONTAL, false, false);
 
@@ -58,21 +56,18 @@ public class TerminalAppNameValueLabel extends TerminalAppPanel
 
     public TerminalAppNameValueLabel(final TerminalApp app, final String name, final int nameWidth,
                                      final Terminal.Color nameColor, final boolean nameBold, final String value, final int valueWidth,
-                                     final Terminal.Color valueColor, final boolean valueBold)
-    {
+                                     final Terminal.Color valueColor, final boolean valueBold) {
 
         this(app, name, nameWidth, nameColor, nameBold, Alignment.RIGHT_CENTER, value, valueWidth, valueColor,
                 valueBold, Alignment.LEFT_CENTER);
     }
 
-    public Label getNameLabel()
-    {
+    public Label getNameLabel() {
 
         return _NameLabel;
     }
 
-    public Label getValueLabel()
-    {
+    public Label getValueLabel() {
 
         return _ValueLabel;
     }

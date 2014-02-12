@@ -24,31 +24,27 @@
  */
 package org.wrml.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PrefixTreeNode<T>
-{
+public class PrefixTreeNode<T> {
     protected final ConcurrentHashMap<String, PrefixTreeNode<T>> _Children;
 
     private T _Value;
 
-    public PrefixTreeNode()
-    {
+    public PrefixTreeNode() {
+
         this(null);
     }
 
-    public PrefixTreeNode(final T value)
-    {
+    public PrefixTreeNode(final T value) {
+
         _Children = new ConcurrentHashMap<>();
         _Value = value;
     }
 
-    public PrefixTreeNode addChild(final String segment, final T value)
-    {
+    public PrefixTreeNode addChild(final String segment, final T value) {
 
         final PrefixTreeNode<T> childNode = new PrefixTreeNode<>(value);
         _Children.put(segment, childNode);
@@ -56,26 +52,20 @@ public class PrefixTreeNode<T>
         return childNode;
     }
 
-    public Set<String> deepPrint(final String separator)
-    {
+    public Set<String> deepPrint(final String separator) {
 
         final Set<String> paths = new TreeSet<String>();
 
-        if (_Value != null)
-        {
+        if (_Value != null) {
             paths.add(_Value.toString());
         }
 
-        for (final String s : _Children.keySet())
-        {
-            for (final String segment : _Children.get(s).deepPrint(separator))
-            {
-                if (segment.isEmpty())
-                {
+        for (final String s : _Children.keySet()) {
+            for (final String segment : _Children.get(s).deepPrint(separator)) {
+                if (segment.isEmpty()) {
                     paths.add(s);
                 }
-                else
-                {
+                else {
                     paths.add(s + separator + segment);
                 }
             }
@@ -84,47 +74,39 @@ public class PrefixTreeNode<T>
         return paths;
     }
 
-    public PrefixTreeNode<T> getChild(final String segment)
-    {
+    public PrefixTreeNode<T> getChild(final String segment) {
 
-        if (hasChild(segment))
-        {
+        if (hasChild(segment)) {
             return _Children.get(segment);
         }
 
         return null;
     }
 
-    public T getValue()
-    {
+    public T getValue() {
 
         return _Value;
     }
 
-    public boolean hasChild(final String segment)
-    {
+    public boolean hasChild(final String segment) {
 
         return _Children.containsKey(segment);
     }
 
-    public void setValue(final T value)
-    {
+    public void setValue(final T value) {
 
         _Value = value;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         final StringBuilder sb = new StringBuilder("Value: [");
-        if (_Value != null)
-        {
+        if (_Value != null) {
             sb.append(_Value.toString());
         }
         sb.append("]\nChildren: [");
-        for (final String link : _Children.keySet())
-        {
+        for (final String link : _Children.keySet()) {
             sb.append(link).append(", ");
         }
         sb.append("]");

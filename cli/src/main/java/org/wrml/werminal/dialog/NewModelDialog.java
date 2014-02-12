@@ -40,16 +40,14 @@ import org.wrml.werminal.window.WerminalWindow;
 
 import java.net.URI;
 
-public class NewModelDialog extends WerminalWindow
-{
+public class NewModelDialog extends WerminalWindow {
 
     private final WerminalTextBox _SchemaUriTextBox;
 
     private final HistoryCheckListBox _SchemaUriHistoryCheckBoxList;
 
     public NewModelDialog(final Werminal werminal, final String title, final WerminalAction confirmAction,
-                          final WerminalAction dismissAction)
-    {
+                          final WerminalAction dismissAction) {
 
         super(werminal, title);
 
@@ -76,20 +74,17 @@ public class NewModelDialog extends WerminalWindow
 
     }
 
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
 
         return (URI) _SchemaUriTextBox.getValue();
     }
 
-    public HistoryCheckListBox getSchemaUriHistoryCheckBoxList()
-    {
+    public HistoryCheckListBox getSchemaUriHistoryCheckBoxList() {
 
         return _SchemaUriHistoryCheckBoxList;
     }
 
-    public URI setSchemaUri(final URI schemaUri)
-    {
+    public URI setSchemaUri(final URI schemaUri) {
 
         final URI oldSchemaUri = (URI) _SchemaUriTextBox.getValue();
         _SchemaUriTextBox.setValue(schemaUri);

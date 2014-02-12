@@ -31,15 +31,13 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.component.FormField;
 import org.wrml.werminal.dialog.InvocationDialog;
 
-public class SubmitAction extends CloseAfterAction
-{
+public class SubmitAction extends CloseAfterAction {
 
     private final Model _Function;
 
     private final FormField _FormField;
 
-    public SubmitAction(final Werminal werminal, final Model function, final FormField formField)
-    {
+    public SubmitAction(final Werminal werminal, final Model function, final FormField formField) {
 
         super(werminal, "Submit");
         _Function = function;
@@ -47,14 +45,12 @@ public class SubmitAction extends CloseAfterAction
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
         final Window topWindow = werminal.getTopWindow();
 
-        if (!(topWindow instanceof InvocationDialog))
-        {
+        if (!(topWindow instanceof InvocationDialog)) {
             werminal.showError("The " + getTitle() + " action requires a top level "
                     + InvocationDialog.class.getSimpleName());
             return false;
@@ -66,18 +62,15 @@ public class SubmitAction extends CloseAfterAction
         final Model parameter = invocationDialog.getParameter();
 
         final Model returnValue;
-        try
-        {
+        try {
             returnValue = _Function.reference(formFieldName, new DimensionsBuilder(), parameter);
         }
-        catch (Exception t)
-        {
+        catch (Exception t) {
             werminal.showError("Invocation Failed.", t);
             return false;
         }
 
-        if (returnValue != null)
-        {
+        if (returnValue != null) {
             werminal.openModelWindow(returnValue);
         }
 

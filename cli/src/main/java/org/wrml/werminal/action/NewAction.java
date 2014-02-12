@@ -26,18 +26,15 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class NewAction extends WerminalAction
-{
+public class NewAction extends WerminalAction {
 
-    public NewAction(final Werminal werminal)
-    {
+    public NewAction(final Werminal werminal) {
 
         super(werminal, "New...");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         werminal.showWindow(werminal.getNewModelDialog());

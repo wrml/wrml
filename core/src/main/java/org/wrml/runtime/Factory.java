@@ -24,7 +24,6 @@
  */
 package org.wrml.runtime;
 
-public interface Factory<T>
-{
+public interface Factory<T> {
     public T create();
 }

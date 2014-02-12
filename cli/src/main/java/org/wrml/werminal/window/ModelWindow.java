@@ -29,7 +29,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 import org.wrml.model.Model;
 import org.wrml.model.Titled;
 import org.wrml.model.rest.Api;
-import org.wrml.model.rest.Document;
 import org.wrml.model.schema.Schema;
 import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.schema.Prototype;
@@ -52,8 +51,7 @@ import java.util.*;
  * {@link org.wrml.werminal.Werminal}'s primary {@link Model} view/edit {@link WerminalWindow}.
  * </p>
  */
-public class ModelWindow extends FormPanelWindow
-{
+public class ModelWindow extends FormPanelWindow {
 
     private final TerminalAppNameValueLabel _HeapIdLabel;
 
@@ -65,8 +63,7 @@ public class ModelWindow extends FormPanelWindow
 
     private Model _Model;
 
-    public ModelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents)
-    {
+    public ModelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents) {
 
         super(werminal, title, toolBarComponents);
 
@@ -87,19 +84,15 @@ public class ModelWindow extends FormPanelWindow
         render();
     }
 
-    public final static String getModelWindowTitle(final Model model)
-    {
+    public final static String getModelWindowTitle(final Model model) {
 
         final StringBuilder modelWindowTitleBuilder = new StringBuilder("Model - ").append(model.getPrototype()
                 .getTitle());
-        if (model instanceof Titled)
-        {
+        if (model instanceof Titled) {
             final String modelTitle = ((Titled) model).getTitle();
-            if (modelTitle != null)
-            {
+            if (modelTitle != null) {
                 final String trimmedTitle = modelTitle.trim();
-                if (!trimmedTitle.isEmpty())
-                {
+                if (!trimmedTitle.isEmpty()) {
                     modelWindowTitleBuilder.append(" - ").append(trimmedTitle);
                 }
             }
@@ -110,14 +103,12 @@ public class ModelWindow extends FormPanelWindow
 
     }
 
-    public final Model getModel()
-    {
+    public final Model getModel() {
 
         return _Model;
     }
 
-    public final void setModel(final Model model)
-    {
+    public final void setModel(final Model model) {
 
         _Model = model;
 
@@ -134,8 +125,7 @@ public class ModelWindow extends FormPanelWindow
 
         werminal.addToSchemaUriHistory(schemaUri);
 
-        if (_Model instanceof Schema)
-        {
+        if (_Model instanceof Schema) {
             werminal.addToSchemaUriHistory(((Schema) _Model).getUri());
         }
 
@@ -143,31 +133,26 @@ public class ModelWindow extends FormPanelWindow
 
         final Set<String> keySlotNameSet = prototype.getAllKeySlotNames();
         final List<String> allKeySlotNames = new ArrayList<String>(keySlotNameSet);
-        for (final String keySlotName : allKeySlotNames)
-        {
+        for (final String keySlotName : allKeySlotNames) {
             fieldMap.put(keySlotName, prototype.getProtoSlot(keySlotName).getHeapValueType());
         }
 
         final List<String> allSlotNames = new ArrayList<String>(prototype.getAllSlotNames());
 
-        for (final String slotName : allSlotNames)
-        {
-            if (!keySlotNameSet.contains(slotName))
-            {
+        for (final String slotName : allSlotNames) {
+            if (!keySlotNameSet.contains(slotName)) {
                 fieldMap.put(slotName, prototype.getProtoSlot(slotName).getHeapValueType());
             }
         }
 
         initPanels("Slots", fieldMap);
 
-        for (final String slotName : allSlotNames)
-        {
+        for (final String slotName : allSlotNames) {
 
             // Note: the _Model field reference is used because of the getModel side-effect (funny smell)
             final Object value = _Model.getSlotValue(slotName);
             final FormField formField = getFormField(slotName);
-            if (formField == null)
-            {
+            if (formField == null) {
                 werminal.showError("The slot named \"" + slotName + "\" has no associated form field.");
                 break;
             }
@@ -180,24 +165,19 @@ public class ModelWindow extends FormPanelWindow
 
     }
 
-    public final Model syncModel()
-    {
+    public final Model syncModel() {
 
         final Model model = getModel();
         final List<WerminalPanel> panels = getPanels();
-        for (final WerminalPanel panel : panels)
-        {
+        for (final WerminalPanel panel : panels) {
 
-            if (panel instanceof FormPanel)
-            {
+            if (panel instanceof FormPanel) {
                 final FormPanel formPanel = (FormPanel) panel;
-                for (final String slotName : formPanel.getFieldNames())
-                {
+                for (final String slotName : formPanel.getFieldNames()) {
 
                     final FormField field = formPanel.getFormField(slotName);
                     final WerminalTextBox valueTextBox = field.getFieldValueTextBox();
-                    if (valueTextBox.isValueChanged())
-                    {
+                    if (valueTextBox.isValueChanged()) {
 
                         final Object slotValue = valueTextBox.getValue();
                         model.setSlotValue(slotName, slotValue);
@@ -210,8 +190,7 @@ public class ModelWindow extends FormPanelWindow
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         removeAllComponents();
         renderHeaderToolBar();
@@ -219,12 +198,10 @@ public class ModelWindow extends FormPanelWindow
         renderCurrentPanel();
     }
 
-    public void updateLoadButton()
-    {
+    public void updateLoadButton() {
 
         final TerminalAppToolBar headerToolBar = getHeaderToolBar();
-        if (headerToolBar == null)
-        {
+        if (headerToolBar == null) {
             return;
         }
 
@@ -233,13 +210,10 @@ public class ModelWindow extends FormPanelWindow
         final boolean shouldLoadButtonBeVisible = LoadAction.appliesTo(model);
 
         String loadButtonTitleText = "Load";
-        if (model instanceof Api)
-        {
-            if (shouldLoadButtonBeVisible)
-            {
+        if (model instanceof Api) {
+            if (shouldLoadButtonBeVisible) {
                 final ApiLoader apiLoader = model.getContext().getApiLoader();
-                if (apiLoader.getLoadedApi(model.getKeys()) != null)
-                {
+                if (apiLoader.getLoadedApi(model.getKeys()) != null) {
                     loadButtonTitleText = "Reload";
                 }
             }
@@ -247,25 +221,20 @@ public class ModelWindow extends FormPanelWindow
 
         _LoadButton.getButton().setText(loadButtonTitleText);
 
-        if (isLoadButtonAlreadyVisible != shouldLoadButtonBeVisible)
-        {
-            if (shouldLoadButtonBeVisible)
-            {
+        if (isLoadButtonAlreadyVisible != shouldLoadButtonBeVisible) {
+            if (shouldLoadButtonBeVisible) {
                 headerToolBar.addComponent(_LoadButton);
             }
-            else
-            {
+            else {
                 headerToolBar.removeComponent(_LoadButton);
             }
         }
     }
 
-    private void renderDimensionsPanel()
-    {
+    private void renderDimensionsPanel() {
 
 
-        if (_Model != null)
-        {
+        if (_Model != null) {
             final String originServiceName = _Model.getOriginServiceName();
             final String labelText = (originServiceName != null) ? originServiceName : "";
             _OriginServiceLabel.getValueLabel().setText(labelText);

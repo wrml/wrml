@@ -26,8 +26,7 @@ package org.wrml.model.rest.status;
 
 import java.net.URI;
 
-public interface ResourceNotFoundErrorReport extends NotFoundErrorReport
-{
+public interface ResourceNotFoundErrorReport extends NotFoundErrorReport {
 
     URI getParentApiUri();
 

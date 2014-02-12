@@ -27,21 +27,20 @@ package org.wrml.runtime.format;
 /**
  * The {@link ModelParser}'s associated error type.
  */
-public class ModelParserException extends Exception
-{
+public class ModelParserException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private final ModelParser _ModelParser;
 
-    public ModelParserException(final String message, final Throwable cause, final ModelParser modelParser)
-    {
+    public ModelParserException(final String message, final Throwable cause, final ModelParser modelParser) {
+
         super(message, cause);
         _ModelParser = modelParser;
     }
 
-    public ModelParser getModelParser()
-    {
+    public ModelParser getModelParser() {
+
         return _ModelParser;
     }
 }

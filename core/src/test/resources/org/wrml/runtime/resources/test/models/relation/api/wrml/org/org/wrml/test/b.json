@@ -1,6 +1,6 @@
 {
-    "uniqueName" : "org/wrml/test/b",
-    "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/B",
-    "method" : "Get",
-    "version" : 1
+    "uniqueName": "org/wrml/test/b",
+    "responseSchemaUri": "http://schema.api.wrml.org/org/wrml/test/B",
+    "method": "Get",
+    "version": 1
 }

@@ -31,18 +31,15 @@ import org.wrml.werminal.dialog.NewModelDialog;
 
 import java.net.URI;
 
-public class NewConfirmationAction extends CloseBeforeAction
-{
+public class NewConfirmationAction extends CloseBeforeAction {
 
-    public NewConfirmationAction(final Werminal werminal)
-    {
+    public NewConfirmationAction(final Werminal werminal) {
 
         super(werminal, "OK");
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
 
@@ -51,8 +48,7 @@ public class NewConfirmationAction extends CloseBeforeAction
 
         final Context context = werminal.getContext();
         final Prototype prototype = context.getSchemaLoader().getPrototype(schemaUri);
-        if (prototype.isAbstract())
-        {
+        if (prototype.isAbstract()) {
             werminal.showError("\""
                     + schemaUri
                     + "\" is *Abstract*, meaning that models cannot be created based on this type directly. Try a subschema?");

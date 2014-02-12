@@ -32,8 +32,7 @@ import java.net.URI;
 /**
  * Configuration for the {@link SchemaLoader} component.
  */
-public final class SchemaLoaderConfiguration extends DefaultFactoryConfiguration
-{
+public final class SchemaLoaderConfiguration extends DefaultFactoryConfiguration {
 
     private File _SchemaClassRootDirectory;
 
@@ -43,55 +42,46 @@ public final class SchemaLoaderConfiguration extends DefaultFactoryConfiguration
 
     private File[] _JsonSchemaDirectories;
 
-    public SchemaLoaderConfiguration()
-    {
+    public SchemaLoaderConfiguration() {
 
     }
 
-    public File[] getJsonSchemaDirectories()
-    {
+    public File[] getJsonSchemaDirectories() {
 
         return _JsonSchemaDirectories;
     }
 
-    public void setJsonSchemaDirectories(final File[] jsonSchemaDirectories)
-    {
+    public void setJsonSchemaDirectories(final File[] jsonSchemaDirectories) {
 
         _JsonSchemaDirectories = jsonSchemaDirectories;
     }
 
-    public File[] getJsonSchemaFiles()
-    {
+    public File[] getJsonSchemaFiles() {
 
         return _JsonSchemaFiles;
     }
 
-    public void setJsonSchemaFiles(final File[] jsonSchemaFiles)
-    {
+    public void setJsonSchemaFiles(final File[] jsonSchemaFiles) {
 
         _JsonSchemaFiles = jsonSchemaFiles;
     }
 
-    public URI[] getJsonSchemaIds()
-    {
+    public URI[] getJsonSchemaIds() {
 
         return _JsonSchemaIds;
     }
 
-    public void setJsonSchemaIds(final URI[] jsonSchemaIds)
-    {
+    public void setJsonSchemaIds(final URI[] jsonSchemaIds) {
 
         _JsonSchemaIds = jsonSchemaIds;
     }
 
-    public File getSchemaClassRootDirectory()
-    {
+    public File getSchemaClassRootDirectory() {
 
         return _SchemaClassRootDirectory;
     }
 
-    public void setSchemaClassRootDirectory(final File schemaClassRootDirectory)
-    {
+    public void setSchemaClassRootDirectory(final File schemaClassRootDirectory) {
 
         _SchemaClassRootDirectory = schemaClassRootDirectory;
     }

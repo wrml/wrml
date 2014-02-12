@@ -44,8 +44,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface CollectionSlotCriterion
-{
+public @interface CollectionSlotCriterion {
     /**
      * <p>
      * The name of a slot within the "collected" (<i>contained</i>) {@link org.wrml.model.schema.Schema} that this {@link CollectionSlotCriterion} is relating to.

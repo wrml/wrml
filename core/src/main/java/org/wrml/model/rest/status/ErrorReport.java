@@ -27,12 +27,10 @@ package org.wrml.model.rest.status;
 import org.wrml.model.Abstract;
 import org.wrml.model.Described;
 import org.wrml.model.Titled;
-import org.wrml.runtime.schema.Multiline;
 
 import java.net.URI;
 
-public interface ErrorReport extends Titled, Described, Abstract
-{
+public interface ErrorReport extends Titled, Described, Abstract {
 
     URI getRequestUri();
 

@@ -27,8 +27,7 @@ package org.wrml.model.rest.status;
 /**
  * http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10
  */
-public enum Status
-{
+public enum Status {
 
     //
     // Informational 1xx
@@ -100,30 +99,30 @@ public enum Status
 
     private final String _ReasonPhrase;
 
-    private Status(final int code, final String reasonPhrase)
-    {
+    private Status(final int code, final String reasonPhrase) {
+
         _Code = code;
         _ReasonPhrase = reasonPhrase;
     }
 
-    public StatusCategory getCategory()
-    {
+    public StatusCategory getCategory() {
+
         return StatusCategory.getStatusCategory(getCode());
     }
 
-    public int getCode()
-    {
+    public int getCode() {
+
         return _Code;
     }
 
-    public String getReasonPhrase()
-    {
+    public String getReasonPhrase() {
+
         return _ReasonPhrase;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         return new StringBuilder().append(getCode()).append(' ').append(getReasonPhrase()).toString();
     }
 }

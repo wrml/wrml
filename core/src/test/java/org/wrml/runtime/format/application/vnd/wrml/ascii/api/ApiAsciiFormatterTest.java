@@ -29,9 +29,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Api;
-import org.wrml.runtime.format.FormatterConfiguration;
 import org.wrml.runtime.format.FormatTestBase;
 import org.wrml.runtime.format.Formatter;
+import org.wrml.runtime.format.FormatterConfiguration;
 import org.wrml.runtime.format.SystemFormat;
 import org.wrml.runtime.schema.Prototype;
 
@@ -46,12 +46,11 @@ import static org.mockito.Mockito.when;
  *
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
-public class ApiAsciiFormatterTest extends FormatTestBase
-{
+public class ApiAsciiFormatterTest extends FormatTestBase {
 
     @Override
-    protected Formatter getFormatter()
-    {
+    protected Formatter getFormatter() {
+
         final ApiAsciiFormatter formatter = new ApiAsciiFormatter();
         final FormatterConfiguration formatterConfiguration = new FormatterConfiguration();
         formatterConfiguration.setFormatUri(SystemFormat.vnd_wrml_ascii_api.getFormatUri());
@@ -60,8 +59,7 @@ public class ApiAsciiFormatterTest extends FormatTestBase
     }
 
     @Override
-    protected Model getMockSchema()
-    {
+    protected Model getMockSchema() {
 
         return mock(Api.class);
     }
@@ -71,8 +69,7 @@ public class ApiAsciiFormatterTest extends FormatTestBase
      */
     @Override
     @Test
-    public void testIsApplicableTo()
-    {
+    public void testIsApplicableTo() {
 
         Prototype mockPrototype1 = mock(Prototype.class);
         Prototype mockPrototype2 = mock(Prototype.class);
@@ -92,24 +89,21 @@ public class ApiAsciiFormatterTest extends FormatTestBase
     @Override
     @Ignore
     @Test
-    public void testReadModel()
-    {
+    public void testReadModel() {
         // TODO: fix this test
     }
 
     @Test
     @Ignore
     @Override
-    public void testRoundTrip()
-    {
+    public void testRoundTrip() {
         // TODO: fix this test
     }
 
     @Override
     @Ignore
     @Test
-    public void testWriteModel()
-    {
+    public void testWriteModel() {
         // TODO: fix this test
     }
 }

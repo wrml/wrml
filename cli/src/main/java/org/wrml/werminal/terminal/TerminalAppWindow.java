@@ -28,13 +28,11 @@ import com.googlecode.lanterna.gui.Interactable;
 import com.googlecode.lanterna.gui.Interactable.FocusChangeDirection;
 import com.googlecode.lanterna.gui.Window;
 
-public class TerminalAppWindow extends Window
-{
+public class TerminalAppWindow extends Window {
 
     private final TerminalApp _App;
 
-    public TerminalAppWindow(final TerminalApp app, final String title)
-    {
+    public TerminalAppWindow(final TerminalApp app, final String title) {
 
         super(title);
 
@@ -43,22 +41,19 @@ public class TerminalAppWindow extends Window
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }
 
     @Override
-    public void setFocus(final Interactable newFocus)
-    {
+    public void setFocus(final Interactable newFocus) {
 
         super.setFocus(newFocus);
     }
 
     @Override
-    public void setFocus(final Interactable newFocus, final FocusChangeDirection direction)
-    {
+    public void setFocus(final Interactable newFocus, final FocusChangeDirection direction) {
 
         super.setFocus(newFocus, direction);
     }

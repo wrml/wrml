@@ -26,6 +26,7 @@ package org.wrml.runtime.format;
 
 import org.wrml.model.Model;
 import org.wrml.model.Named;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.format.PrinterModelGraph.ListNode;
 import org.wrml.runtime.format.PrinterModelGraph.ModelNode;
@@ -33,7 +34,6 @@ import org.wrml.runtime.format.PrinterModelGraph.ModelReferenceNode;
 import org.wrml.runtime.format.PrinterModelGraph.Node;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.model.schema.ValueType;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -46,8 +46,7 @@ import java.util.*;
  *
  * @see PluggableFormatter
  */
-class ModelWriter
-{
+class ModelWriter {
 
     /**
      * The context to operate within.
@@ -68,8 +67,7 @@ class ModelWriter
      *
      * @param context The context to operate within.
      */
-    public ModelWriter(final Context context, final URI formatUri, final ModelPrinterFactory printerFactory)
-    {
+    public ModelWriter(final Context context, final URI formatUri, final ModelPrinterFactory printerFactory) {
 
         _Context = context;
 
@@ -78,17 +76,14 @@ class ModelWriter
 
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
-    public ModelWriteOptions getDefaultWriteOptions()
-    {
+    public ModelWriteOptions getDefaultWriteOptions() {
 
-        if (_DefaultWriteOptions == null)
-        {
+        if (_DefaultWriteOptions == null) {
             _DefaultWriteOptions = new ModelWriteOptions();
 
             // TODO: Change this default to false.
@@ -98,103 +93,85 @@ class ModelWriter
         return _DefaultWriteOptions;
     }
 
-    public URI getFormatUri()
-    {
+    public URI getFormatUri() {
 
         return _FormatUri;
     }
 
-    public ModelPrinterFactory getModelPrinterFactory()
-    {
+    public ModelPrinterFactory getModelPrinterFactory() {
 
         return _ModelPrinterFactory;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " [Format = " + _FormatUri + "]";
     }
 
-    public void writeModel(final OutputStream out, final Model model) throws ModelWriterException
-    {
+    public void writeModel(final OutputStream out, final Model model) throws ModelWriterException {
 
         writeModel(out, model, getDefaultWriteOptions());
     }
 
     public void writeModel(final OutputStream out, final Model model, ModelWriteOptions writeOptions)
-            throws ModelWriterException
-    {
+            throws ModelWriterException {
 
-        if (out == null)
-        {
+        if (out == null) {
             throw new ModelWriterException("The output stream cannot be null.", null, this);
         }
 
-        if (model == null)
-        {
+        if (model == null) {
             throw new ModelWriterException("The model cannot be null.", null, this);
         }
 
-        if (writeOptions == null)
-        {
+        if (writeOptions == null) {
             writeOptions = getDefaultWriteOptions();
         }
 
         final ModelPrinterFactory printerFactory = getModelPrinterFactory();
         final ModelPrinter printer;
-        try
-        {
+        try {
             printer = printerFactory.createModelPrinter(out, writeOptions);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             throw new ModelWriterException(e.getMessage(), e, this);
         }
-        catch (final ModelPrinterException e)
-        {
+        catch (final ModelPrinterException e) {
             throw new ModelWriterException(e.getMessage(), e, this);
         }
 
         final PrinterModelGraph printerModelGraph = new PrinterModelGraph(model, writeOptions);
         final ModelNode rootModelNode = printerModelGraph.getRootModelNode();
 
-        try
-        {
+        try {
             printModel(printer, rootModelNode);
             printer.close();
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             throw new ModelWriterException("Encountered an I/O related problem while attempting to write a model.", e,
                     this);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ModelWriterException("Encountered an issue while attempting to write a model.", e, this);
         }
 
     }
 
     private void printList(final ModelPrinter printer, final ListNode listNode) throws IOException,
-            ModelPrinterException
-    {
+            ModelPrinterException {
 
         final List<Object> printableElements = listNode.getPrintableElements();
-        if (printableElements == null || printableElements.isEmpty())
-        {
+        if (printableElements == null || printableElements.isEmpty()) {
             return;
         }
 
         printer.printListStart(printableElements);
 
         final boolean isElementSchemaUriRequired = listNode.isElementSchemaUriRequired();
-        for (final Object element : printableElements)
-        {
+        for (final Object element : printableElements) {
 
-            if (isElementSchemaUriRequired && element instanceof ModelNode)
-            {
+            if (isElementSchemaUriRequired && element instanceof ModelNode) {
                 ((ModelNode) element).setSchemaUriRequired(true);
             }
 
@@ -205,8 +182,7 @@ class ModelWriter
     }
 
     private void printModel(final ModelPrinter printer, final ModelNode modelNode) throws IOException,
-            ModelPrinterException
-    {
+            ModelPrinterException {
 
         final Model model = modelNode.getModel();
 
@@ -216,15 +192,13 @@ class ModelWriter
         // clarity/readability.
         final Set<String> preliminarySlotNameSet = new LinkedHashSet<>();
 
-        if (modelNode.isHeapIdRequired())
-        {
+        if (modelNode.isHeapIdRequired()) {
             final Object printableHeapId = modelNode.makeValuePrintable(model.getHeapId());
             printSlot(printer, modelNode, Model.SLOT_NAME_HEAP_ID, printableHeapId);
             preliminarySlotNameSet.add(Model.SLOT_NAME_HEAP_ID);
         }
 
-        if (modelNode.isSchemaUriRequired())
-        {
+        if (modelNode.isSchemaUriRequired()) {
             final Object printableSchemaUri = modelNode.makeValuePrintable(model.getSchemaUri());
             printSlot(printer, modelNode, Model.SLOT_NAME_SCHEMA_URI, printableSchemaUri);
             preliminarySlotNameSet.add(Model.SLOT_NAME_SCHEMA_URI);
@@ -234,19 +208,15 @@ class ModelWriter
 
         final Prototype prototype = model.getPrototype();
         final Set<String> allKeySlotNames;
-        if (prototype != null)
-        {
+        if (prototype != null) {
             allKeySlotNames = prototype.getAllKeySlotNames();
         }
-        else
-        {
+        else {
             allKeySlotNames = Collections.emptySet();
         }
 
-        for (final String keySlotName : allKeySlotNames)
-        {
-            if (!printableSlots.containsKey(keySlotName))
-            {
+        for (final String keySlotName : allKeySlotNames) {
+            if (!printableSlots.containsKey(keySlotName)) {
                 continue;
             }
 
@@ -255,17 +225,14 @@ class ModelWriter
         }
 
         if (printableSlots.containsKey(Named.SLOT_NAME_NAME)
-                && !preliminarySlotNameSet.contains(Named.SLOT_NAME_NAME))
-        {
+                && !preliminarySlotNameSet.contains(Named.SLOT_NAME_NAME)) {
             printSlot(printer, modelNode, Named.SLOT_NAME_NAME, printableSlots.get(Named.SLOT_NAME_NAME));
             preliminarySlotNameSet.add(Named.SLOT_NAME_NAME);
         }
 
-        for (final String slotName : printableSlots.keySet())
-        {
+        for (final String slotName : printableSlots.keySet()) {
 
-            if (preliminarySlotNameSet.contains(slotName))
-            {
+            if (preliminarySlotNameSet.contains(slotName)) {
                 // Already printed this slot (see above)
                 continue;
             }
@@ -281,29 +248,24 @@ class ModelWriter
     }
 
     private void printSlot(final ModelPrinter printer, final ModelNode modelNode, final String slotName,
-                           final Object slotValue) throws IOException, ModelPrinterException
-    {
+                           final Object slotValue) throws IOException, ModelPrinterException {
 
-        if (slotValue instanceof ModelNode)
-        {
+        if (slotValue instanceof ModelNode) {
 
             final ModelNode embeddedModelNode = (ModelNode) slotValue;
 
             final Map<String, Object> subslots = embeddedModelNode.getPrintableSlots();
 
             if (!embeddedModelNode.isHeapIdRequired() && !embeddedModelNode.isSchemaUriRequired()
-                    && (subslots == null || subslots.isEmpty()))
-            {
+                    && (subslots == null || subslots.isEmpty())) {
                 return;
             }
         }
-        else if (slotValue instanceof ListNode)
-        {
+        else if (slotValue instanceof ListNode) {
 
             final ListNode listNode = (ListNode) slotValue;
             final List<Object> printableElements = listNode.getPrintableElements();
-            if (printableElements == null || printableElements.isEmpty())
-            {
+            if (printableElements == null || printableElements.isEmpty()) {
                 return;
             }
         }
@@ -314,11 +276,9 @@ class ModelWriter
     }
 
     private void printValue(final ModelPrinter printer, final Node node, final String slotName, final Object value)
-            throws IOException, ModelPrinterException
-    {
+            throws IOException, ModelPrinterException {
 
-        if (value == null)
-        {
+        if (value == null) {
             printer.printNullValue();
             return;
         }
@@ -329,62 +289,51 @@ class ModelWriter
         final ValueType valueType = schemaLoader.getValueType(heapValueType);
 
         boolean printed = true;
-        switch (valueType)
-        {
+        switch (valueType) {
 
-            case Boolean:
-            {
+            case Boolean: {
                 if (value.equals(Boolean.TRUE))
 
                 {
                     printer.printBooleanValue(true);
                 }
-                else
-                {
+                else {
                     printer.printBooleanValue(false);
                 }
                 break;
 
             }
-            case Double:
-            {
+            case Double: {
                 printer.printDoubleValue(((Double) value).doubleValue());
                 break;
             }
-            case Integer:
-            {
+            case Integer: {
                 printer.printIntegerValue(((Integer) value).intValue());
                 break;
             }
-            case Long:
-            {
+            case Long: {
                 printer.printLongValue(((Long) value).longValue());
                 break;
             }
-            case Text:
-            {
+            case Text: {
                 printer.printTextValue(String.valueOf(value));
                 break;
             }
-            default:
-            {
+            default: {
                 printed = false;
                 break;
             }
 
         } // End of switch
 
-        if (printed)
-        {
+        if (printed) {
             return;
         }
 
-        if (value instanceof ModelNode)
-        {
+        if (value instanceof ModelNode) {
             printModel(printer, (ModelNode) value);
         }
-        else if (value instanceof ModelReferenceNode)
-        {
+        else if (value instanceof ModelReferenceNode) {
             final ModelReferenceNode modelReferenceNode = (ModelReferenceNode) value;
             final Model referencedModel = modelReferenceNode.getReferencedNode().getModel();
             printer.printModelStart(referencedModel);
@@ -392,12 +341,10 @@ class ModelWriter
             printer.printTextValue(modelReferenceNode.getTargetHeapId().toString());
             printer.printModelEnd(referencedModel);
         }
-        else if (value instanceof ListNode)
-        {
+        else if (value instanceof ListNode) {
             printList(printer, (ListNode) value);
         }
-        else
-        {
+        else {
             printer.printNullValue();
         }
 

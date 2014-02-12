@@ -26,6 +26,5 @@
 # CoffeeScript
 
 @Wrmldoc.module "RelationApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Relation extends App.Views.ItemView
-		template: "relation/show/relation_show"
+  class Show.Relation extends App.Views.ItemView
+    template: "relation/show/relation_show"

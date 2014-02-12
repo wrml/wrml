@@ -27,8 +27,7 @@ package org.wrml.runtime.format;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public interface ModelPrinterFactory
-{
+public interface ModelPrinterFactory {
 
     ModelPrinter createModelPrinter(OutputStream out, ModelWriteOptions writeOptions) throws IOException,
             ModelPrinterException;

@@ -27,27 +27,23 @@ package org.wrml.werminal.terminal;
 import com.googlecode.lanterna.gui.Border;
 import com.googlecode.lanterna.gui.component.Panel;
 
-public class TerminalAppButtonPanel extends TerminalAppPanel
-{
+public class TerminalAppButtonPanel extends TerminalAppPanel {
 
     private final TerminalAppButton _Button;
 
-    public TerminalAppButtonPanel(final TerminalAppAction action)
-    {
+    public TerminalAppButtonPanel(final TerminalAppAction action) {
 
         this(new TerminalAppButton(action));
     }
 
-    public TerminalAppButtonPanel(final TerminalAppButton button)
-    {
+    public TerminalAppButtonPanel(final TerminalAppButton button) {
 
         super(button.getApp(), new Border.Standard(), Panel.Orientation.HORISONTAL);
         _Button = button;
         addComponent(_Button);
     }
 
-    public TerminalAppButton getButton()
-    {
+    public TerminalAppButton getButton() {
 
         return _Button;
     }

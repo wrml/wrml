@@ -44,8 +44,7 @@ import java.util.List;
  * @see org.wrml.util.UniqueName
  */
 @WRML(keySlotNames = {"uniqueName"})
-public interface SchemaNamespace extends UniquelyNamed, Virtual, Document
-{
+public interface SchemaNamespace extends UniquelyNamed, Virtual, Document {
 
     /**
      * The {@link SchemaNamespace}s contained (hierarchically) directly within this {@link SchemaNamespace}.

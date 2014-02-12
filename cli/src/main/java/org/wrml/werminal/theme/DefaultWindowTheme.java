@@ -32,11 +32,9 @@ import org.wrml.werminal.theme.DefaultWindowTheme.DefaultWindowThemeDefinition;
 import java.util.Map;
 
 //TODO: Redesign this class to enable greater reuse
-public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefinition>
-{
+public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefinition> {
 
-    public DefaultWindowTheme()
-    {
+    public DefaultWindowTheme() {
 
         super(DefaultWindowThemeDefinition.class);
 
@@ -45,8 +43,7 @@ public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefin
 
         final DefaultWindowThemeDefinition[] wrmlThemeDefinitions = DefaultWindowThemeDefinition.values();
 
-        for (final DefaultWindowThemeDefinition wrmlThemeDefinition : wrmlThemeDefinitions)
-        {
+        for (final DefaultWindowThemeDefinition wrmlThemeDefinition : wrmlThemeDefinitions) {
 
             final Definition definition = new Theme.Definition(wrmlThemeDefinition.getForegroundColor(),
                     wrmlThemeDefinition.getBackgroundColor(), wrmlThemeDefinition.isHighlighted(),
@@ -57,8 +54,7 @@ public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefin
         }
     }
 
-    static enum DefaultWindowThemeDefinition
-    {
+    static enum DefaultWindowThemeDefinition {
 
         BORDER(Terminal.Color.WHITE, Terminal.Color.BLACK, false, false),
         BUTTON_ACTIVE(Terminal.Color.WHITE, Terminal.Color.RED, false, true),
@@ -85,8 +81,7 @@ public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefin
         private final boolean _Underlined;
 
         private DefaultWindowThemeDefinition(final Terminal.Color backgroundColor,
-                                             final Terminal.Color foregroundColor, final boolean highlighted, final boolean underlined)
-        {
+                                             final Terminal.Color foregroundColor, final boolean highlighted, final boolean underlined) {
 
             _BackgroundColor = backgroundColor;
             _ForegroundColor = foregroundColor;
@@ -94,32 +89,27 @@ public class DefaultWindowTheme extends TerminalAppTheme<DefaultWindowThemeDefin
             _Underlined = underlined;
         }
 
-        public Terminal.Color getBackgroundColor()
-        {
+        public Terminal.Color getBackgroundColor() {
 
             return _BackgroundColor;
         }
 
-        public Terminal.Color getForegroundColor()
-        {
+        public Terminal.Color getForegroundColor() {
 
             return _ForegroundColor;
         }
 
-        public boolean isHighlighted()
-        {
+        public boolean isHighlighted() {
 
             return _Highlighted;
         }
 
-        public boolean isUnderlined()
-        {
+        public boolean isUnderlined() {
 
             return _Underlined;
         }
 
-        public Category toCategory()
-        {
+        public Category toCategory() {
 
             return Category.valueOf(String.valueOf(this));
         }

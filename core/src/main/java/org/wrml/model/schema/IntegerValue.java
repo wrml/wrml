@@ -25,13 +25,13 @@
 package org.wrml.model.schema;
 
 import org.wrml.runtime.schema.DefaultValue;
+
 import java.util.List;
 
 /**
  * The WRML representation of the <code>int</code> (or {@link Integer}) primitive type.
  */
-public interface IntegerValue extends Inextensible, NumericValue
-{
+public interface IntegerValue extends Inextensible, NumericValue {
     /**
      * <p>
      * The <i>optional</i> default associated with this value.

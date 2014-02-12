@@ -34,11 +34,9 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 /**
  * Moved from inner class of {@link org.wrml.werminal.Werminal}.
  */
-public class ModelMenu extends TerminalAppPanel
-{
+public class ModelMenu extends TerminalAppPanel {
 
-    public ModelMenu(final Werminal werminal)
-    {
+    public ModelMenu(final Werminal werminal) {
 
         super(werminal, "", new Border.Invisible(), Orientation.HORISONTAL, true, false);
 
@@ -60,8 +58,7 @@ public class ModelMenu extends TerminalAppPanel
         addComponent(editMenu);
 
         final String[] editMenuActions = {"Cut", "Copy", "Paste", "Delete"};
-        for (String editMenuAction : editMenuActions)
-        {
+        for (String editMenuAction : editMenuActions) {
             editMenu.addComponent(new TerminalAppButtonPanel(werminal.getUnimplementedAction(editMenuAction)));
         }
 

@@ -46,8 +46,7 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultFormatLoader implements FormatLoader
-{
+public class DefaultFormatLoader implements FormatLoader {
 
     private final ConcurrentHashMap<URI, Format> _Formats;
 
@@ -59,8 +58,7 @@ public class DefaultFormatLoader implements FormatLoader
 
     private URI _DefaultFormatUri;
 
-    public DefaultFormatLoader()
-    {
+    public DefaultFormatLoader() {
 
         _Formats = new ConcurrentHashMap<>();
         _Formatters = new ConcurrentHashMap<>();
@@ -69,39 +67,33 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public FormatLoaderConfiguration getConfig()
-    {
+    public FormatLoaderConfiguration getConfig() {
 
         return getContext().getConfig().getFormatLoader();
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public URI getDefaultFormatUri()
-    {
+    public URI getDefaultFormatUri() {
 
         return _DefaultFormatUri;
     }
 
     @Override
-    public void setDefaultFormatUri(final URI formatUri)
-    {
+    public void setDefaultFormatUri(final URI formatUri) {
 
-        if (formatUri != null)
-        {
+        if (formatUri != null) {
             _DefaultFormatUri = formatUri;
         }
     }
 
     @Override
-    public Format getDefaultFormat()
-    {
+    public Format getDefaultFormat() {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -112,29 +104,24 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public Formatter getFormatter(final URI formatUri)
-    {
+    public Formatter getFormatter(final URI formatUri) {
 
-        if (!_Formatters.containsKey(formatUri))
-        {
+        if (!_Formatters.containsKey(formatUri)) {
             return null;
         }
         return _Formatters.get(formatUri);
     }
 
     @Override
-    public Format getLoadedFormat(final Keys keys)
-    {
+    public Format getLoadedFormat(final Keys keys) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         final URI uri = keys.getValue(schemaLoader.getDocumentSchemaUri());
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
-        if (_Formats.containsKey(uri))
-        {
+        if (_Formats.containsKey(uri)) {
             return _Formats.get(uri);
         }
         return null;
@@ -142,16 +129,13 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public Format getLoadedFormat(final MediaType mediaType)
-    {
+    public Format getLoadedFormat(final MediaType mediaType) {
 
-        if (mediaType == null)
-        {
+        if (mediaType == null) {
             return null;
         }
 
-        if (_MediaTypeMapping.containsKey(mediaType))
-        {
+        if (_MediaTypeMapping.containsKey(mediaType)) {
             return _MediaTypeMapping.get(mediaType);
         }
 
@@ -159,25 +143,21 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public Set<Format> getLoadedFormats()
-    {
+    public Set<Format> getLoadedFormats() {
 
         return new LinkedHashSet<>(_Formats.values());
     }
 
     @Override
-    public SortedSet<URI> getLoadedFormatUris()
-    {
+    public SortedSet<URI> getLoadedFormatUris() {
 
         return new TreeSet<>(_Formats.keySet());
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new FormatLoaderException("The WRML context cannot be null.", null, this);
         }
 
@@ -187,40 +167,34 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
 
         loadConfiguredFormats();
 
         final FormatLoaderConfiguration config = getConfig();
-        if (config == null)
-        {
+        if (config == null) {
             return;
         }
 
         final URI defaultFormatUri = config.getDefaultFormatUri();
-        if (defaultFormatUri != null)
-        {
+        if (defaultFormatUri != null) {
             setDefaultFormatUri(defaultFormatUri);
         }
 
     }
 
     @Override
-    public void loadConfiguredFormat(final FormatterConfiguration formatterConfiguration) throws FormatLoaderException
-    {
+    public void loadConfiguredFormat(final FormatterConfiguration formatterConfiguration) throws FormatLoaderException {
 
         final Context context = getContext();
         final URI formatUri = formatterConfiguration.getFormatUri();
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
             throw new FormatLoaderException("The Format URI cannot be null.", null, this);
         }
 
         final String formatterClassName = formatterConfiguration.getFormatter();
-        if (formatterClassName != null)
-        {
+        if (formatterClassName != null) {
 
             loadFormat(formatUri);
 
@@ -228,28 +202,24 @@ public class DefaultFormatLoader implements FormatLoader
             formatter.init(context, formatterConfiguration);
             loadFormatter(formatter);
         }
-        else
-        {
+        else {
             throw new FormatLoaderException("The Formatter name cannot be null.", null, this);
         }
 
     }
 
     @Override
-    public void loadFormat(final Format format) throws FormatLoaderException
-    {
+    public void loadFormat(final Format format) throws FormatLoaderException {
 
         final URI formatUri = format.getUri();
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
             throw new FormatLoaderException("The Format's URI cannot be null.", null, this);
         }
 
         _Formats.put(formatUri, format);
 
         final MediaType mediaType = format.getMediaType();
-        if (mediaType == null)
-        {
+        if (mediaType == null) {
             throw new FormatLoaderException("The Format's media type cannot be null.", null, this);
         }
 
@@ -258,11 +228,9 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public Format loadFormat(final URI formatUri) throws FormatLoaderException
-    {
+    public Format loadFormat(final URI formatUri) throws FormatLoaderException {
 
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
             return null;
         }
 
@@ -273,8 +241,7 @@ public class DefaultFormatLoader implements FormatLoader
         final Dimensions dimensions = schemaLoader.getFormatDimensions();
 
         final Format format = context.getModel(keys, dimensions);
-        if (format == null)
-        {
+        if (format == null) {
             throw new FormatLoaderException("The Format associated with Keys:\n" + keys + "\n... and Dimensions:\n"
                     + dimensions + " could not be loaded.", null, this);
         }
@@ -285,20 +252,17 @@ public class DefaultFormatLoader implements FormatLoader
     }
 
     @Override
-    public void loadFormatter(final Formatter formatter)
-    {
+    public void loadFormatter(final Formatter formatter) {
 
         final URI formatUri = formatter.getFormatUri();
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
             throw new FormatLoaderException("The Formatter's URI cannot be null.", null, this);
         }
 
         _Formatters.put(formatUri, formatter);
     }
 
-    protected Formatter createSystemFormatter(final SystemFormat systemFormat) throws FormatLoaderException
-    {
+    protected Formatter createSystemFormatter(final SystemFormat systemFormat) throws FormatLoaderException {
 
         final Context context = getContext();
         final URI formatUri = systemFormat.getFormatUri();
@@ -310,55 +274,45 @@ public class DefaultFormatLoader implements FormatLoader
         formatterConfiguration.setSettings(settings);
 
         final Formatter formatter;
-        switch (systemFormat)
-        {
+        switch (systemFormat) {
 
-            case json:
-            {
+            case json: {
                 settings.put(PluggableFormatter.PARSER_FACTORY_SETTING_NAME, JsonModelParserFactory.class.getName());
                 settings.put(PluggableFormatter.PRINTER_FACTORY_SETTING_NAME, JsonModelPrinterFactory.class.getName());
                 formatter = new PluggableFormatter();
                 break;
             }
-            case xml:
-            {
+            case xml: {
                 formatter = new XmlFormatter();
                 break;
             }
-            case html:
-            {
+            case html: {
                 formatter = new WrmldocFormatter();
                 break;
             }
-            case json_schema:
-            {
+            case json_schema: {
                 formatter = new JsonSchemaFormatter();
                 break;
             }
-            case java:
-            {
+            case java: {
                 formatter = new JavaFormatter();
                 break;
             }
-            case vnd_wrml_design_schema:
-            {
+            case vnd_wrml_design_schema: {
                 formatter = new SchemaDesignFormatter();
                 break;
             }
-            case vnd_wrml_ascii_api:
-            {
+            case vnd_wrml_ascii_api: {
                 formatter = new ApiAsciiFormatter();
                 break;
             }
-            default:
-            {
+            default: {
                 formatter = null;
                 break;
             }
         }
 
-        if (formatter != null)
-        {
+        if (formatter != null) {
             formatterConfiguration.setFormatter(formatter.getClass().getName());
             formatter.init(context, formatterConfiguration);
         }
@@ -367,34 +321,28 @@ public class DefaultFormatLoader implements FormatLoader
 
     }
 
-    protected void loadConfiguredFormats() throws FormatLoaderException
-    {
+    protected void loadConfiguredFormats() throws FormatLoaderException {
 
         final FormatLoaderConfiguration config = getConfig();
-        if (config == null)
-        {
+        if (config == null) {
             return;
         }
 
         final FormatterConfiguration[] formatterConfigurations = config.getFormatters();
-        if ((formatterConfigurations == null) || (formatterConfigurations.length == 0))
-        {
+        if ((formatterConfigurations == null) || (formatterConfigurations.length == 0)) {
             return;
         }
 
-        for (final FormatterConfiguration formatterConfig : formatterConfigurations)
-        {
+        for (final FormatterConfiguration formatterConfig : formatterConfigurations) {
             loadConfiguredFormat(formatterConfig);
         }
     }
 
-    private void loadSystemFormats() throws FormatLoaderException
-    {
+    private void loadSystemFormats() throws FormatLoaderException {
 
         final Context context = getContext();
 
-        for (final SystemFormat systemFormat : SystemFormat.values())
-        {
+        for (final SystemFormat systemFormat : SystemFormat.values()) {
 
             final URI formatUri = systemFormat.getFormatUri();
 

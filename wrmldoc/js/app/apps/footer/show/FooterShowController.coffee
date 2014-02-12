@@ -27,12 +27,11 @@
 
 
 @Wrmldoc.module "FooterApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Controller extends App.Controllers.Base
-		
-		initialize: ->
-			showView = @createShowView()
-			@show showView
-		
-		createShowView: ->
-			new Show.Footer
+  class Show.Controller extends App.Controllers.Base
+
+    initialize: ->
+      showView = @createShowView()
+      @show showView
+
+    createShowView: ->
+      new Show.Footer

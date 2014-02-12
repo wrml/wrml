@@ -47,16 +47,13 @@ import java.util.List;
 /**
  * The primary interface for the WRML runtime; exposes Model-related interactions.
  */
-public interface Context
-{
+public interface Context {
 
     /**
      * Delete the {@link Model} identified by the {@link Keys}.
-     * 
-     * @param keys
-     *            the Keys that identify the Model to delete.
-     * @param dimensions
-     *            the Dimension that may help inform/scope the delete request.
+     *
+     * @param keys       the Keys that identify the Model to delete.
+     * @param dimensions the Dimension that may help inform/scope the delete request.
      * @throws ContextException
      */
     void deleteModel(final Keys keys, final Dimensions dimensions) throws ContextException;
@@ -73,26 +70,20 @@ public interface Context
 
     /**
      * Get the value mapped to the key associated with the specified schema interface.
-     * 
-     * @param keys
-     *            the Keys containing the value to extract.
-     * @param schemaInterface
-     *            the identity of the schema that declared the desired key.
-     * @param <V>
-     *            the generic return type of the desired key's value.
+     *
+     * @param keys            the Keys containing the value to extract.
+     * @param schemaInterface the identity of the schema that declared the desired key.
+     * @param <V>             the generic return type of the desired key's value.
      * @return the value associated with the desired key.
      */
     <V> V getKeyValue(final Keys keys, Class<?> schemaInterface);
 
     /**
      * Get the value mapped to the key associated with the specified slot name.
-     * 
-     * @param keys
-     *            the Keys containing the value to extract.
-     * @param slotName
-     *            the name of the slot associated with the desired key's value.
-     * @param <V>
-     *            the generic return type of the desired key's value.
+     *
+     * @param keys     the Keys containing the value to extract.
+     * @param slotName the name of the slot associated with the desired key's value.
+     * @param <V>      the generic return type of the desired key's value.
      * @return the value associated with the desired key.
      */
     <V> V getKeyValue(final Keys keys, String slotName);
@@ -104,13 +95,10 @@ public interface Context
 
     /**
      * Get the {@link Model} with the specified {@link Keys} and requested {@link Dimensions}
-     * 
-     * @param keys
-     *            the Keys that identify the Model to retrieve.
-     * @param dimensions
-     *            the Dimension that may help inform/scope the retrieval request.
-     * @param <M>
-     *            the generic return type of the desired Model.
+     *
+     * @param keys       the Keys that identify the Model to retrieve.
+     * @param dimensions the Dimension that may help inform/scope the retrieval request.
+     * @param <M>        the generic return type of the desired Model.
      * @return the requested Model (or null if the model was not found).
      */
     <M extends Model> M getModel(final Keys keys, final Dimensions dimensions) throws ContextException;
@@ -144,15 +132,14 @@ public interface Context
 
     /**
      * Initialize the Context from configuration.
-     * 
-     * @param config
-     *            The Context's configuration
+     *
+     * @param config The Context's configuration
      */
     void init(ContextConfiguration config) throws ContextException;
 
     /**
      * Creates a new Model conforming to the specified interface.
-     * 
+     *
      * @see ModelBuilder#newModel(Class)
      * @see ModelBuilder#newDimensions(Class)
      */
@@ -160,14 +147,14 @@ public interface Context
 
     /**
      * Creates a new Model conforming to the specified {@link Dimensions}.
-     * 
+     *
      * @see ModelBuilder#newModel(Dimensions)
      */
     <M extends Model> M newModel(final Dimensions dimensions);
 
     /**
      * Creates a new Model conforming to the specified Schema.
-     * 
+     *
      * @see ModelBuilder#newModel(URI)
      * @see ModelBuilder#newDimensions(URI)
      */
@@ -175,7 +162,7 @@ public interface Context
 
     /**
      * Returns a the resource {@link Method#Options options} associated with this {@link Model}.
-     * 
+     *
      * @see {@link ResourceOptions}
      */
     <M extends Model> M optionsModel(final Model model) throws ContextException;
@@ -190,10 +177,10 @@ public interface Context
      * Reads a Model, conforming to the specified {@link Dimensions}, associated with the specified {@link Keys} from the specified {@link InputStream}, which is assumed to be
      * formatted with the identified {@link Format}.
      *
-     * @param in The {@link InputStream} to read the {@link Model} from.
-     * @param rootModelKeys The optional {@link Keys} of the {@link Model} to read.  This value may be <code>null</code>.
+     * @param in                  The {@link InputStream} to read the {@link Model} from.
+     * @param rootModelKeys       The optional {@link Keys} of the {@link Model} to read.  This value may be <code>null</code>.
      * @param rootModelDimensions The {@link Dimensions} metadata that describes the type and structure of {@link Model} to read.
-     * @param formatUri The URI of the {@link Format} that identifies the format of the {@link Model} data within the {@link InputStream}.
+     * @param formatUri           The URI of the {@link Format} that identifies the format of the {@link Model} data within the {@link InputStream}.
      */
     <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions, final URI formatUri) throws ModelReadingException;
 
@@ -201,8 +188,8 @@ public interface Context
      * Reads a Model, conforming to the specified {@link Schema}, associated with the specified {@link URI} (key) from the specified {@link InputStream}, which is assumed to be
      * formatted with the identified {@link Format}.
      *
-     * @param in The {@link InputStream} to read the {@link Model} from.
-     * @param uri The optional {@link URI} of the {@link org.wrml.model.rest.Document} model to read.  This value may be <code>null</code>.
+     * @param in        The {@link InputStream} to read the {@link Model} from.
+     * @param uri       The optional {@link URI} of the {@link org.wrml.model.rest.Document} model to read.  This value may be <code>null</code>.
      * @param schemaUri The URI of the {@link Schema} that identifies the type of {@link Model} to read.
      * @param formatUri The URI of the {@link Format} that identifies the format of the {@link Model} data within the {@link InputStream}.
      */
@@ -211,7 +198,7 @@ public interface Context
     /**
      * Requests a Model, conforming to the specified Dimensions, associated with the specified {@link Keys} using the specified request {@link Method} (which may optionally accept
      * a parameter).
-     * 
+     *
      * @see #visitLink(Model, String, DimensionsBuilder, Model)
      */
     <M extends Model> M request(Method requestMethod, final Keys keys, final Dimensions dimensions, final Model parameter);
@@ -233,52 +220,40 @@ public interface Context
 
     /**
      * Writes a model's representation to the OutputStream provided.
-     * 
-     * @param out
-     *            The output stream receiving the model bits.
-     * @param model
-     *            The model to write out.
+     *
+     * @param out   The output stream receiving the model bits.
+     * @param model The model to write out.
      * @throws ModelWritingException
      */
     void writeModel(final OutputStream out, final Model model) throws ModelWritingException;
 
     /**
      * Writes a model's representation to the OutputStream provided.
-     * 
-     * @param out
-     *            The output stream receiving the model bits.
-     * @param model
-     *            The model to write out.
-     * @param writeOptions
-     *            The options for writing.
+     *
+     * @param out          The output stream receiving the model bits.
+     * @param model        The model to write out.
+     * @param writeOptions The options for writing.
      * @throws ModelWritingException
      */
     void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException;
 
     /**
      * Writes a model's representation to the OutputStream provided.
-     * 
-     * @param out
-     *            The output stream receiving the model bits.
-     * @param model
-     *            The model to write out.
-     * @param writeOptions
-     *            The options for writing.
-     * @param formatUri
-     *            The format of the output.
+     *
+     * @param out          The output stream receiving the model bits.
+     * @param model        The model to write out.
+     * @param writeOptions The options for writing.
+     * @param formatUri    The format of the output.
      * @throws ModelWritingException
      */
     void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions, final URI formatUri) throws ModelWritingException;
 
     /**
      * Writes a model's representation to the OutputStream provided.
-     * 
-     * @param out
-     *            The output stream receiving the model bits.
-     * @param model
-     *            The model to write out.
-     * @param formatUri
-     *            The format of the output.
+     *
+     * @param out       The output stream receiving the model bits.
+     * @param model     The model to write out.
+     * @param formatUri The format of the output.
      * @throws ModelWritingException
      */
     void writeModel(final OutputStream out, final Model model, final URI formatUri) throws ModelWritingException;

@@ -24,8 +24,7 @@
  */
 package org.wrml.util;
 
-public interface PrefixTree<T>
-{
+public interface PrefixTree<T> {
     public void setPathValue(String path, T value);
 
     public T getPathValue(String path);

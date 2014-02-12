@@ -71,8 +71,7 @@ import java.util.List;
  * @see ProtoSlot
  */
 @Description("Slot models are embedded within Schemas. Slots are named and described by Schema designers (data modelers).")
-public interface Slot extends Named, Titled, Described, Model
-{
+public interface Slot extends Named, Titled, Described, Model {
 
     /**
      * <p>

@@ -28,8 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class JavaBytecodeAnnotation
-{
+public class JavaBytecodeAnnotation {
 
     private final String _InternalName;
 
@@ -38,8 +37,7 @@ public class JavaBytecodeAnnotation
     private final Map<String, Object> _Attributes;
 
 
-    public JavaBytecodeAnnotation(final String internalName)
-    {
+    public JavaBytecodeAnnotation(final String internalName) {
 
         _InternalName = internalName;
         _Descriptor = 'L' + _InternalName + ';';
@@ -47,32 +45,27 @@ public class JavaBytecodeAnnotation
 
     }
 
-    public Set<String> getAttributeNames()
-    {
+    public Set<String> getAttributeNames() {
 
         return _Attributes.keySet();
     }
 
-    public Object getAttributeValue(final String name)
-    {
+    public Object getAttributeValue(final String name) {
 
         return _Attributes.get(name);
     }
 
-    public String getInternalName()
-    {
+    public String getInternalName() {
 
         return _InternalName;
     }
 
-    public void setAttributeValue(final String name, final Object value)
-    {
+    public void setAttributeValue(final String name, final Object value) {
 
         _Attributes.put(name, value);
     }
 
-    public String getDescriptor()
-    {
+    public String getDescriptor() {
 
         return _Descriptor;
     }

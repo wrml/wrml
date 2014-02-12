@@ -27,9 +27,9 @@ package org.wrml.runtime.format.application.xml;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.wrml.runtime.format.FormatterConfiguration;
 import org.wrml.runtime.format.FormatTestBase;
 import org.wrml.runtime.format.Formatter;
+import org.wrml.runtime.format.FormatterConfiguration;
 import org.wrml.runtime.format.SystemFormat;
 
 import java.net.URI;
@@ -39,12 +39,10 @@ import java.net.URI;
  *
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
-public class XmlFormatterTest extends FormatTestBase
-{
+public class XmlFormatterTest extends FormatTestBase {
 
     @Override
-    protected Formatter getFormatter()
-    {
+    protected Formatter getFormatter() {
 
         final XmlFormatter formatter = new XmlFormatter();
         final FormatterConfiguration formatterConfiguration = new FormatterConfiguration();
@@ -54,20 +52,17 @@ public class XmlFormatterTest extends FormatTestBase
     }
 
 
-
     @Override
     @Ignore
     @Test
-    public void testReadModel()
-    {
+    public void testReadModel() {
         // TODO: fix this test
     }
 
 
     @Test
     @Override
-    public void testIsApplicableTo()
-    {
+    public void testIsApplicableTo() {
         // happy path
         assertTrue(_Formatter.isApplicableTo(_MockSchemaSchemaUri));
         // null check

@@ -1,45 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.wrml.contrib</groupId>
-		<artifactId>runtime</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.wrml.contrib</groupId>
+        <artifactId>runtime</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-	<organization>
-		<name>Mark Masse (OSS project WRML.org)</name>
-		<url>http://www.wrml.org</url>
-	</organization>
+    <organization>
+        <name>Mark Masse (OSS project WRML.org)</name>
+        <url>http://www.wrml.org</url>
+    </organization>
 
-	<groupId>org.wrml.contrib.runtime</groupId>
-	<artifactId>service</artifactId>
-	<packaging>pom</packaging>
-	<name>wrml-contrib-runtime-service</name>
-	<description>Service contributions that may optionally be used along with the WRML core runtime.</description>
+    <groupId>org.wrml.contrib.runtime</groupId>
+    <artifactId>service</artifactId>
+    <packaging>pom</packaging>
+    <name>wrml-contrib-runtime-service</name>
+    <description>Service contributions that may optionally be used along with the WRML core runtime.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven-license-plugin.valid-header.wrml.core.path>../../../core/src/main/resources/headers</maven-license-plugin.valid-header.wrml.core.path>
+        <maven-license-plugin.valid-header.wrml.core.path>../../../core/src/main/resources/headers
+        </maven-license-plugin.valid-header.wrml.core.path>
     </properties>
 
 
-    <modules>	
-		<module>mongo</module>
-	</modules>
+    <modules>
+        <module>mongo</module>
+    </modules>
 
-	<build>
+    <build>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
 
-	</build>
+    </build>
 </project>

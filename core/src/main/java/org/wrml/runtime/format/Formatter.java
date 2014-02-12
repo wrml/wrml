@@ -38,8 +38,7 @@ import java.net.URI;
 /**
  * Reads and writes {@link Model} data that is <i>serialized</i> using an associated {@link Format}.
  */
-public interface Formatter
-{
+public interface Formatter {
 
     /**
      * <p>
@@ -70,7 +69,7 @@ public interface Formatter
 
     /**
      * @return <code>true</code> iff this {@link Formatter} can be applied to format (read/write) {@link Model}
-     *         instances of the the identified {@link Schema}.
+     * instances of the the identified {@link Schema}.
      */
     boolean isApplicableTo(final URI schemaUri);
 

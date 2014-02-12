@@ -223,8 +223,7 @@ import java.util.*;
  * @see FileSystem
  * @see Keys
  */
-public final class FileSystemService extends AbstractService
-{
+public final class FileSystemService extends AbstractService {
 
     public static final String ROOT_DIRECTORY_SETTING_NAME = "rootDirectory";
 
@@ -243,31 +242,26 @@ public final class FileSystemService extends AbstractService
     private URI _FileFormatUri;
 
     public static void writeModelFile(final Model model, final Path modelFilePath, final URI fileFormatUri,
-                                      final ModelWriteOptions writeOptions) throws IOException, ModelWriterException
-    {
+                                      final ModelWriteOptions writeOptions) throws IOException, ModelWriterException {
 
         final Context context = model.getContext();
         OutputStream out = null;
-        try
-        {
+        try {
             Files.createDirectories(modelFilePath.getParent());
             Files.deleteIfExists(modelFilePath);
             Files.createFile(modelFilePath);
             out = Files.newOutputStream(modelFilePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE,
                     StandardOpenOption.TRUNCATE_EXISTING);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             IOUtils.closeQuietly(out);
             throw e;
         }
 
-        try
-        {
+        try {
             context.writeModel(out, model, writeOptions, fileFormatUri);
         }
-        catch (final ModelWriterException e)
-        {
+        catch (final ModelWriterException e) {
             IOUtils.closeQuietly(out);
             throw e;
         }
@@ -276,11 +270,9 @@ public final class FileSystemService extends AbstractService
     }
 
     @Override
-    public void delete(final Keys keys, final Dimensions dimensions)
-    {
+    public void delete(final Keys keys, final Dimensions dimensions) {
 
-        if (keys == null)
-        {
+        if (keys == null) {
             final ServiceException e = new ServiceException("The keys cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
@@ -289,8 +281,7 @@ public final class FileSystemService extends AbstractService
 
         final File file = getDataFile(keys);
 
-        if (file == null)
-        {
+        if (file == null) {
             return;
         }
 
@@ -300,18 +291,15 @@ public final class FileSystemService extends AbstractService
     }
 
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions)
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) {
 
-        if (keys == null)
-        {
+        if (keys == null) {
             final ServiceException e = new ServiceException("The keys cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
         }
 
-        if (dimensions == null)
-        {
+        if (dimensions == null) {
             final ServiceException e = new ServiceException("The dimensions cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
@@ -319,38 +307,31 @@ public final class FileSystemService extends AbstractService
 
         final File file = getDataFile(keys);
 
-        if (file == null)
-        {
+        if (file == null) {
             return null;
         }
 
         InputStream in;
-        try
-        {
+        try {
             in = FileUtils.openInputStream(file);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ServiceException("Failed to open stream content.", e, this);
         }
 
         final Context context = getContext();
         final Model model;
-        try
-        {
+        try {
             model = context.readModel(in, keys, dimensions, _FileFormatUri);
         }
-        catch (final ModelFormattingException e)
-        {
+        catch (final ModelFormattingException e) {
             throw new ServiceException("Failed to read model.", e, this);
         }
-        finally
-        {
+        finally {
             IOUtils.closeQuietly(in);
         }
 
-        if (model instanceof Filed)
-        {
+        if (model instanceof Filed) {
             ((Filed) model).setFile(file);
         }
 
@@ -358,18 +339,15 @@ public final class FileSystemService extends AbstractService
 
     }
 
-    public URI getFileFormatUri()
-    {
+    public URI getFileFormatUri() {
 
         return _FileFormatUri;
     }
 
     @Override
-    public Model save(final Model model)
-    {
+    public Model save(final Model model) {
 
-        if (model == null)
-        {
+        if (model == null) {
             final ServiceException e = new ServiceException("The model to save cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
@@ -378,8 +356,7 @@ public final class FileSystemService extends AbstractService
         final Context context = model.getContext();
         final Keys keys = model.getKeys();
 
-        if (keys == null)
-        {
+        if (keys == null) {
             final ServiceException e = new ServiceException("The model must have keys in order to be saved.", null,
                     this);
             LOG.error(e.getMessage(), e);
@@ -387,8 +364,7 @@ public final class FileSystemService extends AbstractService
         }
 
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-        if (keyedSchemaUris == null || keyedSchemaUris.isEmpty())
-        {
+        if (keyedSchemaUris == null || keyedSchemaUris.isEmpty()) {
             final ServiceException e = new ServiceException(
                     "The model must have one or more key values in order to be saved.", null, this);
             LOG.error(e.getMessage(), e);
@@ -405,32 +381,26 @@ public final class FileSystemService extends AbstractService
 
         final URI filedSchemaUri = getFiledSchemaUri(context);
 
-        for (final URI keyedSchemaUri : keyedSchemaUris)
-        {
+        for (final URI keyedSchemaUri : keyedSchemaUris) {
 
-            if (keyedSchemaUri.equals(filedSchemaUri))
-            {
+            if (keyedSchemaUri.equals(filedSchemaUri)) {
                 continue;
             }
 
             final Object keyValue = keys.getValue(keyedSchemaUri);
             final Path keyLinkPath = getKeyLinkPath(keyedSchemaUri, keyValue);
-            if (keyLinkPath == null)
-            {
+            if (keyLinkPath == null) {
                 continue;
             }
 
-            if (managedDataFileHandle == null && Files.exists(keyLinkPath))
-            {
+            if (managedDataFileHandle == null && Files.exists(keyLinkPath)) {
                 // This model has been saved here (managed) before.
                 // Get the name of the file associated with the (existing) model's data (so we can overwrite it).
                 final String dataFileHandleString = keyLinkPath.getFileName().toString();
-                try
-                {
+                try {
                     managedDataFileHandle = UUID.fromString(dataFileHandleString);
                 }
-                catch (final Exception e)
-                {
+                catch (final Exception e) {
                     managedDataFileHandle = null;
                 }
 
@@ -442,21 +412,17 @@ public final class FileSystemService extends AbstractService
         }
 
         Path dataFilePath = null;
-        if (model instanceof Filed)
-        {
+        if (model instanceof Filed) {
             final Filed filed = (Filed) model;
             final File file = filed.getFile();
-            if (file != null)
-            {
+            if (file != null) {
                 dataFilePath = file.toPath();
             }
 
         }
 
-        if (dataFilePath == null)
-        {
-            if (managedDataFileHandle == null)
-            {
+        if (dataFilePath == null) {
+            if (managedDataFileHandle == null) {
                 managedDataFileHandle = UUID.randomUUID();
             }
 
@@ -468,8 +434,7 @@ public final class FileSystemService extends AbstractService
         // Write the model data to a "data" file
         writeDataFile(model, dataFilePath);
 
-        for (final Path keyLinkPath : keyLinkPaths)
-        {
+        for (final Path keyLinkPath : keyLinkPaths) {
             // Write each key as a symlink "key" that references the model's data file
             writeKeyLink(keyLinkPath, dataFilePath);
         }
@@ -478,19 +443,16 @@ public final class FileSystemService extends AbstractService
     }
 
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
-        if (config == null)
-        {
+        if (config == null) {
             final ServiceException e = new ServiceException("The config cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
         }
 
         final Map<String, String> settings = config.getSettings();
-        if (settings == null)
-        {
+        if (settings == null) {
             final ServiceException e = new ServiceException("The config settings cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
@@ -498,8 +460,7 @@ public final class FileSystemService extends AbstractService
 
         final String rootDirectoryPath = settings.get(ROOT_DIRECTORY_SETTING_NAME);
 
-        if (rootDirectoryPath == null)
-        {
+        if (rootDirectoryPath == null) {
             final ServiceException e = new ServiceException("The root directory config parameter is required.", null,
                     this);
             LOG.error(e.getMessage(), e);
@@ -507,8 +468,7 @@ public final class FileSystemService extends AbstractService
         }
 
         File givenPath = FileUtils.getFile(rootDirectoryPath);
-        if (!givenPath.exists())
-        {
+        if (!givenPath.exists()) {
             final File cwd = new File(".");
             final String cwdPath = cwd.getAbsolutePath();
             final ServiceException e = new ServiceException("The root directory given does not exist. "
@@ -526,22 +486,18 @@ public final class FileSystemService extends AbstractService
 
     }
 
-    private Path findExistingKeyLinkPath(final Keys keys)
-    {
+    private Path findExistingKeyLinkPath(final Keys keys) {
 
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-        for (final URI keyedSchemaUri : keyedSchemaUris)
-        {
+        for (final URI keyedSchemaUri : keyedSchemaUris) {
             final Object keyValue = keys.getValue(keyedSchemaUri);
             final Path keyLinkPath = getKeyLinkPath(keyedSchemaUri, keyValue);
 
             LOG.debug("Key link from schema {} with value {} is {}", new Object[]{keyedSchemaUri, keyValue,
                     keyLinkPath});
 
-            if (keyLinkPath != null)
-            {
-                if (Files.exists(keyLinkPath) && !Files.isDirectory(keyLinkPath))
-                {
+            if (keyLinkPath != null) {
+                if (Files.exists(keyLinkPath) && !Files.isDirectory(keyLinkPath)) {
                     return keyLinkPath;
                 }
             }
@@ -550,46 +506,38 @@ public final class FileSystemService extends AbstractService
         return null;
     }
 
-    private File getDataFile(final Keys keys)
-    {
+    private File getDataFile(final Keys keys) {
 
         final Context context = getContext();
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
         final URI filedSchemaUri = getFiledSchemaUri(context);
-        if (keyedSchemaUris.contains(filedSchemaUri))
-        {
+        if (keyedSchemaUris.contains(filedSchemaUri)) {
             final File dataFile = keys.getValue(filedSchemaUri);
-            if (dataFile != null)
-            {
+            if (dataFile != null) {
                 return dataFile;
             }
         }
 
         final Path keyLinkPath = findExistingKeyLinkPath(keys);
-        if (keyLinkPath == null)
-        {
+        if (keyLinkPath == null) {
             LOG.debug("A key link was NOT found for keys:\n{}", keys);
             return null;
         }
 
         LOG.debug("A key link \"{}\" was found for keys:\n{}", keyLinkPath, keys);
 
-        if (!Files.isSymbolicLink(keyLinkPath))
-        {
+        if (!Files.isSymbolicLink(keyLinkPath)) {
             final File keyLinkPathFile = keyLinkPath.toFile();
             return keyLinkPathFile;
         }
 
-        if (Files.isSymbolicLink(keyLinkPath))
-        {
+        if (Files.isSymbolicLink(keyLinkPath)) {
             // Resolve the key symlink to the model's data file.
-            try
-            {
+            try {
                 final Path dataFilePath = keyLinkPath.toRealPath();
                 return dataFilePath.toFile();
             }
-            catch (final IOException e)
-            {
+            catch (final IOException e) {
 
                 LOG.error(e.getMessage(), e);
                 throw new ServiceException("Unable to dereference the key symlink (I/O problem: " + e.getMessage()
@@ -602,20 +550,17 @@ public final class FileSystemService extends AbstractService
 
     }
 
-    private URI getFiledSchemaUri(final Context context)
-    {
+    private URI getFiledSchemaUri(final Context context) {
 
         return context.getSchemaLoader().getTypeUri(Filed.class);
     }
 
-    private String getFileExtension()
-    {
+    private String getFileExtension() {
 
         return _FileExtension;
     }
 
-    private Path getKeyLinkPath(final URI keyedSchemaUri, final Object keyValue)
-    {
+    private Path getKeyLinkPath(final URI keyedSchemaUri, final Object keyValue) {
 
         final Path rootDirectoryPath = getRootDirectoryPath();
         Path path = rootDirectoryPath.resolve(StringUtils.stripStart(keyedSchemaUri.getPath(), "/"));
@@ -623,12 +568,10 @@ public final class FileSystemService extends AbstractService
 
         String keyValueString = null;
 
-        if (keyValue instanceof URI)
-        {
+        if (keyValue instanceof URI) {
             final URI uri = (URI) keyValue;
             final String host = uri.getHost();
-            if (host == null || host.trim().isEmpty())
-            {
+            if (host == null || host.trim().isEmpty()) {
                 return null;
             }
 
@@ -637,24 +580,20 @@ public final class FileSystemService extends AbstractService
             path = path.resolve(String.valueOf(port));
             keyValueString = StringUtils.stripStart(uri.getPath(), "/");
         }
-        else
-        {
+        else {
             final Context context = getContext();
             keyValueString = context.getSyntaxLoader().formatSyntaxValue(keyValue);
         }
 
-        if (keyValueString == null || keyValueString.equals("null"))
-        {
+        if (keyValueString == null || keyValueString.equals("null")) {
             return null;
         }
 
-        if (keyValueString.trim().isEmpty() || keyValueString.endsWith("/"))
-        {
+        if (keyValueString.trim().isEmpty() || keyValueString.endsWith("/")) {
             keyValueString = "index";
         }
 
-        if (!keyValueString.endsWith(getFileExtension()))
-        {
+        if (!keyValueString.endsWith(getFileExtension())) {
             keyValueString += getFileExtension();
         }
 
@@ -662,8 +601,7 @@ public final class FileSystemService extends AbstractService
         return path.normalize();
     }
 
-    private Path getManagedDataFilePath(final URI schemaUri, final String dataFileHandle)
-    {
+    private Path getManagedDataFilePath(final URI schemaUri, final String dataFileHandle) {
 
         final Path rootDirectoryPath = getRootDirectoryPath();
         Path dataFilePath = rootDirectoryPath.resolve(StringUtils.stripStart(schemaUri.getPath(), "/"));
@@ -672,14 +610,12 @@ public final class FileSystemService extends AbstractService
         return dataFilePath;
     }
 
-    private Path getRootDirectoryPath()
-    {
+    private Path getRootDirectoryPath() {
 
         return _RootDirectoryPath;
     }
 
-    private void writeDataFile(final Model model, final Path dataFilePath)
-    {
+    private void writeDataFile(final Model model, final Path dataFilePath) {
 
         final ModelWriteOptions writeOptions = new ModelWriteOptions();
         writeOptions.setPrettyPrint(true);
@@ -694,12 +630,10 @@ public final class FileSystemService extends AbstractService
 
         writeOptions.setExcludedSchemaUris(excludedSchemaUris);
 
-        try
-        {
+        try {
             FileSystemService.writeModelFile(model, dataFilePath, _FileFormatUri, writeOptions);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException("Failed to write model data file - error: " + e.toString() + " - message: "
                     + e.getMessage(), e, this);
@@ -707,16 +641,13 @@ public final class FileSystemService extends AbstractService
 
     }
 
-    private void writeKeyLink(final Path keyLinkPath, final Path dataFilePath)
-    {
+    private void writeKeyLink(final Path keyLinkPath, final Path dataFilePath) {
 
-        if (!Files.exists(dataFilePath))
-        {
+        if (!Files.exists(dataFilePath)) {
             throw new ServiceException("Attempting to make link to non-existent resource " + dataFilePath, null, this);
         }
 
-        try
-        {
+        try {
             // TODO: Should this block be synchronized?
             /**
              * Changing this to be a relative path since a lot of these files are checked in.
@@ -728,8 +659,7 @@ public final class FileSystemService extends AbstractService
             Files.createDirectories(dataFilePath.getParent());
             Files.createSymbolicLink(keyLinkPath, relPath);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException("Failed to write model key link file - error: " + e.toString() + " - message: "
                     + e.getMessage(), e, this);

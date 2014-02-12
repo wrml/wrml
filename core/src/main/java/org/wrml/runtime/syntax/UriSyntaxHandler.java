@@ -26,14 +26,12 @@ package org.wrml.runtime.syntax;
 
 import java.net.URI;
 
-public class UriSyntaxHandler extends SyntaxHandler<URI>
-{
+public class UriSyntaxHandler extends SyntaxHandler<URI> {
 
     @Override
-    public String formatSyntaxValue(final URI uri)
-    {
-        if (uri == null)
-        {
+    public String formatSyntaxValue(final URI uri) {
+
+        if (uri == null) {
             return null;
         }
 
@@ -41,10 +39,9 @@ public class UriSyntaxHandler extends SyntaxHandler<URI>
     }
 
     @Override
-    public URI parseSyntacticText(final String uriString)
-    {
-        if (uriString == null || uriString.isEmpty())
-        {
+    public URI parseSyntacticText(final String uriString) {
+
+        if (uriString == null || uriString.isEmpty()) {
             return null;
         }
 

@@ -24,24 +24,23 @@
  */
 package org.wrml.model.schema;
 
-import java.net.URI;
-
 import org.wrml.model.MaybeReadOnly;
 import org.wrml.model.MaybeRequired;
 import org.wrml.model.Model;
+
+import java.net.URI;
 
 /**
  * <p>
  * {@link ModelValue}s enable {@link Model}s to be embedded within other {@link Model}s.
  * </p>
- * 
+ *
  * @see Model
  * @see Schema
  * @see Slot
  * @see <a href="http://www.json.org">JSON object</a>
  */
-public interface ModelValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value
-{
+public interface ModelValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value {
 
     /**
      * <p>
@@ -49,7 +48,7 @@ public interface ModelValue extends MaybeReadOnly, MaybeRequired, Primitive, Ine
      * runtime ensures that only {@link Model}s with the identified {@link Schema} are permitted as {@link Slot} values
      * associated with this {@link ModelValue}.
      * </p>
-     * 
+     *
      * @see Schema#getUri()
      * @see Model#getSchemaUri()
      */

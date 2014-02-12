@@ -27,21 +27,20 @@ package org.wrml.runtime.format.application.schema.json;
 /**
  * The {@link resources}'s associated error type.
  */
-public class JsonSchemaLoaderException extends RuntimeException
-{
+public class JsonSchemaLoaderException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final JsonSchemaLoader _JsonSchemaLoader;
 
-    JsonSchemaLoaderException(final String message, final Throwable cause, final JsonSchemaLoader jsonSchemaLoader)
-    {
+    JsonSchemaLoaderException(final String message, final Throwable cause, final JsonSchemaLoader jsonSchemaLoader) {
+
         super(message, cause);
         _JsonSchemaLoader = jsonSchemaLoader;
     }
 
-    public JsonSchemaLoader getJsonSchemaLoader()
-    {
+    public JsonSchemaLoader getJsonSchemaLoader() {
+
         return _JsonSchemaLoader;
     }
 }

@@ -31,8 +31,7 @@ import org.wrml.model.rest.Document;
 import java.net.URI;
 import java.util.List;
 
-public interface WerminalModel extends Titled, Filed, Document
-{
+public interface WerminalModel extends Titled, Filed, Document {
     List<URI> getSchemaUriHistoryList();
 
     List<SlotValueHistoryListModel> getSlotValueHistoryLists();

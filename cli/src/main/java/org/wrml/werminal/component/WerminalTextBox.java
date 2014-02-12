@@ -29,9 +29,9 @@ import com.googlecode.lanterna.input.Key.Kind;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Link;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Keys;
-import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.action.WerminalAction;
@@ -43,8 +43,7 @@ import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings({"unchecked"})
-public class WerminalTextBox extends TerminalAppTextBox
-{
+public class WerminalTextBox extends TerminalAppTextBox {
 
     private static final String OPEN_BUTTON_STRING = "< Open... >";
 
@@ -63,8 +62,7 @@ public class WerminalTextBox extends TerminalAppTextBox
     private boolean _ModelValueChanged;
 
     public WerminalTextBox(final Werminal werminal, final int width, final Type valueType,
-                           final WerminalAction enterAction)
-    {
+                           final WerminalAction enterAction) {
 
         super(werminal, width);
         _ValueType = valueType;
@@ -72,26 +70,22 @@ public class WerminalTextBox extends TerminalAppTextBox
 
     }
 
-    public WerminalTextBox(final Werminal werminal, final Type valueType, final WerminalAction enterAction)
-    {
+    public WerminalTextBox(final Werminal werminal, final Type valueType, final WerminalAction enterAction) {
 
         this(werminal, 255, valueType, enterAction);
     }
 
-    public WerminalAction getEnterAction()
-    {
+    public WerminalAction getEnterAction() {
 
         return _EnterAction;
     }
 
-    public Type getHeapValueType()
-    {
+    public Type getHeapValueType() {
 
         return _ValueType;
     }
 
-    public <V> V getValue()
-    {
+    public <V> V getValue() {
 
         final Context context = getWerminal().getContext();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
@@ -99,8 +93,7 @@ public class WerminalTextBox extends TerminalAppTextBox
         final ValueType valueType = getValueType();
 
         if (_Value == null && valueType != ValueType.Model && valueType != ValueType.List
-                && valueType != ValueType.Link)
-        {
+                && valueType != ValueType.Link) {
             final String stringValue = getText();
             _Value = syntaxLoader.parseSyntacticText(stringValue, heapValueType);
         }
@@ -108,25 +101,21 @@ public class WerminalTextBox extends TerminalAppTextBox
         return (V) _Value;
     }
 
-    public ValueType getValueType()
-    {
+    public ValueType getValueType() {
 
         final Context context = getWerminal().getContext();
         return context.getSchemaLoader().getValueType(getHeapValueType());
     }
 
-    public Werminal getWerminal()
-    {
+    public Werminal getWerminal() {
 
         return getApp();
     }
 
-    public boolean isValueChanged()
-    {
+    public boolean isValueChanged() {
 
         final ValueType valueType = getValueType();
-        switch (valueType)
-        {
+        switch (valueType) {
             case Link:
             case Model:
                 return isModelValueChanged();
@@ -145,12 +134,10 @@ public class WerminalTextBox extends TerminalAppTextBox
             default:
 
                 final String currentText = getText();
-                if (_TextValue != null)
-                {
+                if (_TextValue != null) {
                     return !(_TextValue.equals(currentText));
                 }
-                else
-                {
+                else {
                     return currentText != null && !currentText.isEmpty();
                 }
 
@@ -159,11 +146,9 @@ public class WerminalTextBox extends TerminalAppTextBox
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
@@ -171,19 +156,14 @@ public class WerminalTextBox extends TerminalAppTextBox
         final Kind kind = key.getKind();
         final Type valueType = getHeapValueType();
 
-        switch (kind)
-        {
-            case Enter:
-            {
+        switch (kind) {
+            case Enter: {
 
-                if (_EnterAction != null)
-                {
-                    try
-                    {
+                if (_EnterAction != null) {
+                    try {
                         _EnterAction.doAction();
                     }
-                    catch (Exception t)
-                    {
+                    catch (Exception t) {
                         getWerminal().showError("Error - An unhandled exception has arisen.", t);
 
                     }
@@ -192,14 +172,11 @@ public class WerminalTextBox extends TerminalAppTextBox
                 result = Result.EVENT_HANDLED;
                 break;
             }
-            case NormalKey:
-            {
-                if (ValueType.isModelType(valueType) || TypeUtils.isAssignable(valueType, List.class))
-                {
+            case NormalKey: {
+                if (ValueType.isModelType(valueType) || TypeUtils.isAssignable(valueType, List.class)) {
                     result = Result.EVENT_HANDLED;
                 }
-                else
-                {
+                else {
                     _Value = null;
 
                     result = super.keyboardInteraction(key);
@@ -207,30 +184,25 @@ public class WerminalTextBox extends TerminalAppTextBox
                 break;
             }
             case Backspace:
-            case Delete:
-            {
+            case Delete: {
 
                 // TODO: Check the value type and determine if editable
 
-                if (ValueType.isModelType(valueType))
-                {
+                if (ValueType.isModelType(valueType)) {
                     setValue(null, false);
                     result = Result.EVENT_HANDLED;
                 }
-                else if (TypeUtils.isAssignable(valueType, List.class))
-                {
+                else if (TypeUtils.isAssignable(valueType, List.class)) {
                     result = Result.EVENT_HANDLED;
                 }
-                else
-                {
+                else {
                     _Value = null;
                     result = super.keyboardInteraction(key);
                 }
                 break;
             }
 
-            default:
-            {
+            default: {
                 result = super.keyboardInteraction(key);
                 break;
             }
@@ -240,21 +212,18 @@ public class WerminalTextBox extends TerminalAppTextBox
     }
 
     @Override
-    public void setText(final String text)
-    {
+    public void setText(final String text) {
 
         setText(text, true);
 
     }
 
-    public Object setValue(final Object value)
-    {
+    public Object setValue(final Object value) {
 
         return setValue(value, true);
     }
 
-    public Object setValue(final Object value, final boolean silentChange)
-    {
+    public Object setValue(final Object value, final boolean silentChange) {
 
         final Object oldValue = _Value;
 
@@ -265,25 +234,20 @@ public class WerminalTextBox extends TerminalAppTextBox
         final Context context = getWerminal().getContext();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
         String stringValue = "";
-        switch (valueType)
-        {
+        switch (valueType) {
 
-            case Link:
-            {
+            case Link: {
 
                 final String disabledLinkString = "href=\"\"";
-                if (value instanceof Link)
-                {
+                if (value instanceof Link) {
                     final Link linkValue = (Link) value;
                     final URI href = linkValue.getHref();
-                    if (href != null)
-                    {
+                    if (href != null) {
                         // TODO: Display the HTTP method and the relation URI too
 
                         stringValue = "href=\"" + href.toString() + "\"   " + CLICK_BUTTON_STRING;
                     }
-                    else
-                    {
+                    else {
                         stringValue = disabledLinkString;
                     }
 
@@ -291,32 +255,26 @@ public class WerminalTextBox extends TerminalAppTextBox
 
                     // TODO: Track Model changes
                 }
-                else
-                {
+                else {
                     stringValue = disabledLinkString;
                 }
 
                 break;
             }
-            case Model:
-            {
+            case Model: {
 
-                if (value instanceof Model)
-                {
+                if (value instanceof Model) {
                     final Model modelValue = (Model) value;
                     final Keys keys = modelValue.getKeys();
-                    if (keys != null)
-                    {
+                    if (keys != null) {
                         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-                        for (final URI keyedSchemaUri : keyedSchemaUris)
-                        {
+                        for (final URI keyedSchemaUri : keyedSchemaUris) {
                             final Object initialKeyValue = keys.getValue(keyedSchemaUri);
                             stringValue = String.valueOf(initialKeyValue);
                             break;
                         }
                     }
-                    else
-                    {
+                    else {
                         stringValue = modelValue.getHeapId().toString();
                     }
 
@@ -325,21 +283,17 @@ public class WerminalTextBox extends TerminalAppTextBox
                     // TODO: Track Model changes
                 }
 
-                if (stringValue == null || stringValue.isEmpty())
-                {
+                if (stringValue == null || stringValue.isEmpty()) {
                     stringValue = OPEN_BUTTON_STRING;
                 }
-                else
-                {
+                else {
                     stringValue = stringValue + " " + OPEN_BUTTON_STRING;
                 }
                 break;
             }
-            case List:
-            {
+            case List: {
 
-                if (value instanceof List)
-                {
+                if (value instanceof List) {
                     final List<?> listValue = (List<?>) value;
 
                     stringValue = werminal.listToString(listValue, getHeapValueType());
@@ -365,25 +319,21 @@ public class WerminalTextBox extends TerminalAppTextBox
 
         }
 
-        if (stringValue == null)
-        {
+        if (stringValue == null) {
             stringValue = "";
         }
 
         setText(stringValue, false);
-        if (silentChange)
-        {
+        if (silentChange) {
             _TextValue = stringValue;
         }
 
         return oldValue;
     }
 
-    protected void setText(final String stringValue, final boolean clearValue)
-    {
+    protected void setText(final String stringValue, final boolean clearValue) {
 
-        if (clearValue)
-        {
+        if (clearValue) {
             _Value = null;
         }
 
@@ -391,14 +341,12 @@ public class WerminalTextBox extends TerminalAppTextBox
 
     }
 
-    private boolean isListValueChanged()
-    {
+    private boolean isListValueChanged() {
 
         return _ListValueChanged;
     }
 
-    private boolean isModelValueChanged()
-    {
+    private boolean isModelValueChanged() {
 
         return _ModelValueChanged;
     }

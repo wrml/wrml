@@ -24,15 +24,11 @@
  */
 package org.wrml.model;
 
-import org.wrml.model.Abstract;
-import org.wrml.model.rest.Document;
-
 /**
- * <p>
+ * <p/>
  * The WRML concept of a pure-virtual or purely aggregation-oriented Schema is similar to the result of a JOIN in SQL,
  * except that it is modeled as a Schema (not with code).
  * <p/>
-  */
-public interface Virtual extends Abstract
-{
+ */
+public interface Virtual extends Abstract {
 }

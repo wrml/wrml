@@ -21,19 +21,19 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###          
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "ApiNotFoundApp", (ApiNotFoundApp, App, Backbone, Marionette, $, _) ->
-	@startWithParent = false
+  @startWithParent = false
 
-	class ApiNotFoundApp.Router extends Marionette.AppRouter
+  class ApiNotFoundApp.Router extends Marionette.AppRouter
 
-	API =
-		show: (wrmlData) ->
-			new ApiNotFoundApp.Show.Controller(wrmlData)
-	
+  API =
+    show: (wrmlData) ->
+      new ApiNotFoundApp.Show.Controller(wrmlData)
 
-	ApiNotFoundApp.on "start", (wrmlData) ->
-		API.show(wrmlData)
+
+  ApiNotFoundApp.on "start", (wrmlData) ->
+    API.show(wrmlData)

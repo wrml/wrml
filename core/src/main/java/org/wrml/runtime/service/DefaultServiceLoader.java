@@ -29,11 +29,12 @@ import org.slf4j.LoggerFactory;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.ContextConfiguration;
 import org.wrml.runtime.DefaultConfiguration;
-import org.wrml.runtime.rest.ApiNavigator;
 import org.wrml.util.WildCardPrefixTree;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,8 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @see Service
  */
-public final class DefaultServiceLoader implements ServiceLoader
-{
+public final class DefaultServiceLoader implements ServiceLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultServiceLoader.class);
 
@@ -55,24 +55,20 @@ public final class DefaultServiceLoader implements ServiceLoader
     private WildCardPrefixTree<Service> _SchemaToServiceTrie;
 
 
-    public DefaultServiceLoader()
-    {
+    public DefaultServiceLoader() {
 
     }
 
     @Override
-    public Set<String> getServiceNames()
-    {
+    public Set<String> getServiceNames() {
 
         return _Services.keySet();
     }
 
     @Override
-    public Service getService(final String serviceName)
-    {
+    public Service getService(final String serviceName) {
 
-        if (!_Services.containsKey(serviceName))
-        {
+        if (!_Services.containsKey(serviceName)) {
             return null;
         }
 
@@ -80,25 +76,22 @@ public final class DefaultServiceLoader implements ServiceLoader
     }
 
     @Override
-    public final Service getServiceForSchema(final URI schemaUri)
-    {
+    public final Service getServiceForSchema(final URI schemaUri) {
+
         final String schemaPath = schemaUri.toString();
         return _SchemaToServiceTrie.getPathValue(schemaPath);
     }
 
     @Override
-    public Collection<Service> getServices()
-    {
+    public Collection<Service> getServices() {
 
         return _Services.values();
     }
 
     @Override
-    public final void loadConfiguredService(final ServiceConfiguration serviceConfiguration)
-    {
+    public final void loadConfiguredService(final ServiceConfiguration serviceConfiguration) {
 
-        if (serviceConfiguration == null)
-        {
+        if (serviceConfiguration == null) {
             return;
         }
 
@@ -112,34 +105,29 @@ public final class DefaultServiceLoader implements ServiceLoader
     }
 
     @Override
-    public final void loadService(final Service service, final String serviceName)
-    {
+    public final void loadService(final Service service, final String serviceName) {
 
         final String mappedServiceName = (serviceName == null) ? service.getClass().getSimpleName() : serviceName;
         _Services.put(mappedServiceName, service);
     }
 
     @Override
-    public final void mapSchemaPatternToService(final String schemaUriPattern, final String serviceName)
-    {
+    public final void mapSchemaPatternToService(final String schemaUriPattern, final String serviceName) {
 
         final Service service = getService(serviceName);
-        if (service != null)
-        {
+        if (service != null) {
             _SchemaToServiceTrie.setPathValue(schemaUriPattern, service);
         }
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
         _Context = context;
 
@@ -149,36 +137,30 @@ public final class DefaultServiceLoader implements ServiceLoader
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
         loadConfiguredServices();
     }
 
-    protected void loadConfiguredServices()
-    {
+    protected void loadConfiguredServices() {
 
         final Context context = getContext();
         final ContextConfiguration contextConfig = context.getConfig();
         final ServiceLoaderConfiguration config = contextConfig.getServiceLoader();
         final ServiceConfiguration[] serviceConfigs = config.getServices();
-        if ((serviceConfigs == null) || (serviceConfigs.length == 0))
-        {
+        if ((serviceConfigs == null) || (serviceConfigs.length == 0)) {
             LOG.info("No services to configure.");
             return;
         }
 
 
-        for (final ServiceConfiguration serviceConfiguration : serviceConfigs)
-        {
+        for (final ServiceConfiguration serviceConfiguration : serviceConfigs) {
             loadConfiguredService(serviceConfiguration);
         }
 
         final Map<String, String> serviceMapping = config.getServiceMapping();
-        if (serviceMapping != null && !serviceMapping.isEmpty())
-        {
-            for (final String schemaUriPattern : serviceMapping.keySet())
-            {
+        if (serviceMapping != null && !serviceMapping.isEmpty()) {
+            for (final String schemaUriPattern : serviceMapping.keySet()) {
                 final String serviceName = serviceMapping.get(schemaUriPattern);
                 mapSchemaPatternToService(schemaUriPattern, serviceName);
             }

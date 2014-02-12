@@ -36,8 +36,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface DisallowedValues
-{
+public @interface DisallowedValues {
 
     /**
      * An array of values that are not allowed by the annotated slot.

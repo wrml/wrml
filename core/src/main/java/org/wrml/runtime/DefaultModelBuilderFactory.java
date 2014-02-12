@@ -24,11 +24,9 @@
  */
 package org.wrml.runtime;
 
-public class DefaultModelBuilderFactory implements Factory<ModelBuilder>
-{
+public class DefaultModelBuilderFactory implements Factory<ModelBuilder> {
     @Override
-    public ModelBuilder create()
-    {
+    public ModelBuilder create() {
 
         return new DefaultModelBuilder();
     }

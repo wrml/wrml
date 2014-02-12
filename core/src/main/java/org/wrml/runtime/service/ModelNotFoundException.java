@@ -26,13 +26,12 @@ package org.wrml.runtime.service;
 
 import org.wrml.model.rest.status.Status;
 
-public class ModelNotFoundException extends ServiceException
-{
+public class ModelNotFoundException extends ServiceException {
 
     private static final long serialVersionUID = 1L;
 
-    public ModelNotFoundException(final String message, final Throwable cause, final Service service)
-    {
+    public ModelNotFoundException(final String message, final Throwable cause, final Service service) {
+
         super(message, cause, service, Status.NOT_FOUND);
     }
 

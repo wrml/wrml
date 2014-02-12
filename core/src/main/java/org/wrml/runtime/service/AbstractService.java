@@ -43,19 +43,16 @@ import java.util.Set;
  * This abstract base class implements all of the <i>optional</i> {@link Service} methods by throwing an {@link UnsupportedOperationException} upon invocation.
  * </p>
  */
-public abstract class AbstractService implements Service
-{
+public abstract class AbstractService implements Service {
 
     private Context _Context;
 
     private ServiceConfiguration _Config;
 
     @Override
-    public final void init(final Context context, final ServiceConfiguration config)
-    {
+    public final void init(final Context context, final ServiceConfiguration config) {
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new ServiceException("The context cannot be null.", null, this);
         }
 
@@ -65,29 +62,25 @@ public abstract class AbstractService implements Service
     }
 
     @Override
-    public final ServiceConfiguration getConfiguration()
-    {
+    public final ServiceConfiguration getConfiguration() {
 
         return _Config;
     }
 
     @Override
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public void delete(final Keys keys, final Dimensions dimensions) throws UnsupportedOperationException
-    {
+    public void delete(final Keys keys, final Dimensions dimensions) throws UnsupportedOperationException {
 
         throwUnsupportedOperationException("delete");
     }
 
     @Override
-    public Model save(final Model model) throws UnsupportedOperationException
-    {
+    public Model save(final Model model) throws UnsupportedOperationException {
 
         throwUnsupportedOperationException("save");
         // Never reached
@@ -95,8 +88,7 @@ public abstract class AbstractService implements Service
     }
 
     @Override
-    public Set<Model> search(final SearchCriteria searchCriteria) throws UnsupportedOperationException
-    {
+    public Set<Model> search(final SearchCriteria searchCriteria) throws UnsupportedOperationException {
 
         throwUnsupportedOperationException("search");
         // Never reached
@@ -104,8 +96,7 @@ public abstract class AbstractService implements Service
     }
 
     @Override
-    public Model invoke(final Model function, final Dimensions responseDimensions, final Model parameter) throws UnsupportedOperationException
-    {
+    public Model invoke(final Model function, final Dimensions responseDimensions, final Model parameter) throws UnsupportedOperationException {
 
         throwUnsupportedOperationException("invoke");
         // Never reached
@@ -125,8 +116,7 @@ public abstract class AbstractService implements Service
      * @param operationName The name of the operation that is not supported.
      * @throws UnsupportedOperationException Always thrown as a result of calling this method.
      */
-    protected final void throwUnsupportedOperationException(final String operationName) throws UnsupportedOperationException
-    {
+    protected final void throwUnsupportedOperationException(final String operationName) throws UnsupportedOperationException {
 
         String name = getClass().getSimpleName();
 

@@ -27,8 +27,7 @@ package org.wrml.runtime.format;
 /**
  * The {@link FormatLoader}'s associated error type.
  */
-public class FormatLoaderException extends RuntimeException
-{
+public class FormatLoaderException extends RuntimeException {
 
     private final FormatLoader _FormatLoader;
 
@@ -36,27 +35,23 @@ public class FormatLoaderException extends RuntimeException
 
     /**
      * Create a new exception to communicate a problem about the specified {@link FormatLoader}.
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param apiLoader
-     *            The impacted {@link FormatLoader}.
-     * 
+     *
+     * @param message   The message to explain what is going on.
+     * @param apiLoader The impacted {@link FormatLoader}.
      */
-    FormatLoaderException(final String message, final Throwable cause, final FormatLoader formatLoader)
-    {
+    FormatLoaderException(final String message, final Throwable cause, final FormatLoader formatLoader) {
+
         super(message, cause);
         _FormatLoader = formatLoader;
     }
 
     /**
      * Get the {@link FormatLoader} associated with this error.
-     * 
+     *
      * @return The {@link FormatLoader} that raised this exception.
      */
-    public FormatLoader getApiLoader()
-    {
+    public FormatLoader getApiLoader() {
+
         return _FormatLoader;
     }
 

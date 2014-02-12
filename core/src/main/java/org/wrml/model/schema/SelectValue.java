@@ -24,16 +24,15 @@
  */
 package org.wrml.model.schema;
 
-import java.net.URI;
-
 import org.wrml.model.Abstract;
 import org.wrml.model.MaybeReadOnly;
+
+import java.net.URI;
 
 /**
  * Abstract base model for a value representing a selection from a set of choices.
  */
-public interface SelectValue extends MaybeReadOnly, Primitive, Value, Abstract
-{
+public interface SelectValue extends MaybeReadOnly, Primitive, Value, Abstract {
 
     /**
      * The {@link URI} of the {@link Choices} document associated with this select value.

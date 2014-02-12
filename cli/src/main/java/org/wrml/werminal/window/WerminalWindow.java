@@ -32,38 +32,32 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.terminal.TerminalAppToolBar;
 import org.wrml.werminal.terminal.TerminalAppWindow;
 
-public class WerminalWindow extends TerminalAppWindow
-{
+public class WerminalWindow extends TerminalAppWindow {
 
     private TerminalAppToolBar _HeaderToolBar;
 
-    public WerminalWindow(final Werminal werminal, final String title)
-    {
+    public WerminalWindow(final Werminal werminal, final String title) {
 
         this(werminal, title, null);
     }
 
-    public WerminalWindow(final Werminal werminal, final String title, final Component[] toolBarComponents)
-    {
+    public WerminalWindow(final Werminal werminal, final String title, final Component[] toolBarComponents) {
 
         super(werminal, getTitle(werminal, title));
 
         setBorder(new Border.Standard());
 
-        if (toolBarComponents != null)
-        {
+        if (toolBarComponents != null) {
             _HeaderToolBar = new TerminalAppToolBar(werminal, toolBarComponents);
         }
 
         render();
     }
 
-    private static String getTitle(final Werminal werminal, final String title)
-    {
+    private static String getTitle(final Werminal werminal, final String title) {
 
         // NOTE: This check is needed to support mocking tests
-        if (werminal == null)
-        {
+        if (werminal == null) {
             return title;
         }
 
@@ -71,36 +65,30 @@ public class WerminalWindow extends TerminalAppWindow
         return String.format(" %s - %s ", werminalTitle, title);
     }
 
-    public void addEmptySpace()
-    {
+    public void addEmptySpace() {
 
         addComponent(new EmptySpace(0, 1));
     }
 
-    public TerminalAppToolBar getHeaderToolBar()
-    {
+    public TerminalAppToolBar getHeaderToolBar() {
 
         return _HeaderToolBar;
     }
 
-    public Werminal getWerminal()
-    {
+    public Werminal getWerminal() {
 
         return getApp();
     }
 
-    public void render()
-    {
+    public void render() {
 
         removeAllComponents();
         renderHeaderToolBar();
     }
 
-    protected void renderHeaderToolBar()
-    {
+    protected void renderHeaderToolBar() {
 
-        if (_HeaderToolBar != null)
-        {
+        if (_HeaderToolBar != null) {
             addComponent(_HeaderToolBar);
             addComponent(new Separator());
         }

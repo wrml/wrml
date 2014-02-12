@@ -35,8 +35,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface WRML
-{
+public @interface WRML {
 
 
     /**
@@ -95,12 +94,12 @@ public @interface WRML
      * An optional {@link String}[] of {@link org.wrml.model.schema.Slot} names that determine the default/natural sort
      * order for {@link org.wrml.model.Model}s of the annotated {@link org.wrml.model.schema.Schema}.
      * </p>
-     *
      */
     String[] comparableSlotNames() default {};
 
     /**
      * An optional {@link String} that names the slot value that should be used when displaying the title of models conforming to the annotated {@link org.wrml.model.schema.Schema}.
+     *
      * @return The name of the slot that contains the title of the annotated {@link org.wrml.model.schema.Schema}.
      */
     String titleSlotName() default "";

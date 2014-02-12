@@ -42,15 +42,13 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 import java.lang.reflect.Type;
 import java.net.URI;
 
-public class NewOrOpenModelDialog extends WerminalDialog
-{
+public class NewOrOpenModelDialog extends WerminalDialog {
 
     private final FormField _FormField;
 
     private final OptionsMenu _OptionsMenu;
 
-    public NewOrOpenModelDialog(final Werminal werminal, final String title, final WerminalAction dismissAction, final FormField formField)
-    {
+    public NewOrOpenModelDialog(final Werminal werminal, final String title, final WerminalAction dismissAction, final FormField formField) {
 
         super(werminal, title, null, dismissAction);
         _FormField = formField;
@@ -58,15 +56,13 @@ public class NewOrOpenModelDialog extends WerminalDialog
         render();
     }
 
-    public final FormField getFormField()
-    {
+    public final FormField getFormField() {
 
         return _FormField;
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         removeAllComponents();
         super.renderHeaderToolBar();
@@ -81,11 +77,9 @@ public class NewOrOpenModelDialog extends WerminalDialog
 
     }
 
-    private class OptionsMenu extends TerminalAppPanel
-    {
+    private class OptionsMenu extends TerminalAppPanel {
 
-        public OptionsMenu(final Werminal werminal, final String title)
-        {
+        public OptionsMenu(final Werminal werminal, final String title) {
 
             super(werminal, title, new Border.Invisible(), Orientation.VERTICAL, false, false);
 

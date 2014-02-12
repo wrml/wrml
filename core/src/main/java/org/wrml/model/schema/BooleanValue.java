@@ -30,8 +30,7 @@ import org.wrml.model.MaybeRequired;
 /**
  * The WRML representation of the <code>boolean</code> (or {@link Boolean}) primitive type.
  */
-public interface BooleanValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value
-{
+public interface BooleanValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value {
 
     /**
      * <p>

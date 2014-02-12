@@ -32,63 +32,52 @@ import org.wrml.werminal.terminal.TerminalAppButtonPanel;
 import org.wrml.werminal.terminal.TerminalAppToolBar;
 import org.wrml.werminal.window.WerminalWindow;
 
-public class WerminalDialog extends WerminalWindow
-{
+public class WerminalDialog extends WerminalWindow {
 
     private final TerminalAppToolBar _FooterToolBar;
 
     public WerminalDialog(final Werminal werminal, final String title, final WerminalAction confirmAction,
-                          final WerminalAction dismissAction)
-    {
+                          final WerminalAction dismissAction) {
 
         super(werminal, title);
 
         setBorder(new Border.Standard());
 
         final Component[] footerToolBarComponents;
-        if (confirmAction != null && dismissAction != null)
-        {
+        if (confirmAction != null && dismissAction != null) {
             footerToolBarComponents = new Component[]{new TerminalAppButtonPanel(confirmAction),
                     new TerminalAppButtonPanel(dismissAction)};
         }
-        else if (confirmAction != null)
-        {
+        else if (confirmAction != null) {
             footerToolBarComponents = new Component[]{new TerminalAppButtonPanel(confirmAction)};
         }
 
-        else if (dismissAction != null)
-        {
+        else if (dismissAction != null) {
             footerToolBarComponents = new Component[]{new TerminalAppButtonPanel(dismissAction)};
         }
-        else
-        {
+        else {
             footerToolBarComponents = null;
         }
 
-        if (footerToolBarComponents != null)
-        {
+        if (footerToolBarComponents != null) {
             _FooterToolBar = new TerminalAppToolBar(werminal, footerToolBarComponents);
         }
-        else
-        {
+        else {
             _FooterToolBar = null;
         }
         render();
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         super.render();
         renderFooterToolBar();
     }
 
-    protected final void renderFooterToolBar()
-    {
+    protected final void renderFooterToolBar() {
 
-        if (_FooterToolBar != null)
-        {
+        if (_FooterToolBar != null) {
             addComponent(_FooterToolBar);
         }
     }

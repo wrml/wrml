@@ -42,8 +42,7 @@ import java.lang.reflect.Method;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface Aliases
-{
+public @interface Aliases {
 
     /**
      * The set of aliases, or alternative names, for the annotated slot.

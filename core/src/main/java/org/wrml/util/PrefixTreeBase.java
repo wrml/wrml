@@ -26,8 +26,7 @@ package org.wrml.util;
 
 import java.util.*;
 
-public abstract class PrefixTreeBase<T> implements PrefixTree<T>
-{
+public abstract class PrefixTreeBase<T> implements PrefixTree<T> {
     public static final String DEFAULT_PATH_SEPARATOR = "/";
 
     public static final String PROTOCOL_PREFIX = "://";
@@ -36,44 +35,39 @@ public abstract class PrefixTreeBase<T> implements PrefixTree<T>
 
     private final String _PathSeparator;
 
-    public PrefixTreeBase()
-    {
+    public PrefixTreeBase() {
+
         this(DEFAULT_PATH_SEPARATOR);
     }
 
-    public PrefixTreeBase(final String pathSeparator)
-    {
+    public PrefixTreeBase(final String pathSeparator) {
+
         _PathSeparator = pathSeparator;
         _RootNode = new PrefixTreeNode<>();
     }
 
 
-    public String getPathSeparator()
-    {
+    public String getPathSeparator() {
+
         return _PathSeparator;
     }
 
-    public PrefixTreeNode<T> getRoot()
-    {
+    public PrefixTreeNode<T> getRoot() {
 
         return _RootNode;
     }
 
     @Override
-    public void setPathValue(final String path, final T value)
-    {
+    public void setPathValue(final String path, final T value) {
 
         PrefixTreeNode node = getRoot();
         final List<String> segments = segmentPath(path);
 
-        for (final String segment : segments)
-        {
-            if (node.hasChild(segment))
-            {
+        for (final String segment : segments) {
+            if (node.hasChild(segment)) {
                 node = node.getChild(segment);
             }
-            else
-            {
+            else {
                 node = node.addChild(segment, null);
             }
         }
@@ -81,45 +75,38 @@ public abstract class PrefixTreeBase<T> implements PrefixTree<T>
         node.setValue(value);
     }
 
-    public String toString()
-    {
+    public String toString() {
 
         final String pathSeparator = getPathSeparator();
         final Set<String> paths = getRoot().deepPrint(pathSeparator);
         final StringBuilder sb = new StringBuilder();
-        for (final String p : paths)
-        {
+        for (final String p : paths) {
             sb.append(p).append('\n');
         }
         return sb.toString();
     }
 
-    protected List<String> segmentPath(final String path)
-    {
+    protected List<String> segmentPath(final String path) {
 
         final String pathSeparator = getPathSeparator();
 
         String trimmedPath = path.trim();
 
         final int protocolPrefixIndex = trimmedPath.indexOf(PROTOCOL_PREFIX);
-        if (protocolPrefixIndex >= 0)
-        {
+        if (protocolPrefixIndex >= 0) {
             trimmedPath = trimmedPath.substring(protocolPrefixIndex + PROTOCOL_PREFIX.length());
         }
 
-        if (trimmedPath.endsWith(pathSeparator))
-        {
+        if (trimmedPath.endsWith(pathSeparator)) {
             trimmedPath = trimmedPath.substring(0, trimmedPath.length() - 1);
         }
 
-        if (trimmedPath.startsWith(pathSeparator))
-        {
+        if (trimmedPath.startsWith(pathSeparator)) {
             trimmedPath = trimmedPath.substring(1);
         }
 
         String[] segmentArray = trimmedPath.split(pathSeparator);
-        if (segmentArray.length == 0)
-        {
+        if (segmentArray.length == 0) {
             return Collections.EMPTY_LIST;
         }
 

@@ -1,260 +1,222 @@
-
-
 $baseSchemaTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
-#main-region							
-{ 
+#main-region {
 
-	.schema-section
-	{
+  .schema-section {
 
-		fieldset 
-		{		
-			margin-left: 20px;
-			margin-right: 0px;
-		}
+    fieldset {
+      margin-left: 20px;
+      margin-right: 0px;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-left: 0px;	
-		}
+    .wrml-form-field-label {
+      margin-left: 0px;
+    }
 
-		.form-inline {
-			margin-left: 20px;	
-		}
-	}                                                                         
+    .form-inline {
+      margin-left: 20px;
+    }
+  }
 
+  #schema-page-header {
 
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#schema-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #schema-top-properties-section {
 
-	#schema-top-properties-section
-	{
+    .control-label {
+      float: left;
+      width: 100px;
+      padding-top: 5px;
+      text-align: left;
+      font-weight: bold;
+      margin-top: 0px;
+      margin-left: 0px;
+      color: $foregroundColor;
+      display: inline;
+    }
 
-		.control-label  
-		{
-			float: left;
-			width: 100px;
-			padding-top: 5px;
-			text-align: left;			
-			font-weight: bold;
-			margin-top: 0px;
-			margin-left: 0px;
-			color: $foregroundColor;
-			display: inline;	
-		}
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: 120px;
+      *margin-left: 0;
 
+      input[type=text],
+      input[type=url],
+      .uneditable-input {
+        width: $containerWidth - 170;
+      }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: 120px;
-			*margin-left: 0;		
+    }
 
-			input[type=text],
-			input[type=url],
-			.uneditable-input 
-			{
-				width: $containerWidth - 170;
-			}
+    .wrml-form-field-label {
+      margin-top: 5px;
+    }
 
-		}	
+    textarea,
+    {
+      width: $containerWidth - 50;
+    }
 
-		.wrml-form-field-label  
-		{
-			margin-top: 5px;			
-		}
+  }
 
-		textarea,
-		{
-			width: $containerWidth - 50;
-		}
+  #schema-base-schema-form {
+    margin-bottom: 0px;
 
-	}
+    input[type=text],
+    input[type=password],
+    input[type=url],
+    textarea,
+    .uneditable-input {
+      width: 250px;
+    }
 
-	#schema-base-schema-form 
-	{
-		margin-bottom: 0px;
+  }
 
-		input[type=text],
-		input[type=password],
-		input[type=url],
-		textarea,
-		.uneditable-input 
-		{
-			width: 250px;
-		}
+  #schema-base-schema-table {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
 
-	}
+    .schema-base-schema-icon {
+      width: 20px;
+      height: 20px;
+      padding-right: 5px;
+      display: inline;
+      margin-top: -6px;
+    }
 
-	#schema-base-schema-table 
-	{
-		margin-top: 20px;	
-		margin-bottom: 30px;
-		padding-bottom: 30px;
+    td.schema-base-schema-input {
 
-		.schema-base-schema-icon
-		{		
-			width: 20px;
-			height: 20px;
-			padding-right: 5px;
-			display: inline; 
-			margin-top: -6px;		
-		}
+      padding-top: 20px;
 
-		td.schema-base-schema-input
-		{
+    }
+  }
 
-			padding-top: 20px;
+  #schema-base-schema-canvas {
+    margin-top: 50px;
+    border: 1px solid #dddddd;
+  }
 
-		}
-	}
+  #schema-properties-section {
+    .wrml-form-field-label {
+      margin-top: 5px;
+      vertical-align: middle;
+      margin-left: 0px;
+    }
+  }
 
-	#schema-base-schema-canvas
-	{
-		margin-top: 50px;	
-		border: 1px solid #dddddd;
-	}
+  .schema-slot-divider {
+    height: 1px;
+    display: inline;
+    background-color: #dddddd;
+    width: 350px;
+    margin-top: 15px;
+    vertical-align: middle;
+  }
 
-	#schema-properties-section
-	{
-		.wrml-form-field-label  
-		{			
-			margin-top: 5px;			
-			vertical-align: middle;
-			margin-left: 0px;
-		}	
-	}
+  .schema-slot-name-input {
+    font-weight: bold;
+    width: 350px;
+    border: 1px solid #ebebeb;
 
-	.schema-slot-divider
-	{
-		height: 1px; 
-		display: inline; 
-		background-color: #dddddd;	
-		width: 350px;
-		margin-top: 15px;		
-		vertical-align: middle;
-	}
+    :focus {
+      color: $focusForegroundColor;
+      border-color: $focusBorderColor;
 
-	.schema-slot-name-input
-	{
-		font-weight: bold;	
-		width: 350px;
-		border: 1px solid #ebebeb;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+    }
+  }
 
-		:focus 
-		{
-			color: $focusForegroundColor;
-			border-color: $focusBorderColor;
+  .schema-slot-name-form {
+    margin-top: 30px;
+    margin-left: 0px;
+    padding-bottom: 19px;
+    margin-bottom: 0px;
 
-			 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-		}
-	}
+    .schema-slot-name {
+      margin-left: 0px;
+    }
+  }
 
+  .schema-slot-form {
 
-	.schema-slot-name-form
-	{
-		margin-top: 30px;
-		margin-left: 0px;
-		padding-bottom: 19px;
-		margin-bottom: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 33px;
 
-		.schema-slot-name
-		{
-			margin-left: 0px;
-		}
-	}
+    .controls-row {
 
-	.schema-slot-form
-	{
+      .schema-slot-form-input-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 25px;
+        margin-left: 15px;
+        margin-right: 5px;
 
-		padding-top: 5px;	
-		padding-bottom: 5px;	
-		padding-left: 33px;
+      }
 
-		.controls-row 
-		{
+      .schema-slot-form-checkbox-label {
+        font-weight: normal;
+        padding-top: 0px;
+        vertical-align: middle;
+        margin-top: 20px;
+        margin-left: 15px;
+        margin-right: 5px;
+      }
 
-			.schema-slot-form-input-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 25px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
+      input[type="text"],
+      input[type="password"],
+      input[type="datetime"],
+      input[type="datetime-local"],
+      input[type="date"],
+      input[type="month"],
+      input[type="time"],
+      input[type="week"],
+      input[type="number"],
+      input[type="email"],
+      input[type="url"],
+      input[type="search"],
+      input[type="tel"],
+      input[type="color"],
+      select,
+      textarea,
+      button,
+      .uneditable-input {
+        margin-top: 20px;
+      }
 
-			}
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      select,
+      .uneditable-input {
+        width: 200px;
+      }
 
-			.schema-slot-form-checkbox-label  
-			{			
-				font-weight: normal;
-				padding-top: 0px;
-				vertical-align: middle;
-				margin-top: 20px;			
-				margin-left: 15px;			
-				margin-right: 5px;							
-			}
+      textarea {
+        width: 650px;
+      }
 
-			input[type="text"],
-			input[type="password"],
-			input[type="datetime"],
-			input[type="datetime-local"],
-			input[type="date"],
-			input[type="month"],
-			input[type="time"],
-			input[type="week"],
-			input[type="number"],
-			input[type="email"],
-			input[type="url"],
-			input[type="search"],
-			input[type="tel"],
-			input[type="color"],
-			select,
-			textarea,
-			button,
-			.uneditable-input 
-			{
-				margin-top: 20px;
-			}
+      input.schema-slot-form-input-short,
+      {
+        width: 100px;
+      }
+    }
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			select,
-			.uneditable-input 
-			{
-				width: 200px;
-			}		
-
-			textarea
-			{
-				width: 650px;
-			}
-
-
-
-			input.schema-slot-form-input-short,
-			{
-				width: 100px;	
-			}
-		}
-
-	}
+  }
 
 }

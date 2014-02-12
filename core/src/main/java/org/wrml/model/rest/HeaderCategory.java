@@ -25,8 +25,7 @@
 package org.wrml.model.rest;
 
 // Generated from a Web Resource Schema
-public enum HeaderCategory
-{
+public enum HeaderCategory {
 
     GENERAL("General"),
     REQUEST("Request"),
@@ -36,19 +35,19 @@ public enum HeaderCategory
 
     private final String _Name;
 
-    private HeaderCategory(final String name)
-    {
+    private HeaderCategory(final String name) {
+
         _Name = name;
     }
 
-    public String getName()
-    {
+    public String getName() {
+
         return _Name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         return getName();
     }
 

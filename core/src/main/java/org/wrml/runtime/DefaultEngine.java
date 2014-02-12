@@ -32,13 +32,12 @@ import org.wrml.util.AsciiArt;
  * <p>
  * The WRML runtime's default {@link Engine} implementation.
  * </p>
- * 
+ *
  * @see EngineConfiguration
  * @see Context
  * @see org.wrml.runtime.syntax.SyntaxLoader
  */
-public class DefaultEngine implements Engine
-{
+public class DefaultEngine implements Engine {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultEngine.class);
 
@@ -50,31 +49,26 @@ public class DefaultEngine implements Engine
 
     private Factory<Context> _ContextFactory;
 
-    public DefaultEngine()
-    {
+    public DefaultEngine() {
 
         LOG.info(AsciiArt.LOGO);
         LOG.info("Greetings Program!");
     }
 
     @Override
-    public void init(final EngineConfiguration config) throws EngineException
-    {
+    public void init(final EngineConfiguration config) throws EngineException {
 
-        if (config == null)
-        {
+        if (config == null) {
             throw new EngineException("The WRML engine configuration cannot be null.", null, this);
         }
 
         LOG.info("Creating Engine with config:\n" + config);
 
         _Config = config;
-        try
-        {
+        try {
             _ContextFactory = createContextFactory();
         }
-        catch (Exception t)
-        {
+        catch (Exception t) {
             throw new EngineException(t.getMessage(), t, this);
         }
 
@@ -82,30 +76,25 @@ public class DefaultEngine implements Engine
     }
 
     @Override
-    public final EngineConfiguration getConfig()
-    {
+    public final EngineConfiguration getConfig() {
 
         return _Config;
     }
 
     @Override
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public final Context reloadContext() throws EngineException
-    {
+    public final Context reloadContext() throws EngineException {
 
-        try
-        {
+        try {
             _Context = createContext();
             _Context.init(getConfig().getContext());
         }
-        catch (Exception t)
-        {
+        catch (Exception t) {
             throw new EngineException(t.getMessage(), t, this);
         }
 
@@ -113,20 +102,17 @@ public class DefaultEngine implements Engine
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " { config : " + _Config + ", context : " + _Context + "}";
     }
 
-    protected Context createContext()
-    {
+    protected Context createContext() {
 
         return _ContextFactory.create();
     }
 
-    protected Factory<Context> createContextFactory()
-    {
+    protected Factory<Context> createContextFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getContext(), DEFAULT_CONTEXT_FACTORY);
     }

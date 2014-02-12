@@ -24,33 +24,28 @@
  */
 package org.wrml.runtime.syntax;
 
+import org.apache.commons.lang3.reflect.TypeUtils;
+
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Map;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
-
-public abstract class SyntaxHandler<S>
-{
+public abstract class SyntaxHandler<S> {
 
     public final static String TYPE_VARIABLE_NAME = "S";
 
-    public static Class<?> getSyntaxType(final Class<?> syntaxHandlerClass)
-    {
+    public static Class<?> getSyntaxType(final Class<?> syntaxHandlerClass) {
 
         final Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(syntaxHandlerClass,
                 SyntaxHandler.class);
 
-        for (final TypeVariable<?> typeVar : typeArguments.keySet())
-        {
+        for (final TypeVariable<?> typeVar : typeArguments.keySet()) {
 
             final String typeVarName = typeVar.getName();
-            if (SyntaxHandler.TYPE_VARIABLE_NAME.equals(typeVarName))
-            {
+            if (SyntaxHandler.TYPE_VARIABLE_NAME.equals(typeVarName)) {
                 return (Class<?>) typeArguments.get(typeVar);
             }
-            else
-            {
+            else {
                 throw new RuntimeException("Unexpected type variable name  \"" + typeVarName
                         + "\" in SyntaxHandler class (" + syntaxHandlerClass + ")");
             }
@@ -65,10 +60,9 @@ public abstract class SyntaxHandler<S>
 
     public abstract String formatSyntaxValue(final S syntaxValue) throws SyntaxHandlerException;
 
-    public Class<?> getSyntaxType()
-    {
-        if (_SyntaxType == null)
-        {
+    public Class<?> getSyntaxType() {
+
+        if (_SyntaxType == null) {
             _SyntaxType = SyntaxHandler.getSyntaxType(getClass());
         }
         return _SyntaxType;

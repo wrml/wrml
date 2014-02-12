@@ -59,37 +59,31 @@ import java.util.*;
 /**
  * Format for WRML schemas for use in design tools/apps.
  */
-public class SchemaDesignFormatter extends AbstractFormatter
-{
+public class SchemaDesignFormatter extends AbstractFormatter {
 
 
-    public SchemaDesignFormatter()
-    {
+    public SchemaDesignFormatter() {
 
     }
 
 
     @Override
-    public boolean isApplicableTo(final URI schemaUri)
-    {
+    public boolean isApplicableTo(final URI schemaUri) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         return (schemaLoader.getSchemaSchemaUri().equals(schemaUri));
     }
 
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException {
 
         throw new UnsupportedOperationException("The \"readModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
-        if (!(model instanceof Schema))
-        {
+        if (!(model instanceof Schema)) {
             throw new ModelWritingException("The \"" + getFormatUri() + "\" format cannot write the model.", null, this);
         }
 
@@ -97,8 +91,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         final ObjectNode rootNode;
         final ObjectWriter objectWriter;
 
-        try
-        {
+        try {
 
             // TODO: Should this ObjectMapper be stored in a field?
             final ObjectMapper objectMapper = new ObjectMapper();
@@ -106,8 +99,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
             objectWriter = objectMapper.writer(new DefaultPrettyPrinter());
             objectWriter.writeValue(out, rootNode);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ModelWritingException(getClass().getSimpleName()
                     + " encounter an error while attempting to write a SchemaDesign.  Message: " + e.getMessage(), null, this);
 
@@ -115,8 +107,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
     }
 
-    public static ObjectNode createSchemaDesignObjectNode(final ObjectMapper objectMapper, final Schema schema)
-    {
+    public static ObjectNode createSchemaDesignObjectNode(final ObjectMapper objectMapper, final Schema schema) {
 
         final Context context = schema.getContext();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
@@ -132,8 +123,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         rootNode.put(PropertyName.version.name(), schema.getVersion());
 
         final String titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
-        if (titleSlotName != null)
-        {
+        if (titleSlotName != null) {
             rootNode.put(PropertyName.titleSlotName.name(), titleSlotName);
         }
 
@@ -146,16 +136,13 @@ public class SchemaDesignFormatter extends AbstractFormatter
         rootNode.put(PropertyName.uniqueName.name(), uniqueNameNode);
 
         final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty())
-        {
+        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty()) {
             final Set<URI> addedBaseSchemaUris = new LinkedHashSet<>();
             final ArrayNode baseSchemasNode = objectMapper.createArrayNode();
             rootNode.put(PropertyName.baseSchemas.name(), baseSchemasNode);
 
-            for (final URI baseSchemaUri : declaredBaseSchemaUris)
-            {
-                if (!addedBaseSchemaUris.contains(baseSchemaUri))
-                {
+            for (final URI baseSchemaUri : declaredBaseSchemaUris) {
+                if (!addedBaseSchemaUris.contains(baseSchemaUri)) {
                     final ObjectNode baseSchemaNode = buildSchemaNode(objectMapper, baseSchemaUri, schemaLoader, addedBaseSchemaUris);
                     baseSchemasNode.add(baseSchemaNode);
                     addedBaseSchemaUris.add(baseSchemaUri);
@@ -164,17 +151,14 @@ public class SchemaDesignFormatter extends AbstractFormatter
         }
 
         final Set<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-        if (keySlotNames != null && !keySlotNames.isEmpty())
-        {
+        if (keySlotNames != null && !keySlotNames.isEmpty()) {
             final ArrayNode keyPropertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String keySlotName : keySlotNames)
-            {
+            for (final String keySlotName : keySlotNames) {
                 keyPropertyNamesNode.add(keySlotName);
             }
 
-            if (keyPropertyNamesNode.size() > 0)
-            {
+            if (keyPropertyNamesNode.size() > 0) {
                 rootNode.put(PropertyName.keyPropertyNames.name(), keyPropertyNamesNode);
             }
         }
@@ -187,18 +171,15 @@ public class SchemaDesignFormatter extends AbstractFormatter
         rootNode.put(PropertyName.keys.name(), keySlotMap);
 
         final String uriSlotName = PropertyName.uri.name();
-        if (allKeySlotNames.contains(uriSlotName))
-        {
+        if (allKeySlotNames.contains(uriSlotName)) {
             allKeySlotNamesNode.add(uriSlotName);
 
             final ObjectNode slot = createSlot(objectMapper, prototype, uriSlotName);
             keySlotMap.put(uriSlotName, slot);
         }
 
-        for (final String keySlotName : allKeySlotNames)
-        {
-            if (!Document.SLOT_NAME_URI.equals(keySlotName))
-            {
+        for (final String keySlotName : allKeySlotNames) {
+            if (!Document.SLOT_NAME_URI.equals(keySlotName)) {
                 allKeySlotNamesNode.add(keySlotName);
 
                 final ObjectNode slot = createSlot(objectMapper, prototype, keySlotName);
@@ -210,43 +191,36 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
         final SortedSet<String> allSlotNames = prototype.getAllSlotNames();
 
-        if (allSlotNames != null && !allSlotNames.isEmpty())
-        {
+        if (allSlotNames != null && !allSlotNames.isEmpty()) {
 
             final ObjectNode slotMapNode = objectMapper.createObjectNode();
             rootNode.put(PropertyName.slots.name(), slotMapNode);
 
             final ArrayNode propertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String slotName : allSlotNames)
-            {
+            for (final String slotName : allSlotNames) {
                 final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-                if (protoSlot instanceof LinkProtoSlot)
-                {
+                if (protoSlot instanceof LinkProtoSlot) {
                     continue;
                 }
 
-                if (allKeySlotNames.contains(slotName))
-                {
+                if (allKeySlotNames.contains(slotName)) {
                     // Skip key slots (handled separately)
                     continue;
                 }
 
-                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri))
-                {
+                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
                     propertyNamesNode.add(slotName);
                 }
 
                 final ObjectNode slotNode = createSlot(objectMapper, prototype, slotName);
 
-                if (slotNode != null)
-                {
+                if (slotNode != null) {
                     slotMapNode.put(slotName, slotNode);
                 }
 
             }
-            if (propertyNamesNode.size() > 0)
-            {
+            if (propertyNamesNode.size() > 0) {
                 rootNode.put(PropertyName.propertyNames.name(), propertyNamesNode);
             }
 
@@ -255,41 +229,34 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
 
         final Set<String> comparablePropertyNames = prototype.getComparableSlotNames();
-        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty())
-        {
+        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty()) {
             final ArrayNode comparablePropertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String comparablePropertyName : comparablePropertyNames)
-            {
+            for (final String comparablePropertyName : comparablePropertyNames) {
                 comparablePropertyNamesNode.add(comparablePropertyName);
             }
 
-            if (comparablePropertyNamesNode.size() > 0)
-            {
+            if (comparablePropertyNamesNode.size() > 0) {
                 rootNode.put(PropertyName.comparablePropertyNames.name(), comparablePropertyNamesNode);
             }
         }
 
         final Collection<LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots().values();
-        if (linkProtoSlots != null && !linkProtoSlots.isEmpty())
-        {
+        if (linkProtoSlots != null && !linkProtoSlots.isEmpty()) {
             final ArrayNode linkNamesNode = objectMapper.createArrayNode();
             final ObjectNode linksMapNode = objectMapper.createObjectNode();
             rootNode.put(PropertyName.links.name(), linksMapNode);
 
-            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots)
-            {
+            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots) {
 
-                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri))
-                {
+                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
                     linkNamesNode.add(linkProtoSlot.getName());
                 }
 
                 final ObjectNode linkNode = objectMapper.createObjectNode();
 
                 String linkTitle = linkProtoSlot.getTitle();
-                if (linkTitle == null)
-                {
+                if (linkTitle == null) {
                     linkTitle = linkProtoSlot.getName();
                 }
 
@@ -311,46 +278,37 @@ public class SchemaDesignFormatter extends AbstractFormatter
                 linkNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
 
                 URI requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
-                if (schemaLoader.getDocumentSchemaUri().equals(requestSchemaUri))
-                {
-                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri))
-                    {
+                if (schemaLoader.getDocumentSchemaUri().equals(requestSchemaUri)) {
+                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
                         requestSchemaUri = schemaUri;
                     }
                 }
 
-                if (requestSchemaUri == null && method == Method.Save)
-                {
+                if (requestSchemaUri == null && method == Method.Save) {
                     requestSchemaUri = schemaUri;
                 }
 
-                if (requestSchemaUri != null)
-                {
+                if (requestSchemaUri != null) {
                     linkNode.put(PropertyName.requestSchemaUri.name(), syntaxLoader.formatSyntaxValue(requestSchemaUri));
 
                     final Schema requestSchema = schemaLoader.load(requestSchemaUri);
-                    if (requestSchema != null)
-                    {
+                    if (requestSchema != null) {
                         linkNode.put(PropertyName.requestSchemaTitle.name(), requestSchema.getTitle());
                     }
                 }
 
                 URI responseSchemaUri = linkProtoSlot.getResponseSchemaUri();
-                if (schemaLoader.getDocumentSchemaUri().equals(responseSchemaUri))
-                {
-                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri))
-                    {
+                if (schemaLoader.getDocumentSchemaUri().equals(responseSchemaUri)) {
+                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
                         responseSchemaUri = schemaUri;
                     }
                 }
 
-                if (responseSchemaUri != null)
-                {
+                if (responseSchemaUri != null) {
                     linkNode.put(PropertyName.responseSchemaUri.name(), syntaxLoader.formatSyntaxValue(responseSchemaUri));
 
                     final Schema responseSchema = schemaLoader.load(responseSchemaUri);
-                    if (responseSchema != null)
-                    {
+                    if (responseSchema != null) {
                         linkNode.put(PropertyName.responseSchemaTitle.name(), responseSchema.getTitle());
                     }
                 }
@@ -359,8 +317,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
             }
 
-            if (linkNamesNode.size() > 0)
-            {
+            if (linkNamesNode.size() > 0) {
                 rootNode.put(PropertyName.linkNames.name(), linkNamesNode);
             }
 
@@ -373,41 +330,33 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    public static String getTitleSlotName(final URI schemaUri, final SchemaLoader schemaLoader)
-    {
+    public static String getTitleSlotName(final URI schemaUri, final SchemaLoader schemaLoader) {
         //
         // Attempt to (heuristically) determine the "title" slot for the model
         //
         final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null)
-        {
+        if (prototype == null) {
             return null;
         }
 
 
         String titleSlotName = prototype.getTitleSlotName();
-        if (StringUtils.isNotBlank(titleSlotName))
-        {
+        if (StringUtils.isNotBlank(titleSlotName)) {
             return titleSlotName;
         }
 
         final Class<?> schemaInterface = prototype.getSchemaBean().getIntrospectedClass();
-        if (Titled.class.isAssignableFrom(schemaInterface))
-        {
+        if (Titled.class.isAssignableFrom(schemaInterface)) {
             return Titled.SLOT_NAME_TITLE;
         }
-        else if (Named.class.isAssignableFrom(schemaInterface))
-        {
+        else if (Named.class.isAssignableFrom(schemaInterface)) {
             return Named.SLOT_NAME_NAME;
         }
-        else
-        {
+        else {
 
             final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
-            for (final String keySlotName : allKeySlotNames)
-            {
-                if (keySlotName.equals(Document.SLOT_NAME_URI))
-                {
+            for (final String keySlotName : allKeySlotNames) {
+                if (keySlotName.equals(Document.SLOT_NAME_URI)) {
                     continue;
                 }
 
@@ -422,8 +371,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    private static ObjectNode createSlot(final ObjectMapper objectMapper, final Prototype prototype, final String slotName)
-    {
+    private static ObjectNode createSlot(final ObjectMapper objectMapper, final Prototype prototype, final String slotName) {
 
         final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
         final SchemaLoader schemaLoader = prototype.getSchemaLoader();
@@ -431,8 +379,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
 
         final ValueType valueType = protoSlot.getValueType();
-        if (valueType == ValueType.Link)
-        {
+        if (valueType == ValueType.Link) {
             return null;
         }
 
@@ -447,35 +394,29 @@ public class SchemaDesignFormatter extends AbstractFormatter
         slotNode.put(PropertyName.description.name(), protoSlot.getDescription());
         slotNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
 
-        if (protoSlot instanceof PropertyProtoSlot)
-        {
+        if (protoSlot instanceof PropertyProtoSlot) {
             final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
             final Object defaultValue = propertyProtoSlot.getDefaultValue();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 slotNode.put(PropertyName.defaultValue.name(), syntaxLoader.formatSyntaxValue(defaultValue));
             }
         }
 
-        switch (valueType)
-        {
-            case Text:
-            {
+        switch (valueType) {
+            case Text: {
 
                 final ObjectNode syntaxNode = buildSyntaxNode(objectMapper, heapValueType, syntaxLoader);
                 slotNode.put(PropertyName.syntax.name(), syntaxNode);
 
                 final PropertyProtoSlot textPropertyProtoSlot = (PropertyProtoSlot) protoSlot;
                 final boolean isMultiline = textPropertyProtoSlot.isMultiline();
-                if (isMultiline)
-                {
+                if (isMultiline) {
                     slotNode.put(PropertyName.multiline.name(), isMultiline);
                 }
 
                 break;
             }
-            case List:
-            {
+            case List: {
                 final PropertyProtoSlot listPropertyProtoSlot = (PropertyProtoSlot) protoSlot;
 
                 final ObjectNode elementNode = objectMapper.createObjectNode();
@@ -486,17 +427,14 @@ public class SchemaDesignFormatter extends AbstractFormatter
                 final ValueType elementValueType = schemaLoader.getValueType(elementType);
                 elementNode.put(PropertyName.type.name(), elementValueType.name());
 
-                if (elementValueType == ValueType.Model)
-                {
+                if (elementValueType == ValueType.Model) {
                     final URI elementSchemaUri = listPropertyProtoSlot.getListElementSchemaUri();
-                    if (elementSchemaUri != null)
-                    {
+                    if (elementSchemaUri != null) {
                         final ObjectNode schemaNode = buildSchemaNode(objectMapper, elementSchemaUri, schemaLoader, null);
                         elementNode.put(PropertyName.schema.name(), schemaNode);
                     }
                 }
-                else if (elementValueType == ValueType.Text)
-                {
+                else if (elementValueType == ValueType.Text) {
                     final ObjectNode syntaxNode = buildSyntaxNode(objectMapper, elementType, syntaxLoader);
                     elementNode.put(PropertyName.syntax.name(), syntaxNode);
 
@@ -504,14 +442,12 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
                 break;
             }
-            case Model:
-            {
+            case Model: {
                 final ObjectNode schemaNode = buildSchemaNode(objectMapper, ((PropertyProtoSlot) protoSlot).getModelSchemaUri(), schemaLoader, null);
                 slotNode.put(PropertyName.schema.name(), schemaNode);
                 break;
             }
-            case SingleSelect:
-            {
+            case SingleSelect: {
                 final ObjectNode choicesNode = buildChoicesNode(objectMapper, heapValueType, schemaLoader);
                 slotNode.put(PropertyName.choices.name(), choicesNode);
                 break;
@@ -523,12 +459,10 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    public static ObjectNode buildSchemaNode(final ObjectMapper objectMapper, final URI schemaUri, final SchemaLoader schemaLoader, final Set<URI> addedBaseSchemaUris)
-    {
+    public static ObjectNode buildSchemaNode(final ObjectMapper objectMapper, final URI schemaUri, final SchemaLoader schemaLoader, final Set<URI> addedBaseSchemaUris) {
 
         final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null)
-        {
+        if (prototype == null) {
             return null;
         }
 
@@ -539,56 +473,45 @@ public class SchemaDesignFormatter extends AbstractFormatter
         schemaNode.put(PropertyName.version.name(), prototype.getVersion());
 
         String titleSlotName = prototype.getTitleSlotName();
-        if (StringUtils.isNotBlank(titleSlotName))
-        {
+        if (StringUtils.isNotBlank(titleSlotName)) {
             schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
         }
-        else
-        {
+        else {
             titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
-            if (StringUtils.isNotBlank(titleSlotName))
-            {
+            if (StringUtils.isNotBlank(titleSlotName)) {
                 schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
             }
         }
 
         final Set<String> allSlotNames = prototype.getAllSlotNames();
-        if (allSlotNames != null && !allSlotNames.isEmpty())
-        {
+        if (allSlotNames != null && !allSlotNames.isEmpty()) {
             final ArrayNode propertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String slotName : allSlotNames)
-            {
+            for (final String slotName : allSlotNames) {
                 final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-                if (protoSlot instanceof LinkProtoSlot)
-                {
+                if (protoSlot instanceof LinkProtoSlot) {
                     continue;
                 }
 
-                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri))
-                {
+                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
                     propertyNamesNode.add(slotName);
                 }
             }
-            if (propertyNamesNode.size() > 0)
-            {
+            if (propertyNamesNode.size() > 0) {
                 schemaNode.put(PropertyName.propertyNames.name(), propertyNamesNode);
             }
         }
 
 
         final Set<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-        if (keySlotNames != null && !keySlotNames.isEmpty())
-        {
+        if (keySlotNames != null && !keySlotNames.isEmpty()) {
             final ArrayNode keyPropertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String keySlotName : keySlotNames)
-            {
+            for (final String keySlotName : keySlotNames) {
                 keyPropertyNamesNode.add(keySlotName);
             }
 
-            if (keyPropertyNamesNode.size() > 0)
-            {
+            if (keyPropertyNamesNode.size() > 0) {
                 schemaNode.put(PropertyName.keyPropertyNames.name(), keyPropertyNamesNode);
             }
         }
@@ -597,64 +520,52 @@ public class SchemaDesignFormatter extends AbstractFormatter
         final ArrayNode allKeySlotNamesNode = objectMapper.createArrayNode();
         schemaNode.put(PropertyName.allKeySlotNames.name(), allKeySlotNamesNode);
 
-        for (final String keySlotName : allKeySlotNames)
-        {
+        for (final String keySlotName : allKeySlotNames) {
             allKeySlotNamesNode.add(keySlotName);
         }
 
 
         final Set<String> comparablePropertyNames = prototype.getComparableSlotNames();
-        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty())
-        {
+        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty()) {
             final ArrayNode comparablePropertyNamesNode = objectMapper.createArrayNode();
 
-            for (final String comparablePropertyName : comparablePropertyNames)
-            {
+            for (final String comparablePropertyName : comparablePropertyNames) {
                 comparablePropertyNamesNode.add(comparablePropertyName);
             }
 
-            if (comparablePropertyNamesNode.size() > 0)
-            {
+            if (comparablePropertyNamesNode.size() > 0) {
                 schemaNode.put(PropertyName.comparablePropertyNames.name(), comparablePropertyNamesNode);
             }
         }
 
         final Map<URI, LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots();
-        if (linkProtoSlots != null && !linkProtoSlots.isEmpty())
-        {
+        if (linkProtoSlots != null && !linkProtoSlots.isEmpty()) {
             final ArrayNode linkNamesNode = objectMapper.createArrayNode();
 
-            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots.values())
-            {
-                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri))
-                {
+            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots.values()) {
+                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
                     linkNamesNode.add(linkProtoSlot.getName());
                 }
             }
 
-            if (linkNamesNode.size() > 0)
-            {
+            if (linkNamesNode.size() > 0) {
                 schemaNode.put(PropertyName.linkNames.name(), linkNamesNode);
             }
         }
 
         final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty() && addedBaseSchemaUris != null)
-        {
+        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty() && addedBaseSchemaUris != null) {
 
             final ArrayNode baseSchemasNode = objectMapper.createArrayNode();
-            for (final URI baseSchemaUri : declaredBaseSchemaUris)
-            {
-                if (!addedBaseSchemaUris.contains(baseSchemaUri))
-                {
+            for (final URI baseSchemaUri : declaredBaseSchemaUris) {
+                if (!addedBaseSchemaUris.contains(baseSchemaUri)) {
                     final ObjectNode baseSchemaNode = buildSchemaNode(objectMapper, baseSchemaUri, schemaLoader, addedBaseSchemaUris);
                     baseSchemasNode.add(baseSchemaNode);
                     addedBaseSchemaUris.add(baseSchemaUri);
                 }
             }
 
-            if (baseSchemasNode.size() > 0)
-            {
+            if (baseSchemasNode.size() > 0) {
                 schemaNode.put(PropertyName.baseSchemas.name(), baseSchemasNode);
             }
         }
@@ -663,11 +574,9 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    private static ObjectNode buildSyntaxNode(final ObjectMapper objectMapper, final Type heapValueType, final SyntaxLoader syntaxLoader)
-    {
+    private static ObjectNode buildSyntaxNode(final ObjectMapper objectMapper, final Type heapValueType, final SyntaxLoader syntaxLoader) {
 
-        if (!String.class.equals(heapValueType) && heapValueType instanceof Class<?>)
-        {
+        if (!String.class.equals(heapValueType) && heapValueType instanceof Class<?>) {
 
 
             // TODO: Make it easy/possible to get the Syntax Document's title and uri
@@ -684,18 +593,15 @@ public class SchemaDesignFormatter extends AbstractFormatter
         return null;
     }
 
-    private static ObjectNode buildChoicesNode(final ObjectMapper objectMapper, final Type heapValueType, final SchemaLoader schemaLoader)
-    {
+    private static ObjectNode buildChoicesNode(final ObjectMapper objectMapper, final Type heapValueType, final SchemaLoader schemaLoader) {
 
-        if (heapValueType == null || !(heapValueType instanceof Class<?>))
-        {
+        if (heapValueType == null || !(heapValueType instanceof Class<?>)) {
             return null;
         }
 
         final Class<?> choicesEnumClass = (Class<?>) heapValueType;
 
-        if (!choicesEnumClass.isEnum())
-        {
+        if (!choicesEnumClass.isEnum()) {
             return null;
         }
 
@@ -709,14 +615,12 @@ public class SchemaDesignFormatter extends AbstractFormatter
 
         // TODO: Only embed the choices once per schema to lighten the download?
         final Object[] enumConstants = choicesEnumClass.getEnumConstants();
-        if (enumConstants != null && enumConstants.length > 0)
-        {
+        if (enumConstants != null && enumConstants.length > 0) {
             final ArrayNode valuesNode = objectMapper.createArrayNode();
 
             choicesNode.put(PropertyName.values.name(), valuesNode);
 
-            for (final Object enumConstant : enumConstants)
-            {
+            for (final Object enumConstant : enumConstants) {
                 final String choice = String.valueOf(enumConstant);
                 valuesNode.add(choice);
             }
@@ -727,8 +631,7 @@ public class SchemaDesignFormatter extends AbstractFormatter
     }
 
 
-    public enum PropertyName
-    {
+    public enum PropertyName {
 
         allKeySlotNames,
         baseSchemas,

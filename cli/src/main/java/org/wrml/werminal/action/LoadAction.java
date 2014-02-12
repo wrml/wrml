@@ -39,8 +39,7 @@ import org.wrml.werminal.window.ModelWindow;
 
 import java.net.URI;
 
-public class LoadAction extends WerminalAction
-{
+public class LoadAction extends WerminalAction {
 
     /**
      * <p>
@@ -52,27 +51,21 @@ public class LoadAction extends WerminalAction
      * restart).
      * </p>
      */
-    public final static boolean appliesTo(final Model model)
-    {
+    public final static boolean appliesTo(final Model model) {
 
-        if (!(model instanceof Document))
-        {
+        if (!(model instanceof Document)) {
             return false;
         }
 
         final URI uri = ((Document) model).getUri();
-        if (uri == null)
-        {
+        if (uri == null) {
             return false;
         }
 
-        if (model instanceof Api)
-        {
+        if (model instanceof Api) {
 
-            for (final SystemApi systemApi : SystemApi.values())
-            {
-                if (systemApi.getUri().equals(uri))
-                {
+            for (final SystemApi systemApi : SystemApi.values()) {
+                if (systemApi.getUri().equals(uri)) {
                     return false;
                 }
             }
@@ -80,21 +73,17 @@ public class LoadAction extends WerminalAction
             return true;
 
         }
-        else if (model instanceof LinkRelation)
-        {
+        else if (model instanceof LinkRelation) {
 
-            for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values())
-            {
-                if (systemLinkRelation.getUri().equals(uri))
-                {
+            for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values()) {
+                if (systemLinkRelation.getUri().equals(uri)) {
                     return false;
                 }
             }
 
             return true;
         }
-        else if (model instanceof Schema)
-        {
+        else if (model instanceof Schema) {
             // If it got this far, the Schema is already "loaded" but it may not be class generated, loaded, or
             // (finally) prototyped by the runtime. Check if we already have a Prototype associated with the Schema,
             // if so there is no more "loading" to be done with the Schema.
@@ -105,51 +94,43 @@ public class LoadAction extends WerminalAction
         return false;
     }
 
-    public LoadAction(final Werminal werminal)
-    {
+    public LoadAction(final Werminal werminal) {
 
         super(werminal, "Load");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();
         final Model model = modelWindow.syncModel();
 
-        if (model == null)
-        {
+        if (model == null) {
             werminal.showError("The model is null.");
         }
 
         final Context context = werminal.getContext();
         final ApiLoader apiLoader = context.getApiLoader();
 
-        if (!LoadAction.appliesTo(model))
-        {
+        if (!LoadAction.appliesTo(model)) {
             werminal.showError("The model (schema: " + model.getSchemaUri() + ") is not loadable.");
         }
 
         final URI uri = ((Document) model).getUri();
-        if (uri == null)
-        {
+        if (uri == null) {
             return;
         }
 
-        if (model instanceof Api)
-        {
+        if (model instanceof Api) {
             final Api api = (Api) model;
             apiLoader.loadApi(api);
         }
-        else if (model instanceof LinkRelation)
-        {
+        else if (model instanceof LinkRelation) {
             final LinkRelation linkRelation = (LinkRelation) model;
             apiLoader.loadLinkRelation(linkRelation);
         }
-        else if (model instanceof Schema)
-        {
+        else if (model instanceof Schema) {
             final Schema schema = (Schema) model;
             final SchemaLoader schemaLoader = context.getSchemaLoader();
             schemaLoader.load(schema);

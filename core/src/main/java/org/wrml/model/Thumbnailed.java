@@ -29,8 +29,7 @@ import java.net.URI;
 /**
  * Something with a thumbnail image. A Thumbnailed model manages the state of a "thumbnailLocation" text/URI slot.
  */
-public interface Thumbnailed extends Abstract
-{
+public interface Thumbnailed extends Abstract {
 
     /**
      * The {@link URI}-based thumbnail location associated with this {@link Thumbnailed} model.

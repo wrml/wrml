@@ -29,68 +29,56 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class History<E>
-{
+public class History<E> {
 
     private final HistoryMap<E> _Map;
 
-    public History()
-    {
+    public History() {
 
         _Map = new HistoryMap<>();
     }
 
-    public History(final Collection<E> initialState)
-    {
+    public History(final Collection<E> initialState) {
 
         _Map = new HistoryMap<E>(initialState);
     }
 
-    public History(final int initialCapcity)
-    {
+    public History(final int initialCapcity) {
 
         _Map = new HistoryMap<E>(initialCapcity);
     }
 
-    public void add(final E element)
-    {
+    public void add(final E element) {
 
-        if (_Map.containsKey(element))
-        {
+        if (_Map.containsKey(element)) {
             _Map.get(element);
         }
-        else
-        {
+        else {
             _Map.put(element, element);
         }
     }
 
-    public void addAll(final Collection<E> elements)
-    {
+    public void addAll(final Collection<E> elements) {
 
         _Map.addAll(elements);
     }
 
-    public void clear()
-    {
+    public void clear() {
 
         _Map.clear();
     }
 
-    public Set<E> getElementSet()
-    {
+    public Set<E> getElementSet() {
 
         return _Map.keySet();
     }
 
-    public void remove(final E element)
-    {
+    public void remove(final E element) {
 
         _Map.remove(element);
     }
 
-    private class HistoryMap<T> extends LinkedHashMap<T, T>
-    {
+    private class HistoryMap<T> extends LinkedHashMap<T, T> {
 
         private static final int DEFAULT_EXTRA_INITIAL_CAPACITY = 64;
 
@@ -100,44 +88,37 @@ public class History<E>
 
         private static final long serialVersionUID = 1L;
 
-        public HistoryMap()
-        {
+        public HistoryMap() {
 
             this(DEFAULT_EXTRA_INITIAL_CAPACITY);
         }
 
-        public HistoryMap(final Collection<T> initialElements)
-        {
+        public HistoryMap(final Collection<T> initialElements) {
 
             this(initialElements.size() + DEFAULT_EXTRA_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
             addAll(initialElements);
         }
 
-        public HistoryMap(final int initialCapacity)
-        {
+        public HistoryMap(final int initialCapacity) {
 
             this(initialCapacity, DEFAULT_LOAD_FACTOR);
         }
 
-        public HistoryMap(final int initialCapacity, final float loadFactor)
-        {
+        public HistoryMap(final int initialCapacity, final float loadFactor) {
 
             super(initialCapacity, loadFactor, true);
         }
 
-        public void addAll(final Collection<T> elements)
-        {
+        public void addAll(final Collection<T> elements) {
 
-            for (final T element : elements)
-            {
+            for (final T element : elements) {
                 put(element, element);
             }
 
         }
 
         @Override
-        protected boolean removeEldestEntry(@SuppressWarnings("rawtypes") final Map.Entry eldest)
-        {
+        protected boolean removeEldestEntry(@SuppressWarnings("rawtypes") final Map.Entry eldest) {
 
             return size() > DEFAULT_MAX_ENTRIES;
         }

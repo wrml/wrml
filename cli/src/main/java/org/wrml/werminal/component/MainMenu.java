@@ -34,11 +34,9 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 /**
  * Moved from inner class of {@link org.wrml.werminal.Werminal}.
  */
-public class MainMenu extends TerminalAppPanel
-{
+public class MainMenu extends TerminalAppPanel {
 
-    public MainMenu(final Werminal werminal)
-    {
+    public MainMenu(final Werminal werminal) {
 
         super(werminal, "", new Border.Invisible(), Orientation.HORISONTAL, true, false);
 

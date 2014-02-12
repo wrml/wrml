@@ -25,46 +25,37 @@
 package org.wrml.werminal.action;
 
 import org.wrml.model.Model;
-import org.wrml.runtime.Context;
-import org.wrml.runtime.service.Service;
-import org.wrml.runtime.service.ServiceLoader;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.dialog.SetOriginDialog;
 import org.wrml.werminal.window.ModelWindow;
 
-public class SetOriginConfirmationAction extends CloseBeforeAction
-{
+public class SetOriginConfirmationAction extends CloseBeforeAction {
 
     private SetOriginDialog _SetOriginDialog;
 
-    public SetOriginConfirmationAction(final Werminal werminal)
-    {
+    public SetOriginConfirmationAction(final Werminal werminal) {
 
         super(werminal, "OK");
     }
 
-    public SetOriginDialog getSetOriginDialog()
-    {
+    public SetOriginDialog getSetOriginDialog() {
 
         return _SetOriginDialog;
     }
 
-    public void setSetOriginDialog(final SetOriginDialog setOriginDialog)
-    {
+    public void setSetOriginDialog(final SetOriginDialog setOriginDialog) {
 
         _SetOriginDialog = setOriginDialog;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();
         final Model model = modelWindow.syncModel();
 
-        if (model == null)
-        {
+        if (model == null) {
             werminal.showError("The model is null.");
         }
 

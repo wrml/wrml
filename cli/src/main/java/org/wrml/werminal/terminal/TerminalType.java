@@ -24,8 +24,7 @@
  */
 package org.wrml.werminal.terminal;
 
-public enum TerminalType
-{
+public enum TerminalType {
 
     Swing,
     Unix;

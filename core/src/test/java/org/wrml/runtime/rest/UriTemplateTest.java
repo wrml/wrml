@@ -24,18 +24,6 @@
  */
 package org.wrml.runtime.rest;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,15 +32,20 @@ import org.slf4j.LoggerFactory;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.runtime.syntax.UriSyntaxHandler;
 
-public class UriTemplateTest
-{
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class UriTemplateTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UriTemplateTest.class);
 
     private SyntaxLoader _SyntaxLoader;
 
-    final Map<String, Object> _ParameterMap = new HashMap<String, Object>()
-    {
+    final Map<String, Object> _ParameterMap = new HashMap<String, Object>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -62,8 +55,8 @@ public class UriTemplateTest
     };
 
     @Before
-    public void init()
-    {
+    public void init() {
+
         _SyntaxLoader = mock(SyntaxLoader.class);
         when(_SyntaxLoader.formatSyntaxValue("crazy")).thenReturn("crazy");
         when(_SyntaxLoader.formatSyntaxValue("nuts")).thenReturn("nuts");
@@ -73,8 +66,8 @@ public class UriTemplateTest
     }
 
     @Test
-    public void evaluate() throws URISyntaxException
-    {
+    public void evaluate() throws URISyntaxException {
+
         final String inputPattern = "/{moose}/{squirrel}";
 
         LOGGER.debug("Input pattern is " + inputPattern);
@@ -88,8 +81,8 @@ public class UriTemplateTest
     }
 
     @Test
-    public void pullParameters() throws URISyntaxException
-    {
+    public void pullParameters() throws URISyntaxException {
+
         final String inputPattern = "/{moose}/{squirrel}";
 
         final UriTemplate t = new UriTemplate(_SyntaxLoader, inputPattern);
@@ -112,18 +105,18 @@ public class UriTemplateTest
     }
 
     @Test
-    public void testCreate()
-    {
+    public void testCreate() {
+
         @SuppressWarnings("unused")
         final UriTemplate t = new UriTemplate(_SyntaxLoader, "/{moose}/{squirrel}");
     }
 
     @Test
-    public void testParams()
-    {
+    public void testParams() {
+
         final UriTemplate t = new UriTemplate(_SyntaxLoader, "/{moose}/{squirrel}");
 
-        final String[] expected = new String[] { "moose", "squirrel" };
+        final String[] expected = new String[]{"moose", "squirrel"};
         final List<String> expectedList = Arrays.asList(expected);
 
         final String[] names = t.getParameterNames();
@@ -133,14 +126,14 @@ public class UriTemplateTest
     }
 
     @Test
-    public void testLongParams()
-    {
+    public void testLongParams() {
+
         final UriTemplate t = new UriTemplate(_SyntaxLoader, "/cylons/galaxy/{galaxy}/{quadrant}/aliens/{alienId}");
 
         final String[] names = t.getParameterNames();
         final List<String> realList = Arrays.asList(names);
 
-        final String[] expected = new String[] { "galaxy", "quadrant", "alienId" };
+        final String[] expected = new String[]{"galaxy", "quadrant", "alienId"};
         final List<String> expectedList = Arrays.asList(expected);
 
         Assert.assertTrue("The expected param names " + expectedList.toString() + " do not match the actual " + realList.toString(), realList.equals(expectedList));

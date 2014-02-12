@@ -29,18 +29,15 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.dialog.PrintPreviewDialog;
 import org.wrml.werminal.window.ModelWindow;
 
-public class PrintPreviewAction extends WerminalAction
-{
+public class PrintPreviewAction extends WerminalAction {
 
-    public PrintPreviewAction(final Werminal werminal)
-    {
+    public PrintPreviewAction(final Werminal werminal) {
 
         super(werminal, "Print Preview");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();

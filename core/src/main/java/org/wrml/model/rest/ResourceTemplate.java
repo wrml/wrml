@@ -91,8 +91,7 @@ import java.util.List;
  * @see UriTemplate
  * @see UniquelyIdentified
  */
-public interface ResourceTemplate extends UniquelyIdentified, Versioned, Described, Model
-{
+public interface ResourceTemplate extends UniquelyIdentified, Versioned, Described, Model {
 
     /**
      * <p>

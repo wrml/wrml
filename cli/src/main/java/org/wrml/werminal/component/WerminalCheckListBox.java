@@ -31,8 +31,7 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.action.WerminalAction;
 import org.wrml.werminal.terminal.TerminalAppKeyboardInteraction;
 
-public class WerminalCheckListBox extends CheckBoxList
-{
+public class WerminalCheckListBox extends CheckBoxList {
 
     private final Werminal _Werminal;
 
@@ -42,49 +41,41 @@ public class WerminalCheckListBox extends CheckBoxList
 
     private Object _CheckedItem;
 
-    public WerminalCheckListBox(final Werminal werminal)
-    {
+    public WerminalCheckListBox(final Werminal werminal) {
 
         this(werminal, null, null);
     }
 
     public WerminalCheckListBox(final Werminal werminal, final WerminalAction enterAction,
-                                final WerminalAction enterOnSelectionAction)
-    {
+                                final WerminalAction enterOnSelectionAction) {
 
         _Werminal = werminal;
         _KeyboardInteraction = new TerminalAppKeyboardInteraction(_Werminal, enterAction, true);
         _EnterOnSelectionAction = enterOnSelectionAction;
     }
 
-    public Object getCheckedItem()
-    {
+    public Object getCheckedItem() {
 
         return _CheckedItem;
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
         final Kind kind = key.getKind();
-        switch (kind)
-        {
+        switch (kind) {
 
-            case Enter:
-            {
+            case Enter: {
 
                 final Object oldSelectedItem = getSelectedItem();
                 final Object oldCheckedItem = getCheckedItem();
 
                 // Intentional fall through here...
-                if (_CheckedItem != null)
-                {
+                if (_CheckedItem != null) {
                     setChecked(_CheckedItem, false);
                     _CheckedItem = null;
                 }
@@ -92,31 +83,26 @@ public class WerminalCheckListBox extends CheckBoxList
                 Result result = super.keyboardInteraction(key);
 
                 final Object newSelectedItem = getSelectedItem();
-                if ((newSelectedItem != null) && isChecked(newSelectedItem))
-                {
+                if ((newSelectedItem != null) && isChecked(newSelectedItem)) {
 
                     setCheckedItem(newSelectedItem);
 
                 }
 
-                if (_KeyboardInteraction.handleKeyboardInteraction(key))
-                {
+                if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                     result = Result.EVENT_HANDLED;
                 }
 
-                if (_EnterOnSelectionAction != null && oldCheckedItem != null && oldSelectedItem == oldCheckedItem)
-                {
+                if (_EnterOnSelectionAction != null && oldCheckedItem != null && oldSelectedItem == oldCheckedItem) {
                     _EnterOnSelectionAction.doAction();
                 }
 
                 return result;
             }
 
-            default:
-            {
+            default: {
 
-                if (_KeyboardInteraction.handleKeyboardInteraction(key))
-                {
+                if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                     return Result.EVENT_HANDLED;
                 }
 
@@ -126,12 +112,10 @@ public class WerminalCheckListBox extends CheckBoxList
 
     }
 
-    protected void setCheckedItem(final Object newCheckedItem)
-    {
+    protected void setCheckedItem(final Object newCheckedItem) {
 
         _CheckedItem = newCheckedItem;
-        if (_CheckedItem != null)
-        {
+        if (_CheckedItem != null) {
             setChecked(_CheckedItem, true);
         }
     }

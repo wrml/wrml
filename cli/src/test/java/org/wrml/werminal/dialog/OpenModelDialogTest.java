@@ -33,7 +33,6 @@ import org.mockito.Mockito;
 import org.mockito.internal.util.MockUtil;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.wrml.model.schema.Schema;
-import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.util.JavaBean;
@@ -65,8 +64,7 @@ import static org.mockito.Mockito.when;
 // @PrepareForTest({ TerminalApp.class }) // no worky (stackmap err)
 // @PrepareForTest({ JavaBean.class })
 @Ignore
-public class OpenModelDialogTest
-{
+public class OpenModelDialogTest {
 
     private final URI mockSchemaUri = URI.create("mockSchemaUri");
 
@@ -99,8 +97,7 @@ public class OpenModelDialogTest
     private Prototype mockPrototype;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         MockUtil mockUtil = new MockUtil();
 
@@ -128,8 +125,7 @@ public class OpenModelDialogTest
      * fails on NPE due to unmockable inherited context
      */
     @Test(expected = NullPointerException.class)
-    public void testConstructor4ArgNull()
-    {
+    public void testConstructor4ArgNull() {
 
         _OpenModelDialog = new OpenModelDialog(null, null, null, null);
         fail("expected NPE");
@@ -137,8 +133,7 @@ public class OpenModelDialogTest
 
     @Test
     @Ignore
-    public void testConstructor() throws Exception
-    {
+    public void testConstructor() throws Exception {
 
         Werminal mockWerminal = mock(Werminal.class, Mockito.RETURNS_DEEP_STUBS);
         // deep stub: http://docs.mockito.googlecode.com/hg/org/mockito/Mockito.html#RETURNS_DEEP_STUBS
@@ -147,22 +142,19 @@ public class OpenModelDialogTest
     }
 
     @Test
-    public void testDefaultConstructor()
-    {
+    public void testDefaultConstructor() {
 
         assertNotNull(_OpenModelDialog);
     }
 
     @Test
-    public void testSetKeys()
-    {
+    public void testSetKeys() {
 
         _OpenModelDialog.setKeys(null);
     }
 
     @Test
-    public void testSetSchemaUriNull()
-    {
+    public void testSetSchemaUriNull() {
 
         _OpenModelDialog.setSchemaUri(null);
     }
@@ -173,8 +165,7 @@ public class OpenModelDialogTest
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
     @Ignore
-    public void testSetSchemaUri() throws ClassNotFoundException
-    {
+    public void testSetSchemaUri() throws ClassNotFoundException {
 
         JavaBean mockJavaBean = mock(JavaBean.class);
         Class mockSchemaInterface = Schema.class;

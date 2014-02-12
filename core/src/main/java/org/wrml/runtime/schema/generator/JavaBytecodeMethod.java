@@ -27,8 +27,7 @@ package org.wrml.runtime.schema.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaBytecodeMethod
-{
+public class JavaBytecodeMethod {
 
     private String _Name;
 
@@ -40,49 +39,49 @@ public class JavaBytecodeMethod
 
     private final List<JavaBytecodeAnnotation> _Annotations;
 
-    JavaBytecodeMethod()
-    {
+    JavaBytecodeMethod() {
+
         _Annotations = new ArrayList<JavaBytecodeAnnotation>();
         _Exceptions = new ArrayList<String>();
     }
 
-    public List<JavaBytecodeAnnotation> getAnnotations()
-    {
+    public List<JavaBytecodeAnnotation> getAnnotations() {
+
         return _Annotations;
     }
 
-    public String getDescriptor()
-    {
+    public String getDescriptor() {
+
         return _Descriptor;
     }
 
-    public List<String> getExceptions()
-    {
+    public List<String> getExceptions() {
+
         return _Exceptions;
     }
 
-    public String getName()
-    {
+    public String getName() {
+
         return _Name;
     }
 
-    public String getSignature()
-    {
+    public String getSignature() {
+
         return _Signature;
     }
 
-    public void setDescriptor(final String descriptor)
-    {
+    public void setDescriptor(final String descriptor) {
+
         _Descriptor = descriptor;
     }
 
-    public void setName(final String name)
-    {
+    public void setName(final String name) {
+
         _Name = name;
     }
 
-    public void setSignature(final String signature)
-    {
+    public void setSignature(final String signature) {
+
         _Signature = signature;
     }
 }

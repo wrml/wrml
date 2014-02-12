@@ -31,64 +31,54 @@ import org.wrml.runtime.Keys;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.window.ModelWindow;
 
-public class SaveAction extends WerminalAction
-{
+public class SaveAction extends WerminalAction {
 
-    public SaveAction(final Werminal werminal)
-    {
+    public SaveAction(final Werminal werminal) {
 
         super(werminal, "Save");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();
         final Model model;
 
-        try
-        {
+        try {
             model = modelWindow.syncModel();
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             getWerminal().showError(e.getMessage());
             return;
         }
 
-        if (model instanceof Embedded || model.getPrototype().getAllKeySlotNames().isEmpty())
-        {
+        if (model instanceof Embedded || model.getPrototype().getAllKeySlotNames().isEmpty()) {
             werminal.showMessageBox("Form Edits Applied", "The model's state was successfully committed (locally).");
             return;
         }
 
         final Keys keys = model.getKeys();
-        if (keys == null)
-        {
+        if (keys == null) {
             werminal.showMessageBox("Error - Save Failed", "Cannot save model; all of the key slot values are blank.");
             return;
         }
 
         final Model savedModel;
 
-        try
-        {
+        try {
 
             final Context context = getContext();
 
             savedModel = context.saveModel(model);
 
-            if (savedModel == null)
-            {
+            if (savedModel == null) {
                 werminal.showError("An unexpected error has occurred and the model could not be saved.");
                 return;
             }
 
         }
-        catch (final Exception t)
-        {
+        catch (final Exception t) {
             werminal.showError("An unexpected error has occurred and the model could not be saved.", t);
             return;
         }

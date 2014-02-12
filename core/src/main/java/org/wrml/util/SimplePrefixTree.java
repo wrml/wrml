@@ -25,30 +25,25 @@
 package org.wrml.util;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A {@link PrefixTree} that allows simple, "literal" paths to "match" a value.
  *
  * @param <T> The value type of the tree's {@link PrefixTreeNode}s.
  */
-public class SimplePrefixTree<T> extends PrefixTreeBase<T>
-{
+public class SimplePrefixTree<T> extends PrefixTreeBase<T> {
 
     @Override
-    public T getPathValue(final String path)
-    {
+    public T getPathValue(final String path) {
+
         final List<String> segments = segmentPath(path);
         PrefixTreeNode<T> node = getRoot();
 
-        for (final String segment : segments)
-        {
-            if (node.hasChild(segment))
-            {
+        for (final String segment : segments) {
+            if (node.hasChild(segment)) {
                 node = node.getChild(segment);
             }
-            else
-            {
+            else {
                 return null;
             }
         }

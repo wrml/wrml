@@ -54,13 +54,12 @@ import java.net.URI;
  * </p>
  *
  * @see <a href="http://martinfowler.com/articles/richardsonMaturityModel.html">Richardson Maturity Model (article by
- *      Martin Fowler)</a>
+ * Martin Fowler)</a>
  * @see <a href="http://www.iana.org/assignments/link-relations/link-relations.xml">IANA Link Relations Registry</a>
  */
 @Title("Link Relation")
 @WRML(keySlotNames = {"uniqueName"}, comparableSlotNames = {"title", "uniqueName"})
-public interface LinkRelation extends Titled, Versioned, Described, UniquelyNamed, Document
-{
+public interface LinkRelation extends Titled, Versioned, Described, UniquelyNamed, Document {
 
     /**
      * The {@link Method} to invoke on the HREF associated with this
@@ -76,8 +75,8 @@ public interface LinkRelation extends Titled, Versioned, Described, UniquelyName
      * (request body) arguments in {@link Link}s referencing this link relation.
      *
      * @return The schema id that identifies the type of models that can
-     *         typically be passed (as "function" arguments) when navigating
-     *         with this link relation.
+     * typically be passed (as "function" arguments) when navigating
+     * with this link relation.
      */
     URI getRequestSchemaUri();
 
@@ -87,8 +86,8 @@ public interface LinkRelation extends Titled, Versioned, Described, UniquelyName
      * relation.
      *
      * @return The schema id that identifies the type of models that can
-     *         be returned (as "function" return types) when
-     *         navigating with this link relation.
+     * be returned (as "function" return types) when
+     * navigating with this link relation.
      */
     URI getResponseSchemaUri();
 
@@ -97,7 +96,7 @@ public interface LinkRelation extends Titled, Versioned, Described, UniquelyName
      *
      * @param method the {@link Method} to associate with this LinkRelation.
      * @return the {@link Method} that used to be associated, before the caller
-     *         called.
+     * called.
      */
     Method setMethod(Method method);
 

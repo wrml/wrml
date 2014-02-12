@@ -33,7 +33,6 @@ import com.googlecode.lanterna.gui.layout.LinearLayout;
 import com.googlecode.lanterna.gui.listener.ComponentAdapter;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import org.wrml.model.rest.Document;
-import org.wrml.model.schema.Schema;
 import org.wrml.runtime.CompositeKey;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Keys;
@@ -52,8 +51,7 @@ import org.wrml.werminal.window.WerminalWindow;
 import java.net.URI;
 import java.util.*;
 
-public class OpenModelDialog extends WerminalWindow
-{
+public class OpenModelDialog extends WerminalWindow {
 
     private static final String DEFAULT_KEYS_PANEL_LABEL = " Keys: ";
 
@@ -83,15 +81,13 @@ public class OpenModelDialog extends WerminalWindow
     /**
      * for testing -- no need to mock {@code werminal.context}
      */
-    OpenModelDialog()
-    {
+    OpenModelDialog() {
 
         super(null, null);
     }
 
     public OpenModelDialog(final Werminal werminal, final String title, final WerminalAction confirmAction,
-                           final WerminalAction dismissAction)
-    {
+                           final WerminalAction dismissAction) {
 
         super(werminal, title);
         final URI schemaUri = werminal.getContext().getSchemaLoader().getApiSchemaUri();
@@ -104,8 +100,7 @@ public class OpenModelDialog extends WerminalWindow
      * @param dismissAction
      */
     private void init(final Werminal werminal, final WerminalAction confirmAction, final WerminalAction dismissAction,
-                      final URI schemaUri)
-    {
+                      final URI schemaUri) {
 
         _ConfirmAction = confirmAction;
 
@@ -123,12 +118,10 @@ public class OpenModelDialog extends WerminalWindow
         // Schema ID
         //
 
-        final WerminalAction enterKeysAction = new WerminalAction(getWerminal(), ENTER_KEYS_BUTTON_LABEL)
-        {
+        final WerminalAction enterKeysAction = new WerminalAction(getWerminal(), ENTER_KEYS_BUTTON_LABEL) {
 
             @Override
-            public void doAction()
-            {
+            public void doAction() {
 
                 _SchemaUri = getSchemaUri();
                 updateKeysPanel(_SchemaUri, null);
@@ -137,12 +130,10 @@ public class OpenModelDialog extends WerminalWindow
 
         final TerminalAppButton enterKeysButton = new TerminalAppButton(enterKeysAction);
 
-        _SchemaUriTextBox = new WerminalTextBox(werminal, 60, URI.class, enterKeysAction)
-        {
+        _SchemaUriTextBox = new WerminalTextBox(werminal, 60, URI.class, enterKeysAction) {
 
             @Override
-            protected void setText(final String stringValue, final boolean clearValue)
-            {
+            protected void setText(final String stringValue, final boolean clearValue) {
 
                 super.setText(stringValue, clearValue);
                 enterKeysAction.doAction();
@@ -155,29 +146,24 @@ public class OpenModelDialog extends WerminalWindow
 
         schemaUriTextBoxPanel.addComponent(enterKeysButton);
 
-        _SchemaUriTextBox.addComponentListener(new ComponentAdapter()
-        {
+        _SchemaUriTextBox.addComponentListener(new ComponentAdapter() {
 
             @Override
-            public void onComponentInvalidated(final Component component)
-            {
+            public void onComponentInvalidated(final Component component) {
 
                 final boolean canEnterKeys;
                 final String schemaUriText = _SchemaUriTextBox.getText();
-                if (schemaUriText == null || schemaUriText.trim().isEmpty())
-                {
+                if (schemaUriText == null || schemaUriText.trim().isEmpty()) {
                     canEnterKeys = false;
                 }
-                else
-                {
+                else {
                     final URI schemaUri = getSchemaUri();
                     canEnterKeys = schemaUri != null && schemaUri.equals(_SchemaUri);
                 }
 
                 // enterKeysButton.setVisible(canEnterKeys);
 
-                if (!canEnterKeys)
-                {
+                if (!canEnterKeys) {
                     updateKeysPanel(null, null);
                 }
             }
@@ -221,18 +207,15 @@ public class OpenModelDialog extends WerminalWindow
         final Context context = werminal.getContext();
     }
 
-    public UUID getHeapId()
-    {
+    public UUID getHeapId() {
 
         return (UUID) _HeapIdTextBox.getValue();
     }
 
-    public Keys getKeys()
-    {
+    public Keys getKeys() {
 
         final URI schemaUri = getSchemaUri();
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return null;
         }
 
@@ -244,72 +227,59 @@ public class OpenModelDialog extends WerminalWindow
         final KeysBuilder keysBuilder = new KeysBuilder();
 
         final Set<URI> keySchemaUris = _KeyInputs.keySet();
-        for (final URI keySchemaUri : keySchemaUris)
-        {
+        for (final URI keySchemaUri : keySchemaUris) {
 
             final WerminalTextBox keyTextBox = _KeyInputs.get(keySchemaUri);
 
             final Object keyValue;
-            try
-            {
+            try {
                 keyValue = keyTextBox.getValue();
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
                 continue;
             }
 
-            if (keyValue != null)
-            {
+            if (keyValue != null) {
                 keysBuilder.addKey(keySchemaUri, keyValue);
             }
         }
 
-        if (_KeyInputs.containsKey(documentSchemaUri))
-        {
+        if (_KeyInputs.containsKey(documentSchemaUri)) {
             // Build and add the document keys (if uri value != null)
             final WerminalTextBox uriTextBox = _KeyInputs.get(documentSchemaUri);
 
-            if (uriTextBox != null)
-            {
+            if (uriTextBox != null) {
                 final URI uri = uriTextBox.getValue();
-                if (uri != null)
-                {
+                if (uri != null) {
                     Keys surrogateKeys = apiLoader.buildDocumentKeys(uri, schemaUri);
                     keysBuilder.addAll(surrogateKeys);
                 }
             }
         }
 
-        if (!_CompositeKeyInputs.isEmpty())
-        {
+        if (!_CompositeKeyInputs.isEmpty()) {
 
             final Set<URI> compositeKeySchemaUris = _CompositeKeyInputs.keySet();
 
             outer:
-            for (final URI compositeKeySchemaUri : compositeKeySchemaUris)
-            {
+            for (final URI compositeKeySchemaUri : compositeKeySchemaUris) {
 
                 final SortedMap<String, Object> compositeKeySlots = new TreeMap<String, Object>();
                 final Map<String, WerminalTextBox> compositeKeyTextBoxes = _CompositeKeyInputs
                         .get(compositeKeySchemaUri);
-                for (final String compositeKeySlotName : compositeKeyTextBoxes.keySet())
-                {
+                for (final String compositeKeySlotName : compositeKeyTextBoxes.keySet()) {
 
                     final WerminalTextBox compositeKeyTextBox = compositeKeyTextBoxes.get(compositeKeySlotName);
 
                     final Object keyComponentValue;
-                    try
-                    {
+                    try {
                         keyComponentValue = compositeKeyTextBox.getValue();
                     }
-                    catch (final Exception e)
-                    {
+                    catch (final Exception e) {
                         continue outer;
                     }
 
-                    if (keyComponentValue == null)
-                    {
+                    if (keyComponentValue == null) {
                         continue outer;
                     }
 
@@ -317,8 +287,7 @@ public class OpenModelDialog extends WerminalWindow
 
                 }
 
-                if (!compositeKeySlots.isEmpty())
-                {
+                if (!compositeKeySlots.isEmpty()) {
                     keysBuilder.addKey(compositeKeySchemaUri, new CompositeKey(compositeKeySlots));
                 }
 
@@ -328,33 +297,27 @@ public class OpenModelDialog extends WerminalWindow
         return keysBuilder.toKeys();
     }
 
-    public void setKeys(final Keys keys)
-    {
+    public void setKeys(final Keys keys) {
 
         updateKeysPanel(getSchemaUri(), keys);
     }
 
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
 
-        try
-        {
+        try {
             return (URI) _SchemaUriTextBox.getValue();
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             return null;
         }
     }
 
-    public HistoryCheckListBox getSchemaUriHistoryCheckBoxList()
-    {
+    public HistoryCheckListBox getSchemaUriHistoryCheckBoxList() {
 
         return _SchemaUriHistoryCheckBoxList;
     }
 
-    public URI setSchemaUri(final URI schemaUri)
-    {
+    public URI setSchemaUri(final URI schemaUri) {
 
         _SchemaUri = schemaUri;
         final URI oldSchemaUri = (URI) _SchemaUriTextBox.setValue(schemaUri, false);
@@ -362,34 +325,29 @@ public class OpenModelDialog extends WerminalWindow
         return oldSchemaUri;
     }
 
-    private boolean addKeyInput(final URI schemaUri, final Prototype keyDeclaredPrototype, final Keys keys)
-    {
+    private boolean addKeyInput(final URI schemaUri, final Prototype keyDeclaredPrototype, final Keys keys) {
 
         final Werminal werminal = getWerminal();
         final Context context = werminal.getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI keyDeclaredSchemaUri = keyDeclaredPrototype.getSchemaUri();
 
-        if (_KeyInputs.containsKey(keyDeclaredSchemaUri))
-        {
+        if (_KeyInputs.containsKey(keyDeclaredSchemaUri)) {
             return false;
         }
 
         final SortedSet<String> keySlotNames = keyDeclaredPrototype.getDeclaredKeySlotNames();
-        if (keySlotNames == null || keySlotNames.isEmpty())
-        {
+        if (keySlotNames == null || keySlotNames.isEmpty()) {
             // The schema declare's *zero* key slots
             return false;
         }
 
-        if (keySlotNames.size() == 1)
-        {
+        if (keySlotNames.size() == 1) {
             // The schema declare's *only one* key slot
 
             final String keySlotName = keySlotNames.first();
 
-            if (_KeySlotNames.contains(keySlotName))
-            {
+            if (_KeySlotNames.contains(keySlotName)) {
                 return false;
             }
 
@@ -405,24 +363,19 @@ public class OpenModelDialog extends WerminalWindow
 
             final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
             final boolean isDocumentPrototype = keyDeclaredSchemaUri.equals(documentSchemaUri);
-            if (isDocumentPrototype)
-            {
+            if (isDocumentPrototype) {
 
-                keyTextBox.addComponentListener(new ComponentAdapter()
-                {
+                keyTextBox.addComponentListener(new ComponentAdapter() {
 
                     @Override
-                    public void onComponentInvalidated(final Component component)
-                    {
+                    public void onComponentInvalidated(final Component component) {
 
                         final URI uri;
-                        try
-                        {
+                        try {
                             uri = (URI) keyTextBox.getValue();
                             updateKeysPanelDocumentSurrogateKeyInputs(uri);
                         }
-                        catch (final Exception ex)
-                        {
+                        catch (final Exception ex) {
                             return;
                         }
 
@@ -434,23 +387,19 @@ public class OpenModelDialog extends WerminalWindow
 
             return true;
         }
-        else
-        {
+        else {
 
             // The schema declare's *more than one* key slot
 
             final SortedMap<String, WerminalTextBox> compositeKeyTextBoxes = new TreeMap<>();
-            for (final String keySlotName : keySlotNames)
-            {
+            for (final String keySlotName : keySlotNames) {
 
-                if (_KeySlotNames.contains(keySlotName))
-                {
+                if (_KeySlotNames.contains(keySlotName)) {
                     continue;
                 }
 
                 final ProtoSlot protoSlot = keyDeclaredPrototype.getProtoSlot(keySlotName);
-                if (protoSlot == null)
-                {
+                if (protoSlot == null) {
                     continue;
                 }
 
@@ -466,8 +415,7 @@ public class OpenModelDialog extends WerminalWindow
                 _KeySlotNames.add(keySlotName);
             }
 
-            if (compositeKeyTextBoxes.isEmpty())
-            {
+            if (compositeKeyTextBoxes.isEmpty()) {
                 return false;
             }
 
@@ -477,16 +425,14 @@ public class OpenModelDialog extends WerminalWindow
 
     }
 
-    private void addKeyMessageLabel()
-    {
+    private void addKeyMessageLabel() {
 
         addMessageLabel("Enter a Schema.id and *click* the \"" + ENTER_KEYS_BUTTON_LABEL + "\" button.",
                 Alignment.LEFT_CENTER);
 
     }
 
-    private void addMessageLabel(final String message, final Alignment alignment)
-    {
+    private void addMessageLabel(final String message, final Alignment alignment) {
 
         final Label label = new Label(message);
         label.setAlignment(alignment);
@@ -496,8 +442,7 @@ public class OpenModelDialog extends WerminalWindow
     }
 
     private TerminalAppTextBoxPanel createKeyInput(final URI schemaUri, final Prototype keyDeclaredPrototype,
-                                                   final String keyInputName, final Class<?> keyInputType, final int keyInputWidth)
-    {
+                                                   final String keyInputName, final Class<?> keyInputType, final int keyInputWidth) {
 
         final Werminal werminal = getWerminal();
         final WerminalTextBox keyTextBox = new WerminalTextBox(getWerminal(), keyInputWidth, keyInputType,
@@ -509,17 +454,14 @@ public class OpenModelDialog extends WerminalWindow
         final String panelTitle = " " + schemaTitle + "." + keyInputName + " (" + keyInputTypeTitle + "): ";
         final TerminalAppTextBoxPanel keyTextBoxPanel = new TerminalAppTextBoxPanel(werminal, panelTitle, keyTextBox);
 
-        final WerminalAction showHistoryAction = new WerminalAction(getWerminal(), SHOW_HISTORY_BUTTON_LABEL)
-        {
+        final WerminalAction showHistoryAction = new WerminalAction(getWerminal(), SHOW_HISTORY_BUTTON_LABEL) {
 
             @Override
-            public void doAction()
-            {
+            public void doAction() {
 
                 final Prototype prototype = werminal.getContext().getSchemaLoader().getPrototype(schemaUri);
                 final SortedSet<Object> keyHistory = werminal.getSlotValueHistory(schemaUri, keyInputName);
-                if (keyHistory != null && !keyHistory.isEmpty())
-                {
+                if (keyHistory != null && !keyHistory.isEmpty()) {
                     final String popupTitle = "Key History - " + prototype.getTitle() + " - " + panelTitle;
                     final HistoryPopup historyPopup = new HistoryPopup(werminal, popupTitle, keyTextBox);
 
@@ -528,8 +470,7 @@ public class OpenModelDialog extends WerminalWindow
                     keyHistoryCheckListBox.addItems(keyHistory);
                     werminal.showWindow(historyPopup);
                 }
-                else
-                {
+                else {
                     werminal.showMessageBox("Empty Key History",
                             "\nUnfortunately, there are no saved history values associated with the \"" + schemaTitle
                                     + "." + keyInputName + "\" key slot.");
@@ -545,15 +486,13 @@ public class OpenModelDialog extends WerminalWindow
         return keyTextBoxPanel;
     }
 
-    private void updateKeysPanel(final URI schemaUri, final Keys keys)
-    {
+    private void updateKeysPanel(final URI schemaUri, final Keys keys) {
 
         _KeysPanel.removeAllComponents();
         _KeyInputs.clear();
         _KeySlotNames.clear();
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             _KeysPanel.setTitle(DEFAULT_KEYS_PANEL_LABEL);
             addKeyMessageLabel();
 
@@ -565,13 +504,11 @@ public class OpenModelDialog extends WerminalWindow
 
         final Prototype prototype;
         final Class<?> schemaInterface;
-        try
-        {
+        try {
             prototype = schemaLoader.getPrototype(schemaUri);
             schemaInterface = schemaLoader.getSchemaInterface(schemaUri);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
 
             addKeyMessageLabel();
 
@@ -586,30 +523,26 @@ public class OpenModelDialog extends WerminalWindow
         URI uri = null;
 
         // Put Document's key first
-        if (Document.class.isAssignableFrom(schemaInterface))
-        {
+        if (Document.class.isAssignableFrom(schemaInterface)) {
             final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
             final Prototype documentPrototype = schemaLoader.getPrototype(documentSchemaUri);
             addKeyInput(schemaUri, documentPrototype, keys);
 
             final WerminalTextBox textBox = _KeyInputs.get(documentSchemaUri);
             uri = getWerminal().getDefaultDocumentUri(schemaUri);
-            if (uri != null)
-            {
+            if (uri != null) {
                 textBox.setText(uri.toString());
                 uri = (URI) textBox.getValue();
             }
         }
 
         // Add all of the other key inputs; skipping Document's since we already made it first.
-        if (!Document.class.equals(schemaInterface))
-        {
+        if (!Document.class.equals(schemaInterface)) {
 
             addKeyInput(schemaUri, prototype, keys);
 
             final Set<Prototype> basePrototypes = prototype.getDeclaredBasePrototypes();
-            for (final Prototype basePrototype : basePrototypes)
-            {
+            for (final Prototype basePrototype : basePrototypes) {
                 addKeyInput(schemaUri, basePrototype, keys);
             }
 
@@ -627,17 +560,14 @@ public class OpenModelDialog extends WerminalWindow
          * _KeysPanel.addComponent(heapIdTextBoxPanel);
          */
 
-        if (uri != null)
-        {
+        if (uri != null) {
             updateKeysPanelDocumentSurrogateKeyInputs(uri);
         }
     }
 
-    private void updateKeysPanelDocumentSurrogateKeyInputs(final URI uri)
-    {
+    private void updateKeysPanelDocumentSurrogateKeyInputs(final URI uri) {
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return;
         }
 
@@ -647,15 +577,11 @@ public class OpenModelDialog extends WerminalWindow
 
         final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
         final Keys allDocumentKeys = apiLoader.buildDocumentKeys(uri, getSchemaUri());
-        if (allDocumentKeys != null && allDocumentKeys.getCount() > 1)
-        {
+        if (allDocumentKeys != null && allDocumentKeys.getCount() > 1) {
             final Set<URI> keyedSchemaUris = allDocumentKeys.getKeyedSchemaUris();
-            for (final URI keyedSchemaUri : keyedSchemaUris)
-            {
-                if (!keyedSchemaUri.equals(documentSchemaUri))
-                {
-                    if (_KeyInputs.containsKey(keyedSchemaUri))
-                    {
+            for (final URI keyedSchemaUri : keyedSchemaUris) {
+                if (!keyedSchemaUri.equals(documentSchemaUri)) {
+                    if (_KeyInputs.containsKey(keyedSchemaUri)) {
                         final WerminalTextBox surrogateKeyTextBox = _KeyInputs.get(keyedSchemaUri);
                         final Object surrogateKeyValue = allDocumentKeys.getValue(keyedSchemaUri);
                         surrogateKeyTextBox.setValue(surrogateKeyValue);

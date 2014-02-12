@@ -32,8 +32,7 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 
 import java.lang.reflect.Type;
 
-public class FormField extends TerminalAppPanel
-{
+public class FormField extends TerminalAppPanel {
 
     private final CheckBox _FieldCheckBox;
 
@@ -41,8 +40,7 @@ public class FormField extends TerminalAppPanel
 
     private final String _FieldName;
 
-    public FormField(final String fieldName, final Type valueType, final WerminalAction enterAction)
-    {
+    public FormField(final String fieldName, final Type valueType, final WerminalAction enterAction) {
 
         super(enterAction.getApp(),
                 "  " + fieldName + " (" + enterAction.getWerminal().getTypeTitle(valueType) + "): ",
@@ -57,26 +55,22 @@ public class FormField extends TerminalAppPanel
         render();
     }
 
-    public CheckBox getFieldCheckBox()
-    {
+    public CheckBox getFieldCheckBox() {
 
         return _FieldCheckBox;
     }
 
-    public String getFieldName()
-    {
+    public String getFieldName() {
 
         return _FieldName;
     }
 
-    public WerminalTextBox getFieldValueTextBox()
-    {
+    public WerminalTextBox getFieldValueTextBox() {
 
         return _FieldValueTextBox;
     }
 
-    protected void render()
-    {
+    protected void render() {
         // addComponent(_FieldCheckBox);
         addComponent(_FieldValueTextBox);
     }

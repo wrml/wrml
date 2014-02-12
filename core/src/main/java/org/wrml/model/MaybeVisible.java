@@ -29,8 +29,7 @@ import org.wrml.runtime.schema.DefaultValue;
 /**
  * A model which may be visible, with a bias toward being seen.
  */
-public interface MaybeVisible
-{
+public interface MaybeVisible {
 
     @DefaultValue("true")
     boolean isVisible();

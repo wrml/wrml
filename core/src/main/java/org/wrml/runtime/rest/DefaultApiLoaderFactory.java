@@ -26,11 +26,9 @@ package org.wrml.runtime.rest;
 
 import org.wrml.runtime.Factory;
 
-public class DefaultApiLoaderFactory implements Factory<ApiLoader>
-{
+public class DefaultApiLoaderFactory implements Factory<ApiLoader> {
     @Override
-    public ApiLoader create()
-    {
+    public ApiLoader create() {
 
         return new DefaultApiLoader();
     }

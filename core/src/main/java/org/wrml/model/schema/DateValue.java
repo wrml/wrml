@@ -24,16 +24,15 @@
  */
 package org.wrml.model.schema;
 
-import java.util.Date;
-
 import org.wrml.model.MaybeReadOnly;
 import org.wrml.model.MaybeRequired;
+
+import java.util.Date;
 
 /**
  * The WRML representation of the {@link Date} primitive type.
  */
-public interface DateValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value
-{
+public interface DateValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value {
 
     /**
      * <p>

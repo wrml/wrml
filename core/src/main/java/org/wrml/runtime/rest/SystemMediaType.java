@@ -28,23 +28,22 @@ package org.wrml.runtime.rest;
  * <p>
  * The WRML media type interface specification.
  * </p>
- * 
+ * <p/>
  * <p>
  * <b>Syntax:</b>
  * </p>
- * 
+ * <p/>
  * <p>
- * 
+ * <p/>
  * <pre>
  * media-type = type "/" subtype *( ";" parameter ) type = token subtype = token
  * </pre>
- * 
+ * <p/>
  * </p>
- * 
+ *
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">HTTP/1.1 Media Types</a>
  */
-public interface SystemMediaType
-{
+public interface SystemMediaType {
 
     /**
      * application (as in application/wrml)

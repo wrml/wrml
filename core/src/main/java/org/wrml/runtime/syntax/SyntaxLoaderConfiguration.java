@@ -29,24 +29,20 @@ import org.wrml.runtime.DefaultFactoryConfiguration;
 /**
  * Configuration for the {@link SyntaxLoader} component.
  */
-public final class SyntaxLoaderConfiguration extends DefaultFactoryConfiguration
-{
+public final class SyntaxLoaderConfiguration extends DefaultFactoryConfiguration {
 
     private SyntaxConfiguration[] _SyntaxConfigurations;
 
-    public SyntaxLoaderConfiguration()
-    {
+    public SyntaxLoaderConfiguration() {
 
     }
 
-    public final SyntaxConfiguration[] getSyntaxes()
-    {
+    public final SyntaxConfiguration[] getSyntaxes() {
 
         return _SyntaxConfigurations;
     }
 
-    public final void setSyntaxes(final SyntaxConfiguration[] syntaxHandlers)
-    {
+    public final void setSyntaxes(final SyntaxConfiguration[] syntaxHandlers) {
 
         _SyntaxConfigurations = syntaxHandlers;
     }

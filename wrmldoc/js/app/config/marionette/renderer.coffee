@@ -27,17 +27,17 @@
 
 
 do (Marionette) ->
-	_.extend Marionette.Renderer,
-		
-		lookups: ["apps/", "components/"]
-		
-		render: (template, data) ->
-			ecoTemplate = @getEcoTemplate(template)
-			throw "Template #{template} not found!" unless ecoTemplate
-			ecoTemplate(data)
-		
-		getEcoTemplate: (template) ->
-			for path in [template, template.split("/").insertAt(-1, "templates").join("/")]
-				for lookup in @lookups
-					ecoTemplate = ecoTemplates[lookup + path]
-					return ecoTemplate if ecoTemplate
+  _.extend Marionette.Renderer,
+
+    lookups: ["apps/", "components/"]
+
+    render: (template, data) ->
+      ecoTemplate = @getEcoTemplate(template)
+      throw "Template #{template} not found!" unless ecoTemplate
+      ecoTemplate(data)
+
+    getEcoTemplate: (template) ->
+      for path in [template, template.split("/").insertAt(-1, "templates").join("/")]
+        for lookup in @lookups
+          ecoTemplate = ecoTemplates[lookup + path]
+          return ecoTemplate if ecoTemplate

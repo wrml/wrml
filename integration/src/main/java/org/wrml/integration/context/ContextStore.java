@@ -21,15 +21,18 @@ public class ContextStore implements ApplicationContextAware {
     }
 
     public static ContextStore getInstance() {
+
         return INSTANCE;
     }
 
     public ApplicationContext getApplicationContext() {
+
         return ctx;
     }
 
     @Inject
     public void setApplicationContext(ApplicationContext ctx) {
+
         this.ctx = ctx;
         System.err.println(ctx.toString());
     }

@@ -1,15 +1,19 @@
 {
-	"title": "AddressablePerson",
-        "description" : "Example Person with address JSON Schema",
-	"type": "object",
-        "allOf" : [
-            { "$ref" : "http://schema.api.wrml.org/org/wrml/test/Person" },
-            { "$ref" : "http://schema.api.wrml.org/org/wrml/test/PostalAddress" }
-        ],
-	"properties": {
-                "mailable" : {
-                        "type" : "boolean"
-                }
-	},
-	"required": ["mailable"]
+    "title": "AddressablePerson",
+    "description": "Example Person with address JSON Schema",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "http://schema.api.wrml.org/org/wrml/test/Person"
+        },
+        {
+            "$ref": "http://schema.api.wrml.org/org/wrml/test/PostalAddress"
+        }
+    ],
+    "properties": {
+        "mailable": {
+            "type": "boolean"
+        }
+    },
+    "required": ["mailable"]
 }

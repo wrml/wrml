@@ -25,23 +25,19 @@
 package org.wrml.werminal.action;
 
 import org.wrml.model.Model;
-import org.wrml.runtime.service.Service;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.dialog.SetOriginDialog;
 import org.wrml.werminal.window.ModelWindow;
 
-public class SetOriginAction extends WerminalAction
-{
+public class SetOriginAction extends WerminalAction {
 
-    public SetOriginAction(final Werminal werminal)
-    {
+    public SetOriginAction(final Werminal werminal) {
 
         super(werminal, "Set Origin");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();

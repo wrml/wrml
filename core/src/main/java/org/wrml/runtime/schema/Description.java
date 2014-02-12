@@ -24,11 +24,7 @@
  */
 package org.wrml.runtime.schema;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Used by the WRML runtime to annotate Schema interfaces and their "Slots" (getter methods) with a text description
@@ -36,8 +32,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Description
-{
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface Description {
     String value();
 }

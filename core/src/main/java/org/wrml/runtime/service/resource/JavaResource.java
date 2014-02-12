@@ -28,8 +28,7 @@ import org.wrml.model.Abstract;
 import org.wrml.runtime.schema.WRML;
 
 @WRML(keySlotNames = {"resourceOwnerClassName", "resourceName"})
-public interface JavaResource extends Abstract
-{
+public interface JavaResource extends Abstract {
 
     public static final String RESOURCE_OWNER_CLASS_NAME_SLOT_NAME = "resourceOwnerClassName";
     public static final String RESOURCE_NAME_SLOT_NAME = "resourceName";

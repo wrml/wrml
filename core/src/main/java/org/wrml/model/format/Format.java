@@ -43,12 +43,11 @@ import java.util.List;
  *
  * @see <a href="http://www.wrml.org/format">http://www.wrml.org/format</a>
  * @see <a href="http://blog.programmableweb.com/2011/11/18/rest-api-design-putting-the-type-in-content-type/">
- *      ProgrammableWeb.com blog post</a>
+ * ProgrammableWeb.com blog post</a>
  */
 @WRML(keySlotNames = {"uniqueName"}, comparableSlotNames = {"uniqueName"})
 @Description("The WRML runtime allows for formats to be pluggable via a URI reference to a Document conforming to this Schema.")
-public interface Format extends Titled, Versioned, Described, UniquelyNamed, Document
-{
+public interface Format extends Titled, Versioned, Described, UniquelyNamed, Document {
 
     /**
      * The WRML constant name for a Format's <i>homePageUri</i> slot.

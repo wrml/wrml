@@ -26,18 +26,15 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class OpenAction extends WerminalAction
-{
+public class OpenAction extends WerminalAction {
 
-    public OpenAction(final Werminal werminal)
-    {
+    public OpenAction(final Werminal werminal) {
 
         super(werminal, "Open...");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         werminal.showWindow(werminal.getOpenModelDialog());

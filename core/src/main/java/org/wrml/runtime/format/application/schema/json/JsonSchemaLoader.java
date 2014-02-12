@@ -52,20 +52,18 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class JsonSchemaLoader implements Loader
-{
+public class JsonSchemaLoader implements Loader {
 
     private Context _Context;
 
     private final ConcurrentHashMap<URI, JsonSchema> _JsonSchemas;
 
-    public JsonSchemaLoader()
-    {
+    public JsonSchemaLoader() {
+
         _JsonSchemas = new ConcurrentHashMap<URI, JsonSchema>();
     }
 
-    public static void main(final String[] args) throws Exception
-    {
+    public static void main(final String[] args) throws Exception {
 
         final String wrmlConfigFilePath = args[0];
         final EngineConfiguration config = EngineConfiguration.load(wrmlConfigFilePath);
@@ -90,33 +88,27 @@ public class JsonSchemaLoader implements Loader
 
     }
 
-    public JsonSchema getLoadedJsonSchema(final URI schemaUri)
-    {
+    public JsonSchema getLoadedJsonSchema(final URI schemaUri) {
 
-        if (_JsonSchemas.containsKey(schemaUri))
-        {
+        if (_JsonSchemas.containsKey(schemaUri)) {
             return _JsonSchemas.get(schemaUri);
         }
         return null;
     }
 
-    public SortedSet<URI> getLoadedJsonSchemaUris()
-    {
+    public SortedSet<URI> getLoadedJsonSchemaUris() {
 
         return new TreeSet<URI>(_JsonSchemas.keySet());
     }
 
 
-    public JsonSchema load(final File file) throws IOException
-    {
+    public JsonSchema load(final File file) throws IOException {
 
-        if (file == null)
-        {
+        if (file == null) {
             throw new FileNotFoundException("The JSON schema file is null.");
         }
 
-        if (!file.exists())
-        {
+        if (!file.exists()) {
             throw new FileNotFoundException("The JSON schema file named \"" + file.getAbsolutePath()
                     + "\" does not exist.");
         }
@@ -127,21 +119,18 @@ public class JsonSchemaLoader implements Loader
         return jsonSchema;
     }
 
-    public JsonSchema load(final InputStream in, final URI jsonSchemaId) throws IOException
-    {
+    public JsonSchema load(final InputStream in, final URI jsonSchemaId) throws IOException {
 
         final ObjectNode rootNode = new ObjectMapper().readValue(in, ObjectNode.class);
         return load(rootNode, jsonSchemaId);
     }
 
-    public JsonSchema load(final ObjectNode rootNode, final URI jsonSchemaId)
-    {
+    public JsonSchema load(final ObjectNode rootNode, final URI jsonSchemaId) {
 
         final URI jsonSchemaIdPropertyValue = PropertyType.Id.getValue(rootNode, getSyntaxLoader());
         final URI id = (jsonSchemaIdPropertyValue != null) ? jsonSchemaIdPropertyValue : jsonSchemaId;
 
-        if (id == null)
-        {
+        if (id == null) {
             throw new JsonSchemaLoaderException("The JSON Schema \"id\" slot value (URI) could not be determined.",
                     null, this);
 
@@ -157,17 +146,14 @@ public class JsonSchemaLoader implements Loader
 
     }
 
-    public JsonSchema load(final Schema wrmlSchema)
-    {
+    public JsonSchema load(final Schema wrmlSchema) {
 
-        if (wrmlSchema == null)
-        {
+        if (wrmlSchema == null) {
             return null;
         }
 
         final URI schemaUri = wrmlSchema.getUri();
-        if (_JsonSchemas.containsKey(schemaUri))
-        {
+        if (_JsonSchemas.containsKey(schemaUri)) {
             return _JsonSchemas.get(schemaUri);
         }
 
@@ -190,16 +176,13 @@ public class JsonSchemaLoader implements Loader
 
         final ObjectNode propertiesNode = schemaNode.putObject(PropertyType.Properties.getName());
         final List<Slot> slots = wrmlSchema.getSlots();
-        for (final Slot slot : slots)
-        {
+        for (final Slot slot : slots) {
 
             final Value value = slot.getValue();
-            if (value instanceof LinkValue)
-            {
+            if (value instanceof LinkValue) {
                 initLinkSlotNode(schemaNode, slot);
             }
-            else
-            {
+            else {
                 final String slotName = slot.getName();
                 final ObjectNode slotNode = propertiesNode.putObject(slotName);
 
@@ -211,30 +194,25 @@ public class JsonSchemaLoader implements Loader
         return load(schemaNode, schemaUri);
     }
 
-    private void initStringArrayNode(final ObjectNode node, final String arrayNodeName, Collection<?> arrayNodeElements)
-    {
+    private void initStringArrayNode(final ObjectNode node, final String arrayNodeName, Collection<?> arrayNodeElements) {
 
-        if (arrayNodeElements == null || arrayNodeElements.isEmpty() || arrayNodeName == null)
-        {
+        if (arrayNodeElements == null || arrayNodeElements.isEmpty() || arrayNodeName == null) {
             return;
         }
 
         final ArrayNode arrayNode = node.putArray(arrayNodeName);
 
         final SyntaxLoader syntaxLoader = getSyntaxLoader();
-        for (Object element : arrayNodeElements)
-        {
+        for (Object element : arrayNodeElements) {
             final String stringValue = syntaxLoader.formatSyntaxValue(element);
             arrayNode.add(stringValue);
         }
 
     }
 
-    public JsonSchema load(final URI jsonSchemaUri) throws IOException
-    {
+    public JsonSchema load(final URI jsonSchemaUri) throws IOException {
 
-        if (_JsonSchemas.containsKey(jsonSchemaUri))
-        {
+        if (_JsonSchemas.containsKey(jsonSchemaUri)) {
             return _JsonSchemas.get(jsonSchemaUri);
         }
 
@@ -242,12 +220,10 @@ public class JsonSchemaLoader implements Loader
         return load(rootNode, jsonSchemaUri);
     }
 
-    public JsonSchema load(final URL jsonSchemaUrl) throws IOException
-    {
+    public JsonSchema load(final URL jsonSchemaUrl) throws IOException {
 
         final URI jsonSchemaUri = URI.create(jsonSchemaUrl.toString());
-        if (_JsonSchemas.containsKey(jsonSchemaUri))
-        {
+        if (_JsonSchemas.containsKey(jsonSchemaUri)) {
             return _JsonSchemas.get(jsonSchemaUri);
         }
 
@@ -255,57 +231,45 @@ public class JsonSchemaLoader implements Loader
         return load(rootNode, jsonSchemaUri);
     }
 
-    private JsonType getJsonType(final Value value)
-    {
+    private JsonType getJsonType(final Value value) {
 
         final JsonType jsonType;
 
-        if (value instanceof TextValue)
-        {
+        if (value instanceof TextValue) {
             jsonType = JsonType.String;
         }
-        else if (value instanceof ListValue)
-        {
+        else if (value instanceof ListValue) {
             jsonType = JsonType.Array;
         }
-        else if (value instanceof ModelValue)
-        {
+        else if (value instanceof ModelValue) {
             jsonType = JsonType.Object;
         }
-        else if (value instanceof IntegerValue)
-        {
+        else if (value instanceof IntegerValue) {
             jsonType = JsonType.Integer;
         }
-        else if (value instanceof BooleanValue)
-        {
+        else if (value instanceof BooleanValue) {
             jsonType = JsonType.Boolean;
         }
-        else if (value instanceof DoubleValue || value instanceof LongValue)
-        {
+        else if (value instanceof DoubleValue || value instanceof LongValue) {
             jsonType = JsonType.Number;
         }
-        else if (value instanceof DateValue || value instanceof SingleSelectValue)
-        {
+        else if (value instanceof DateValue || value instanceof SingleSelectValue) {
             jsonType = JsonType.String;
         }
-        else if (value instanceof LinkValue)
-        {
+        else if (value instanceof LinkValue) {
             jsonType = null;
         }
-        else
-        {
+        else {
             jsonType = JsonType.Any;
         }
 
         return jsonType;
     }
 
-    private void initLinkSlotNode(final ObjectNode schemaNode, final Slot slot)
-    {
+    private void initLinkSlotNode(final ObjectNode schemaNode, final Slot slot) {
 
         ArrayNode linksArrayNode = PropertyType.Links.getValueNode(schemaNode);
-        if (linksArrayNode == null)
-        {
+        if (linksArrayNode == null) {
             linksArrayNode = schemaNode.putArray(PropertyType.Links.getName());
         }
 
@@ -315,8 +279,7 @@ public class JsonSchemaLoader implements Loader
 
         final URI linkRelationUri = linkValue.getLinkRelationUri();
         final LinkRelation linkRelation = linkValue.getContext().getApiLoader().loadLinkRelation(linkRelationUri);
-        if (linkRelation != null)
-        {
+        if (linkRelation != null) {
 
             PropertyType.Rel.setValue(linkNode, linkRelation.getUniqueName().getLocalName(), getSyntaxLoader());
 
@@ -325,16 +288,14 @@ public class JsonSchemaLoader implements Loader
         }
 
         final URI responseSchemaUri = linkValue.getResponseSchemaUri();
-        if (responseSchemaUri != null)
-        {
+        if (responseSchemaUri != null) {
             final ObjectNode targetSchemaNode = linkNode.putObject(PropertyType.TargetSchema.getName());
             PropertyType.Type.setValue(targetSchemaNode, JsonType.Object.getKeyword(), getSyntaxLoader());
             PropertyType.$Ref.setValue(targetSchemaNode, responseSchemaUri, getSyntaxLoader());
         }
 
         final URI requestSchemaUri = linkValue.getRequestSchemaUri();
-        if (requestSchemaUri != null)
-        {
+        if (requestSchemaUri != null) {
             final ObjectNode paramSchemaNode = linkNode.putObject(PropertyType.Schema.getName());
             PropertyType.Type.setValue(paramSchemaNode, JsonType.Object.getKeyword(), getSyntaxLoader());
             PropertyType.$Ref.setValue(paramSchemaNode, requestSchemaUri, getSyntaxLoader());
@@ -342,8 +303,7 @@ public class JsonSchemaLoader implements Loader
 
     }
 
-    private void initPropertySlotNode(final ObjectNode slotNode, final Slot slot)
-    {
+    private void initPropertySlotNode(final ObjectNode slotNode, final Slot slot) {
 
         final Value value = slot.getValue();
 
@@ -351,25 +311,20 @@ public class JsonSchemaLoader implements Loader
         PropertyType.Description.setValue(slotNode, slot.getDescription(), getSyntaxLoader());
         final JsonType valueJsonType = getJsonType(value);
 
-        if (valueJsonType != null)
-        {
+        if (valueJsonType != null) {
             PropertyType.Type.setValue(slotNode, valueJsonType.getKeyword(), getSyntaxLoader());
         }
 
-        if (value instanceof TextValue)
-        {
+        if (value instanceof TextValue) {
             final TextValue textValue = (TextValue) value;
             final URI syntaxUri = textValue.getSyntaxUri();
-            if (syntaxUri != null)
-            {
+            if (syntaxUri != null) {
                 final Context context = slot.getContext();
                 final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
                 final Class<?> syntaxJavaClass = syntaxLoader.getSyntaxJavaClass(syntaxUri);
-                if (syntaxJavaClass != null)
-                {
+                if (syntaxJavaClass != null) {
                     final JsonStringFormat jsonStringFormat = JsonStringFormat.forJavaType(syntaxJavaClass);
-                    if (jsonStringFormat != null)
-                    {
+                    if (jsonStringFormat != null) {
                         PropertyType.Format.setValue(slotNode, jsonStringFormat.getKeyword(), getSyntaxLoader());
                     }
                 }
@@ -382,8 +337,7 @@ public class JsonSchemaLoader implements Loader
                     getSyntaxLoader());
 
         }
-        else if (value instanceof ListValue)
-        {
+        else if (value instanceof ListValue) {
             final ListValue listValue = (ListValue) value;
             final ArrayNode arrayNode = slotNode.putArray(PropertyType.Items.getName());
             final ObjectNode itemSlotNode = arrayNode.addObject();
@@ -399,13 +353,11 @@ public class JsonSchemaLoader implements Loader
                     value.getSlotValue(ListValue.SLOT_NAME_ELEMENT_UNIQUENESS_CONSTRAINED), getSyntaxLoader());
 
         }
-        else if (value instanceof ModelValue)
-        {
+        else if (value instanceof ModelValue) {
             final ModelValue modelValue = (ModelValue) value;
             PropertyType.$Ref.setValue(slotNode, modelValue.getModelSchemaUri(), getSyntaxLoader());
         }
-        else if (value instanceof NumericValue)
-        {
+        else if (value instanceof NumericValue) {
             PropertyType.Maximum.setValue(slotNode, value.getSlotValue(NumericValue.SLOT_NAME_MAXIMUM),
                     getSyntaxLoader());
 
@@ -414,43 +366,37 @@ public class JsonSchemaLoader implements Loader
 
         }
 
-        if (value instanceof MaybeRequired)
-        {
+        if (value instanceof MaybeRequired) {
             PropertyType.Required.setValue(slotNode, value.getSlotValue(MaybeRequired.SLOT_NAME_REQUIRED),
                     getSyntaxLoader());
         }
 
-        if (value.containsSlotValue(Value.SLOT_NAME_DEFAULT))
-        {
+        if (value.containsSlotValue(Value.SLOT_NAME_DEFAULT)) {
             PropertyType.Default.setValue(slotNode, value.getSlotValue(Value.SLOT_NAME_DEFAULT), getSyntaxLoader());
         }
 
     }
 
-    private SyntaxLoader getSyntaxLoader()
-    {
+    private SyntaxLoader getSyntaxLoader() {
 
         return getContext().getSyntaxLoader();
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public void init(final Context context)
-    {
-        if (context == null)
-        {
+    public void init(final Context context) {
+
+        if (context == null) {
             throw new JsonSchemaLoaderException("The context cannot be null.", null, this);
         }
 

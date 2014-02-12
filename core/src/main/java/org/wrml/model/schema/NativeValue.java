@@ -30,11 +30,10 @@ import org.wrml.model.Abstract;
  * <p>
  * The WRML representation of the <code>object</code> (or {@link Object}) primitive type.
  * </p>
- *
+ * <p/>
  * <p>
  * Design note: This type is not really supported by the current runtime implementation and it isn't clear how best to support schematically undefined (or undefinable?) data in WRML.
  * </p>
  */
-public interface NativeValue extends Native, Value, Abstract
-{
+public interface NativeValue extends Native, Value, Abstract {
 }

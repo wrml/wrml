@@ -24,7 +24,6 @@
  */
 package org.wrml.runtime;
 
-public interface FactoryConfiguration extends Configuration
-{
+public interface FactoryConfiguration extends Configuration {
     String getFactory();
 }

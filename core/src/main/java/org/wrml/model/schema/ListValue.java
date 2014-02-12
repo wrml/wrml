@@ -39,8 +39,7 @@ import java.util.List;
  * @see List
  * @see <a href="http://www.json.org">JSON array</a>
  */
-public interface ListValue extends Primitive, Value
-{
+public interface ListValue extends Primitive, Value {
 
     /**
      * The WRML constant name for a ListValue's <i>elementUniquenessConstrained</i> slot.

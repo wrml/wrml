@@ -53,8 +53,7 @@ import java.net.URI;
  */
 @WRML(keySlotNames = "uri")
 @Description("A Document is a model that has a URI key slot used to identify the model on the World Wide Web (or other URI-based keyspace).")
-public interface Document extends Abstract
-{
+public interface Document extends Abstract {
 
     static final long serialVersionUID = 1L;
 

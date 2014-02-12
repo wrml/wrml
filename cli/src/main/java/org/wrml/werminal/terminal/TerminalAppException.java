@@ -27,23 +27,20 @@ package org.wrml.werminal.terminal;
 /**
  * The {@link TerminalApp}'s associated error type.
  */
-public class TerminalAppException extends RuntimeException
-{
+public class TerminalAppException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final TerminalApp _App;
 
-    protected TerminalAppException(final String message, final Throwable cause, final TerminalApp app)
-    {
+    protected TerminalAppException(final String message, final Throwable cause, final TerminalApp app) {
 
         super(message, cause);
         _App = app;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }

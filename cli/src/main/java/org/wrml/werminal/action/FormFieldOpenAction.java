@@ -31,6 +31,7 @@ import org.wrml.model.rest.Link;
 import org.wrml.model.rest.LinkRelation;
 import org.wrml.model.rest.LinkTemplate;
 import org.wrml.model.rest.Method;
+import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Dimensions;
 import org.wrml.runtime.DimensionsBuilder;
@@ -39,7 +40,6 @@ import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.rest.ApiNavigator;
 import org.wrml.runtime.rest.Resource;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.model.schema.ValueType;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.component.FormField;
 import org.wrml.werminal.component.WerminalTextBox;
@@ -52,20 +52,17 @@ import org.wrml.werminal.window.ModelWindow;
 import java.net.URI;
 import java.util.UUID;
 
-public class FormFieldOpenAction extends WerminalAction
-{
+public class FormFieldOpenAction extends WerminalAction {
 
     private FormField _FormField;
 
-    public FormFieldOpenAction(final Werminal werminal)
-    {
+    public FormFieldOpenAction(final Werminal werminal) {
 
         super(werminal, "...");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final Context context = werminal.getContext();
@@ -79,26 +76,20 @@ public class FormFieldOpenAction extends WerminalAction
         final ValueType valueType = valueTextBox.getValueType();
         final Object currentValue = valueTextBox.getValue();
 
-        switch (valueType)
-        {
-            case Boolean:
-            {
+        switch (valueType) {
+            case Boolean: {
                 Boolean currentBooleanValue = (Boolean) currentValue;
-                if (currentBooleanValue == null)
-                {
+                if (currentBooleanValue == null) {
                     currentBooleanValue = Boolean.FALSE;
                 }
                 valueTextBox.setValue(!(currentBooleanValue), false);
 
                 break;
             }
-            case Link:
-            {
+            case Link: {
                 final Link link = (Link) currentValue;
-                if (link == null)
-                {
-                    if (!(topWindow instanceof ModelWindow))
-                    {
+                if (link == null) {
+                    if (!(topWindow instanceof ModelWindow)) {
 
                         final String dialogTitle = "How would you like to initialize \"" + formFieldName + "\"?";
 
@@ -107,8 +98,7 @@ public class FormFieldOpenAction extends WerminalAction
 
                         werminal.showWindow(newOrOpenModelDialog, Position.CENTER);
                     }
-                    else
-                    {
+                    else {
 
                         werminal.showMessageBox("Empty Link Slot",
                                 "This Link slot value is empty; it is not \"clickable\".");
@@ -121,10 +111,8 @@ public class FormFieldOpenAction extends WerminalAction
                 final LinkRelation linkRelation = apiLoader.loadLinkRelation(linkRelationUri);
                 final Method method = linkRelation.getMethod();
 
-                if (topWindow instanceof ListValueDialog)
-                {
-                    if (method != Method.Get)
-                    {
+                if (topWindow instanceof ListValueDialog) {
+                    if (method != Method.Get) {
                         werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                 + method + " (HTTP " + method.getProtocolGivenName() + ") has not been implemented for Links within a List.");
 
@@ -133,28 +121,24 @@ public class FormFieldOpenAction extends WerminalAction
 
                     final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
                     final URI href = link.getHref();
-                    if (href != null)
-                    {
+                    if (href != null) {
                         final ApiNavigator apiNavigator = apiLoader.getParentApiNavigator(href);
                         final Resource endpoint = apiNavigator.getResource(href);
                         final LinkTemplate referenceTemplate = endpoint.getReferenceTemplates().get(linkRelationUri);
                         final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
 
                         final URI schemaUri;
-                        if (responseSchemaUri != null)
-                        {
+                        if (responseSchemaUri != null) {
                             schemaUri = responseSchemaUri;
                         }
-                        else
-                        {
+                        else {
                             schemaUri = documentSchemaUri;
                         }
 
                         final Keys keys = apiLoader.buildDocumentKeys(href, schemaUri);
                         final Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
                         final Model referencedModel = context.getModel(keys, dimensions);
-                        if (referencedModel == null)
-                        {
+                        if (referencedModel == null) {
                             werminal.showMessageBox("404", "Failed to open linked document.");
                             break;
                         }
@@ -163,16 +147,13 @@ public class FormFieldOpenAction extends WerminalAction
                     }
                     break;
                 }
-                else if (topWindow instanceof ModelWindow)
-                {
+                else if (topWindow instanceof ModelWindow) {
                     final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();
                     final Model model = modelWindow.syncModel();
 
 
-                    switch (method)
-                    {
-                        case Delete:
-                        {
+                    switch (method) {
+                        case Delete: {
                             // TODO: Prompt to delete
                             werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                     + method + " (HTTP " + method.getProtocolGivenName()
@@ -180,25 +161,21 @@ public class FormFieldOpenAction extends WerminalAction
                             break;
 
                         }
-                        case Get:
-                        {
+                        case Get: {
                             final Model referencedModel = model.reference(formFieldName);
                             werminal.openModelWindow(referencedModel);
                             break;
                         }
-                        case Invoke:
-                        {
+                        case Invoke: {
 
                             final String dialogTitle = Method.Invoke.name() + " (" + Method.Invoke.getProtocolGivenName() + ") ";
 
 
-                            try
-                            {
+                            try {
                                 final InvocationDialog invocationDialog = new InvocationDialog(werminal, dialogTitle, model, formField);
                                 werminal.showWindow(invocationDialog, Position.CENTER);
                             }
-                            catch (ClassNotFoundException e)
-                            {
+                            catch (ClassNotFoundException e) {
                                 werminal.showError("Could not load Schema Java interface.", e);
                                 return;
                             }
@@ -206,24 +183,21 @@ public class FormFieldOpenAction extends WerminalAction
 
                             break;
                         }
-                        case Metadata:
-                        {
+                        case Metadata: {
                             werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                     + method + " (HTTP " + method.getProtocolGivenName()
                                     + ") has not been implemented in Werminal (yet).");
                             break;
 
                         }
-                        case Options:
-                        {
+                        case Options: {
                             werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                     + method + " (HTTP " + method.getProtocolGivenName()
                                     + ") has not been implemented in Werminal (yet).");
                             break;
 
                         }
-                        case Save:
-                        {
+                        case Save: {
                             // TODO: Prompt to save
                             werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                     + method + " (HTTP " + method.getProtocolGivenName()
@@ -231,8 +205,7 @@ public class FormFieldOpenAction extends WerminalAction
                             break;
 
                         }
-                        default:
-                        {
+                        default: {
                             werminal.showMessageBox("Not Implemented", "Support for referencing links with the method: "
                                     + method + " (HTTP " + method.getProtocolGivenName()
                                     + ") has not been implemented in Werminal (yet).");
@@ -244,26 +217,22 @@ public class FormFieldOpenAction extends WerminalAction
                     break;
 
                 }
-                else
-                {
+                else {
                     werminal.showMessageBox("Not Implemented", "Support for referencing Link slots has not been implemented (yet).");
                 }
 
                 break;
             }
 
-            case List:
-            {
+            case List: {
                 // werminal.showMessageBox("Not Implemented",
                 // "Support for opening List slots has not been implemented (yet).");
                 werminal.openListDialog(formField);
                 break;
             }
-            case Model:
-            {
+            case Model: {
 
-                if (currentValue == null)
-                {
+                if (currentValue == null) {
 
                     final String dialogTitle = "How would you like to initialize \"" + formFieldName + "\"?";
 
@@ -273,15 +242,13 @@ public class FormFieldOpenAction extends WerminalAction
                     werminal.showWindow(newOrOpenModelDialog, Position.CENTER);
 
                 }
-                else if (currentValue instanceof Model)
-                {
+                else if (currentValue instanceof Model) {
                     final Model nestedModel = (Model) currentValue;
                     werminal.openModelWindow(nestedModel);
                 }
                 break;
             }
-            case SingleSelect:
-            {
+            case SingleSelect: {
                 final Enum<?> selectedValue = (Enum<?>) currentValue;
 
                 final EnumValueSelectionConfirmationAction enumValueSelectionConfirmationAction = new EnumValueSelectionConfirmationAction(
@@ -300,12 +267,10 @@ public class FormFieldOpenAction extends WerminalAction
             case Text:
 
 
-                if (currentValue == null && valueTextBox.getHeapValueType().equals(UUID.class))
-                {
+                if (currentValue == null && valueTextBox.getHeapValueType().equals(UUID.class)) {
                     valueTextBox.setValue(UUID.randomUUID(), false);
                 }
-                else
-                {
+                else {
                     werminal.showMessageBox("Text (Not Implemented)",
                             "Support for opening Text slots has not been implemented (yet).");
                 }
@@ -318,14 +283,12 @@ public class FormFieldOpenAction extends WerminalAction
         }
     }
 
-    public FormField getFormField()
-    {
+    public FormField getFormField() {
 
         return _FormField;
     }
 
-    public void setFormField(final FormField formField)
-    {
+    public void setFormField(final FormField formField) {
 
         _FormField = formField;
     }

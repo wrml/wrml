@@ -26,14 +26,13 @@
 # CoffeeScript
 
 @Wrmldoc.module "ApiApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Controller extends App.Controllers.Base
-		
-		initialize: (wrmlData) ->
-			showView = @createShowView(wrmlData)
-			@show showView
-		
-		createShowView: (wrmlData) ->
-			new Show.Api
-				model: wrmlData
+  class Show.Controller extends App.Controllers.Base
+
+    initialize: (wrmlData) ->
+      showView = @createShowView(wrmlData)
+      @show showView
+
+    createShowView: (wrmlData) ->
+      new Show.Api
+        model: wrmlData
 

@@ -21,11 +21,10 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###            
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "DocumentNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.DocumentNotFound extends App.Views.ItemView
-		template: "documentNotFound/show/documentNotFound_show"
+  class Show.DocumentNotFound extends App.Views.ItemView
+    template: "documentNotFound/show/documentNotFound_show"

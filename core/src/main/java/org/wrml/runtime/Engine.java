@@ -39,8 +39,7 @@ import javax.xml.validation.Schema;
  * @see Context
  * @see org.wrml.runtime.syntax.SyntaxLoader
  */
-public interface Engine
-{
+public interface Engine {
 
     /**
      * Initialize the Engine, loading the initial Context

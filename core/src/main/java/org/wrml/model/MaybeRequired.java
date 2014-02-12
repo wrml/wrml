@@ -27,8 +27,7 @@ package org.wrml.model;
 /**
  * A model which may be required.
  */
-public interface MaybeRequired extends Abstract
-{
+public interface MaybeRequired extends Abstract {
 
     public static final String SLOT_NAME_REQUIRED = "required";
 

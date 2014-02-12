@@ -31,8 +31,7 @@ import java.util.regex.Pattern;
 /**
  * TODO: Javadoc
  */
-public interface SearchCriterion
-{
+public interface SearchCriterion {
 
 
     /**

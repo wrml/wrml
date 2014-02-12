@@ -31,8 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.SortedMap;
 
-public class JavaBytecodeType
-{
+public class JavaBytecodeType {
 
     public static final JavaBytecodeType BooleanBytecodeType = new JavaBytecodeType(Boolean.class);
 
@@ -74,103 +73,80 @@ public class JavaBytecodeType
 
     private SortedMap<String, JavaBytecodeType> _Parameters;
 
-    public JavaBytecodeType(final Class<?> clazz)
-    {
+    public JavaBytecodeType(final Class<?> clazz) {
 
-        if (clazz.isPrimitive())
-        {
+        if (clazz.isPrimitive()) {
 
-            if (clazz.equals(Boolean.TYPE))
-            {
+            if (clazz.equals(Boolean.TYPE)) {
                 setToken("Z");
             }
-            else if (clazz.equals(Double.TYPE))
-            {
+            else if (clazz.equals(Double.TYPE)) {
                 setToken("D");
             }
-            else if (clazz.equals(Integer.TYPE))
-            {
+            else if (clazz.equals(Integer.TYPE)) {
                 setToken("I");
             }
-            else if (clazz.equals(Long.TYPE))
-            {
+            else if (clazz.equals(Long.TYPE)) {
                 setToken("J");
             }
-            else if (clazz.equals(Void.TYPE))
-            {
+            else if (clazz.equals(Void.TYPE)) {
                 setToken("V");
             }
-            else
-            {
+            else {
                 throw new IllegalArgumentException("The type: " + clazz + " is not a supported primitive type.");
             }
 
         }
-        else
-        {
+        else {
             setString(SchemaGenerator.externalTypeNameToInternalTypeName(clazz.getCanonicalName()));
         }
     }
 
-    public JavaBytecodeType(final String string)
-    {
+    public JavaBytecodeType(final String string) {
 
         setString(string);
     }
 
-    public String getDescriptor()
-    {
+    public String getDescriptor() {
 
         final String string = getString();
-        if (string != null && !string.isEmpty())
-        {
+        if (string != null && !string.isEmpty()) {
             return 'L' + string + ';';
         }
-        else
-        {
+        else {
             return getToken();
         }
     }
 
-    public String getGenericSignature()
-    {
+    public String getGenericSignature() {
 
-        if (_GenericSignature == null)
-        {
+        if (_GenericSignature == null) {
 
-            if (_Parameters == null || _Parameters.size() == 0)
-            {
+            if (_Parameters == null || _Parameters.size() == 0) {
                 // No parameters
                 _GenericSignature = null;
             }
-            else
-            {
+            else {
                 // A parameterized type has a signature value
 
                 final StringBuilder sb = new StringBuilder(_Token);
                 sb.append(_String).append('<');
-                for (final String parameterName : _Parameters.keySet())
-                {
+                for (final String parameterName : _Parameters.keySet()) {
                     final JavaBytecodeType parameterType = _Parameters.get(parameterName);
-                    if (parameterType != null)
-                    {
-                        if (parameterType.getParameters() == null)
-                        {
+                    if (parameterType != null) {
+                        if (parameterType.getParameters() == null) {
                             sb.append(parameterType.getToken());
                             final String parameterTypeString = parameterType.getString();
-                            if (parameterTypeString != null)
-                            {
+                            if (parameterTypeString != null) {
                                 sb.append(parameterTypeString);
                                 sb.append(';');
                             }
                         }
-                        else
-                        {
+                        else {
                             sb.append(parameterType.getGenericSignature());
                         }
                     }
-                    else
-                    {
+                    else {
                         sb.append('T').append(parameterName);
                     }
                 }
@@ -184,66 +160,55 @@ public class JavaBytecodeType
         return _GenericSignature;
     }
 
-    public SortedMap<String, JavaBytecodeType> getParameters()
-    {
+    public SortedMap<String, JavaBytecodeType> getParameters() {
 
         return _Parameters;
     }
 
-    public void setParameters(final SortedMap<String, JavaBytecodeType> parameters)
-    {
+    public void setParameters(final SortedMap<String, JavaBytecodeType> parameters) {
 
         _Parameters = parameters;
         _GenericSignature = null;
     }
 
-    public String getString()
-    {
+    public String getString() {
 
         return _String;
     }
 
-    public void setString(final String string)
-    {
+    public void setString(final String string) {
 
         _String = string;
-        if (_String != null)
-        {
+        if (_String != null) {
             _Token = "L";
         }
 
         _GenericSignature = null;
     }
 
-    public String getToken()
-    {
+    public String getToken() {
 
         return _Token;
     }
 
-    public void setToken(final String token)
-    {
+    public void setToken(final String token) {
 
         _Token = token;
         _GenericSignature = null;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         final String token = getToken();
         final String signature = getGenericSignature();
-        if (signature != null)
-        {
+        if (signature != null) {
             return signature;
         }
-        if ("L".equals(token))
-        {
+        if ("L".equals(token)) {
             return getString();
         }
-        else
-        {
+        else {
             return token;
         }
     }

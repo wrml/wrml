@@ -21,19 +21,19 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###          
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "DocumentNotFoundApp", (DocumentNotFoundApp, App, Backbone, Marionette, $, _) ->
-	@startWithParent = false
+  @startWithParent = false
 
-	class DocumentNotFoundApp.Router extends Marionette.AppRouter
+  class DocumentNotFoundApp.Router extends Marionette.AppRouter
 
-	API =
-		show: (wrmlData) ->
-			new DocumentNotFoundApp.Show.Controller(wrmlData)
-	
+  API =
+    show: (wrmlData) ->
+      new DocumentNotFoundApp.Show.Controller(wrmlData)
 
-	DocumentNotFoundApp.on "start", (wrmlData) ->
-		API.show(wrmlData)
+
+  DocumentNotFoundApp.on "start", (wrmlData) ->
+    API.show(wrmlData)

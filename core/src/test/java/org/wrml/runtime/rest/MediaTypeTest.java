@@ -24,8 +24,6 @@
  */
 package org.wrml.runtime.rest;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,26 +31,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.runtime.rest.MediaType.MediaTypeException;
 
-public class MediaTypeTest
-{
+import static org.junit.Assert.assertTrue;
+
+public class MediaTypeTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaTypeTest.class);
 
     @Before
-    public void init()
-    {
+    public void init() {
 
     }
 
     @After
-    public void destruct()
-    {
+    public void destruct() {
 
     }
 
     @Test
-    public void testSimpleContentType1() throws MediaTypeException
-    {
+    public void testSimpleContentType1() throws MediaTypeException {
+
         String contentType = "Content-Type: text/plain";
         MediaType type = new MediaType(contentType);
 
@@ -64,8 +61,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testSimpleContentType2() throws MediaTypeException
-    {
+    public void testSimpleContentType2() throws MediaTypeException {
+
         String contentType = "text/plain";
         MediaType type = new MediaType(contentType);
 
@@ -77,8 +74,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testSimpleContentType3() throws MediaTypeException
-    {
+    public void testSimpleContentType3() throws MediaTypeException {
+
         String contentType = "Content-Type: text/plain;";
         MediaType type = new MediaType(contentType);
 
@@ -90,8 +87,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testSimpleContentType4() throws MediaTypeException
-    {
+    public void testSimpleContentType4() throws MediaTypeException {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii";
         MediaType type = new MediaType(contentType);
 
@@ -105,8 +102,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testContentType1() throws MediaTypeException
-    {
+    public void testContentType1() throws MediaTypeException {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii;ben=test; space=\"aliens\"";
         MediaType type = new MediaType(contentType);
 
@@ -122,8 +119,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testContentType2() throws MediaTypeException
-    {
+    public void testContentType2() throws MediaTypeException {
+
         String contentType = "text/plain; charset=us-ascii;ben=test; space=\"aliens\"";
         MediaType type = new MediaType(contentType);
 
@@ -139,8 +136,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void testContentType3() throws MediaTypeException
-    {
+    public void testContentType3() throws MediaTypeException {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii;ben=test; space=\"ali;ens\"";
         MediaType type = new MediaType(contentType);
 
@@ -156,8 +153,8 @@ public class MediaTypeTest
     }
 
     @Test
-    public void wrmlContentTypeTest1() throws MediaTypeException
-    {
+    public void wrmlContentTypeTest1() throws MediaTypeException {
+
         String contentType = "Content-Type: application/wrml; schema=http://schema.api.wrml.org/org/wrml/example/model/Caprica;format=\"http://format.api.wrml.org/org/wrml/format/application/json\"";
         MediaType type = new MediaType(contentType);
 

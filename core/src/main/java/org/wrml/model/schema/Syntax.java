@@ -48,7 +48,6 @@ import org.wrml.runtime.syntax.SyntaxHandler;
  * @see Schema
  */
 @WRML(keySlotNames = {"uniqueName"})
-public interface Syntax extends UniquelyNamed, Document
-{
+public interface Syntax extends UniquelyNamed, Document {
 
 }

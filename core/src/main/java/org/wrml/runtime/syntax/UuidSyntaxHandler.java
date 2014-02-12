@@ -24,37 +24,32 @@
  */
 package org.wrml.runtime.syntax;
 
-import java.util.UUID;
-
 import org.apache.commons.lang3.StringUtils;
 
-public class UuidSyntaxHandler extends SyntaxHandler<UUID>
-{
+import java.util.UUID;
+
+public class UuidSyntaxHandler extends SyntaxHandler<UUID> {
 
     @Override
-    public String formatSyntaxValue(final UUID uuid)
-    {
-        if (uuid == null)
-        {
+    public String formatSyntaxValue(final UUID uuid) {
+
+        if (uuid == null) {
             return null;
         }
         return String.valueOf(uuid);
     }
 
     @Override
-    public UUID parseSyntacticText(final String uuidString)
-    {
-        if (StringUtils.isEmpty(uuidString))
-        {
+    public UUID parseSyntacticText(final String uuidString) {
+
+        if (StringUtils.isEmpty(uuidString)) {
             return null;
         }
 
-        try
-        {
+        try {
             return UUID.fromString(uuidString);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new SyntaxHandlerException(e.getMessage(), e, this);
         }
     }

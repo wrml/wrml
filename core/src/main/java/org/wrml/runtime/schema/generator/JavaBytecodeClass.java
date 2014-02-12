@@ -27,8 +27,7 @@ package org.wrml.runtime.schema.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaBytecodeClass
-{
+public class JavaBytecodeClass {
 
     private String _InternalName;
 
@@ -44,71 +43,71 @@ public class JavaBytecodeClass
 
     private byte[] _Bytecode;
 
-    JavaBytecodeClass()
-    {
+    JavaBytecodeClass() {
+
         this(null);
     }
 
-    JavaBytecodeClass(final String internalName)
-    {
+    JavaBytecodeClass(final String internalName) {
+
         _InternalName = internalName;
         _Annotations = new ArrayList<JavaBytecodeAnnotation>();
         _Interfaces = new ArrayList<String>();
         _Methods = new ArrayList<JavaBytecodeMethod>();
     }
 
-    public List<JavaBytecodeAnnotation> getAnnotations()
-    {
+    public List<JavaBytecodeAnnotation> getAnnotations() {
+
         return _Annotations;
     }
 
-    public byte[] getBytecode()
-    {
+    public byte[] getBytecode() {
+
         return _Bytecode;
     }
 
-    public List<String> getInterfaces()
-    {
+    public List<String> getInterfaces() {
+
         return _Interfaces;
     }
 
-    public String getInternalName()
-    {
+    public String getInternalName() {
+
         return _InternalName;
     }
 
-    public List<JavaBytecodeMethod> getMethods()
-    {
+    public List<JavaBytecodeMethod> getMethods() {
+
         return _Methods;
     }
 
-    public String getSignature()
-    {
+    public String getSignature() {
+
         return _Signature;
     }
 
-    public String getSuperName()
-    {
+    public String getSuperName() {
+
         return _SuperName;
     }
 
-    public void setBytecode(final byte[] bytecode)
-    {
+    public void setBytecode(final byte[] bytecode) {
+
         _Bytecode = bytecode;
     }
 
-    public void setInternalName(final String internalName)
-    {
+    public void setInternalName(final String internalName) {
+
         _InternalName = internalName;
     }
 
-    public void setSignature(final String signature)
-    {
+    public void setSignature(final String signature) {
+
         _Signature = signature;
     }
 
-    public void setSuperName(final String superName)
-    {
+    public void setSuperName(final String superName) {
+
         _SuperName = superName;
     }
 

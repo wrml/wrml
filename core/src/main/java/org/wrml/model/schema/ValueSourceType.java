@@ -27,8 +27,7 @@ package org.wrml.model.schema;
 /**
  * The various options available to source a given value.
  */
-public enum ValueSourceType
-{
+public enum ValueSourceType {
     /**
      * The source of the value is a named slot in the referring {@link org.wrml.model.Model}.
      */

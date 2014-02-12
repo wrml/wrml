@@ -26,45 +26,45 @@
 # CoffeeScript
 
 @Wrmldoc.module "ModelApp", (ModelApp, App, Backbone, Marionette, $, _) ->
-	@startWithParent = false
+  @startWithParent = false
 
-	class ModelApp.Router extends Marionette.AppRouter
-	#	appRoutes:
-			# ":uri/edit" : "edit"
-	#		":uri" : "show"
+  class ModelApp.Router extends Marionette.AppRouter
+    #	appRoutes:
+    # ":uri/edit" : "edit"
+    #		":uri" : "show"
 
-	API =
-		show: (wrmlData) ->
-			new ModelApp.Show.Controller(wrmlData)
-				#region: App.mainRegion
-	
-
-	#App.addInitializer ->
-	#	new ModelApp.Router
-	#		controller: API	
+  API =
+    show: (wrmlData) ->
+      new ModelApp.Show.Controller(wrmlData)
+  #region: App.mainRegion
 
 
-	ModelApp.on "start", (wrmlData) ->
-		API.show(wrmlData)
+  #App.addInitializer ->
+  #	new ModelApp.Router
+  #		controller: API
 
 
-		#newModel: (region) ->
-		#	new ModelApp.New.Controller
-		#		region: region
-		
-		#edit: (uri, model) ->
-		#	new ModelApp.Edit.Controller
-		#		uri: uri
-		#		model: model
-	
-	#App.commands.setHandler "new:model", (region) ->
-	#	API.newModel region
-	
-	#App.vent.on "model:clicked model:created", (model) ->
-	#	App.navigate model.uri
-	#	API.edit model.uri, model
-	
-	#App.vent.on "model:cancelled model:updated", (model) ->
-	#	App.navigate model.uri
-	#	API.show()
+  ModelApp.on "start", (wrmlData) ->
+    API.show(wrmlData)
+
+
+#newModel: (region) ->
+#	new ModelApp.New.Controller
+#		region: region
+
+#edit: (uri, model) ->
+#	new ModelApp.Edit.Controller
+#		uri: uri
+#		model: model
+
+#App.commands.setHandler "new:model", (region) ->
+#	API.newModel region
+
+#App.vent.on "model:clicked model:created", (model) ->
+#	App.navigate model.uri
+#	API.edit model.uri, model
+
+#App.vent.on "model:cancelled model:updated", (model) ->
+#	App.navigate model.uri
+#	API.show()
 	

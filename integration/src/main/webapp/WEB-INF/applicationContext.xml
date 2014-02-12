@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <bean id="contextStore" class="org.wrml.integration.context.ContextStore" factory-method="getInstance"/>
+    <bean id="contextStore" class="org.wrml.integration.context.ContextStore" factory-method="getInstance"/>
 
 </beans>

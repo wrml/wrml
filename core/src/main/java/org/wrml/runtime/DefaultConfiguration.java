@@ -26,37 +26,30 @@ package org.wrml.runtime;
 
 import java.util.Map;
 
-public abstract class DefaultConfiguration implements Configuration
-{
+public abstract class DefaultConfiguration implements Configuration {
 
     private Map<String, String> _Settings;
 
     @SuppressWarnings("unchecked")
-    public static final <T> T newInstance(final String className) throws ConfigurationException
-    {
+    public static final <T> T newInstance(final String className) throws ConfigurationException {
 
-        if (className == null)
-        {
+        if (className == null) {
             throw new ConfigurationException("The class name cannot be null", null, null);
         }
 
         Class<?> clazz;
-        try
-        {
+        try {
             clazz = Class.forName(className);
         }
-        catch (final ClassNotFoundException e)
-        {
+        catch (final ClassNotFoundException e) {
             throw new ConfigurationException("Failed to load class: " + className, e, null);
         }
 
         Object instance = null;
-        try
-        {
+        try {
             instance = clazz.newInstance();
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ConfigurationException("Failed to create new instance of class: " + className, e, null);
         }
 
@@ -64,14 +57,12 @@ public abstract class DefaultConfiguration implements Configuration
     }
 
     @Override
-    public final Map<String, String> getSettings()
-    {
+    public final Map<String, String> getSettings() {
 
         return _Settings;
     }
 
-    public final void setSettings(final Map<String, String> settings)
-    {
+    public final void setSettings(final Map<String, String> settings) {
 
         _Settings = settings;
     }

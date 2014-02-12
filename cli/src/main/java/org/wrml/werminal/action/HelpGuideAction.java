@@ -29,43 +29,36 @@ import org.wrml.werminal.Werminal;
 import java.io.IOException;
 import java.net.URI;
 
-public class HelpGuideAction extends WerminalAction
-{
+public class HelpGuideAction extends WerminalAction {
 
     private final URI GUIDE_URI = URI.create("http://www.wrml.org/werminal/WerminalMastersHandbook.pdf");
 
-    public HelpGuideAction(final Werminal werminal)
-    {
+    public HelpGuideAction(final Werminal werminal) {
 
         super(werminal, "Help Guide");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
 
-        if (!java.awt.Desktop.isDesktopSupported())
-        {
+        if (!java.awt.Desktop.isDesktopSupported()) {
             werminal.showSplashWindow();
             return;
         }
 
         final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
-        if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE))
-        {
+        if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
             werminal.showSplashWindow();
             return;
         }
 
-        try
-        {
+        try {
             desktop.browse(GUIDE_URI);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             System.err.println(e.getMessage());
             werminal.showSplashWindow();
             return;

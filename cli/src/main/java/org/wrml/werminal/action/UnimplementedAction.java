@@ -26,18 +26,15 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class UnimplementedAction extends WerminalAction
-{
+public class UnimplementedAction extends WerminalAction {
 
-    public UnimplementedAction(final Werminal werminal, final String title)
-    {
+    public UnimplementedAction(final Werminal werminal, final String title) {
 
         super(werminal, title);
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         getApp().showMessageBox("Not Implemented", "The action \"" + getTitle() + "\" has not been implmented.");
     }

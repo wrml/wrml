@@ -41,8 +41,7 @@ import java.util.Map;
  * @see ModelReader
  * @see ModelWriter
  */
-public class PluggableFormatter extends AbstractFormatter
-{
+public class PluggableFormatter extends AbstractFormatter {
 
     public static final String PARSER_FACTORY_SETTING_NAME = "parserFactory";
 
@@ -52,18 +51,15 @@ public class PluggableFormatter extends AbstractFormatter
 
     private ModelWriter _ModelWriter;
 
-    public PluggableFormatter()
-    {
+    public PluggableFormatter() {
 
     }
 
     @Override
-    protected void initFromConfiguration(final FormatterConfiguration config)
-    {
+    protected void initFromConfiguration(final FormatterConfiguration config) {
 
         final Map<String, String> settings = config.getSettings();
-        if (settings == null || settings.isEmpty())
-        {
+        if (settings == null || settings.isEmpty()) {
             throw new IllegalArgumentException("The Format settings cannot be null.");
         }
 
@@ -72,29 +68,24 @@ public class PluggableFormatter extends AbstractFormatter
 
         final ModelParserFactory parserFactory;
         final String modelParserFactoryClassName = settings.get(PARSER_FACTORY_SETTING_NAME);
-        if (modelParserFactoryClassName != null)
-        {
+        if (modelParserFactoryClassName != null) {
             parserFactory = DefaultConfiguration.newInstance(modelParserFactoryClassName);
 
-            if (parserFactory != null)
-            {
+            if (parserFactory != null) {
                 _ModelReader = new ModelReader(context, formatUri, parserFactory);
             }
         }
 
         final ModelPrinterFactory printerFactory;
         final String modelPrinterFactoryClassName = settings.get(PRINTER_FACTORY_SETTING_NAME);
-        if (modelPrinterFactoryClassName != null)
-        {
+        if (modelPrinterFactoryClassName != null) {
             printerFactory = DefaultConfiguration.newInstance(modelPrinterFactoryClassName);
-            if (printerFactory != null)
-            {
+            if (printerFactory != null) {
                 _ModelWriter = new ModelWriter(context, formatUri, printerFactory);
             }
         }
 
-        if (_ModelReader == null && _ModelWriter == null)
-        {
+        if (_ModelReader == null && _ModelWriter == null) {
             throw new IllegalArgumentException("The Format must configure both/either a " + PARSER_FACTORY_SETTING_NAME +
                     " and/or a " + PRINTER_FACTORY_SETTING_NAME + ".");
         }
@@ -103,11 +94,9 @@ public class PluggableFormatter extends AbstractFormatter
 
     @Override
     public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys,
-                                         final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+                                         final Dimensions rootModelDimensions) throws ModelReadingException {
 
-        if (_ModelReader == null)
-        {
+        if (_ModelReader == null) {
             throw new UnsupportedOperationException("The \"readModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
         }
 
@@ -115,11 +104,9 @@ public class PluggableFormatter extends AbstractFormatter
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
-        if (_ModelWriter == null)
-        {
+        if (_ModelWriter == null) {
             throw new UnsupportedOperationException("The \"writeModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
         }
 

@@ -24,33 +24,29 @@
  */
 package org.wrml.runtime.format.application.json;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.wrml.runtime.format.ModelPrinter;
 import org.wrml.runtime.format.ModelPrinterException;
 import org.wrml.runtime.format.ModelPrinterFactory;
 import org.wrml.runtime.format.ModelWriteOptions;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
+import java.io.IOException;
+import java.io.OutputStream;
 
-public class JsonModelPrinterFactory implements ModelPrinterFactory
-{
+public class JsonModelPrinterFactory implements ModelPrinterFactory {
 
     @Override
     public ModelPrinter createModelPrinter(final OutputStream out, final ModelWriteOptions writeOptions)
-            throws IOException, ModelPrinterException
-    {
+            throws IOException, ModelPrinterException {
+
         final JsonFactory jsonFactory = new JsonFactory();
         final JsonGenerator jsonGenerator;
 
-        try
-        {
+        try {
             jsonGenerator = jsonFactory.createGenerator(out);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             throw new ModelPrinterException(
                     "An serious I/O related problem has occurred while attempting to print a Model.", e, null);
         }

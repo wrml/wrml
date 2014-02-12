@@ -103,8 +103,7 @@ import static org.wrml.runtime.EngineConfiguration.WRML_CONFIGURATION_FILE_PATH_
  * @see org.wrml.model.rest.Document
  * @see org.wrml.model.schema.Schema
  */
-public class Werminal extends TerminalApp
-{
+public class Werminal extends TerminalApp {
 
     public static final Logger LOG = LoggerFactory.getLogger(Werminal.class);
 
@@ -181,8 +180,7 @@ public class Werminal extends TerminalApp
     private final SortedMap<URI, SlotValueHistoryListModel> _SlotValueHistoryModels;
 
 
-    public Werminal(final WerminalModel werminalModel, final Context context, final TerminalType terminalType) throws Exception
-    {
+    public Werminal(final WerminalModel werminalModel, final Context context, final TerminalType terminalType) throws Exception {
 
         super("Werminal", context, terminalType);
 
@@ -248,15 +246,13 @@ public class Werminal extends TerminalApp
         final URI metaSchemaUri = getContext().getSchemaLoader().getSchemaSchemaUri();
         _NewModelDialog.setSchemaUri(metaSchemaUri);
 
-        for (final URI historySchemaUri : schemaUriHistoryList)
-        {
+        for (final URI historySchemaUri : schemaUriHistoryList) {
             addToSchemaUriHistory(historySchemaUri);
         }
 
         final JsonSchemaLoader jsonSchemaLoader = context.getSchemaLoader().getJsonSchemaLoader();
         final SortedSet<URI> loadedJsonSchemaUris = jsonSchemaLoader.getLoadedJsonSchemaUris();
-        for (final URI loadedJsonSchemaUri : loadedJsonSchemaUris)
-        {
+        for (final URI loadedJsonSchemaUri : loadedJsonSchemaUris) {
             addToSchemaUriHistory(loadedJsonSchemaUri);
         }
 
@@ -264,8 +260,7 @@ public class Werminal extends TerminalApp
         screen.startScreen();
 
         final Terminal terminal = screen.getTerminal();
-        if (terminal instanceof SwingTerminal)
-        {
+        if (terminal instanceof SwingTerminal) {
             final JFrame frame = ((SwingTerminal) terminal).getJFrame();
             frame.setTitle(getAppTitle());
 
@@ -276,15 +271,12 @@ public class Werminal extends TerminalApp
 
         String errorMessage = null;
 
-        while (true)
-        {
-            try
-            {
+        while (true) {
+            try {
                 showMainMenuBarWindow();
                 break;
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
                 errorMessage = "An unexpected error has occurred.";
                 showError(errorMessage, e);
                 LOG.error(errorMessage + " (" + e.getMessage() + ")", e);
@@ -314,21 +306,18 @@ public class Werminal extends TerminalApp
      *
      * @param args - standard command line arguments; see {@link OptionDescriptor}.
      */
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
 
         final CommandLineParser parser = new GnuParser();
         final CommandLine commandLine = parser.parse(OptionDescriptor.OPTIONS, args);
         TerminalType terminalType = TerminalType.Swing;
-        if (commandLine.hasOption(OptionDescriptor.unix.getName()))
-        {
+        if (commandLine.hasOption(OptionDescriptor.unix.getName())) {
             terminalType = TerminalType.Unix;
         }
 
         // Check the system property
         String configurationFilePath = PropertyUtil.getSystemProperty(WRML_CONFIGURATION_FILE_PATH_PROPERTY_NAME);
-        if (configurationFilePath == null)
-        {
+        if (configurationFilePath == null) {
             configurationFilePath = commandLine.getOptionValue(OptionDescriptor.config.getName());
         }
 
@@ -342,15 +331,13 @@ public class Werminal extends TerminalApp
 
         final WerminalModel werminalModel;
         final File appFile = FileUtils.getFile(WERMINAL_MODEL_FILE_NAME).getCanonicalFile();
-        if (appFile.exists() && appFile.isFile() && appFile.canRead())
-        {
+        if (appFile.exists() && appFile.isFile() && appFile.canRead()) {
             final Keys keys = new KeysBuilder(schemaLoader.getTypeUri(Filed.class), appFile).toKeys();
             final Dimensions dimensions = new DimensionsBuilder(schemaLoader.getTypeUri(WerminalModel.class))
                     .toDimensions();
             werminalModel = context.getModel(keys, dimensions);
         }
-        else
-        {
+        else {
             werminalModel = context.newModel(WerminalModel.class);
         }
         werminalModel.setTitle(Werminal.class.getSimpleName());
@@ -358,16 +345,14 @@ public class Werminal extends TerminalApp
         new Werminal(werminalModel, context, terminalType);
     }
 
-    public boolean addSlotValueToHistory(final URI historyListSchemaUri, final String slotName, final Object slotValue)
-    {
+    public boolean addSlotValueToHistory(final URI historyListSchemaUri, final String slotName, final Object slotValue) {
 
         final Context context = getContext();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
         final String stringValue = syntaxLoader.formatSyntaxValue(slotValue);
 
         final SlotValueHistoryListModel slotValueHistoryList;
-        if (!_SlotValueHistoryModels.containsKey(historyListSchemaUri))
-        {
+        if (!_SlotValueHistoryModels.containsKey(historyListSchemaUri)) {
 
             slotValueHistoryList = context.newModel(SlotValueHistoryListModel.class);
             slotValueHistoryList.setHistoryListSchemaUri(historyListSchemaUri);
@@ -376,14 +361,12 @@ public class Werminal extends TerminalApp
             final List<SlotValueHistoryListModel> slotValueHistoryLists = _WerminalModel.getSlotValueHistoryLists();
             slotValueHistoryLists.add(slotValueHistoryList);
         }
-        else
-        {
+        else {
             slotValueHistoryList = _SlotValueHistoryModels.get(historyListSchemaUri);
         }
 
         final SortedSet<Object> slotValueHistory = getSlotValueHistory(historyListSchemaUri, slotName);
-        if (!slotValueHistory.add(slotValue))
-        {
+        if (!slotValueHistory.add(slotValue)) {
             return false;
         }
 
@@ -398,11 +381,9 @@ public class Werminal extends TerminalApp
         return true;
     }
 
-    public void addToSchemaUriHistory(final URI schemaUri)
-    {
+    public void addToSchemaUriHistory(final URI schemaUri) {
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return;
         }
 
@@ -421,15 +402,12 @@ public class Werminal extends TerminalApp
         openModelDialogSchemaUriHistoryCheckBoxList.addItem(schemaUri);
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
-        if (schemaLoader.isPrototyped(schemaUri))
-        {
+        if (schemaLoader.isPrototyped(schemaUri)) {
             final Prototype prototype;
-            try
-            {
+            try {
                 prototype = schemaLoader.getPrototype(schemaUri);
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
                 LOG.warn("Unable to add schema to history: " + schemaUri + ".  Reason: " + e.getMessage());
                 return;
             }
@@ -446,8 +424,7 @@ public class Werminal extends TerminalApp
 
     }
 
-    public URI createSchemaUri(final String simpleSchemaName)
-    {
+    public URI createSchemaUri(final String simpleSchemaName) {
 
         final String systemUserName = System.getProperty("user.name");
 
@@ -466,220 +443,183 @@ public class Werminal extends TerminalApp
         return schemaUri;
     }
 
-    public WerminalAction getCancelAction()
-    {
+    public WerminalAction getCancelAction() {
 
         return _CancelAction;
     }
 
-    public CloseBeforeAction getCloseAction()
-    {
+    public CloseBeforeAction getCloseAction() {
 
         return _CloseAction;
     }
 
-    public CloseBeforeAction getClosingWrmlOrgAction()
-    {
+    public CloseBeforeAction getClosingWrmlOrgAction() {
 
         return _ClosingWrmlOrgAction;
     }
 
-    public Theme getDefaultMenuTheme()
-    {
+    public Theme getDefaultMenuTheme() {
 
         return _DefaultMenuTheme;
     }
 
-    public Theme getDefaultSplashTheme()
-    {
+    public Theme getDefaultSplashTheme() {
 
         return _DefaultSplashTheme;
     }
 
-    public WerminalAction getDeleteAction()
-    {
+    public WerminalAction getDeleteAction() {
 
         return _DeleteAction;
     }
 
-    public WerminalAction getExitAction()
-    {
+    public WerminalAction getExitAction() {
 
         return _ExitAction;
     }
 
-    public WerminalAction getHelpGuideAction()
-    {
+    public WerminalAction getHelpGuideAction() {
 
         return _HelpGuideAction;
     }
 
-    public Theme getLightTheme()
-    {
+    public Theme getLightTheme() {
 
         return _LightTheme;
     }
 
-    public TerminalAppMenuWindow getListMenuBarWindow()
-    {
+    public TerminalAppMenuWindow getListMenuBarWindow() {
 
         return _ListMenuWindow;
     }
 
-    public WerminalAction getLoadAction()
-    {
+    public WerminalAction getLoadAction() {
 
         return _LoadAction;
     }
 
-    public TerminalAppMenuWindow getMainMenuBarWindow()
-    {
+    public TerminalAppMenuWindow getMainMenuBarWindow() {
 
         return _MainMenuWindow;
     }
 
-    public TerminalAppMenuWindow getModelMenuBarWindow()
-    {
+    public TerminalAppMenuWindow getModelMenuBarWindow() {
 
         return _ModelMenuWindow;
     }
 
-    public WerminalAction getNewAction()
-    {
+    public WerminalAction getNewAction() {
 
         return _NewAction;
     }
 
-    public WerminalAction getNewConfirmationAction()
-    {
+    public WerminalAction getNewConfirmationAction() {
 
         return _NewConfirmationAction;
     }
 
-    public NewModelDialog getNewModelDialog()
-    {
+    public NewModelDialog getNewModelDialog() {
 
         return _NewModelDialog;
     }
 
-    public WerminalAction getOpenAction()
-    {
+    public WerminalAction getOpenAction() {
 
         return _OpenAction;
     }
 
-    public WerminalAction getOpenConfirmationAction()
-    {
+    public WerminalAction getOpenConfirmationAction() {
 
         return _OpenConfirmationAction;
     }
 
-    public OpenModelDialog getOpenModelDialog()
-    {
+    public OpenModelDialog getOpenModelDialog() {
 
         return _OpenModelDialog;
     }
 
-    public WerminalAction getPrintPreviewAction()
-    {
+    public WerminalAction getPrintPreviewAction() {
 
         return _PrintPreviewAction;
     }
 
-    public WerminalAction getSetOriginAction()
-    {
+    public WerminalAction getSetOriginAction() {
 
         return _SetOriginAction;
     }
 
-    public WerminalAction getPrintAction()
-    {
+    public WerminalAction getPrintAction() {
 
         return _PrintAction;
     }
 
-    public WerminalAction getPrintConfirmationAction()
-    {
+    public WerminalAction getPrintConfirmationAction() {
 
         return _PrintConfirmationAction;
     }
 
-    public WerminalAction getSaveAction()
-    {
+    public WerminalAction getSaveAction() {
 
         return _SaveAction;
     }
 
-    public History<URI> getSchemaUriHistory()
-    {
+    public History<URI> getSchemaUriHistory() {
 
         return _SchemaUriHistory;
     }
 
-    public WerminalAction getShowListMenuAction()
-    {
+    public WerminalAction getShowListMenuAction() {
 
         return _ShowListMenuAction;
     }
 
-    public WerminalAction getShowModelMenuAction()
-    {
+    public WerminalAction getShowModelMenuAction() {
 
         return _ShowModelMenuAction;
     }
 
-    public SortedSet<Object> getSlotValueHistory(final URI schemaUri, final String slotName)
-    {
+    public SortedSet<Object> getSlotValueHistory(final URI schemaUri, final String slotName) {
 
-        if (schemaUri == null || slotName == null)
-        {
+        if (schemaUri == null || slotName == null) {
             return null;
         }
 
-        if (!_SlotValueHistories.containsKey(schemaUri))
-        {
+        if (!_SlotValueHistories.containsKey(schemaUri)) {
             _SlotValueHistories.put(schemaUri, new TreeMap<String, SortedSet<Object>>());
         }
 
         final Map<String, SortedSet<Object>> schemaHistory = _SlotValueHistories.get(schemaUri);
 
-        if (!schemaHistory.containsKey(slotName))
-        {
+        if (!schemaHistory.containsKey(slotName)) {
             schemaHistory.put(slotName, new TreeSet<Object>());
         }
 
         return schemaHistory.get(slotName);
     }
 
-    public SplashWindow getSplashWindow()
-    {
+    public SplashWindow getSplashWindow() {
 
         return _SplashWindow;
     }
 
-    public String getTypeTitle(final Type type)
-    {
+    public String getTypeTitle(final Type type) {
 
         final Context context = getContext();
         final ValueType valueType = context.getSchemaLoader().getValueType(type);
         final String typeTitle;
-        if (valueType == ValueType.Text && !String.class.equals(type))
-        {
+        if (valueType == ValueType.Text && !String.class.equals(type)) {
             typeTitle = valueType.name() + "/" + ((Class<?>) type).getSimpleName();
         }
-        else
-        {
+        else {
             typeTitle = valueType.name();
         }
 
         return typeTitle;
     }
 
-    public WerminalAction getUnimplementedAction(final String title)
-    {
+    public WerminalAction getUnimplementedAction(final String title) {
 
-        if (!_UnimplementedActions.containsKey(title))
-        {
+        if (!_UnimplementedActions.containsKey(title)) {
             final UnimplementedAction action = new UnimplementedAction(this, title);
             _UnimplementedActions.put(title, action);
         }
@@ -687,20 +627,17 @@ public class Werminal extends TerminalApp
         return _UnimplementedActions.get(title);
     }
 
-    public Map<String, WerminalAction> getUnimplementedActions()
-    {
+    public Map<String, WerminalAction> getUnimplementedActions() {
 
         return _UnimplementedActions;
     }
 
-    public WerminalAction getWrmlOrgAction()
-    {
+    public WerminalAction getWrmlOrgAction() {
 
         return _WrmlOrgAction;
     }
 
-    public String listToString(final List<?> listValue, final Type listType)
-    {
+    public String listToString(final List<?> listValue, final Type listType) {
 
         final int itemCount = listValue.size();
         final String itemString = (itemCount == 1) ? "1 element" : itemCount + " elements";
@@ -708,8 +645,7 @@ public class Werminal extends TerminalApp
 
     }
 
-    public String listTypeToString(final Type listType)
-    {
+    public String listTypeToString(final Type listType) {
 
         final Type listElementType = ValueType.getListElementType(listType);
         final Class<?> listElementClass = (Class<?>) listElementType;
@@ -717,35 +653,31 @@ public class Werminal extends TerminalApp
         return stringValue;
     }
 
-    public void newModelWindow(final URI schemaUri, final FormField formField)
-    {
+    public void newModelWindow(final URI schemaUri, final FormField formField) {
 
         LOG.debug("NewModelWindow created with schemaUri [{}]", schemaUri);
 
         final Context context = getContext();
         final Model model = context.newModel(schemaUri);
 
-        if (model instanceof Document)
-        {
+        if (model instanceof Document) {
             final URI defaultUri = getDefaultDocumentUri(schemaUri);
             ((Document) model).setUri(defaultUri);
         }
 
-        if (formField != null)
-        {
+        if (formField != null) {
             formField.getFieldValueTextBox().setValue(model, false);
         }
 
         openModelWindow(model);
     }
 
-    public URI getDefaultDocumentUri(final URI schemaUri)
-    {
+    public URI getDefaultDocumentUri(final URI schemaUri) {
+
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
         final Set<Resource> representativeResources = apiLoader.getRepresentativeResources(schemaUri);
-        if (representativeResources != null && !representativeResources.isEmpty())
-        {
+        if (representativeResources != null && !representativeResources.isEmpty()) {
             final Resource firstResource = representativeResources.iterator().next();
             return firstResource.getDefaultDocumentUri();
         }
@@ -753,8 +685,7 @@ public class Werminal extends TerminalApp
         return null;
     }
 
-    public void openListDialog(final FormField listFormField)
-    {
+    public void openListDialog(final FormField listFormField) {
 
         final WerminalTextBox listFormFieldTextBox = listFormField.getFieldValueTextBox();
         final Type listType = listFormFieldTextBox.getHeapValueType();
@@ -779,11 +710,9 @@ public class Werminal extends TerminalApp
     }
 
     @SuppressWarnings("unchecked")
-    public <M extends Model> M openModel(final URI schemaUri, final Keys keys, final UUID heapId)
-    {
+    public <M extends Model> M openModel(final URI schemaUri, final Keys keys, final UUID heapId) {
 
-        if (schemaUri == null || (keys == null && heapId == null))
-        {
+        if (schemaUri == null || (keys == null && heapId == null)) {
             return null;
         }
 
@@ -792,43 +721,35 @@ public class Werminal extends TerminalApp
 
         final Dimensions dimensions;
         final URI uri = context.getKeyValue(keys, Document.class);
-        if (uri != null)
-        {
+        if (uri != null) {
             final ApiLoader apiLoader = context.getApiLoader();
             dimensions = apiLoader.buildDocumentDimensions(Method.Get, uri, new DimensionsBuilder(schemaUri));
         }
-        else
-        {
+        else {
             dimensions = new DimensionsBuilder(schemaUri).toDimensions();
         }
 
         Model model = null;
         String errorMessage = null;
-        try
-        {
-            if (heapId != null)
-            {
+        try {
+            if (heapId != null) {
                 // model = context.newModel(dimensions);
                 // TODO: support this
                 showError("Opening by heapId is temporarily disabled.");
                 model = null;
             }
-            else
-            {
+            else {
                 model = context.getModel(keys, dimensions);
             }
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             errorMessage = "An error occured while trying to open the model using schemaUri: " + schemaUri + ", Keys: "
                     + keys + "\nError: " + e.toString() + " - message: " + e.getMessage() + " - stack trace:\n"
                     + ExceptionUtils.getStackTrace(e);
         }
 
-        if (model == null)
-        {
-            if (errorMessage == null)
-            {
+        if (model == null) {
+            if (errorMessage == null) {
                 errorMessage = "Model could not be opened: (schemaUri: " + schemaUri + ", id: " + keys + ", heapId: "
                         + heapId + ")";
             }
@@ -840,8 +761,7 @@ public class Werminal extends TerminalApp
         return (M) model;
     }
 
-    public Window openModelWindow(final Model model)
-    {
+    public Window openModelWindow(final Model model) {
 
         final URI schemaUri = model.getSchemaUri();
         addKeySlotValuesToHistory(schemaUri, model.getKeys());
@@ -863,18 +783,15 @@ public class Werminal extends TerminalApp
         return modelWindow;
     }
 
-    public Window openModelWindow(final URI schemaUri, final Keys keys, final UUID heapId)
-    {
+    public Window openModelWindow(final URI schemaUri, final Keys keys, final UUID heapId) {
 
-        if (keys == null || keys.getCount() == 0)
-        {
+        if (keys == null || keys.getCount() == 0) {
             showError("\nPlease enter one (or more) key value(s).");
             return null;
         }
 
         final Model model = openModel(schemaUri, keys, heapId);
-        if (model != null)
-        {
+        if (model != null) {
 
             return openModelWindow(model);
         }
@@ -882,8 +799,7 @@ public class Werminal extends TerminalApp
         return null;
     }
 
-    public void showMainMenuBarWindow()
-    {
+    public void showMainMenuBarWindow() {
         // TODO: Make themes pluggable in a different way
         final GUIScreen guiScreen = getGuiScreen();
         guiScreen.setTheme(getDefaultMenuTheme());
@@ -891,23 +807,19 @@ public class Werminal extends TerminalApp
         showWindow(getMainMenuBarWindow());
     }
 
-    public void showSplashWindow()
-    {
+    public void showSplashWindow() {
 
         final Random easterEggDice = new Random();
         final int diceRoll = easterEggDice.nextInt(100) + 1;
         final Theme theme;
-        switch (diceRoll)
-        {
-            case 77:
-            {
+        switch (diceRoll) {
+            case 77: {
                 // Rolled double 7s on 2 d10!
                 theme = getLightTheme();
                 break;
             }
 
-            default:
-            {
+            default: {
                 theme = getDefaultSplashTheme();
                 break;
             }
@@ -919,52 +831,42 @@ public class Werminal extends TerminalApp
         showWindow(getSplashWindow());
     }
 
-    private void addKeySlotValuesToHistory(final URI historyListSchemaUri, final Keys keys)
-    {
+    private void addKeySlotValuesToHistory(final URI historyListSchemaUri, final Keys keys) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
-        if (keys == null || keys.getCount() == 0)
-        {
+        if (keys == null || keys.getCount() == 0) {
             return;
         }
 
-        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris())
-        {
+        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris()) {
             final Object keyValue = keys.getValue(keyedSchemaUri);
 
             final Prototype keyDeclaredPrototype = schemaLoader.getPrototype(keyedSchemaUri);
-            if (keyDeclaredPrototype == null)
-            {
+            if (keyDeclaredPrototype == null) {
                 continue;
             }
             final SortedSet<String> keySlotNames = keyDeclaredPrototype.getDeclaredKeySlotNames();
 
-            if (keySlotNames == null || keySlotNames.isEmpty())
-            {
+            if (keySlotNames == null || keySlotNames.isEmpty()) {
                 continue;
             }
 
-            if (keySlotNames.size() == 1)
-            {
+            if (keySlotNames.size() == 1) {
                 final String keySlotName = keySlotNames.first();
 
                 addSlotValueToHistory(historyListSchemaUri, keySlotName, keyValue);
             }
-            else
-            {
+            else {
                 final CompositeKey compositeKey = (CompositeKey) keyValue;
-                if (compositeKey == null)
-                {
+                if (compositeKey == null) {
                     continue;
                 }
 
                 final Map<String, Object> compositeKeySlots = compositeKey.getKeySlots();
-                for (final String compositeKeySlotName : compositeKeySlots.keySet())
-                {
+                for (final String compositeKeySlotName : compositeKeySlots.keySet()) {
                     final Object compositeKeySlotValue = compositeKeySlots.get(compositeKeySlotName);
-                    if (compositeKeySlotValue != null)
-                    {
+                    if (compositeKeySlotValue != null) {
                         addSlotValueToHistory(historyListSchemaUri, compositeKeySlotName, compositeKeySlotValue);
                     }
                 }
@@ -972,40 +874,34 @@ public class Werminal extends TerminalApp
         }
     }
 
-    private void compileSlotValueHistoryLists(final List<SlotValueHistoryListModel> slotValueHistoryLists)
-    {
+    private void compileSlotValueHistoryLists(final List<SlotValueHistoryListModel> slotValueHistoryLists) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
 
-        for (final SlotValueHistoryListModel slotValueHistoryList : slotValueHistoryLists)
-        {
+        for (final SlotValueHistoryListModel slotValueHistoryList : slotValueHistoryLists) {
             final URI historyListSchemaUri = slotValueHistoryList.getHistoryListSchemaUri();
 
             _SlotValueHistoryModels.put(historyListSchemaUri, slotValueHistoryList);
 
             final Prototype prototype;
-            try
-            {
+            try {
                 prototype = schemaLoader.getPrototype(historyListSchemaUri);
             }
-            catch (PrototypeException e)
-            {
+            catch (PrototypeException e) {
                 LOG.debug("Failed to load prototype for: " + historyListSchemaUri, e);
                 continue;
             }
 
-            if (prototype == null)
-            {
+            if (prototype == null) {
                 LOG.debug("Failed to load prototype for: " + historyListSchemaUri);
                 continue;
             }
 
             final List<EntryModel> slotValueEntries = slotValueHistoryList.getSlotValueEntries();
 
-            for (final EntryModel entry : slotValueEntries)
-            {
+            for (final EntryModel entry : slotValueEntries) {
                 final String slotName = entry.getName();
                 final String slotValueString = entry.getValue();
 
@@ -1019,14 +915,12 @@ public class Werminal extends TerminalApp
 
     }
 
-    public LoadApiDialog getLoadApiDialog()
-    {
+    public LoadApiDialog getLoadApiDialog() {
 
         return _LoadApiDialog;
     }
 
-    public PrintDialog getPrintDialog()
-    {
+    public PrintDialog getPrintDialog() {
 
         return _PrintDialog;
     }

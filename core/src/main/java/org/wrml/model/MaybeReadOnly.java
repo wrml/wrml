@@ -27,8 +27,7 @@ package org.wrml.model;
 /**
  * A model which may be read only, maybe.
  */
-public interface MaybeReadOnly extends Abstract
-{
+public interface MaybeReadOnly extends Abstract {
 
 
     Boolean isReadOnly();

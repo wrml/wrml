@@ -47,17 +47,14 @@ import java.nio.charset.Charset;
 /**
  * Ascii art format for WRML REST APIs.
  */
-public class ApiAsciiFormatter extends AbstractFormatter
-{
+public class ApiAsciiFormatter extends AbstractFormatter {
 
-    public ApiAsciiFormatter()
-    {
+    public ApiAsciiFormatter() {
 
     }
 
     @Override
-    public boolean isApplicableTo(final URI schemaUri)
-    {
+    public boolean isApplicableTo(final URI schemaUri) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -66,21 +63,18 @@ public class ApiAsciiFormatter extends AbstractFormatter
     }
 
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException {
 
         throw new UnsupportedOperationException("The \"readModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
-        if (!(model instanceof Api))
-        {
+        if (!(model instanceof Api)) {
             throw new ModelWritingException("The \"" + getFormatUri() + "\" format supports "
                     + schemaLoader.getApiSchemaUri() + ", it cannot write the model.", null, this);
         }
@@ -91,12 +85,10 @@ public class ApiAsciiFormatter extends AbstractFormatter
 
         final String asciiArtText = AsciiArt.express(apiNavigator);
 
-        try
-        {
+        try {
             out.write(asciiArtText.getBytes(Charset.forName("UTF-8")));
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ModelWritingException(getClass().getSimpleName()
                     + " encounter an error while attempting to write an API (" + model + ").  Message: "
                     + e.getMessage(), null, this);

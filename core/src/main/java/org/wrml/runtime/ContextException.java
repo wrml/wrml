@@ -27,8 +27,7 @@ package org.wrml.runtime;
 /**
  * The {@link Context}'s associated error type.
  */
-public class ContextException extends RuntimeException
-{
+public class ContextException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,24 +35,24 @@ public class ContextException extends RuntimeException
 
     /**
      * A new {@link ContextException} without a {@link Throwable Throwable (cause)}.
-     * 
-     * @see Preferred if {@link Throwable} exists: {@link #ContextException(String, Throwable, Context)}
+     *
      * @param message
      * @param context
+     * @see Preferred if {@link Throwable} exists: {@link #ContextException(String, Throwable, Context)}
      */
-    ContextException(final String message, final Context context)
-    {
+    ContextException(final String message, final Context context) {
+
         this(message, null, context);
     }
 
-    ContextException(final String message, final Throwable cause, final Context context)
-    {
+    ContextException(final String message, final Throwable cause, final Context context) {
+
         super(message, cause);
         _Context = context;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
+
         return _Context;
     }
 }

@@ -26,7 +26,6 @@ package org.wrml.model.schema;
 
 import org.wrml.model.Abstract;
 
-public interface Native extends Abstract
-{
+public interface Native extends Abstract {
 
 }

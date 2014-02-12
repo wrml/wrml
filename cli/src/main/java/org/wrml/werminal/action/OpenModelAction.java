@@ -38,27 +38,23 @@ import java.net.URI;
 import java.util.SortedSet;
 import java.util.UUID;
 
-public class OpenModelAction extends CloseBeforeAction
-{
+public class OpenModelAction extends CloseBeforeAction {
 
     private final FormField _FormField;
 
-    public OpenModelAction(final Werminal werminal, final FormField formField)
-    {
+    public OpenModelAction(final Werminal werminal, final FormField formField) {
 
         super(werminal, "Open...");
         _FormField = formField;
     }
 
-    public FormField getFormField()
-    {
+    public FormField getFormField() {
 
         return _FormField;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
         final FormField formField = getFormField();
@@ -85,33 +81,28 @@ public class OpenModelAction extends CloseBeforeAction
         return true;
     }
 
-    private class ConfirmAction extends CloseBeforeAction
-    {
+    private class ConfirmAction extends CloseBeforeAction {
 
         private OpenModelDialog _OpenModelDialog;
 
-        public ConfirmAction(final Werminal werminal)
-        {
+        public ConfirmAction(final Werminal werminal) {
 
             super(werminal, "OK");
         }
 
-        public OpenModelDialog getOpenModelDialog()
-        {
+        public OpenModelDialog getOpenModelDialog() {
 
             return _OpenModelDialog;
         }
 
-        public void setOpenModelDialog(final OpenModelDialog openModelDialog)
-        {
+        public void setOpenModelDialog(final OpenModelDialog openModelDialog) {
 
             _OpenModelDialog = openModelDialog;
 
         }
 
         @Override
-        protected boolean doIt()
-        {
+        protected boolean doIt() {
 
             final OpenModelDialog openModelDialog = getOpenModelDialog();
 
@@ -121,13 +112,11 @@ public class OpenModelAction extends CloseBeforeAction
 
             final Werminal werminal = getWerminal();
 
-            if (schemaUri == null)
-            {
+            if (schemaUri == null) {
                 werminal.showError("\nPlease indicate the type of data that you would like to open by entering a Schema URI value.\n\n ");
                 return false;
             }
-            else if (keys == null || keys.getKeyedSchemaUris().isEmpty())
-            {
+            else if (keys == null || keys.getKeyedSchemaUris().isEmpty()) {
                 werminal.showError("\nPlease enter one or more key values to identify the data that you would like to open.\n\n ");
                 return false;
             }

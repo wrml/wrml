@@ -36,8 +36,7 @@ import java.util.SortedMap;
  * A {@link CompositeKey} is a key value that is composed of two or more components.
  * When a WRML schema declares more than one {@link org.wrml.runtime.schema.Key} slot, the WRML runtime uses a CompositeKey instance to represent the combined value of the key slot values.
  */
-public final class CompositeKey
-{
+public final class CompositeKey {
 
     private static final String TO_STRING_SEPARATOR_BETWEEN_KEY_VALUE = "_";
 
@@ -51,8 +50,7 @@ public final class CompositeKey
      * Create a new CompositeKey from the specified name value pairs representing the individual key components,
      * with each key slot name mapped to the corresponding key slot value.
      */
-    public CompositeKey(final SortedMap<String, Object> keySlots)
-    {
+    public CompositeKey(final SortedMap<String, Object> keySlots) {
 
         _KeySlots = Collections.unmodifiableMap(keySlots);
 
@@ -60,8 +58,7 @@ public final class CompositeKey
         int i = 0;
 
         final Set<Entry<String, Object>> keySlotEntrySet = _KeySlots.entrySet();
-        for (final Entry<String, Object> keySlot : keySlotEntrySet)
-        {
+        for (final Entry<String, Object> keySlot : keySlotEntrySet) {
             components[i++] = keySlot;
         }
 
@@ -69,24 +66,19 @@ public final class CompositeKey
     }
 
     @Override
-    public boolean equals(final Object obj)
-    {
+    public boolean equals(final Object obj) {
 
-        if (this == obj)
-        {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final CompositeKey other = (CompositeKey) obj;
-        if (!_UniqueComposition.equals(other._UniqueComposition))
-        {
+        if (!_UniqueComposition.equals(other._UniqueComposition)) {
             return false;
         }
         return true;
@@ -96,27 +88,23 @@ public final class CompositeKey
      * The name value pairs representing the individual key components,
      * with each key slot name mapped to the corresponding key slot value.
      */
-    public Map<String, Object> getKeySlots()
-    {
+    public Map<String, Object> getKeySlots() {
 
         return _KeySlots;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
         return _UniqueComposition.hashCode();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         final StringBuilder sb = new StringBuilder();
 
-        for (final Entry<String, Object> entry : _KeySlots.entrySet())
-        {
+        for (final Entry<String, Object> entry : _KeySlots.entrySet()) {
             sb.append(entry.getKey()).append(TO_STRING_SEPARATOR_BETWEEN_KEY_VALUE)
                     .append(String.valueOf(entry.getValue()));
             sb.append(TO_STRING_SEPARATOR_BETWEEN_KEYS);

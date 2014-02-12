@@ -24,26 +24,18 @@
  */
 package org.wrml.runtime.syntax;
 
+import org.apache.commons.lang3.StringUtils;
 import org.wrml.runtime.rest.MediaType;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
- * 
  * TODO: Need to tie this into the code that was added for Media Type parsing.
- * 
- * 
- * 
  */
-public class MediaTypeSyntaxHandler extends SyntaxHandler<MediaType>
-{
+public class MediaTypeSyntaxHandler extends SyntaxHandler<MediaType> {
 
     @Override
-    public String formatSyntaxValue(final MediaType mediaType)
-    {
+    public String formatSyntaxValue(final MediaType mediaType) {
 
-        if (mediaType == null)
-        {
+        if (mediaType == null) {
             return null;
         }
 
@@ -54,11 +46,9 @@ public class MediaTypeSyntaxHandler extends SyntaxHandler<MediaType>
     }
 
     @Override
-    public MediaType parseSyntacticText(final String mediaTypeString)
-    {
+    public MediaType parseSyntacticText(final String mediaTypeString) {
 
-        if (mediaTypeString == null)
-        {
+        if (mediaTypeString == null) {
             return null;
         }
 

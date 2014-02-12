@@ -29,7 +29,6 @@ import org.wrml.model.Abstract;
 /**
  * A schematic <i>modifier</i> that marks a construct that is so "core" that it is built right into the type system.
  */
-public interface Primitive extends Abstract
-{
+public interface Primitive extends Abstract {
 
 }

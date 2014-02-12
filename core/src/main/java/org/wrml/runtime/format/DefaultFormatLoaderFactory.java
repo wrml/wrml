@@ -26,11 +26,9 @@ package org.wrml.runtime.format;
 
 import org.wrml.runtime.Factory;
 
-public class DefaultFormatLoaderFactory implements Factory<FormatLoader>
-{
+public class DefaultFormatLoaderFactory implements Factory<FormatLoader> {
     @Override
-    public FormatLoader create()
-    {
+    public FormatLoader create() {
 
         return new DefaultFormatLoader();
     }

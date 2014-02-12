@@ -24,12 +24,9 @@
  */
 package org.wrml.model.rest;
 
+import junit.framework.TestCase;
 import org.apache.commons.lang3.EnumUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.mockito.Mockito;
@@ -42,56 +39,55 @@ import org.wrml.runtime.rest.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
  * Test for {@link ResourceOptions}
- * <p>
+ * <p/>
  * //TODO: mark as @IntegrationTest
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class ResourceOptionsTest extends TestCase
-{
+public class ResourceOptionsTest extends TestCase {
 
-    /** class under test */
+    /**
+     * class under test
+     */
     private ResourceOptions resourceOptions;
 
     private static Context context;
 
     @BeforeClass
-    public static void beforeClass() throws Exception
-    {
+    public static void beforeClass() throws Exception {
+
         final Engine engine = EngineTest.createTestEngine();
         context = engine.getContext();
     }
 
     @AfterClass
-    public static void afterClass()
-    {
+    public static void afterClass() {
+
         context = null;
     }
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         resourceOptions = context.newModel(ResourceOptions.class);
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
+
         resourceOptions = null;
     }
 
     @Test
-    public void testContextPrerequisite()
-    {
+    public void testContextPrerequisite() {
+
         assertNotNull(context);
     }
 
     @Test
-    public void testGetSetStatus()
-    {
+    public void testGetSetStatus() {
+
         Status mockStatus = Status.ACCEPTED;
         resourceOptions.setStatus(mockStatus);
         Status otherStatus = resourceOptions.getStatus();
@@ -100,8 +96,8 @@ public class ResourceOptionsTest extends TestCase
     }
 
     @Test
-    public void testGetSetAllow()
-    {
+    public void testGetSetAllow() {
+
         List<Method> mock = new ArrayList<Method>();
         mock.addAll(EnumUtils.getEnumList(Method.class));
         resourceOptions.setAllow(mock);
@@ -111,8 +107,8 @@ public class ResourceOptionsTest extends TestCase
     }
 
     @Test
-    public void testGetSetContentType()
-    {
+    public void testGetSetContentType() {
+
         String mock = "abc";
         resourceOptions.setContentType(mock);
         String other = resourceOptions.getContentType();
@@ -121,8 +117,8 @@ public class ResourceOptionsTest extends TestCase
     }
 
     @Test
-    public void testGetSetUriTemplate()
-    {
+    public void testGetSetUriTemplate() {
+
         UriTemplate mock = Mockito.mock(UriTemplate.class);
         resourceOptions.setUriTemplate(mock);
         UriTemplate other = resourceOptions.getUriTemplate();

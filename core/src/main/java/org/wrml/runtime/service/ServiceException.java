@@ -30,11 +30,10 @@ import org.wrml.model.rest.status.Status;
  * <p>
  * The {@link Service}'s associated error type.
  * </p>
- * 
+ *
  * @see Service
  */
-public class ServiceException extends RuntimeException
-{
+public class ServiceException extends RuntimeException {
 
     private final Service _Service;
 
@@ -46,20 +45,14 @@ public class ServiceException extends RuntimeException
      * <p>
      * Create a new exception to communicate a problem about the specified {@link Service}.
      * </p>
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param cause
-     *            The root cause of the {@link ServiceException} (or <code>null</code>, if this <i>is</i> the root
-     *            {@link Throwable}).
-     * 
-     * @param service
-     *            The impacted {@link Service}.
-     * 
+     *
+     * @param message The message to explain what is going on.
+     * @param cause   The root cause of the {@link ServiceException} (or <code>null</code>, if this <i>is</i> the root
+     *                {@link Throwable}).
+     * @param service The impacted {@link Service}.
      */
-    public ServiceException(final String message, final Throwable cause, final Service service)
-    {
+    public ServiceException(final String message, final Throwable cause, final Service service) {
+
         this(message, cause, service, null);
     }
 
@@ -67,27 +60,21 @@ public class ServiceException extends RuntimeException
      * <p>
      * Create a new exception to communicate a problem about the specified {@link Service}.
      * </p>
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param service
-     *            The impacted {@link Service}.
-     * 
-     * @param status
-     *            The status to classify this exception as reflecting an HTTP
-     *            rule enforcement.
-     * 
+     *
+     * @param message The message to explain what is going on.
+     * @param service The impacted {@link Service}.
+     * @param status  The status to classify this exception as reflecting an HTTP
+     *                rule enforcement.
      */
-    public ServiceException(final String message, final Throwable cause, final Service service, final Status status)
-    {
+    public ServiceException(final String message, final Throwable cause, final Service service, final Status status) {
+
         super(message, cause);
         _Service = service;
         _Status = status;
     }
 
-    public Service getService()
-    {
+    public Service getService() {
+
         return _Service;
     }
 
@@ -95,12 +82,12 @@ public class ServiceException extends RuntimeException
      * <p>
      * The associated {@link Status} or null if this exception "type" has no REST status equivalent.
      * </p>
-     * 
+     *
      * @return The HTTP Status or null if there is no logical peer (in REST) for
-     *         this kind of problem in the WRML runtime.
+     * this kind of problem in the WRML runtime.
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
+
         return _Status;
     }
 }

@@ -28,47 +28,40 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.component.WerminalTextBox;
 import org.wrml.werminal.dialog.EnumValueDialog;
 
-public class EnumValueSelectionConfirmationAction extends CloseBeforeAction
-{
+public class EnumValueSelectionConfirmationAction extends CloseBeforeAction {
 
     private final WerminalTextBox _ValueTextBox;
 
     private EnumValueDialog _EnumValueDialog;
 
-    public EnumValueSelectionConfirmationAction(final Werminal werminal, final WerminalTextBox valueTextBox)
-    {
+    public EnumValueSelectionConfirmationAction(final Werminal werminal, final WerminalTextBox valueTextBox) {
 
         super(werminal, "OK");
         _ValueTextBox = valueTextBox;
     }
 
-    public EnumValueDialog getEnumValueDialog()
-    {
+    public EnumValueDialog getEnumValueDialog() {
 
         return _EnumValueDialog;
     }
 
-    public WerminalTextBox getValueTextBox()
-    {
+    public WerminalTextBox getValueTextBox() {
 
         return _ValueTextBox;
     }
 
-    public void setEnumValueDialog(final EnumValueDialog enumValueDialog)
-    {
+    public void setEnumValueDialog(final EnumValueDialog enumValueDialog) {
 
         _EnumValueDialog = enumValueDialog;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Enum<?> selectedValue = _EnumValueDialog.getSelectedValue();
         final Enum<?> currentValue = _ValueTextBox.getValue();
 
-        if (selectedValue != currentValue)
-        {
+        if (selectedValue != currentValue) {
             _ValueTextBox.setValue(selectedValue, false);
         }
 

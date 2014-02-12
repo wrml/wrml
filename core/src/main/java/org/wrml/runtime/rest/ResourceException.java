@@ -27,21 +27,20 @@ package org.wrml.runtime.rest;
 /**
  * The {@link Resource}'s associated error type.
  */
-public class ResourceException extends RuntimeException
-{
+public class ResourceException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final Resource _Resource;
 
-    ResourceException(final String message, final Throwable cause, final Resource resource)
-    {
+    ResourceException(final String message, final Throwable cause, final Resource resource) {
+
         super(message, cause);
         _Resource = resource;
     }
 
-    public Resource getResource()
-    {
+    public Resource getResource() {
+
         return _Resource;
     }
 }

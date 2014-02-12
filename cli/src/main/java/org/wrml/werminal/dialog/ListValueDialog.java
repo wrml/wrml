@@ -37,16 +37,14 @@ import org.wrml.werminal.window.FormPanelWindow;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class ListValueDialog extends FormPanelWindow
-{
+public class ListValueDialog extends FormPanelWindow {
 
     private Type _ListElementType;
 
     private final TerminalAppToolBar _FooterToolBar;
 
     public ListValueDialog(final Werminal werminal, final String title, final Component[] toolBarComponents,
-                           final WerminalAction confirmAction, final WerminalAction dismissAction)
-    {
+                           final WerminalAction confirmAction, final WerminalAction dismissAction) {
 
         super(werminal, title, toolBarComponents);
 
@@ -56,31 +54,26 @@ public class ListValueDialog extends FormPanelWindow
         render();
     }
 
-    public void addFormField(final Object value)
-    {
+    public void addFormField(final Object value) {
 
         addFormField("Elements", getListElementType(), value);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public List<?> getList()
-    {
+    public List<?> getList() {
 
         final List list = new ArrayList<>();
 
         final List<WerminalPanel> panels = getPanels();
-        for (final WerminalPanel panel : panels)
-        {
+        for (final WerminalPanel panel : panels) {
 
-            if (panel instanceof FormPanel)
-            {
+            if (panel instanceof FormPanel) {
 
                 final FormPanel formPanel = (FormPanel) panel;
 
                 final Set<String> fieldNames = formPanel.getFieldNames();
 
-                for (final String fieldName : fieldNames)
-                {
+                for (final String fieldName : fieldNames) {
                     final FormField field = formPanel.getFormField(fieldName);
                     list.add(field.getFieldValueTextBox().getValue());
                 }
@@ -90,14 +83,12 @@ public class ListValueDialog extends FormPanelWindow
         return (List<?>) list;
     }
 
-    public Type getListElementType()
-    {
+    public Type getListElementType() {
 
         return _ListElementType;
     }
 
-    public void setList(final List<?> list, final Type elementType)
-    {
+    public void setList(final List<?> list, final Type elementType) {
 
         _ListElementType = elementType;
 
@@ -108,16 +99,14 @@ public class ListValueDialog extends FormPanelWindow
 
         final Map<String, Type> fieldMap = new LinkedHashMap<>();
 
-        for (int i = 0; i < list.size(); i++)
-        {
+        for (int i = 0; i < list.size(); i++) {
             final String fieldName = String.valueOf(i);
             fieldMap.put(fieldName, _ListElementType);
         }
 
         initPanels("Elements", fieldMap);
 
-        for (int i = 0; i < list.size(); i++)
-        {
+        for (int i = 0; i < list.size(); i++) {
             final String fieldName = String.valueOf(i);
             final Object value = list.get(i);
             final FormField formField = getFormField(fieldName);
@@ -127,19 +116,16 @@ public class ListValueDialog extends FormPanelWindow
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         super.render();
         renderFooterToolBar();
     }
 
-    protected void renderFooterToolBar()
-    {
+    protected void renderFooterToolBar() {
 
         addEmptySpace();
-        if (_FooterToolBar != null)
-        {
+        if (_FooterToolBar != null) {
             addComponent(_FooterToolBar);
         }
     }

@@ -44,22 +44,25 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultApiLoader implements ApiLoader
-{
+public class DefaultApiLoader implements ApiLoader {
 
     private static final String SYSTEM_API_DOCROOT_FULL_PATH = "/";
+
     private static final String SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH = SYSTEM_API_DOCROOT_FULL_PATH + "{uniqueName}";
 
 
     private Context _Context;
 
     private final ConcurrentHashMap<URI, Api> _Apis;
+
     private final ConcurrentHashMap<URI, ApiNavigator> _ApiNavigators;
+
     private final WildCardPrefixTree<ApiNavigator> _ApiNavigatorTrie;
+
     private final ConcurrentHashMap<URI, LinkRelation> _LinkRelations;
 
-    public DefaultApiLoader()
-    {
+    public DefaultApiLoader() {
+
         _Apis = new ConcurrentHashMap<>();
         _ApiNavigators = new ConcurrentHashMap<>();
         _ApiNavigatorTrie = new WildCardPrefixTree<>();
@@ -67,16 +70,13 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public Dimensions buildDocumentDimensions(final Method method, final URI uri, final DimensionsBuilder dimensionsBuilder)
-    {
+    public Dimensions buildDocumentDimensions(final Method method, final URI uri, final DimensionsBuilder dimensionsBuilder) {
 
-        if (method == null)
-        {
+        if (method == null) {
             throw new NullPointerException("The request method cannot be null.");
         }
 
-        if (uri == null)
-        {
+        if (uri == null) {
             throw new NullPointerException("The request method cannot be null.");
         }
 
@@ -86,13 +86,11 @@ public class DefaultApiLoader implements ApiLoader
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
         ApiNavigator apiNavigator = null;
-        if (!schemaLoader.getApiSchemaUri().equals(schemaUri))
-        {
+        if (!schemaLoader.getApiSchemaUri().equals(schemaUri)) {
             apiNavigator = getParentApiNavigator(uri);
         }
 
-        if (apiNavigator != null)
-        {
+        if (apiNavigator != null) {
             final Resource resource = apiNavigator.getResource(uri);
             // Is the method allowed?
             final Set<URI> schemaUris = resource.getResponseSchemaUris(method);
@@ -100,28 +98,23 @@ public class DefaultApiLoader implements ApiLoader
             final URI documentSchemaUriConstant = schemaLoader.getDocumentSchemaUri();
             final URI modelSchemaUriConstant = schemaLoader.getTypeUri(Model.class);
 
-            if (schemaUris != null)
-            {
+            if (schemaUris != null) {
 
-                if (schemaUri != null && schemaUris.isEmpty())
-                {
+                if (schemaUri != null && schemaUris.isEmpty()) {
                     // error, method not supported
                     throw new ApiLoaderException("The method " + "[" + method + "]" + " is not supported by the api.", null, this);
                 }
-                else if (!schemaUris.isEmpty() && (schemaUri == null || schemaUri.equals(documentSchemaUriConstant) || schemaUri.equals(modelSchemaUriConstant)))
-                {
+                else if (!schemaUris.isEmpty() && (schemaUri == null || schemaUri.equals(documentSchemaUriConstant) || schemaUri.equals(modelSchemaUriConstant))) {
                     schemaUri = schemaUris.iterator().next();
                 }
 
-                if (schemaUri != null && !schemaUris.contains(schemaUri) && !schemaUri.equals(documentSchemaUriConstant) && !schemaUri.equals(modelSchemaUriConstant))
-                {
+                if (schemaUri != null && !schemaUris.contains(schemaUri) && !schemaUri.equals(documentSchemaUriConstant) && !schemaUri.equals(modelSchemaUriConstant)) {
                     // Error, unsupported schema id
                     throw new ApiLoaderException("The schema " + "[" + schemaUri + "]" + " is not supported by the api.", null, this);
                 }
             }
 
-            if (schemaUri == null || schemaUri.equals(documentSchemaUriConstant) || schemaUri.equals(modelSchemaUriConstant))
-            {
+            if (schemaUri == null || schemaUri.equals(documentSchemaUriConstant) || schemaUri.equals(modelSchemaUriConstant)) {
                 schemaUri = resource.getDefaultSchemaUri();
             }
         }
@@ -129,14 +122,11 @@ public class DefaultApiLoader implements ApiLoader
         dimensionsBuilder.setSchemaUri(schemaUri);
 
         final String queryPart = uri.getQuery();
-        if (StringUtils.isNotEmpty(queryPart))
-        {
+        if (StringUtils.isNotEmpty(queryPart)) {
             final Map<String, String> queryParameters = dimensionsBuilder.getQueryParameters();
-            if (queryParameters.isEmpty())
-            {
+            if (queryParameters.isEmpty()) {
                 final String[] queryParams = queryPart.split("&");
-                for (String queryParam : queryParams)
-                {
+                for (String queryParam : queryParams) {
                     final String[] queryParamNameValuePair = queryParam.split("=");
                     final String queryParamName = queryParamNameValuePair[0];
                     final String queryParamValue = queryParamNameValuePair[1];
@@ -149,11 +139,9 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public final Keys buildDocumentKeys(final URI uri, final URI schemaUri)
-    {
+    public final Keys buildDocumentKeys(final URI uri, final URI schemaUri) {
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
@@ -162,15 +150,12 @@ public class DefaultApiLoader implements ApiLoader
 
         final KeysBuilder keysBuilder = new KeysBuilder(schemaLoader.getDocumentSchemaUri(), uri);
 
-        if (!schemaLoader.getApiSchemaUri().equals(schemaUri))
-        {
+        if (!schemaLoader.getApiSchemaUri().equals(schemaUri)) {
 
             final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-            if (prototype != null)
-            {
+            if (prototype != null) {
                 final Object documentSurrogateKeyValue = decipherDocumentSurrogateKeyValue(uri, prototype);
-                if (documentSurrogateKeyValue != null)
-                {
+                if (documentSurrogateKeyValue != null) {
                     keysBuilder.addKey(prototype.getSchemaUri(), documentSurrogateKeyValue);
                 }
             }
@@ -180,48 +165,40 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public ApiLoaderConfiguration getConfig()
-    {
+    public ApiLoaderConfiguration getConfig() {
 
         return getContext().getConfig().getApiLoader();
     }
 
     @Override
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public final URI getDefaultResponseSchemaUri(final Method requestMethod, final URI uri)
-    {
+    public final URI getDefaultResponseSchemaUri(final Method requestMethod, final URI uri) {
 
         final ApiNavigator apiNavigator = getParentApiNavigator(uri);
 
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             return null;
         }
 
-        try
-        {
+        try {
             return apiNavigator.getDefaultResponseSchemaUri(requestMethod, uri);
         }
-        catch (ApiNavigatorException e)
-        {
+        catch (ApiNavigatorException e) {
             throw new ApiLoaderException(e.getMessage(), e, this);
         }
     }
 
     @Override
-    public Api getLoadedApi(final Keys keys)
-    {
+    public Api getLoadedApi(final Keys keys) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         final URI uri = (URI) keys.getValue(schemaLoader.getDocumentSchemaUri());
-        if (uri != null && _Apis.containsKey(uri))
-        {
+        if (uri != null && _Apis.containsKey(uri)) {
             return _Apis.get(uri);
         }
 
@@ -229,16 +206,13 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public final ApiNavigator getLoadedApiNavigator(final URI apiUri)
-    {
+    public final ApiNavigator getLoadedApiNavigator(final URI apiUri) {
 
-        if (apiUri == null)
-        {
+        if (apiUri == null) {
             throw new NullPointerException("The uri is null; cannot locate the loaded REST API.");
         }
 
-        if (_ApiNavigators.containsKey(apiUri))
-        {
+        if (_ApiNavigators.containsKey(apiUri)) {
             return _ApiNavigators.get(apiUri);
         }
 
@@ -246,59 +220,50 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public Set<Api> getLoadedApis()
-    {
+    public Set<Api> getLoadedApis() {
 
         return new LinkedHashSet<>(_Apis.values());
     }
 
     @Override
-    public final SortedSet<URI> getLoadedApiUris()
-    {
+    public final SortedSet<URI> getLoadedApiUris() {
 
         return new TreeSet<>(_Apis.keySet());
     }
 
     @Override
-    public LinkRelation getLoadedLinkRelation(final Keys keys)
-    {
+    public LinkRelation getLoadedLinkRelation(final Keys keys) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         final URI uri = (URI) keys.getValue(schemaLoader.getDocumentSchemaUri());
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
-        if (_LinkRelations.containsKey(uri))
-        {
+        if (_LinkRelations.containsKey(uri)) {
             return _LinkRelations.get(uri);
         }
         return null;
     }
 
     @Override
-    public Set<LinkRelation> getLoadedLinkRelations()
-    {
+    public Set<LinkRelation> getLoadedLinkRelations() {
 
         return new LinkedHashSet<>(_LinkRelations.values());
     }
 
     @Override
-    public SortedSet<URI> getLoadedLinkRelationUris()
-    {
+    public SortedSet<URI> getLoadedLinkRelationUris() {
 
         return new TreeSet<>(_LinkRelations.keySet());
     }
 
     @Override
-    public final ApiNavigator getParentApiNavigator(final URI uri)
-    {
+    public final ApiNavigator getParentApiNavigator(final URI uri) {
 
         // NOTE: This method needs to be as speedy as possible as it is called with every request as part of the "routing" process
 
-        if (uri == null)
-        {
+        if (uri == null) {
             throw new NullPointerException("The uri is null; cannot locate the parent REST API.");
         }
 
@@ -307,24 +272,20 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public Set<Resource> getRepresentativeResources(final URI schemaUri)
-    {
+    public Set<Resource> getRepresentativeResources(final URI schemaUri) {
 
         final Set<Resource> representativeResources = new LinkedHashSet<>();
         final Set<URI> allApiUris = getLoadedApiUris();
 
-        for (final URI apiUri : allApiUris)
-        {
+        for (final URI apiUri : allApiUris) {
             final ApiNavigator apiNavigator = getLoadedApiNavigator(apiUri);
 
-            if (apiNavigator == null)
-            {
+            if (apiNavigator == null) {
                 continue;
             }
 
             final Set<Resource> apiRepresentativeResources = apiNavigator.getRepresentativeResources(schemaUri);
-            if (apiRepresentativeResources != null)
-            {
+            if (apiRepresentativeResources != null) {
                 representativeResources.addAll(apiRepresentativeResources);
             }
         }
@@ -333,11 +294,9 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new ApiLoaderException("The WRML context cannot be null.", null, this);
         }
 
@@ -348,19 +307,16 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
         loadConfiguredApis();
     }
 
     @Override
-    public ApiNavigator loadApi(final Api api) throws ApiLoaderException
-    {
+    public ApiNavigator loadApi(final Api api) throws ApiLoaderException {
 
         final URI apiUri = api.getUri();
-        if (apiUri == null)
-        {
+        if (apiUri == null) {
             throw new ApiLoaderException("The API's URI cannot be null.", null, this);
         }
 
@@ -374,11 +330,10 @@ public class DefaultApiLoader implements ApiLoader
         return apiNavigator;
     }
 
-    private String createApiNavigatorPath(final String uriString)
-    {
+    private String createApiNavigatorPath(final String uriString) {
+
         String apiNavigatorPath = uriString;
-        if (!apiNavigatorPath.endsWith("/"))
-        {
+        if (!apiNavigatorPath.endsWith("/")) {
             apiNavigatorPath += "/";
         }
 
@@ -388,11 +343,9 @@ public class DefaultApiLoader implements ApiLoader
 
 
     @Override
-    public ApiNavigator loadApi(final URI apiUri)
-    {
+    public ApiNavigator loadApi(final URI apiUri) {
 
-        if (apiUri == null)
-        {
+        if (apiUri == null) {
             return null;
         }
 
@@ -402,8 +355,7 @@ public class DefaultApiLoader implements ApiLoader
         final Dimensions dimensions = schemaLoader.getApiDimensions();
 
         final Api api = context.getModel(keys, dimensions);
-        if (api == null)
-        {
+        if (api == null) {
             throw new ApiLoaderException("The API associated with Keys:\n" + keys + "\n... and Dimensions:\n" + dimensions + " could not be loaded.", null, this);
         }
 
@@ -411,17 +363,14 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public void loadLinkRelation(final LinkRelation linkRelation) throws ApiLoaderException
-    {
+    public void loadLinkRelation(final LinkRelation linkRelation) throws ApiLoaderException {
 
         final URI linkRelationUri = linkRelation.getUri();
-        if (linkRelationUri == null)
-        {
+        if (linkRelationUri == null) {
             throw new ApiLoaderException("The Link Relation's URI cannot be null.", null, this);
         }
 
-        if (StringUtils.isEmpty(linkRelation.getTitle()))
-        {
+        if (StringUtils.isEmpty(linkRelation.getTitle())) {
 
             final String title = linkRelation.getUniqueName().getLocalName();
             linkRelation.setTitle(title);
@@ -431,17 +380,14 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public LinkRelation loadLinkRelation(final URI linkRelationUri)
-    {
+    public LinkRelation loadLinkRelation(final URI linkRelationUri) {
 
-        if (linkRelationUri == null)
-        {
+        if (linkRelationUri == null) {
             return null;
         }
 
         // LinkRelations are not re-loadable
-        if (_LinkRelations.containsKey(linkRelationUri))
-        {
+        if (_LinkRelations.containsKey(linkRelationUri)) {
             return _LinkRelations.get(linkRelationUri);
         }
 
@@ -451,8 +397,7 @@ public class DefaultApiLoader implements ApiLoader
         final Dimensions dimensions = schemaLoader.getLinkRelationDimensions();
 
         final LinkRelation linkRelation = context.getModel(keys, dimensions);
-        if (linkRelation == null)
-        {
+        if (linkRelation == null) {
             throw new ApiLoaderException("The LinkRelation associated with Keys:\n" + keys + "\n... and Dimensions:\n" + dimensions + " could not be loaded.", null, this);
         }
 
@@ -461,38 +406,33 @@ public class DefaultApiLoader implements ApiLoader
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         String result = AsciiArt.express(this);
         return result;
     }
 
-    protected Object decipherDocumentSurrogateKeyValue(final URI uri, final Prototype prototype)
-    {
+    protected Object decipherDocumentSurrogateKeyValue(final URI uri, final Prototype prototype) {
 
         final ApiNavigator apiNavigator = getParentApiNavigator(uri);
 
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             return null;
         }
 
         final SortedSet<Parameter> surrogateKeyComponents = apiNavigator.getSurrogateKeyComponents(uri, prototype);
-        if (surrogateKeyComponents == null || surrogateKeyComponents.isEmpty())
-        {
+        if (surrogateKeyComponents == null || surrogateKeyComponents.isEmpty()) {
             return null;
         }
 
         final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
 
         final Object surrogateKeyValue;
-        if (surrogateKeyComponents.size() == 1)
-        {
+        if (surrogateKeyComponents.size() == 1) {
             final Parameter surrogateKeyPair = surrogateKeyComponents.first();
 
             final String slotName = surrogateKeyPair.getName();
-            if (!allKeySlotNames.contains(slotName))
-            {
+            if (!allKeySlotNames.contains(slotName)) {
                 return null;
             }
 
@@ -501,25 +441,21 @@ public class DefaultApiLoader implements ApiLoader
 
             surrogateKeyValue = slotValue;
         }
-        else
-        {
+        else {
 
             final SortedMap<String, Object> keySlots = new TreeMap<String, Object>();
 
-            for (final Parameter surrogateKeyPair : surrogateKeyComponents)
-            {
+            for (final Parameter surrogateKeyPair : surrogateKeyComponents) {
 
                 final String slotName = surrogateKeyPair.getName();
-                if (!allKeySlotNames.contains(slotName))
-                {
+                if (!allKeySlotNames.contains(slotName)) {
                     continue;
                 }
 
                 final String slotTextValue = surrogateKeyPair.getValue();
                 final Object slotValue = parseSlotValueSyntacticText(prototype, slotName, slotTextValue);
 
-                if (slotValue == null)
-                {
+                if (slotValue == null) {
                     continue;
                 }
 
@@ -527,12 +463,10 @@ public class DefaultApiLoader implements ApiLoader
 
             }
 
-            if (keySlots.size() == 1)
-            {
+            if (keySlots.size() == 1) {
                 surrogateKeyValue = keySlots.get(keySlots.firstKey());
             }
-            else
-            {
+            else {
                 surrogateKeyValue = new CompositeKey(keySlots);
             }
         }
@@ -541,46 +475,38 @@ public class DefaultApiLoader implements ApiLoader
 
     }
 
-    protected final Dimensions getApiDimensions()
-    {
+    protected final Dimensions getApiDimensions() {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         return schemaLoader.getApiDimensions();
     }
 
-    protected final Dimensions getLinkRelationDimensions()
-    {
+    protected final Dimensions getLinkRelationDimensions() {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         return schemaLoader.getLinkRelationDimensions();
     }
 
-    private void loadConfiguredApis()
-    {
+    private void loadConfiguredApis() {
 
         final ApiLoaderConfiguration config = getConfig();
-        if (config != null)
-        {
+        if (config != null) {
             final URI[] apiUriArray = config.getApis();
-            if (apiUriArray != null && apiUriArray.length > 0)
-            {
-                for (final URI apiUri : apiUriArray)
-                {
+            if (apiUriArray != null && apiUriArray.length > 0) {
+                for (final URI apiUri : apiUriArray) {
                     loadApi(apiUri);
                 }
             }
         }
     }
 
-    private void loadSystemApis()
-    {
+    private void loadSystemApis() {
 
         final Context context = getContext();
 
-        for (final SystemApi systemApi : SystemApi.values())
-        {
+        for (final SystemApi systemApi : SystemApi.values()) {
 
             final ApiBuilder apiBuilder = new ApiBuilder(context);
 
@@ -603,8 +529,7 @@ public class DefaultApiLoader implements ApiLoader
         }
     }
 
-    private void loadSystemLinkRelations()
-    {
+    private void loadSystemLinkRelations() {
 
         final Context context = getContext();
 
@@ -612,8 +537,7 @@ public class DefaultApiLoader implements ApiLoader
         final String documentSchemaPath = "/" + Document.class.getName().replace('.', '/');
         final URI documentSchemaUri = SystemApi.Schema.getUri().resolve(documentSchemaPath);
 
-        for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values())
-        {
+        for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values()) {
             final LinkRelation linkRelation = context.newModel(LinkRelation.class);
 
             final UniqueName uniqueName = systemLinkRelation.getUniqueName();
@@ -623,13 +547,11 @@ public class DefaultApiLoader implements ApiLoader
             linkRelation.setTitle(uniqueName.getLocalName());
 
 
-            if (systemLinkRelation == SystemLinkRelation.self)
-            {
+            if (systemLinkRelation == SystemLinkRelation.self) {
                 linkRelation.setResponseSchemaUri(documentSchemaUri);
             }
 
-            else if (systemLinkRelation == SystemLinkRelation.save)
-            {
+            else if (systemLinkRelation == SystemLinkRelation.save) {
                 linkRelation.setResponseSchemaUri(documentSchemaUri);
                 linkRelation.setRequestSchemaUri(documentSchemaUri);
             }
@@ -639,12 +561,10 @@ public class DefaultApiLoader implements ApiLoader
         }
     }
 
-    private Object parseSlotValueSyntacticText(final Prototype prototype, final String slotName, final String slotTextValue)
-    {
+    private Object parseSlotValueSyntacticText(final Prototype prototype, final String slotName, final String slotTextValue) {
 
         final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-        if (protoSlot == null)
-        {
+        if (protoSlot == null) {
             return null;
         }
 

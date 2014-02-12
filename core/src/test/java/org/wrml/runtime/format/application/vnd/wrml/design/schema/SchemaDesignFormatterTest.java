@@ -24,14 +24,6 @@
  */
 package org.wrml.runtime.format.application.vnd.wrml.design.schema;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.InputStream;
-import java.net.URI;
-import java.util.TreeMap;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,9 +33,17 @@ import org.wrml.runtime.schema.LinkProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.syntax.SyntaxLoader;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.util.TreeMap;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Test for {@link SchemaDesignFormatter} using {@link Mockito} mocks.
- * 
+ *
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
 
@@ -53,6 +53,7 @@ public class SchemaDesignFormatterTest extends FormatTestBase {
     @Before
     @Override
     public void setUp() throws Exception {
+
         super.setUp();
         SyntaxLoader mockSyntaxLoader = mock(SyntaxLoader.class);
         String mockUri = "mockUri";
@@ -65,6 +66,7 @@ public class SchemaDesignFormatterTest extends FormatTestBase {
 
     @Override
     protected Formatter getFormatter() {
+
         final SchemaDesignFormatter formatter = new SchemaDesignFormatter();
         final FormatterConfiguration formatterConfiguration = new FormatterConfiguration();
         formatterConfiguration.setFormatUri(SystemFormat.vnd_wrml_design_schema.getFormatUri());
@@ -72,35 +74,47 @@ public class SchemaDesignFormatterTest extends FormatTestBase {
         return formatter;
     }
 
-    /** {@link Override} since this impl doesn't {@code readModel()}. (throws {@link ModelReadingException}. */
+    /**
+     * {@link Override} since this impl doesn't {@code readModel()}. (throws {@link ModelReadingException}.
+     */
     @Override
     @Test(expected = UnsupportedOperationException.class)
     public void testReadModel() throws ModelReadingException {
+
         this._Formatter.readModel(mock(InputStream.class), _MockKeys, _MockDimensions);
         fail("Expected an UnsupportedOperationException");
     }
 
-    /** {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}. */
+    /**
+     * {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}.
+     */
     @Override
     @Test(expected = UnsupportedOperationException.class)
     public void testReadModelException() throws ModelReadingException {
+
         super.testReadModelException();
         fail("Expected an UnsupportedOperationException");
     }
 
-    /** {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}. */
+    /**
+     * {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}.
+     */
     @Override
     @Test(expected = UnsupportedOperationException.class)
     public void testReadModelBadData() throws ModelReadingException {
+
         super.testReadModelBadData();
         fail("Expected an UnsupportedOperationException");
     }
 
 
-    /** {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}. */
+    /**
+     * {@link Override} since this impl doesn't {@code readModel()}. (throws {@link UnsupportedOperationException}.
+     */
     @Override
     @Test(expected = UnsupportedOperationException.class)
     public void testRoundTrip() throws ModelWritingException, ModelReadingException {
+
         super.testRoundTrip();
         fail("Expected an UnsupportedOperationException");
     }

@@ -27,21 +27,20 @@ package org.wrml.runtime.service.cache;
 /**
  * The {@link ModelCache}'s associated error type.
  */
-public class ModelCacheException extends RuntimeException
-{
+public class ModelCacheException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final ModelCache _Cache;
 
-    ModelCacheException(final String message, final Throwable cause, final ModelCache cache)
-    {
+    ModelCacheException(final String message, final Throwable cause, final ModelCache cache) {
+
         super(message, cause);
         _Cache = cache;
     }
 
-    public ModelCache getCache()
-    {
+    public ModelCache getCache() {
+
         return _Cache;
     }
 }

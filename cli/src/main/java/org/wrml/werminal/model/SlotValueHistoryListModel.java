@@ -29,8 +29,7 @@ import org.wrml.model.Model;
 import java.net.URI;
 import java.util.List;
 
-public interface SlotValueHistoryListModel extends Model
-{
+public interface SlotValueHistoryListModel extends Model {
 
     URI getHistoryListSchemaUri();
 

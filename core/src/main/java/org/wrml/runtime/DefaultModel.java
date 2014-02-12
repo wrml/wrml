@@ -32,7 +32,10 @@ import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
 import org.wrml.model.schema.Schema;
 import org.wrml.model.schema.ValueType;
-import org.wrml.runtime.schema.*;
+import org.wrml.runtime.schema.LinkProtoSlot;
+import org.wrml.runtime.schema.ProtoSlot;
+import org.wrml.runtime.schema.Prototype;
+import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.util.AsciiArt;
 import org.wrml.util.JavaBean;
 import org.wrml.util.JavaMethod;
@@ -65,8 +68,7 @@ import java.util.*;
  * runtime will manage its data once but allow multiple {@link DefaultModel}s to reference it. This concept is known as
  * "instance folding" and it ensures model singularity.
  */
-final class DefaultModel implements Model, InvocationHandler
-{
+final class DefaultModel implements Model, InvocationHandler {
 
     private static final long serialVersionUID = 1L;
 
@@ -93,72 +95,62 @@ final class DefaultModel implements Model, InvocationHandler
      * @param context    The {@link Context} for this model.
      * @param modelState The state for the model.
      */
-    DefaultModel(final Context context, final ModelState modelState)
-    {
+    DefaultModel(final Context context, final ModelState modelState) {
 
         _Context = context;
         _ModelState = modelState;
     }
 
     @Override
-    public Object clearSlotValue(final String slotName)
-    {
+    public Object clearSlotValue(final String slotName) {
 
         // NOTE: Will be handled by invoke as a special method for all "defined" models
         return clearSlotValue(this, slotName, null);
     }
 
     @Override
-    public boolean containsSlotValue(final String slotName)
-    {
+    public boolean containsSlotValue(final String slotName) {
         // NOTE: Will be handled by invoke as a special method for all "defined" models
         return containsSlotValue(this, slotName, null);
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public Dimensions getDimensions()
-    {
+    public Dimensions getDimensions() {
 
         return _Dimensions;
     }
 
-    void setDimensions(final Dimensions dimensions)
-    {
+    void setDimensions(final Dimensions dimensions) {
 
         _Dimensions = dimensions;
     }
 
     @Override
-    public UUID getHeapId()
-    {
+    public UUID getHeapId() {
 
         return getModelState().getHeapId(this);
     }
 
     @Override
-    public Keys getKeys()
-    {
+    public Keys getKeys() {
         // See NOTE in getSchemaUri.
         return null;
     }
 
     @Override
-    public String getOriginServiceName()
-    {
+    public String getOriginServiceName() {
 
         return getModelState().getOriginServiceName(this);
     }
 
     @Override
-    public Prototype getPrototype()
-    {
+    public Prototype getPrototype() {
         // See NOTE in getSchemaUri.
 
         // Return the "undefined" Prototype.
@@ -166,8 +158,7 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
         // NOTE: If this model is already a Proxy model's InvocationHandler, then calls to this method would be routed
         // to invoke instead, where an appropriate schema id value will be returned.
 
@@ -176,16 +167,14 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public Map<String, Object> getSlotMap()
-    {
+    public Map<String, Object> getSlotMap() {
 
         final ModelState modelState = getModelState();
         return modelState.getValuedSlots(this);
     }
 
     @Override
-    public Object getSlotValue(final String slotName)
-    {
+    public Object getSlotValue(final String slotName) {
         // NOTE: If this model is already a Proxy model's InvocationHandler, then calls to this method would be routed
         // to invoke instead, where an appropriate schema id value will be used for this call.
 
@@ -193,15 +182,13 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public void initKeySlots(final Keys keys)
-    {
+    public void initKeySlots(final Keys keys) {
 
         initKeySlots(this, keys);
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
-    {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -226,14 +213,12 @@ final class DefaultModel implements Model, InvocationHandler
         //
 
         if (declaringClass.equals(ValueType.JAVA_TYPE_MODEL) || declaringClass.equals(Object.class)
-                || declaringClass.equals(Comparable.class))
-        {
+                || declaringClass.equals(Comparable.class)) {
 
             // The invoked method was declared by one of the base model types, it may be a special case method.
             final SpecialMethod specialMethod = SpecialMethod.fromString(methodName);
 
-            if (specialMethod != null)
-            {
+            if (specialMethod != null) {
 
                 // LOG.debug("Model method: " + method + " is considered a special method.");
 
@@ -243,16 +228,13 @@ final class DefaultModel implements Model, InvocationHandler
                 final boolean hasArgs = argCount > 0;
                 final Object firstArg = (hasArgs) ? args[0] : null;
 
-                switch (specialMethod)
-                {
+                switch (specialMethod) {
 
                     // Handle the special case methods:
 
-                    case clearSlotValue:
-                    {
+                    case clearSlotValue: {
 
-                        if (argCount == 1 && firstArg instanceof String)
-                        {
+                        if (argCount == 1 && firstArg instanceof String) {
                             final String slotName = (String) firstArg;
                             return clearSlotValue(model, slotName, modelSchemaUri);
                         }
@@ -260,10 +242,8 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case containsSlotValue:
-                    {
-                        if (argCount == 1 && firstArg instanceof String)
-                        {
+                    case containsSlotValue: {
+                        if (argCount == 1 && firstArg instanceof String) {
                             final String slotName = (String) firstArg;
                             return containsSlotValue(model, slotName, modelSchemaUri);
                         }
@@ -271,14 +251,11 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case equals:
-                    {
+                    case equals: {
 
-                        if (argCount == 1)
-                        {
+                        if (argCount == 1) {
                             final Object other = firstArg;
-                            if (other instanceof Proxy)
-                            {
+                            if (other instanceof Proxy) {
                                 return equals(Proxy.getInvocationHandler(other));
                             }
                             return false;
@@ -287,10 +264,8 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case getKeys:
-                    {
-                        if (argCount == 0)
-                        {
+                    case getKeys: {
+                        if (argCount == 0) {
 
                             return buildKeys(model);
                         }
@@ -298,10 +273,8 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case getPrototype:
-                    {
-                        if (argCount == 0)
-                        {
+                    case getPrototype: {
+                        if (argCount == 0) {
 
                             return prototype;
                         }
@@ -309,13 +282,10 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case getSchemaUri:
-                    {
-                        if (argCount == 0)
-                        {
+                    case getSchemaUri: {
+                        if (argCount == 0) {
 
-                            if (ValueType.JAVA_TYPE_MODEL.equals(modelSchemaInterface))
-                            {
+                            if (ValueType.JAVA_TYPE_MODEL.equals(modelSchemaInterface)) {
                                 // Return null (undefined Schema) if we are only a Model
                                 return null;
                             }
@@ -327,11 +297,9 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case getSlotValue:
-                    {
+                    case getSlotValue: {
 
-                        if (argCount >= 1)
-                        {
+                        if (argCount >= 1) {
                             final String slotName = (String) firstArg;
                             final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
                             return getSlotValue(model, slotName, protoSlot.getDeclaringSchemaUri());
@@ -339,11 +307,9 @@ final class DefaultModel implements Model, InvocationHandler
 
                         break;
                     }
-                    case initKeySlots:
-                    {
+                    case initKeySlots: {
 
-                        if (argCount == 1)
-                        {
+                        if (argCount == 1) {
                             final Keys keys = (Keys) firstArg;
                             initKeySlots(model, keys);
                             return null;
@@ -351,18 +317,15 @@ final class DefaultModel implements Model, InvocationHandler
 
                         break;
                     }
-                    case reference:
-                    {
+                    case reference: {
 
-                        if (argCount >= 1)
-                        {
+                        if (argCount >= 1) {
 
                             final String linkSlotName = (String) firstArg;
                             final LinkProtoSlot linkProtoSlot = prototype.getProtoSlot(linkSlotName);
 
                             Object[] referenceMethodArgs = null;
-                            if (argCount > 1)
-                            {
+                            if (argCount > 1) {
                                 referenceMethodArgs = ArrayUtils.subarray(args, 1, args.length);
                             }
                             return invokeReference(model, linkProtoSlot, referenceMethodArgs);
@@ -372,11 +335,9 @@ final class DefaultModel implements Model, InvocationHandler
                         break;
                     }
 
-                    case setSlotValue:
-                    {
+                    case setSlotValue: {
 
-                        if (argCount >= 2)
-                        {
+                        if (argCount >= 2) {
                             final String slotName = (String) firstArg;
                             final Object slotValue = args[1];
                             final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
@@ -402,12 +363,10 @@ final class DefaultModel implements Model, InvocationHandler
         final JavaBean schemaBean = prototype.getSchemaBean();
         final SortedMap<String, SortedSet<JavaMethod>> linkMethods = schemaBean.getOtherMethods();
 
-        if (linkMethods.containsKey(methodName))
-        {
+        if (linkMethods.containsKey(methodName)) {
             String linkSlotName = methodName;
 
-            if (linkSlotName.startsWith(JavaBean.GET))
-            {
+            if (linkSlotName.startsWith(JavaBean.GET)) {
                 linkSlotName = methodName.substring(3);
                 linkSlotName = Character.toLowerCase(linkSlotName.charAt(0)) + linkSlotName.substring(1);
             }
@@ -429,34 +388,28 @@ final class DefaultModel implements Model, InvocationHandler
         boolean isWrite = false;
         String slotName = null;
 
-        if (methodName.startsWith(JavaBean.GET))
-        {
+        if (methodName.startsWith(JavaBean.GET)) {
             slotName = methodName.substring(3);
         }
-        else if (methodName.startsWith(JavaBean.IS))
-        {
+        else if (methodName.startsWith(JavaBean.IS)) {
             slotName = methodName.substring(2);
         }
-        else if (methodName.startsWith(JavaBean.SET))
-        {
+        else if (methodName.startsWith(JavaBean.SET)) {
             slotName = methodName.substring(3);
             isWrite = true;
         }
 
-        if (slotName != null)
-        {
+        if (slotName != null) {
             slotName = Character.toLowerCase(slotName.charAt(0)) + slotName.substring(1);
 
             final URI declaringSchemaUri = schemaLoader.getTypeUri(declaringClass);
 
-            if (isWrite)
-            {
+            if (isWrite) {
                 final Object newSlotValue = args[0];
                 final Object oldSlotValue = setSlotValue(model, slotName, newSlotValue, declaringSchemaUri);
                 return oldSlotValue;
             }
-            else
-            {
+            else {
                 final Object slotValue = getSlotValue(model, slotName, declaringSchemaUri);
 
                 return slotValue;
@@ -467,8 +420,7 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public <M extends Model> M newAlternate(final Dimensions alternateDimensions) throws ModelException
-    {
+    public <M extends Model> M newAlternate(final Dimensions alternateDimensions) throws ModelException {
 
         final Context context = getContext();
         final DefaultModelBuilder modelFactory = (DefaultModelBuilder) context.getModelBuilder();
@@ -478,8 +430,7 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public <M extends Model> M newCopy() throws ModelException
-    {
+    public <M extends Model> M newCopy() throws ModelException {
 
         final ModelBuilder factory = getContext().getModelBuilder();
         return factory.copyModel(this);
@@ -487,85 +438,71 @@ final class DefaultModel implements Model, InvocationHandler
     }
 
     @Override
-    public <E extends Model> E reference(final String linkSlotName) throws ModelException
-    {
+    public <E extends Model> E reference(final String linkSlotName) throws ModelException {
 
         return reference(linkSlotName, null, null);
     }
 
     @Override
     public <E extends Model> E reference(final String linkSlotName, final DimensionsBuilder dimensionsBuilder)
-            throws ModelException
-    {
+            throws ModelException {
 
         return reference(linkSlotName, dimensionsBuilder, null);
     }
 
     @Override
     public <E extends Model> E reference(final String linkSlotName, final DimensionsBuilder dimensionsBuilder,
-                                         final Model parameter) throws ModelException
-    {
+                                         final Model parameter) throws ModelException {
 
         return visitLink(this, linkSlotName, dimensionsBuilder, parameter);
     }
 
     @Override
-    public String setOriginServiceName(final String originServiceName)
-    {
+    public String setOriginServiceName(final String originServiceName) {
 
         return getModelState().setOriginServiceName(this, originServiceName);
     }
 
     @Override
-    public Object setSlotValue(final String slotName, final Object newValue) throws ModelException
-    {
+    public Object setSlotValue(final String slotName, final Object newValue) throws ModelException {
         // NOTE: If this model is already a Proxy model's InvocationHandler, then calls to this method would be routed
         // to invoke instead, where an appropriate schema id value will be used for this call.
 
         return setSlotValue(slotName, newValue, null);
     }
 
-    ModelState getModelState()
-    {
+    ModelState getModelState() {
 
         return _ModelState;
     }
 
-    private final Keys buildKeys(final Model model)
-    {
+    private final Keys buildKeys(final Model model) {
 
         return buildKeys(model.getSchemaUri(), model.getSlotMap(), new KeysBuilder());
     }
 
     private final Keys buildKeys(final URI schemaUri, final Map<String, Object> readOnlySlotMap,
-                                 final KeysBuilder keysBuilder)
-    {
+                                 final KeysBuilder keysBuilder) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final Prototype prototype = schemaLoader.getPrototype(schemaUri);
         final SortedSet<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-        if (keySlotNames != null && !keySlotNames.isEmpty())
-        {
+        if (keySlotNames != null && !keySlotNames.isEmpty()) {
             final Object keyValue;
 
-            if (keySlotNames.size() == 1)
-            {
+            if (keySlotNames.size() == 1) {
                 final String keySlotName = keySlotNames.first();
-                if (readOnlySlotMap.containsKey(keySlotName))
-                {
+                if (readOnlySlotMap.containsKey(keySlotName)) {
                     keyValue = readOnlySlotMap.get(keySlotName);
                 }
-                else
-                {
+                else {
                     keyValue = null;
                 }
             }
-            else
-            {
+            else {
                 final SortedMap<String, Object> keySlots = new TreeMap<String, Object>();
-                for (final String keySlotName : keySlotNames)
-                {
+                for (final String keySlotName : keySlotNames) {
                     final Object keySlotValue = readOnlySlotMap.get(keySlotName);
                     keySlots.put(keySlotName, keySlotValue);
                 }
@@ -573,18 +510,15 @@ final class DefaultModel implements Model, InvocationHandler
                 keyValue = new CompositeKey(keySlots);
             }
 
-            if (keyValue != null)
-            {
+            if (keyValue != null) {
                 keysBuilder.addKey(schemaUri, keyValue);
             }
 
         }
 
         final Set<URI> baseSchemaUris = prototype.getAllBaseSchemaUris();
-        if (baseSchemaUris != null && !baseSchemaUris.isEmpty())
-        {
-            for (final URI baseSchemaUri : baseSchemaUris)
-            {
+        if (baseSchemaUris != null && !baseSchemaUris.isEmpty()) {
+            for (final URI baseSchemaUri : baseSchemaUris) {
                 buildKeys(baseSchemaUri, readOnlySlotMap, keysBuilder);
             }
         }
@@ -592,47 +526,40 @@ final class DefaultModel implements Model, InvocationHandler
         return keysBuilder.toKeys();
     }
 
-    private Object clearSlotValue(final Model model, final String slotName, final URI schemaUri)
-    {
+    private Object clearSlotValue(final Model model, final String slotName, final URI schemaUri) {
 
         final ModelState state = getModelState();
         return state.clearSlotValue(model, slotName, schemaUri);
     }
 
-    private boolean containsSlotValue(final Model model, final String slotName, final URI schemaUri)
-    {
+    private boolean containsSlotValue(final Model model, final String slotName, final URI schemaUri) {
 
         final ModelState state = getModelState();
         return state.containsSlotValue(model, slotName, schemaUri);
     }
 
-    private Object getSlotValue(final Model model, final String slotName, final URI schemaUri)
-    {
+    private Object getSlotValue(final Model model, final String slotName, final URI schemaUri) {
 
         return getSlotValue(model, slotName, schemaUri, true);
     }
 
-    private Object getSlotValue(final Model model, final String slotName, final URI schemaUri, final boolean strict)
-    {
+    private Object getSlotValue(final Model model, final String slotName, final URI schemaUri, final boolean strict) {
 
         final ModelState state = getModelState();
         return state.getSlotValue(model, slotName, schemaUri, strict);
     }
 
-    private Object getSlotValue(final String slotName, final URI schemaUri)
-    {
+    private Object getSlotValue(final String slotName, final URI schemaUri) {
 
         return getSlotValue(slotName, schemaUri, true);
     }
 
-    private Object getSlotValue(final String slotName, final URI schemaUri, final boolean strict)
-    {
+    private Object getSlotValue(final String slotName, final URI schemaUri, final boolean strict) {
 
         return getSlotValue(this, slotName, schemaUri, strict);
     }
 
-    private void initKeySlots(final Model model, final Keys keys)
-    {
+    private void initKeySlots(final Model model, final Keys keys) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
@@ -640,47 +567,39 @@ final class DefaultModel implements Model, InvocationHandler
         URI uri = null;
 
         // Apply all of these Keys to the cached model (in case any Key values are "new").
-        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris())
-        {
+        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris()) {
             final Object keyValue = keys.getValue(keyedSchemaUri);
 
             final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
             final SortedSet<String> keySlotNames = keyedPrototype.getDeclaredKeySlotNames();
 
-            if (keySlotNames.size() == 1)
-            {
-                if (documentSchemaUri.equals(keyedSchemaUri))
-                {
+            if (keySlotNames.size() == 1) {
+                if (documentSchemaUri.equals(keyedSchemaUri)) {
                     // Save the document key slot (uri) for last so that the hypermedia engine has all other keys
                     // available
                     // (to auto-generate the Link href values).
                     uri = (URI) keyValue;
                 }
-                else
-                {
+                else {
                     setSlotValue(model, keySlotNames.first(), keyValue, keyedSchemaUri, false);
                 }
             }
-            else if (keyValue instanceof CompositeKey)
-            {
+            else if (keyValue instanceof CompositeKey) {
                 final CompositeKey compositeKey = (CompositeKey) keyValue;
                 final Map<String, Object> keySlots = compositeKey.getKeySlots();
-                for (final String keySlotName : keySlots.keySet())
-                {
+                for (final String keySlotName : keySlots.keySet()) {
                     setSlotValue(model, keySlotName, keySlots.get(keySlotName), keyedSchemaUri, false);
                 }
             }
         }
 
         // See comment above regarding saving the uri key slot for last.
-        if (uri != null)
-        {
+        if (uri != null) {
             setSlotValue(model, Document.SLOT_NAME_URI, uri, documentSchemaUri, false);
         }
     }
 
-    private Object invokeReference(final Model model, final LinkProtoSlot linkProtoSlot, final Object[] args)
-    {
+    private Object invokeReference(final Model model, final LinkProtoSlot linkProtoSlot, final Object[] args) {
 
 
         final int argCount = (args != null) ? args.length : 0;
@@ -690,24 +609,19 @@ final class DefaultModel implements Model, InvocationHandler
         DimensionsBuilder dimensionsBuilder = null;
         Model parameter = null;
 
-        if (hasArgs)
-        {
-            if (firstArg instanceof DimensionsBuilder)
-            {
+        if (hasArgs) {
+            if (firstArg instanceof DimensionsBuilder) {
                 dimensionsBuilder = (DimensionsBuilder) firstArg;
-                if (argCount == 2)
-                {
+                if (argCount == 2) {
                     parameter = (Model) args[1];
                 }
             }
-            else
-            {
+            else {
                 parameter = (Model) firstArg;
             }
         }
 
-        if (dimensionsBuilder == null)
-        {
+        if (dimensionsBuilder == null) {
             dimensionsBuilder = new DimensionsBuilder(model.getDimensions());
             dimensionsBuilder.setSchemaUri(linkProtoSlot.getResponseSchemaUri());
         }
@@ -716,66 +630,56 @@ final class DefaultModel implements Model, InvocationHandler
 
     }
 
-    private Object setSlotValue(final Model model, final String slotName, final Object newValue, final URI schemaUri)
-    {
+    private Object setSlotValue(final Model model, final String slotName, final Object newValue, final URI schemaUri) {
 
         return setSlotValue(model, slotName, newValue, schemaUri, true);
     }
 
     private Object setSlotValue(final Model model, final String slotName, final Object newValue, final URI schemaUri,
-                                final boolean strict)
-    {
+                                final boolean strict) {
 
         final ModelState state = getModelState();
         return state.setSlotValue(model, slotName, newValue, schemaUri, strict);
     }
 
-    private Object setSlotValue(final String slotName, final Object newValue, final URI schemaUri)
-    {
+    private Object setSlotValue(final String slotName, final Object newValue, final URI schemaUri) {
 
         return setSlotValue(slotName, newValue, schemaUri, true);
     }
 
-    private Object setSlotValue(final String slotName, final Object newValue, final URI schemaUri, final boolean strict)
-    {
+    private Object setSlotValue(final String slotName, final Object newValue, final URI schemaUri, final boolean strict) {
 
         return setSlotValue(this, slotName, newValue, schemaUri, strict);
     }
 
     private <M extends Model> M visitLink(final Model model, final String linkSlotName,
-                                          final DimensionsBuilder dimensionsBuilder, final Model parameter) throws ModelException
-    {
+                                          final DimensionsBuilder dimensionsBuilder, final Model parameter) throws ModelException {
 
         final Context context = getContext();
         return context.visitLink(model, linkSlotName, dimensionsBuilder, parameter);
     }
 
     @Override
-    public boolean equals(final Object obj)
-    {
+    public boolean equals(final Object obj) {
 
-        if (obj instanceof DefaultModel)
-        {
+        if (obj instanceof DefaultModel) {
             final DefaultModel other = (DefaultModel) obj;
             return Objects.equal(_Context, other._Context) && Objects.equal(_ModelState, other._ModelState)
                     && Objects.equal(_Dimensions, other._Dimensions);
         }
-        else
-        {
+        else {
             return false;
         }
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
         return Objects.hashCode(_Context, _ModelState, _Dimensions);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return AsciiArt.express(this);
     }
@@ -783,8 +687,7 @@ final class DefaultModel implements Model, InvocationHandler
     /**
      * The names of model methods that need to be considered as special cases within invoke.
      */
-    private static enum SpecialMethod
-    {
+    private static enum SpecialMethod {
         clearSlotValue,
         containsSlotValue,
         equals,
@@ -801,21 +704,17 @@ final class DefaultModel implements Model, InvocationHandler
 
         private static final Map<String, SpecialMethod> STRING_MAP;
 
-        static
-        {
+        static {
             final SpecialMethod[] values = SpecialMethod.values();
             STRING_MAP = new HashMap<String, SpecialMethod>(values.length);
-            for (final SpecialMethod e : values)
-            {
+            for (final SpecialMethod e : values) {
                 SpecialMethod.STRING_MAP.put(e.toString(), e);
             }
         }
 
-        public static final SpecialMethod fromString(final String string)
-        {
+        public static final SpecialMethod fromString(final String string) {
 
-            if (!SpecialMethod.STRING_MAP.containsKey(string))
-            {
+            if (!SpecialMethod.STRING_MAP.containsKey(string)) {
                 return null;
             }
 
@@ -827,8 +726,7 @@ final class DefaultModel implements Model, InvocationHandler
     /**
      * Interface to the {@link DefaultModel}'s slot store and other matters of state.
      */
-    public static interface ModelState extends Cloneable
-    {
+    public static interface ModelState extends Cloneable {
 
         Object clearSlotValue(final Model model, final String slotName, final URI schemaUri);
 

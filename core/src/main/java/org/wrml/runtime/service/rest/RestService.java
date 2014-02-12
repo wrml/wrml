@@ -64,16 +64,14 @@ import java.util.Set;
 /**
  * The Web's uniform interface as a WRML {@link Service}.
  */
-public class RestService extends AbstractService
-{
+public class RestService extends AbstractService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestService.class);
 
     private HttpClient _HttpClient;
 
     @Override
-    public void delete(final Keys keys, final Dimensions dimensions)
-    {
+    public void delete(final Keys keys, final Dimensions dimensions) {
 
         final Context context = getContext();
         final URI uri = keys.getValue(context.getSchemaLoader().getDocumentSchemaUri());
@@ -82,8 +80,7 @@ public class RestService extends AbstractService
     }
 
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions)
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) {
 
         final Context context = getContext();
         final URI uri = keys.getValue(context.getSchemaLoader().getDocumentSchemaUri());
@@ -103,8 +100,7 @@ public class RestService extends AbstractService
     }
 
     @Override
-    public Model save(final Model model)
-    {
+    public Model save(final Model model) {
 
         final Document document = (Document) model;
         final URI uri = document.getUri();
@@ -124,8 +120,7 @@ public class RestService extends AbstractService
     }
 
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
         final SchemeRegistry schemeRegistry = new SchemeRegistry();
 
@@ -141,18 +136,15 @@ public class RestService extends AbstractService
         _HttpClient = new DefaultHttpClient(_ConnectionManager);
     }
 
-    private HttpResponse executeRequest(final HttpRequestBase request)
-    {
+    private HttpResponse executeRequest(final HttpRequestBase request) {
 
         LOG.debug("Making outgoing request {}", request);
 
         final HttpResponse response;
-        try
-        {
+        try {
             response = _HttpClient.execute(request);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             LOG.error("Failed to execute HTTP request: " + request.getClass().toString() + " to " + request.getURI(), e);
             throw new ServiceException("Failed to execute HTTP PUT request.", e, this);
         }
@@ -160,8 +152,7 @@ public class RestService extends AbstractService
         LOG.debug("Received status code: {} in response to update request.",
                 response.getStatusLine() != null ? response.getStatusLine().getStatusCode() : "NULL");
 
-        if (response.getStatusLine().getStatusCode() / 100 != 2)
-        {
+        if (response.getStatusLine().getStatusCode() / 100 != 2) {
             // Anything in the 300, 400, or 500 ranges will go here
 
             final String errorMessage = "Error: (" + response.getStatusLine().getStatusCode() + ") - "
@@ -176,40 +167,33 @@ public class RestService extends AbstractService
     }
 
     private <M extends Model> M readResponseModel(final HttpResponse response, final Context context, final Keys keys,
-                                                  final Dimensions dimensions)
-    {
+                                                  final Dimensions dimensions) {
 
-        if (response == null)
-        {
+        if (response == null) {
             return null;
         }
 
         final HttpEntity entity = response.getEntity();
-        if (entity == null)
-        {
+        if (entity == null) {
             return null;
         }
 
         // TODO: Initialize this from the response content-type header? As is, null will default to the default format.
         final URI formatUri = null;
 
-        try
-        {
+        try {
             final InputStream in = entity.getContent();
             return context.readModel(in, keys, dimensions, formatUri);
         }
-        catch (final IllegalStateException | IOException e)
-        {
+        catch (final IllegalStateException | IOException e) {
             throw new ServiceException("Failed to read HTTP response content.", e, this);
         }
-        finally
-        {
+        finally {
             EntityUtils.consumeQuietly(entity);
         }
     }
 
-    class ModelContentProducer implements ContentProducer
-    {
+    class ModelContentProducer implements ContentProducer {
 
         private final Context _Context;
 
@@ -220,8 +204,7 @@ public class RestService extends AbstractService
         /**
          * Initialize this with the model writer and model that it will use
          */
-        public ModelContentProducer(final Context context, final ModelWriteOptions writeOptions, final Model model)
-        {
+        public ModelContentProducer(final Context context, final ModelWriteOptions writeOptions, final Model model) {
 
             _Context = context;
             _Model = model;
@@ -229,18 +212,15 @@ public class RestService extends AbstractService
         }
 
         @Override
-        public void writeTo(final OutputStream stream) throws IOException
-        {
+        public void writeTo(final OutputStream stream) throws IOException {
 
-            try
-            {
+            try {
                 // TODO: How best to determine the best Format URI to pass here?
                 // Use API metadata?
                 // Remember/store the Format URI that was used when the Model was read from the origin?
                 _Context.writeModel(stream, _Model, _WriteOptions, null);
             }
-            catch (final ModelWriterException e)
-            {
+            catch (final ModelWriterException e) {
                 e.printStackTrace();
                 throw new IOException("Error writing the given model out to the stream provided.", e);
             }

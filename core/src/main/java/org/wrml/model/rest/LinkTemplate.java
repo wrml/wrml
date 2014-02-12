@@ -77,8 +77,7 @@ import java.util.UUID;
  * @see <a href="http://en.wikipedia.org/wiki/HATEOAS">http://en.wikipedia.org/wiki/HATEOAS</a>
  */
 @WRML(titleSlotName = "linkRelationUri")
-public interface LinkTemplate extends Model
-{
+public interface LinkTemplate extends Model {
 
     /**
      * If this {@link LinkTemplate} describes <code>/R ----> /E</code>, then this method returns <code>/E</code>'s

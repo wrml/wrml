@@ -24,8 +24,7 @@
  */
 package org.wrml.model.rest.status;
 
-public enum StatusCategory
-{
+public enum StatusCategory {
 
     /**
      * Informational 1xx - Request received, continuing process
@@ -55,13 +54,11 @@ public enum StatusCategory
      */
     SERVER_ERROR("Server Error", "5xx", 500, 599);
 
-    public static StatusCategory getStatusCategory(final int code)
-    {
+    public static StatusCategory getStatusCategory(final int code) {
+
         final StatusCategory[] values = StatusCategory.values();
-        for (final StatusCategory statusCategory : values)
-        {
-            if (statusCategory.inRange(code))
-            {
+        for (final StatusCategory statusCategory : values) {
+            if (statusCategory.inRange(code)) {
                 return statusCategory;
             }
         }
@@ -76,8 +73,8 @@ public enum StatusCategory
 
     private final int _MaxValue;
 
-    private StatusCategory(final String name, final String nickname, final int minValue, final int maxValue)
-    {
+    private StatusCategory(final String name, final String nickname, final int minValue, final int maxValue) {
+
         _Name = name;
         _Nickname = nickname;
         _MinValue = minValue;
@@ -85,34 +82,34 @@ public enum StatusCategory
 
     }
 
-    public int getMaxValue()
-    {
+    public int getMaxValue() {
+
         return _MaxValue;
     }
 
-    public int getMinValue()
-    {
+    public int getMinValue() {
+
         return _MinValue;
     }
 
-    public String getName()
-    {
+    public String getName() {
+
         return _Name;
     }
 
-    public String getNickname()
-    {
+    public String getNickname() {
+
         return _Nickname;
     }
 
-    public boolean inRange(final int code)
-    {
+    public boolean inRange(final int code) {
+
         return ((code >= getMinValue()) && (code <= getMaxValue()));
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         return new StringBuilder().append(getName()).append(' ').append(getNickname()).toString();
     }
 

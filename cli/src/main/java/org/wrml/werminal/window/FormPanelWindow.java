@@ -37,8 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FormPanelWindow extends WerminalPanelWindow
-{
+public class FormPanelWindow extends WerminalPanelWindow {
 
     public final static int FIELDS_PER_PANEL = 10;
 
@@ -46,36 +45,31 @@ public class FormPanelWindow extends WerminalPanelWindow
 
     public final static int HEADER_FIELD_VALUE_LABEL_WIDTH = 100;
 
-    public FormPanelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents)
-    {
+    public FormPanelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents) {
 
         super(werminal, title, toolBarComponents);
     }
 
-    public void addFormField(final String panelTitle, final Type fieldType, final Object value)
-    {
+    public void addFormField(final String panelTitle, final Type fieldType, final Object value) {
 
         goToLastPanel();
 
         FormPanel form = (FormPanel) getCurrentPanel();
         final FormField formField;
-        if (form == null)
-        {
+        if (form == null) {
             final Map<String, Type> fieldMap = new LinkedHashMap<>();
             final String fieldZeroSlotName = "0";
             fieldMap.put(fieldZeroSlotName, fieldType);
             initPanels(panelTitle, fieldMap);
             formField = getFormField(fieldZeroSlotName);
         }
-        else
-        {
+        else {
             final FormFieldOpenAction formFieldOpenAction = new FormFieldOpenAction(getWerminal());
             formField = new FormField(String.valueOf((FormPanelWindow.FIELDS_PER_PANEL * form.getPanelIndex())
                     + form.getFieldCount()), fieldType, formFieldOpenAction);
             formFieldOpenAction.setFormField(formField);
 
-            if (form.getFieldCount() == FormPanelWindow.FIELDS_PER_PANEL)
-            {
+            if (form.getFieldCount() == FormPanelWindow.FIELDS_PER_PANEL) {
                 final Map<String, FormField> formFields = new LinkedHashMap<>();
                 formFields.put(formField.getFieldName(), formField);
                 form = addFormPanel(panelTitle, formFields);
@@ -88,15 +82,13 @@ public class FormPanelWindow extends WerminalPanelWindow
         formField.getFieldValueTextBox().setValue(value);
     }
 
-    public FormPanel addFormPanel(final String panelTitle, final Map<String, FormField> formFields)
-    {
+    public FormPanel addFormPanel(final String panelTitle, final Map<String, FormField> formFields) {
 
         final List<WerminalPanel> panels = getPanels();
         final int oldPanelCount = panels.size();
         final int newPanelCount = panels.size() + 1;
 
-        for (final WerminalPanel panel : panels)
-        {
+        for (final WerminalPanel panel : panels) {
             panel.setPanelCount(newPanelCount);
         }
 
@@ -105,18 +97,14 @@ public class FormPanelWindow extends WerminalPanelWindow
         return formPanel;
     }
 
-    public final FormField getFormField(final String fieldName)
-    {
+    public final FormField getFormField(final String fieldName) {
 
-        for (final WerminalPanel panel : getPanels())
-        {
+        for (final WerminalPanel panel : getPanels()) {
 
-            if (panel instanceof FormPanel)
-            {
+            if (panel instanceof FormPanel) {
                 final FormPanel formPanel = (FormPanel) panel;
                 final FormField field = formPanel.getFormField(fieldName);
-                if (field != null)
-                {
+                if (field != null) {
                     return field;
                 }
             }
@@ -126,8 +114,7 @@ public class FormPanelWindow extends WerminalPanelWindow
         return null;
     }
 
-    public final void initPanels(final String panelTitle, final Map<String, Type> fieldMap)
-    {
+    public final void initPanels(final String panelTitle, final Map<String, Type> fieldMap) {
 
         final List<WerminalPanel> panels = getPanels();
         panels.clear();
@@ -143,8 +130,7 @@ public class FormPanelWindow extends WerminalPanelWindow
         final int lastPanelFieldCount = (panelCount == 1) ? totalFieldCount
                 : (leftoverFieldCount == 0) ? FormPanelWindow.FIELDS_PER_PANEL : leftoverFieldCount;
 
-        for (int panelIndex = 0; panelIndex < panelCount; panelIndex++)
-        {
+        for (int panelIndex = 0; panelIndex < panelCount; panelIndex++) {
 
             final boolean isLastPanel = (panelIndex == (panelCount - 1));
 
@@ -152,8 +138,7 @@ public class FormPanelWindow extends WerminalPanelWindow
             final int panelFieldCount = (isLastPanel) ? lastPanelFieldCount : FormPanelWindow.FIELDS_PER_PANEL;
             final int panelFieldEndIndex = panelFieldStartIndex + panelFieldCount;
             final Map<String, FormField> formFields = new LinkedHashMap<>();
-            for (int fieldIndex = panelFieldStartIndex; fieldIndex < panelFieldEndIndex; fieldIndex++)
-            {
+            for (int fieldIndex = panelFieldStartIndex; fieldIndex < panelFieldEndIndex; fieldIndex++) {
                 final String fieldName = allFieldNames.get(fieldIndex);
                 final Type fieldType = fieldMap.get(fieldName);
                 final FormFieldOpenAction formFieldOpenAction = new FormFieldOpenAction(getWerminal());
@@ -166,15 +151,13 @@ public class FormPanelWindow extends WerminalPanelWindow
             panels.add(formPanel);
         }
 
-        if (panels.size() > 0)
-        {
+        if (panels.size() > 0) {
             setCurrentPanel(panels.get(0));
         }
     }
 
     protected FormPanel createFormPanel(final String panelTitle, final Map<String, FormField> formFields,
-                                        final int panelIndex, final int panelCount, final int fieldsPerPanel)
-    {
+                                        final int panelIndex, final int panelCount, final int fieldsPerPanel) {
 
         final FormPanel formPanel = new FormPanel(getWerminal(), panelTitle, formFields, getNextAction(), getPreviousAction(), fieldsPerPanel);
         formPanel.setPanelIndex(panelIndex);

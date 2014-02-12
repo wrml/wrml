@@ -24,17 +24,16 @@
  */
 package org.wrml.runtime.syntax;
 
-import java.net.URI;
-
 import org.wrml.model.schema.Syntax;
 import org.wrml.runtime.Keys;
 import org.wrml.runtime.Loader;
 
+import java.net.URI;
+
 /**
  * The runtime's registry of {@link Syntax}s and associated {@link SyntaxHandler}s.
  */
-public interface SyntaxLoader extends Loader
-{
+public interface SyntaxLoader extends Loader {
 
     String formatSyntaxValue(final Object syntaxValue);
 

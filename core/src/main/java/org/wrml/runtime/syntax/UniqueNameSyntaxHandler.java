@@ -26,15 +26,12 @@ package org.wrml.runtime.syntax;
 
 import org.wrml.util.UniqueName;
 
-public class UniqueNameSyntaxHandler extends SyntaxHandler<UniqueName>
-{
+public class UniqueNameSyntaxHandler extends SyntaxHandler<UniqueName> {
 
     @Override
-    public String formatSyntaxValue(final UniqueName uniqueName)
-    {
+    public String formatSyntaxValue(final UniqueName uniqueName) {
 
-        if (uniqueName == null)
-        {
+        if (uniqueName == null) {
             return null;
         }
 
@@ -42,11 +39,9 @@ public class UniqueNameSyntaxHandler extends SyntaxHandler<UniqueName>
     }
 
     @Override
-    public UniqueName parseSyntacticText(final String uniqueNameString)
-    {
+    public UniqueName parseSyntacticText(final String uniqueNameString) {
 
-        if (uniqueNameString == null)
-        {
+        if (uniqueNameString == null) {
             return null;
         }
 

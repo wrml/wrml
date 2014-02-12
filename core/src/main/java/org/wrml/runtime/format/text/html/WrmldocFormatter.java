@@ -63,8 +63,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see <a href="http://www.wrml.org/wrmldoc/archive/common">First Introduced</a>
  * @see <a href="http://www.wrml.org/java/api/wrml-core-1.0">Javadoc Doclet Prototype</a>
  */
-public class WrmldocFormatter extends AbstractFormatter
-{
+public class WrmldocFormatter extends AbstractFormatter {
 
     public static final String DOCROOT_SETTING_NAME = "docroot";
 
@@ -84,23 +83,20 @@ public class WrmldocFormatter extends AbstractFormatter
 
     private boolean _IsSourceCodeMinified;
 
-    public WrmldocFormatter()
-    {
+    public WrmldocFormatter() {
         // Toggle this to minify (or not) the JS and CSS used in the web app.
         _IsSourceCodeMinified = false;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException, UnsupportedOperationException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException, UnsupportedOperationException {
 
         throw new UnsupportedOperationException("The \"readModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException, UnsupportedOperationException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException, UnsupportedOperationException {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -111,8 +107,7 @@ public class WrmldocFormatter extends AbstractFormatter
         String documentTitle = "Untitled";
         String documentIcon = _Docroot + "img/model.png";
 
-        if (StringUtils.isNotBlank(titleSlotName))
-        {
+        if (StringUtils.isNotBlank(titleSlotName)) {
             documentTitle = String.valueOf(model.getSlotValue(titleSlotName));
         }
 
@@ -120,16 +115,14 @@ public class WrmldocFormatter extends AbstractFormatter
         // the wrmldoc "shell" data structure
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        try
-        {
+        try {
 
             final String modelValue;
             final String schemaValue;
 
             String linkRelationValue = EMPTY_OBJECT;
 
-            if (model instanceof Schema)
-            {
+            if (model instanceof Schema) {
                 modelValue = EMPTY_OBJECT;
 
                 final Schema schema = (Schema) model;
@@ -138,15 +131,13 @@ public class WrmldocFormatter extends AbstractFormatter
 
                 documentIcon = _Docroot + "img/schema.png";
             }
-            else if (model instanceof Api)
-            {
+            else if (model instanceof Api) {
                 modelValue = EMPTY_OBJECT;
                 schemaValue = EMPTY_OBJECT;
 
                 documentIcon = _Docroot + "img/api.png";
             }
-            else if (model instanceof LinkRelation)
-            {
+            else if (model instanceof LinkRelation) {
                 modelValue = model.toString();
 
 
@@ -156,25 +147,20 @@ public class WrmldocFormatter extends AbstractFormatter
                 schemaValue = EMPTY_OBJECT;
                 documentIcon = _Docroot + "img/linkRelation.png";
             }
-            else if (model instanceof ErrorReport)
-            {
+            else if (model instanceof ErrorReport) {
                 modelValue = model.toString();
                 schemaValue = EMPTY_OBJECT;
-                if (model instanceof ApiNotFoundErrorReport)
-                {
+                if (model instanceof ApiNotFoundErrorReport) {
                     documentIcon = _Docroot + "img/apiNotFound.png";
                 }
-                else if (model instanceof ResourceNotFoundErrorReport)
-                {
+                else if (model instanceof ResourceNotFoundErrorReport) {
                     documentIcon = _Docroot + "img/resourceNotFound.png";
                 }
-                else if (model instanceof DocumentNotFoundErrorReport)
-                {
+                else if (model instanceof DocumentNotFoundErrorReport) {
                     documentIcon = _Docroot + "img/documentNotFound.png";
                 }
             }
-            else
-            {
+            else {
                 modelValue = model.toString();
 
                 final Keys schemaKeys = context.getApiLoader().buildDocumentKeys(schemaUri, schemaLoader.getSchemaSchemaUri());
@@ -194,19 +180,16 @@ public class WrmldocFormatter extends AbstractFormatter
             IOUtils.write(renderedPage, out);
 
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new ModelWritingException(e.getMessage(), e, this);
         }
 
     }
 
 
-    public MessageFormat getTemplate(String templateName) throws IOException
-    {
+    public MessageFormat getTemplate(String templateName) throws IOException {
 
-        if (!_Templates.containsKey(templateName))
-        {
+        if (!_Templates.containsKey(templateName)) {
             final InputStream templateStream = getClass().getResourceAsStream(templateName);
             final String templateSource = IOUtils.toString(templateStream);
 
@@ -218,19 +201,16 @@ public class WrmldocFormatter extends AbstractFormatter
     }
 
 
-    protected String renderPage(final MessageFormat template, Object... params) throws IOException
-    {
+    protected String renderPage(final MessageFormat template, Object... params) throws IOException {
 
         final String renderedPage = template.format(params);
         return renderedPage;
     }
 
-    protected ObjectNode buildApiNode(final ObjectMapper objectMapper, final Model model)
-    {
+    protected ObjectNode buildApiNode(final ObjectMapper objectMapper, final Model model) {
 
         final ObjectNode apiNode = objectMapper.createObjectNode();
-        if (!(model instanceof Document))
-        {
+        if (!(model instanceof Document)) {
             return apiNode;
         }
 
@@ -253,28 +233,24 @@ public class WrmldocFormatter extends AbstractFormatter
         final Map<URI, ObjectNode> schemaNodes = new HashMap<>();
         final Map<URI, LinkRelation> linkRelationCache = new HashMap<>();
 
-        if (document instanceof Api)
-        {
+        if (document instanceof Api) {
 
             final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
             final SortedMap<String, Resource> orderedResources = new TreeMap<>();
 
-            for (final Resource resource : allResources.values())
-            {
+            for (final Resource resource : allResources.values()) {
                 orderedResources.put(resource.getPathText(), resource);
             }
 
             final ArrayNode allResourcesNode = objectMapper.createArrayNode();
-            for (final Resource resource : orderedResources.values())
-            {
+            for (final Resource resource : orderedResources.values()) {
                 final ObjectNode resourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource);
                 allResourcesNode.add(resourceNode);
             }
 
             apiNode.put(PropertyName.allResources.name(), allResourcesNode);
         }
-        else
-        {
+        else {
             final ObjectNode endpointResourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, endpointResource);
             apiNode.put(PropertyName.resource.name(), endpointResourceNode);
         }
@@ -282,8 +258,7 @@ public class WrmldocFormatter extends AbstractFormatter
         return apiNode;
     }
 
-    protected ObjectNode buildResourceNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource)
-    {
+    protected ObjectNode buildResourceNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -297,8 +272,7 @@ public class WrmldocFormatter extends AbstractFormatter
         resourceNode.put(PropertyName.fullPath.name(), resource.getPathText());
 
         final String parentPathText = resource.getParentPathText();
-        if (parentPathText != null)
-        {
+        if (parentPathText != null) {
             resourceNode.put(PropertyName.parentPath.name(), parentPathText);
         }
 
@@ -306,22 +280,19 @@ public class WrmldocFormatter extends AbstractFormatter
 
         final URI defaultSchemaUri = resource.getDefaultSchemaUri();
         Prototype defaultPrototype = null;
-        if (defaultSchemaUri != null)
-        {
+        if (defaultSchemaUri != null) {
             final ObjectNode defaultSchemaNode = getSchemaNode(objectMapper, schemaNodes, defaultSchemaUri, schemaLoader);
             resourceNode.put(PropertyName.defaultSchema.name(), defaultSchemaNode);
             defaultPrototype = schemaLoader.getPrototype(defaultSchemaUri);
         }
 
         final ArrayNode referencesNode = buildReferencesArrayNode(objectMapper, schemaNodes, linkRelationCache, resource, defaultPrototype);
-        if (referencesNode.size() > 0)
-        {
+        if (referencesNode.size() > 0) {
             resourceNode.put(PropertyName.references.name(), referencesNode);
         }
 
         final ObjectNode linksNode = buildLinksNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource, defaultPrototype);
-        if (linksNode.size() > 0)
-        {
+        if (linksNode.size() > 0) {
             resourceNode.put(PropertyName.links.name(), linksNode);
         }
 
@@ -329,8 +300,7 @@ public class WrmldocFormatter extends AbstractFormatter
         return resourceNode;
     }
 
-    protected ArrayNode buildReferencesArrayNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final Resource resource, final Prototype defaultPrototype)
-    {
+    protected ArrayNode buildReferencesArrayNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final Resource resource, final Prototype defaultPrototype) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -344,50 +314,40 @@ public class WrmldocFormatter extends AbstractFormatter
         final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = resource.getReferenceTemplates();
         final Set<URI> referenceRelationUris = referenceTemplates.keySet();
 
-        if (referenceTemplates != null && !referenceTemplates.isEmpty())
-        {
+        if (referenceTemplates != null && !referenceTemplates.isEmpty()) {
 
             String selfResponseSchemaName = null;
 
             List<String> resourceParameterList = null;
             final UriTemplate uriTemplate = resource.getUriTemplate();
             final String[] parameterNames = uriTemplate.getParameterNames();
-            if (parameterNames != null && parameterNames.length > 0)
-            {
+            if (parameterNames != null && parameterNames.length > 0) {
 
                 resourceParameterList = new ArrayList<>();
 
-                for (int i = 0; i < parameterNames.length; i++)
-                {
+                for (int i = 0; i < parameterNames.length; i++) {
                     final String parameterName = parameterNames[i];
 
                     URI keyedSchemaUri = null;
 
-                    if (defaultPrototype != null)
-                    {
+                    if (defaultPrototype != null) {
                         final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
-                        if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                        {
+                        if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
                             keyedSchemaUri = defaultSchemaUri;
                         }
                     }
 
-                    if (keyedSchemaUri == null)
-                    {
+                    if (keyedSchemaUri == null) {
 
                         final Set<URI> referenceLinkRelationUris = resource.getReferenceLinkRelationUris(Method.Get);
-                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty())
-                        {
-                            for (URI linkRelationUri : referenceLinkRelationUris)
-                            {
+                        if (referenceLinkRelationUris != null && !referenceLinkRelationUris.isEmpty()) {
+                            for (URI linkRelationUri : referenceLinkRelationUris) {
                                 final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
                                 final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
                                 final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
-                                if (responseSchemaPrototype != null)
-                                {
+                                if (responseSchemaPrototype != null) {
                                     final Set<String> allKeySlotNames = responseSchemaPrototype.getAllKeySlotNames();
-                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName))
-                                    {
+                                    if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
                                         keyedSchemaUri = responseSchemaUri;
                                         break;
                                     }
@@ -398,50 +358,40 @@ public class WrmldocFormatter extends AbstractFormatter
 
                     String parameterTypeString = "?";
 
-                    if (keyedSchemaUri != null)
-                    {
+                    if (keyedSchemaUri != null) {
 
                         final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
                         final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
-                        if (keyProtoSlot instanceof PropertyProtoSlot)
-                        {
+                        if (keyProtoSlot instanceof PropertyProtoSlot) {
                             final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
                             final ValueType parameterValueType = keyPropertyProtoSlot.getValueType();
                             final Type parameterHeapType = keyPropertyProtoSlot.getHeapValueType();
-                            switch (parameterValueType)
-                            {
-                                case Text:
-                                {
-                                    if (!String.class.equals(parameterHeapType))
-                                    {
+                            switch (parameterValueType) {
+                                case Text: {
+                                    if (!String.class.equals(parameterHeapType)) {
                                         final Class<?> syntaxClass = (Class<?>) parameterHeapType;
                                         parameterTypeString = syntaxClass.getSimpleName();
                                     }
-                                    else
-                                    {
+                                    else {
                                         parameterTypeString = parameterValueType.name();
                                     }
 
                                     break;
                                 }
-                                case SingleSelect:
-                                {
+                                case SingleSelect: {
                                     final Class<?> choicesEnumClass = (Class<?>) parameterHeapType;
 
-                                    if (choicesEnumClass.isEnum())
-                                    {
+                                    if (choicesEnumClass.isEnum()) {
                                         parameterTypeString = choicesEnumClass.getSimpleName();
                                     }
-                                    else
-                                    {
+                                    else {
                                         // ?
                                         parameterTypeString = parameterValueType.name();
                                     }
 
                                     break;
                                 }
-                                default:
-                                {
+                                default: {
                                     parameterTypeString = parameterValueType.name();
                                     break;
                                 }
@@ -455,16 +405,13 @@ public class WrmldocFormatter extends AbstractFormatter
             }
 
 
-            for (final Method method : Method.values())
-            {
-                for (final URI linkRelationUri : referenceRelationUris)
-                {
+            for (final Method method : Method.values()) {
+                for (final URI linkRelationUri : referenceRelationUris) {
 
                     final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
                     final LinkRelation linkRelation = getLinkRelation(linkRelationCache, linkRelationUri);
 
-                    if (method != linkRelation.getMethod())
-                    {
+                    if (method != linkRelation.getMethod()) {
                         continue;
                     }
 
@@ -480,8 +427,7 @@ public class WrmldocFormatter extends AbstractFormatter
 
                     final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
                     String responseSchemaName = null;
-                    if (responseSchemaUri != null)
-                    {
+                    if (responseSchemaUri != null) {
                         final ObjectNode responseSchemaNode = getSchemaNode(objectMapper, schemaNodes, responseSchemaUri, schemaLoader);
                         referenceNode.put(PropertyName.responseSchema.name(), responseSchemaNode);
 
@@ -491,8 +437,7 @@ public class WrmldocFormatter extends AbstractFormatter
                     final URI requestSchemaUri = referenceTemplate.getRequestSchemaUri();
 
                     String requestSchemaName = null;
-                    if (requestSchemaUri != null)
-                    {
+                    if (requestSchemaUri != null) {
                         final ObjectNode requestSchemaNode = getSchemaNode(objectMapper, schemaNodes, requestSchemaUri, schemaLoader);
                         referenceNode.put(PropertyName.requestSchema.name(), requestSchemaNode);
 
@@ -501,12 +446,10 @@ public class WrmldocFormatter extends AbstractFormatter
 
                     final StringBuilder signatureBuilder = new StringBuilder();
 
-                    if (responseSchemaName != null)
-                    {
+                    if (responseSchemaName != null) {
                         signatureBuilder.append(responseSchemaName);
                     }
-                    else
-                    {
+                    else {
                         signatureBuilder.append("void");
                     }
 
@@ -514,24 +457,19 @@ public class WrmldocFormatter extends AbstractFormatter
 
                     String functionName = relationTitle;
 
-                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri))
-                    {
+                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri)) {
                         functionName = "get" + responseSchemaName;
                         selfResponseSchemaName = responseSchemaName;
                     }
-                    else if (SystemLinkRelation.save.getUri().equals(linkRelationUri))
-                    {
+                    else if (SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
                         functionName = "save" + responseSchemaName;
                     }
-                    else if (SystemLinkRelation.delete.getUri().equals(linkRelationUri))
-                    {
+                    else if (SystemLinkRelation.delete.getUri().equals(linkRelationUri)) {
                         functionName = "delete";
-                        if (defaultSchemaName != null)
-                        {
+                        if (defaultSchemaName != null) {
                             functionName += defaultSchemaName;
                         }
-                        else if (selfResponseSchemaName != null)
-                        {
+                        else if (selfResponseSchemaName != null) {
                             functionName += selfResponseSchemaName;
                         }
                     }
@@ -539,16 +477,13 @@ public class WrmldocFormatter extends AbstractFormatter
                     signatureBuilder.append(functionName).append(" ( ");
 
                     String parameterString = null;
-                    if (resourceParameterList != null)
-                    {
+                    if (resourceParameterList != null) {
                         final StringBuilder parameterStringBuilder = new StringBuilder();
                         final int parameterCount = resourceParameterList.size();
-                        for (int i = 0; i < parameterCount; i++)
-                        {
+                        for (int i = 0; i < parameterCount; i++) {
                             final String parameter = resourceParameterList.get(i);
                             parameterStringBuilder.append(parameter);
-                            if (i < parameterCount - 1)
-                            {
+                            if (i < parameterCount - 1) {
                                 parameterStringBuilder.append(" , ");
                             }
                         }
@@ -557,10 +492,8 @@ public class WrmldocFormatter extends AbstractFormatter
                         signatureBuilder.append(parameterString);
                     }
 
-                    if (requestSchemaName != null)
-                    {
-                        if (StringUtils.isNotBlank(parameterString))
-                        {
+                    if (requestSchemaName != null) {
+                        if (StringUtils.isNotBlank(parameterString)) {
                             signatureBuilder.append(" , ");
                         }
 
@@ -586,8 +519,7 @@ public class WrmldocFormatter extends AbstractFormatter
     }
 
 
-    protected ObjectNode buildLinksNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource, final Prototype defaultPrototype)
-    {
+    protected ObjectNode buildLinksNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final Map<URI, LinkRelation> linkRelationCache, final ApiNavigator apiNavigator, final Resource resource, final Prototype defaultPrototype) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -598,40 +530,33 @@ public class WrmldocFormatter extends AbstractFormatter
         final ObjectNode linksNode = objectMapper.createObjectNode();
 
         final Set<URI> responseSchemaUris = new HashSet<>();
-        if (defaultSchemaUri != null)
-        {
+        if (defaultSchemaUri != null) {
             responseSchemaUris.add(defaultSchemaUri);
         }
 
-        for (final Method method : Method.values())
-        {
+        for (final Method method : Method.values()) {
             final Set<URI> methodResponseSchemaUris = resource.getResponseSchemaUris(method);
-            if (methodResponseSchemaUris != null && !methodResponseSchemaUris.isEmpty())
-            {
+            if (methodResponseSchemaUris != null && !methodResponseSchemaUris.isEmpty()) {
                 responseSchemaUris.addAll(methodResponseSchemaUris);
             }
         }
 
         final ConcurrentHashMap<URI, LinkTemplate> linkTemplates = resource.getLinkTemplates();
 
-        for (final URI schemaUri : responseSchemaUris)
-        {
+        for (final URI schemaUri : responseSchemaUris) {
             final Prototype prototype = schemaLoader.getPrototype(schemaUri);
             final SortedMap<URI, LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots();
-            if (linkProtoSlots == null || linkProtoSlots.isEmpty())
-            {
+            if (linkProtoSlots == null || linkProtoSlots.isEmpty()) {
                 continue;
             }
 
             final ObjectNode linkTemplatesNode = objectMapper.createObjectNode();
 
             final Set<URI> linkRelationUris = linkProtoSlots.keySet();
-            for (final URI linkRelationUri : linkRelationUris)
-            {
+            for (final URI linkRelationUri : linkRelationUris) {
                 final LinkProtoSlot linkProtoSlot = linkProtoSlots.get(linkRelationUri);
 
-                if (schemaLoader.getDocumentSchemaUri().equals(linkProtoSlot.getDeclaringSchemaUri()))
-                {
+                if (schemaLoader.getDocumentSchemaUri().equals(linkProtoSlot.getDeclaringSchemaUri())) {
                     // Skip over the built-in system-level link relations (which are all self-referential).
                     continue;
                 }
@@ -650,15 +575,13 @@ public class WrmldocFormatter extends AbstractFormatter
                 final URI responseSchemaUri;
                 final URI requestSchemaUri;
 
-                if (linkTemplates.containsKey(linkRelationUri))
-                {
+                if (linkTemplates.containsKey(linkRelationUri)) {
                     final LinkTemplate linkTemplate = linkTemplates.get(linkRelationUri);
                     responseSchemaUri = linkTemplate.getResponseSchemaUri();
                     requestSchemaUri = linkTemplate.getRequestSchemaUri();
 
                     final UUID endPointId = linkTemplate.getEndPointId();
-                    if (endPointId != null)
-                    {
+                    if (endPointId != null) {
                         final Resource endPointResource = apiNavigator.getResource(endPointId);
 
                         final ObjectNode endPointNode = objectMapper.createObjectNode();
@@ -672,20 +595,17 @@ public class WrmldocFormatter extends AbstractFormatter
                     }
 
                 }
-                else
-                {
+                else {
                     responseSchemaUri = linkProtoSlot.getResponseSchemaUri();
                     requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
                 }
 
-                if (responseSchemaUri != null)
-                {
+                if (responseSchemaUri != null) {
                     final ObjectNode responseSchemaNode = getSchemaNode(objectMapper, schemaNodes, responseSchemaUri, schemaLoader);
                     linkTemplateNode.put(PropertyName.responseSchema.name(), responseSchemaNode);
                 }
 
-                if (requestSchemaUri != null)
-                {
+                if (requestSchemaUri != null) {
                     final ObjectNode requestSchemaNode = getSchemaNode(objectMapper, schemaNodes, requestSchemaUri, schemaLoader);
                     linkTemplateNode.put(PropertyName.requestSchema.name(), requestSchemaNode);
                 }
@@ -694,8 +614,7 @@ public class WrmldocFormatter extends AbstractFormatter
                 linkTemplateNode.put(PropertyName.signature.name(), signature);
             }
 
-            if (linkTemplatesNode.size() > 0)
-            {
+            if (linkTemplatesNode.size() > 0) {
                 final ObjectNode schemaNode = objectMapper.createObjectNode();
                 final ObjectNode schemaDetailsNode = getSchemaNode(objectMapper, schemaNodes, schemaUri, schemaLoader);
                 schemaNode.put(PropertyName.schema.name(), schemaDetailsNode);
@@ -708,22 +627,19 @@ public class WrmldocFormatter extends AbstractFormatter
         return linksNode;
     }
 
-    private String buildLinkSignature(final String linkFunctionName, final URI responseSchemaUri, final URI requestSchemaUri, final URI thisSchemaUri)
-    {
+    private String buildLinkSignature(final String linkFunctionName, final URI responseSchemaUri, final URI requestSchemaUri, final URI thisSchemaUri) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
         final StringBuilder signatureBuilder = new StringBuilder();
 
-        if (responseSchemaUri != null)
-        {
+        if (responseSchemaUri != null) {
             final Prototype responsePrototype = schemaLoader.getPrototype(responseSchemaUri);
             final String responseSchemaName = responsePrototype.getUniqueName().getLocalName();
             signatureBuilder.append(responseSchemaName);
         }
-        else
-        {
+        else {
             signatureBuilder.append("void");
         }
 
@@ -731,8 +647,7 @@ public class WrmldocFormatter extends AbstractFormatter
 
         signatureBuilder.append(linkFunctionName).append(" ( ");
 
-        if (requestSchemaUri != null && !requestSchemaUri.equals(thisSchemaUri))
-        {
+        if (requestSchemaUri != null && !requestSchemaUri.equals(thisSchemaUri)) {
             final Prototype requestPrototype = schemaLoader.getPrototype(requestSchemaUri);
             final String requestSchemaName = requestPrototype.getUniqueName().getLocalName();
 
@@ -751,8 +666,7 @@ public class WrmldocFormatter extends AbstractFormatter
     }
 
 
-    private ObjectNode buildLinkRelationNode(final ObjectMapper objectMapper, final LinkRelation linkRelation)
-    {
+    private ObjectNode buildLinkRelationNode(final ObjectMapper objectMapper, final LinkRelation linkRelation) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -767,8 +681,7 @@ public class WrmldocFormatter extends AbstractFormatter
         linkRelationNode.put(PropertyName.title.name(), linkRelation.getTitle());
 
         final String description = linkRelation.getDescription();
-        if (StringUtils.isNotBlank(description))
-        {
+        if (StringUtils.isNotBlank(description)) {
             linkRelationNode.put(PropertyName.description.name(), description);
         }
 
@@ -776,15 +689,13 @@ public class WrmldocFormatter extends AbstractFormatter
         linkRelationNode.put(PropertyName.method.name(), linkRelation.getMethod().getProtocolGivenName());
 
         final URI responseSchemaUri = linkRelation.getResponseSchemaUri();
-        if (responseSchemaUri != null)
-        {
+        if (responseSchemaUri != null) {
             final ObjectNode responseSchemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, responseSchemaUri, schemaLoader, null);
             linkRelationNode.put(PropertyName.responseSchema.name(), responseSchemaNode);
         }
 
         final URI requestSchemaUri = linkRelation.getRequestSchemaUri();
-        if (requestSchemaUri != null)
-        {
+        if (requestSchemaUri != null) {
             final ObjectNode requestSchemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, requestSchemaUri, schemaLoader, null);
             linkRelationNode.put(PropertyName.requestSchema.name(), requestSchemaNode);
         }
@@ -796,19 +707,16 @@ public class WrmldocFormatter extends AbstractFormatter
         return linkRelationNode;
     }
 
-    private LinkRelation getLinkRelation(final Map<URI, LinkRelation> linkRelationCache, final URI linkRelationUri)
-    {
+    private LinkRelation getLinkRelation(final Map<URI, LinkRelation> linkRelationCache, final URI linkRelationUri) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
         final LinkRelation linkRelation;
-        if (linkRelationCache.containsKey(linkRelationUri))
-        {
+        if (linkRelationCache.containsKey(linkRelationUri)) {
             linkRelation = linkRelationCache.get(linkRelationUri);
         }
-        else
-        {
+        else {
             final Keys linkRelationKeys = context.getApiLoader().buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
             linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
             linkRelationCache.put(linkRelationUri, linkRelation);
@@ -818,16 +726,13 @@ public class WrmldocFormatter extends AbstractFormatter
     }
 
 
-    protected ObjectNode getSchemaNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final URI schemaUri, final SchemaLoader schemaLoader)
-    {
+    protected ObjectNode getSchemaNode(final ObjectMapper objectMapper, final Map<URI, ObjectNode> schemaNodes, final URI schemaUri, final SchemaLoader schemaLoader) {
 
         final ObjectNode schemaNode;
-        if (schemaNodes.containsKey(schemaUri))
-        {
+        if (schemaNodes.containsKey(schemaUri)) {
             schemaNode = schemaNodes.get(schemaUri);
         }
-        else
-        {
+        else {
             schemaNode = SchemaDesignFormatter.buildSchemaNode(objectMapper, schemaUri, schemaLoader, null);
             schemaNodes.put(schemaUri, schemaNode);
         }
@@ -837,42 +742,35 @@ public class WrmldocFormatter extends AbstractFormatter
 
 
     @Override
-    protected void initFromConfiguration(final FormatterConfiguration config)
-    {
+    protected void initFromConfiguration(final FormatterConfiguration config) {
 
         final Map<String, String> settings = config.getSettings();
-        if (settings == null)
-        {
+        if (settings == null) {
             throw new NullPointerException("The settings cannot be null.");
         }
 
         _Templates = new HashMap<>();
 
-        try
-        {
+        try {
             getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new IllegalArgumentException("The shell page template could not be read from: " + SHELL_PAGE_TEMPLATE_RESOURCE);
         }
 
         _Docroot = DEFAULT_DOCROOT;
-        if (settings.containsKey(DOCROOT_SETTING_NAME))
-        {
+        if (settings.containsKey(DOCROOT_SETTING_NAME)) {
             _Docroot = settings.get(DOCROOT_SETTING_NAME);
         }
 
-        if (settings.containsKey(MINIFY_SETTING_NAME))
-        {
+        if (settings.containsKey(MINIFY_SETTING_NAME)) {
             _IsSourceCodeMinified = Boolean.valueOf(settings.get(MINIFY_SETTING_NAME));
         }
 
 
     }
 
-    private enum PropertyName
-    {
+    private enum PropertyName {
         allResources,
         defaultSchema,
         description,
@@ -900,8 +798,7 @@ public class WrmldocFormatter extends AbstractFormatter
 
     }
 
-    private enum LinkTemplateType
-    {
+    private enum LinkTemplateType {
         Reference,
         Link;
     }

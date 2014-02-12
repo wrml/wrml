@@ -27,21 +27,20 @@ package org.wrml.runtime.syntax;
 /**
  * The {@link SyntaxHandler}'s associated error type.
  */
-public class SyntaxHandlerException extends RuntimeException
-{
+public class SyntaxHandlerException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final SyntaxHandler<?> _SyntaxHandler;
 
-    SyntaxHandlerException(final String message, final Throwable cause, final SyntaxHandler<?> syntaxHandler)
-    {
+    SyntaxHandlerException(final String message, final Throwable cause, final SyntaxHandler<?> syntaxHandler) {
+
         super(message, cause);
         _SyntaxHandler = syntaxHandler;
     }
 
-    public SyntaxHandler<?> getSyntaxHandler()
-    {
+    public SyntaxHandler<?> getSyntaxHandler() {
+
         return _SyntaxHandler;
     }
 }

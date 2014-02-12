@@ -29,8 +29,7 @@ import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import org.wrml.werminal.util.ClipboardUtils;
 
-public class TerminalAppTextBox extends TextBox
-{
+public class TerminalAppTextBox extends TextBox {
 
     private final TerminalApp _App;
 
@@ -38,20 +37,17 @@ public class TerminalAppTextBox extends TextBox
 
     private TerminalSize _PreferredSize;
 
-    public TerminalAppTextBox(final TerminalApp app)
-    {
+    public TerminalAppTextBox(final TerminalApp app) {
 
         this(app, 10, null);
     }
 
-    public TerminalAppTextBox(final TerminalApp app, final int width)
-    {
+    public TerminalAppTextBox(final TerminalApp app, final int width) {
 
         this(app, width, null);
     }
 
-    public TerminalAppTextBox(final TerminalApp app, final int width, final String title)
-    {
+    public TerminalAppTextBox(final TerminalApp app, final int width, final String title) {
 
         super(title, width);
         _App = app;
@@ -59,25 +55,21 @@ public class TerminalAppTextBox extends TextBox
 
     }
 
-    public TerminalAppTextBox(final TerminalApp app, final String title)
-    {
+    public TerminalAppTextBox(final TerminalApp app, final String title) {
 
         this(app, 10, title);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }
 
     @Override
-    public final TerminalSize getPreferredSize()
-    {
+    public final TerminalSize getPreferredSize() {
 
-        if (_PreferredSize == null)
-        {
+        if (_PreferredSize == null) {
             return super.getPreferredSize();
         }
 
@@ -85,51 +77,41 @@ public class TerminalAppTextBox extends TextBox
     }
 
     @Override
-    public final void setPreferredSize(final TerminalSize preferredSize)
-    {
+    public final void setPreferredSize(final TerminalSize preferredSize) {
 
         _PreferredSize = preferredSize;
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
-        if (_KeyboardInteraction.handleKeyboardInteraction(key))
-        {
+        if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
             return Result.EVENT_HANDLED;
         }
 
-        if (key.getKind() == Key.Kind.NormalKey)
-        {
-            if (key.isCtrlPressed())
-            {
+        if (key.getKind() == Key.Kind.NormalKey) {
+            if (key.isCtrlPressed()) {
 
                 final char keyCharacter = key.getCharacter();
-                if (keyCharacter == 'C' || keyCharacter == 'c')
-                {
+                if (keyCharacter == 'C' || keyCharacter == 'c') {
                     // COPY
                     ClipboardUtils.setClipboardText(getText());
                     return Result.EVENT_HANDLED;
                 }
-                else if (keyCharacter == 'V' || keyCharacter == 'v')
-                {
+                else if (keyCharacter == 'V' || keyCharacter == 'v') {
                     // PASTE
                     final String text = ClipboardUtils.getClipboardText();
-                    if (text != null && !text.isEmpty())
-                    {
+                    if (text != null && !text.isEmpty()) {
                         setText(text);
                         return Result.EVENT_HANDLED;
                     }
 
                 }
-                else if (keyCharacter == 'X' || keyCharacter == 'x')
-                {
+                else if (keyCharacter == 'X' || keyCharacter == 'x') {
                     // CUT
                     ClipboardUtils.setClipboardText(getText());
                     setText("");
@@ -143,8 +125,7 @@ public class TerminalAppTextBox extends TextBox
         return super.keyboardInteraction(key);
     }
 
-    protected TerminalAppKeyboardInteraction createTerminalAppKeyboardInteraction()
-    {
+    protected TerminalAppKeyboardInteraction createTerminalAppKeyboardInteraction() {
 
         return new TerminalAppKeyboardInteraction(getApp(), null, true);
     }

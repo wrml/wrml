@@ -27,13 +27,12 @@ package org.wrml.runtime.format;
 /**
  * The Format runtime's primary error type for problems that happen while a model is being written.
  */
-public class ModelWritingException extends ModelFormattingException
-{
+public class ModelWritingException extends ModelFormattingException {
 
     private static final long serialVersionUID = 1L;
 
-    public ModelWritingException(final String message, final Throwable cause, final Object source)
-    {
+    public ModelWritingException(final String message, final Throwable cause, final Object source) {
+
         super(message, cause, source);
     }
 }

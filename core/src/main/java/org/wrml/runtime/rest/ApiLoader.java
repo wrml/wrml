@@ -48,8 +48,7 @@ import java.util.SortedSet;
  * @see Format
  * @see LinkRelation
  */
-public interface ApiLoader extends Loader
-{
+public interface ApiLoader extends Loader {
 
     /**
      * Uses the specified {@link DimensionsBuilder} to build the {@link Dimensions} associated with the identified document's default (response) representation.
@@ -142,7 +141,6 @@ public interface ApiLoader extends Loader
      * Loads/reloads the specified {@link LinkRelation}, by it's {@link Document} key ({@link URI}) value.
      */
     LinkRelation loadLinkRelation(final URI linkRelationUri) throws ApiLoaderException;
-
 
 
 }

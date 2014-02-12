@@ -33,8 +33,7 @@ import org.wrml.runtime.schema.WRML;
  */
 @WRML(comparableSlotNames = {"version"})
 @Description("Something with a version. A Versioned model declares a \"version\" Text slot.")
-public interface Versioned extends Abstract
-{
+public interface Versioned extends Abstract {
 
     /**
      * The version associated with this {@link Versioned} model.

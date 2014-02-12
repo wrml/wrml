@@ -24,6 +24,9 @@
  */
 package org.wrml.util;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,23 +47,12 @@ import org.wrml.runtime.schema.SchemaLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
-
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import java.util.*;
 
 /**
  * Set of functions to produce string representations (primarily for debugging) of WRML's core data structures.
  */
-public class AsciiArt
-{
+public class AsciiArt {
 
     /**
      * <p>
@@ -69,7 +61,7 @@ public class AsciiArt
      * <p/>
      * <p>
      * <p/>
-     * 
+     * <p/>
      * <pre>
      *             __     __   ______   __    __   __
      *            /\ \  _ \ \ /\  == \ /\ "-./  \ /\ \
@@ -94,8 +86,7 @@ public class AsciiArt
 
     private static final String ASCII_SUBLEVEL_INDENT = "+" + StringUtils.repeat("-", ASCII_DEFAULT_WIDTH);
 
-    static
-    {
+    static {
 
         final StringBuilder logo = new StringBuilder();
 
@@ -112,11 +103,9 @@ public class AsciiArt
 
     }
 
-    public static String express(final ApiNavigator apiNavigator)
-    {
+    public static String express(final ApiNavigator apiNavigator) {
 
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             return "";
         }
 
@@ -138,8 +127,7 @@ public class AsciiArt
 
         stringBuilder.append("\nLINK TEMPLATE COUNT: ").append(linkTemplates.size());
 
-        if (linkTemplates.size() > 0)
-        {
+        if (linkTemplates.size() > 0) {
             stringBuilder.append("\nLINK TEMPLATES:\n\n");
 
             final Context context = api.getContext();
@@ -147,8 +135,7 @@ public class AsciiArt
             final SchemaLoader schemaLoader = context.getSchemaLoader();
             final List<String> linkTemplateStrings = new ArrayList<>(linkTemplates.size());
 
-            for (final LinkTemplate linkTemplate : linkTemplates)
-            {
+            for (final LinkTemplate linkTemplate : linkTemplates) {
                 final StringBuilder sb = new StringBuilder();
                 final UUID referrerId = linkTemplate.getReferrerId();
                 final Resource referrerResource = apiNavigator.getResource(referrerId);
@@ -166,19 +153,16 @@ public class AsciiArt
                 final Set<URI> responseSchemaUris = endpointResource.getResponseSchemaUris(method);
                 final int responseSchemaCount;
                 final List<Schema> responseSchemas;
-                if (responseSchemaUris != null)
-                {
+                if (responseSchemaUris != null) {
                     responseSchemas = new ArrayList<>(responseSchemaUris.size());
-                    for (final URI responseSchemaUri : responseSchemaUris)
-                    {
+                    for (final URI responseSchemaUri : responseSchemaUris) {
                         final Schema schema = schemaLoader.load(responseSchemaUri);
                         responseSchemas.add(schema);
                     }
 
                     responseSchemaCount = responseSchemas.size();
                 }
-                else
-                {
+                else {
                     responseSchemaCount = 0;
                     responseSchemas = null;
                 }
@@ -186,20 +170,17 @@ public class AsciiArt
                 final Set<URI> requestSchemaUris = endpointResource.getRequestSchemaUris(method);
                 final int requestSchemaCount;
                 final List<Schema> requestSchemas;
-                if (requestSchemaUris != null)
-                {
+                if (requestSchemaUris != null) {
 
                     requestSchemas = new ArrayList<>(requestSchemaUris.size());
-                    for (final URI requestSchemaUri : requestSchemaUris)
-                    {
+                    for (final URI requestSchemaUri : requestSchemaUris) {
                         final Schema schema = schemaLoader.load(requestSchemaUri);
                         requestSchemas.add(schema);
                     }
 
                     requestSchemaCount = requestSchemaUris.size();
                 }
-                else
-                {
+                else {
                     requestSchemaCount = 0;
                     requestSchemas = null;
                 }
@@ -207,19 +188,15 @@ public class AsciiArt
                 sb.append(referrerResourceRelativePath).append(" --[").append(methodProtocolName).append("]").append("--> ").append(endpointResourceRelativePath);
                 sb.append(" : ");
 
-                if (responseSchemaCount == 0)
-                {
+                if (responseSchemaCount == 0) {
                     sb.append("void ");
                 }
-                else
-                {
-                    for (int i = 0; i < responseSchemaCount; i++)
-                    {
+                else {
+                    for (int i = 0; i < responseSchemaCount; i++) {
                         final Schema schema = responseSchemas.get(i);
                         final String returnType = schema.getUniqueName().getLocalName();
                         sb.append(returnType).append(" ");
-                        if (i < responseSchemaCount - 1)
-                        {
+                        if (i < responseSchemaCount - 1) {
                             sb.append("| ");
                         }
                     }
@@ -227,21 +204,17 @@ public class AsciiArt
 
                 sb.append(linkRelation.getTitle());
 
-                if (requestSchemaCount == 0)
-                {
+                if (requestSchemaCount == 0) {
                     sb.append("(");
                 }
-                else
-                {
+                else {
                     sb.append("( ");
 
-                    for (int i = 0; i < requestSchemaCount; i++)
-                    {
+                    for (int i = 0; i < requestSchemaCount; i++) {
                         final Schema schema = requestSchemas.get(i);
                         final String paramType = schema.getUniqueName().getLocalName();
                         sb.append(paramType).append(" ");
-                        if (i < requestSchemaCount - 1)
-                        {
+                        if (i < requestSchemaCount - 1) {
                             sb.append("| ");
                         }
                     }
@@ -254,8 +227,7 @@ public class AsciiArt
             }
 
             Collections.sort(linkTemplateStrings);
-            for (final String linkTemplateString : linkTemplateStrings)
-            {
+            for (final String linkTemplateString : linkTemplateStrings) {
                 stringBuilder.append(linkTemplateString);
             }
 
@@ -264,18 +236,15 @@ public class AsciiArt
         return stringBuilder.toString();
     }
 
-    public static String express(final Model model)
-    {
+    public static String express(final Model model) {
 
         final Context context = model.getContext();
         final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
-        try
-        {
+        try {
             context.writeModel(byteOut, model, SystemFormat.json.getFormatUri());
         }
-        catch (final ModelWritingException e)
-        {
+        catch (final ModelWritingException e) {
             LOG.error("Unable to express the model " + model.getHeapId() + ", returning null.", e);
             return null;
         }
@@ -285,52 +254,42 @@ public class AsciiArt
 
     }
 
-    public static String express(final Object object)
-    {
+    public static String express(final Object object) {
 
         final ObjectWriter objectWriter = new ObjectMapper().writer(new DefaultPrettyPrinter());
-        try
-        {
+        try {
             return objectWriter.writeValueAsString(object);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             LOG.warn(e.getMessage());
         }
 
         return null;
     }
 
-    private static ApiNavigatorAsciiTree createApiNavigatorAsciiTree(final ApiNavigator apiNavigator)
-    {
+    private static ApiNavigatorAsciiTree createApiNavigatorAsciiTree(final ApiNavigator apiNavigator) {
 
         return new ApiNavigatorAsciiTree(apiNavigator);
     }
 
-    public static <N extends AsciiTreeNode<N>> String expressAsciiTree(final N n)
-    {
+    public static <N extends AsciiTreeNode<N>> String expressAsciiTree(final N n) {
 
         return expressAsciiTree(n, ASCII_DEFAULT_VERTICAL_SPACING, ASCII_DEFAULT_WIDTH, 0, null);
     }
 
     private static <N extends AsciiTreeNode<N>> String expressAsciiTree(final N asciiTreeNode, final int verticalSpacing, final int width, int tabLevel,
-            Map<Integer, Integer> levelChildren)
-    {
+                                                                        Map<Integer, Integer> levelChildren) {
 
         StringBuilder builder = new StringBuilder();
-        if (levelChildren == null)
-        {
+        if (levelChildren == null) {
             levelChildren = new TreeMap<Integer, Integer>();
         }
 
         // vertical spacer lines
-        for (int v = 0; v < verticalSpacing; v++)
-        {
-            for (int i = 0; i < tabLevel; i++)
-            {
+        for (int v = 0; v < verticalSpacing; v++) {
+            for (int i = 0; i < tabLevel; i++) {
                 String output = ASCII_VERTICAL_SPACER;
-                if (i < (tabLevel - 1) && MapUtils.getInteger(levelChildren, i) == null)
-                {
+                if (i < (tabLevel - 1) && MapUtils.getInteger(levelChildren, i) == null) {
                     output = ASCII_SPACES;
                 }
                 builder.append(output);
@@ -339,14 +298,11 @@ public class AsciiArt
         }
 
         // content line
-        for (int i = 0; i < tabLevel; i++)
-        {
+        for (int i = 0; i < tabLevel; i++) {
             String output = ASCII_SUBLEVEL_INDENT;
-            if (i < tabLevel - 1)
-            {
+            if (i < tabLevel - 1) {
                 output = ASCII_VERTICAL_SPACER;
-                if (MapUtils.getInteger(levelChildren, i) == null)
-                {
+                if (MapUtils.getInteger(levelChildren, i) == null) {
                     output = ASCII_SPACES;
                 }
 
@@ -355,17 +311,14 @@ public class AsciiArt
         }
         builder.append(asciiTreeNode.getText()).append('\n');
         int size = asciiTreeNode.getChildNodes().size();
-        if (size > 1)
-        {
+        if (size > 1) {
             levelChildren.put(tabLevel, size);
         }
-        for (int j = 0; j < size; j++)
-        {
+        for (int j = 0; j < size; j++) {
             N nextChild = asciiTreeNode.getChildNodes().get(j);
 
             builder.append(expressAsciiTree(nextChild, verticalSpacing, width, tabLevel + 1, levelChildren));
-            if (j == (size - 1))
-            {
+            if (j == (size - 1)) {
                 levelChildren.remove(tabLevel);
             }
         }
@@ -373,14 +326,12 @@ public class AsciiArt
         return builder.toString();
     }
 
-    protected static <N extends AsciiTreeNode<N>> String expressAsciiTree(final AsciiTree<N> asciiTree)
-    {
+    protected static <N extends AsciiTreeNode<N>> String expressAsciiTree(final AsciiTree<N> asciiTree) {
 
         return AsciiArt.expressAsciiTree(asciiTree.getRootNode(), ASCII_DEFAULT_VERTICAL_SPACING, ASCII_DEFAULT_WIDTH, 0, null);
     }
 
-    private static interface AsciiTree<N extends AsciiTreeNode<N>>
-    {
+    private static interface AsciiTree<N extends AsciiTreeNode<N>> {
 
         int getBranchWidth();
 
@@ -389,8 +340,7 @@ public class AsciiArt
         int getVerticalSpacing();
     }
 
-    protected static interface AsciiTreeNode<N extends AsciiTreeNode<N>>
-    {
+    protected static interface AsciiTreeNode<N extends AsciiTreeNode<N>> {
 
         List<N> getChildNodes();
 
@@ -398,85 +348,71 @@ public class AsciiArt
 
     }
 
-    private static final class ApiNavigatorAsciiTree implements AsciiTree<ResourceAsciiTreeNode>
-    {
+    private static final class ApiNavigatorAsciiTree implements AsciiTree<ResourceAsciiTreeNode> {
 
         private final ApiNavigator _ApiNavigator;
 
-        ApiNavigatorAsciiTree(final ApiNavigator apiNavigator)
-        {
+        ApiNavigatorAsciiTree(final ApiNavigator apiNavigator) {
 
             _ApiNavigator = apiNavigator;
         }
 
-        public ApiNavigator getApiNavigator()
-        {
+        public ApiNavigator getApiNavigator() {
 
             return _ApiNavigator;
         }
 
         @Override
-        public int getBranchWidth()
-        {
+        public int getBranchWidth() {
 
             return ASCII_DEFAULT_WIDTH;
         }
 
         @Override
-        public ResourceAsciiTreeNode getRootNode()
-        {
+        public ResourceAsciiTreeNode getRootNode() {
 
             return new ResourceAsciiTreeNode(getApiNavigator().getDocroot());
         }
 
         @Override
-        public int getVerticalSpacing()
-        {
+        public int getVerticalSpacing() {
 
             return ASCII_DEFAULT_VERTICAL_SPACING;
         }
 
     }
 
-    public static class ResourceAsciiTreeNode implements AsciiTreeNode<ResourceAsciiTreeNode>
-    {
+    public static class ResourceAsciiTreeNode implements AsciiTreeNode<ResourceAsciiTreeNode> {
 
         private final Resource _Resource;
 
         private List<ResourceAsciiTreeNode> _ChildNodes;
 
-        ResourceAsciiTreeNode(final Resource resource)
-        {
+        ResourceAsciiTreeNode(final Resource resource) {
 
             _Resource = resource;
         }
 
         @Override
-        public List<ResourceAsciiTreeNode> getChildNodes()
-        {
+        public List<ResourceAsciiTreeNode> getChildNodes() {
 
-            if (_ChildNodes == null)
-            {
+            if (_ChildNodes == null) {
                 _ChildNodes = new ArrayList<ResourceAsciiTreeNode>();
                 final Map<String, Resource> literalPathResources = _Resource.getLiteralPathSubresources();
-                if (MapUtils.isNotEmpty(literalPathResources))
-                {
+                if (MapUtils.isNotEmpty(literalPathResources)) {
                     final Map<String, Resource> sortedliteralPathResources = new TreeMap<>(literalPathResources);
-                    for (final String literalPath : sortedliteralPathResources.keySet())
-                    {
+                    for (final String literalPath : sortedliteralPathResources.keySet()) {
                         final Resource literalPathResource = sortedliteralPathResources.get(literalPath);
                         _ChildNodes.add(new ResourceAsciiTreeNode(literalPathResource));
                     }
                 }
 
                 final Map<String, Resource> variablePathResources = _Resource.getVariablePathSubresources();
-                if (MapUtils.isNotEmpty(variablePathResources))
-                {
+                if (MapUtils.isNotEmpty(variablePathResources)) {
 
                     final Map<String, Resource> sortedVariablePathResources = new TreeMap<>(variablePathResources);
 
-                    for (final String variablePath : sortedVariablePathResources.keySet())
-                    {
+                    for (final String variablePath : sortedVariablePathResources.keySet()) {
                         final Resource variablePathResource = sortedVariablePathResources.get(variablePath);
                         _ChildNodes.add(new ResourceAsciiTreeNode(variablePathResource));
                     }
@@ -485,15 +421,13 @@ public class AsciiArt
             return _ChildNodes;
         }
 
-        public Resource getResource()
-        {
+        public Resource getResource() {
 
             return _Resource;
         }
 
         @Override
-        public String getText()
-        {
+        public String getText() {
 
             String pathSegment = getResource().getPathSegment();
             pathSegment = (pathSegment != null) ? pathSegment : "";

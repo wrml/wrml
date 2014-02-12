@@ -61,8 +61,7 @@ import java.net.URI;
  * </p>
  */
 @WRML(comparableSlotNames = {"rel", "href"})
-public interface Link extends Model
-{
+public interface Link extends Model {
 
     /**
      * <p>

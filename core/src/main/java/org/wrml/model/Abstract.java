@@ -32,14 +32,14 @@ import org.wrml.model.schema.Schema;
  * {@link Schema} may claim {@link Abstract} as their basis and they may formed into {@link Model}s as usual; unless
  * they choose to also directly state {@link Abstract} as a basis.
  * </p>
- * 
+ * <p/>
  * <p>
  * Claim {@link Abstract} as a basis for any {@link Schema} that you do not wish to be modeled/composed without some
  * intermediate extension.
  * </p>
+ *
  * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.1.1.1">Abstract classes</a>
  */
-public interface Abstract extends Model
-{
+public interface Abstract extends Model {
 
 }

@@ -21,11 +21,10 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###            
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "ResourceNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.ResourceNotFound extends App.Views.ItemView
-		template: "resourceNotFound/show/resourceNotFound_show"
+  class Show.ResourceNotFound extends App.Views.ItemView
+    template: "resourceNotFound/show/resourceNotFound_show"

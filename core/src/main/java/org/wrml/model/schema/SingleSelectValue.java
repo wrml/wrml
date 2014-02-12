@@ -29,8 +29,7 @@ import org.wrml.model.Model;
 /**
  * A single selection made from a list of choices (like an {@link Enum}).
  */
-public interface SingleSelectValue extends Inextensible, SelectValue, Model
-{
+public interface SingleSelectValue extends Inextensible, SelectValue, Model {
 
     /**
      * <p>

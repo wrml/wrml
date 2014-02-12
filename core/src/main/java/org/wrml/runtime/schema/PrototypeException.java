@@ -27,8 +27,7 @@ package org.wrml.runtime.schema;
 /**
  * The {@link Prototype}'s associated error type.
  */
-public class PrototypeException extends RuntimeException
-{
+public class PrototypeException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,30 +35,30 @@ public class PrototypeException extends RuntimeException
 
     private final String _SlotName;
 
-    PrototypeException(final String message, final Prototype prototype)
-    {
+    PrototypeException(final String message, final Prototype prototype) {
+
         this(message, null, prototype, null);
     }
 
-    PrototypeException(final String message, final Throwable cause, final Prototype prototype)
-    {
+    PrototypeException(final String message, final Throwable cause, final Prototype prototype) {
+
         this(message, cause, prototype, null);
     }
 
-    PrototypeException(final String message, final Throwable cause, final Prototype prototype, final String slotName)
-    {
+    PrototypeException(final String message, final Throwable cause, final Prototype prototype, final String slotName) {
+
         super(message, cause);
         _Prototype = prototype;
         _SlotName = slotName;
     }
 
-    public Prototype getPrototype()
-    {
+    public Prototype getPrototype() {
+
         return _Prototype;
     }
 
-    public String getSlotName()
-    {
+    public String getSlotName() {
+
         return _SlotName;
     }
 }

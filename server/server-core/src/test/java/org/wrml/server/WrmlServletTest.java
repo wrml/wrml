@@ -57,8 +57,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @Ignore
-public class WrmlServletTest
-{
+public class WrmlServletTest {
 
     private static final String BAD_HOST_1 = "moose::/squirrel:/";
 
@@ -93,8 +92,7 @@ public class WrmlServletTest
     private WrmlServlet _Servlet;
 
     @Before
-    public void init() throws MediaTypeException
-    {
+    public void init() throws MediaTypeException {
 
         _Servlet = new WrmlServlet();
         _Engine = mock(Engine.class);
@@ -122,8 +120,7 @@ public class WrmlServletTest
 
     }
 
-    private void initMockWrmlRequest(final MockHttpServletRequest request, final Method method, final URI requestUri, final URI responseSchemaUri)
-    {
+    private void initMockWrmlRequest(final MockHttpServletRequest request, final Method method, final URI requestUri, final URI responseSchemaUri) {
 
         _Servlet.setEngine(_Engine);
         final Context context = _Engine.getContext();
@@ -137,11 +134,9 @@ public class WrmlServletTest
         ApiLoader loader = context.getApiLoader();
         when(loader.getDefaultResponseSchemaUri(method, requestUri)).thenReturn(responseSchemaUri);
         when(loader.buildDocumentKeys(requestUri, responseSchemaUri)).thenReturn(keys);
-        when(loader.buildDocumentDimensions(any(Method.class), any(URI.class), any(DimensionsBuilder.class))).thenAnswer(new Answer<Dimensions>()
-        {
+        when(loader.buildDocumentDimensions(any(Method.class), any(URI.class), any(DimensionsBuilder.class))).thenAnswer(new Answer<Dimensions>() {
             @Override
-            public Dimensions answer(final InvocationOnMock invocation) throws Throwable
-            {
+            public Dimensions answer(final InvocationOnMock invocation) throws Throwable {
 
                 DimensionsBuilder dimensionsBuilder = (DimensionsBuilder) invocation.getArguments()[2];
 
@@ -158,8 +153,7 @@ public class WrmlServletTest
         when(context.request(any(Method.class), any(Keys.class), (Dimensions) anyObject(), (Model) anyObject())).thenReturn(responseModel);
     }
 
-    private void initMockApiNavigator(final Method method, final URI requestUri, final URI responseSchemaUri)
-    {
+    private void initMockApiNavigator(final Method method, final URI requestUri, final URI responseSchemaUri) {
 
         final Context context = _Engine.getContext();
         ApiLoader loader = context.getApiLoader();
@@ -179,8 +173,7 @@ public class WrmlServletTest
 
     }
 
-    private void initMockHttpRequest(MockHttpServletRequest req, URI uri)
-    {
+    private void initMockHttpRequest(MockHttpServletRequest req, URI uri) {
 
         req.setRequestURI(uri.toString());
         req.setPathInfo(uri.getPath());
@@ -191,30 +184,26 @@ public class WrmlServletTest
     }
 
     @After
-    public void destruct()
-    {
+    public void destruct() {
 
         _Engine = null;
         _Servlet = null;
     }
 
     @Test
-    public void create()
-    {
+    public void create() {
 
         assertTrue(_Servlet != null);
     }
 
     @Test
-    public void createAndConfigure() throws MediaTypeException
-    {
+    public void createAndConfigure() throws MediaTypeException {
 
         _Servlet.setEngine(_Engine);
     }
 
     @Test(expected = ServletException.class)
-    public void createAndInitNoParam() throws ServletException
-    {
+    public void createAndInitNoParam() throws ServletException {
 
         ServletConfig servletConfig = mock(ServletConfig.class);
         Enumeration<String> eStrings = new TestEmptyEnum();
@@ -225,8 +214,7 @@ public class WrmlServletTest
 
     // Checks the logic in a given for loop for debugging
     @Test(expected = ServletException.class)
-    public void createAndInitTwoParam() throws ServletException
-    {
+    public void createAndInitTwoParam() throws ServletException {
 
         ServletConfig servletConfig = mock(ServletConfig.class);
         Enumeration<String> eStrings = new TestTwoEnum();
@@ -235,8 +223,7 @@ public class WrmlServletTest
     }
 
     @Test(expected = ServletException.class)
-    public void createAndInitBadLocation() throws ServletException
-    {
+    public void createAndInitBadLocation() throws ServletException {
 
         ServletConfig servletConfig = mock(ServletConfig.class);
         Enumeration<String> eStrings = new TestEmptyEnum();
@@ -247,8 +234,7 @@ public class WrmlServletTest
     }
 
     @Test(expected = ServletException.class)
-    public void createAndInitMalformedFile() throws ServletException
-    {
+    public void createAndInitMalformedFile() throws ServletException {
 
         ServletConfig servletConfig = mock(ServletConfig.class);
         Enumeration<String> eStrings = new TestEmptyEnum();
@@ -259,8 +245,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void createAndInit() throws ServletException
-    {
+    public void createAndInit() throws ServletException {
 
         ServletConfig servletConfig = mock(ServletConfig.class);
         Enumeration<String> eStrings = new TestEmptyEnum();
@@ -272,8 +257,7 @@ public class WrmlServletTest
 
     // TODO: Make this a different exception type.
     @Test(expected = IllegalArgumentException.class)
-    public void requestBadMethod() throws ServletException, IOException
-    {
+    public void requestBadMethod() throws ServletException, IOException {
 
         _Servlet.setEngine(_Engine);
 
@@ -290,8 +274,7 @@ public class WrmlServletTest
      * the engine
      */
     @Test
-    public void requestNoAcceptHeaderNoDefault() throws ServletException, IOException
-    {
+    public void requestNoAcceptHeaderNoDefault() throws ServletException, IOException {
 
         _Servlet.setEngine(_Engine);
 
@@ -322,8 +305,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestNoAcceptHeaderNotFound() throws ServletException, IOException
-    {
+    public void requestNoAcceptHeaderNotFound() throws ServletException, IOException {
 
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -347,8 +329,7 @@ public class WrmlServletTest
 
     // This tests checking the engine for a default schema to service this request.
     @Test
-    public void requestNoAcceptHeaderFound() throws ServletException, IOException
-    {
+    public void requestNoAcceptHeaderFound() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -370,8 +351,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestSingleAcceptHeader() throws ServletException, IOException
-    {
+    public void requestSingleAcceptHeader() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -394,8 +374,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestApiLoaderException() throws ServletException, IOException
-    {
+    public void requestApiLoaderException() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -426,8 +405,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestWithBadHostHeader() throws ServletException, IOException
-    {
+    public void requestWithBadHostHeader() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -449,8 +427,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestWithBadHostHeader2() throws ServletException, IOException
-    {
+    public void requestWithBadHostHeader2() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -470,8 +447,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestWithHostHeader() throws ServletException, IOException
-    {
+    public void requestWithHostHeader() throws ServletException, IOException {
 
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -493,8 +469,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestWithHostAndPortHeaders() throws ServletException, IOException
-    {
+    public void requestWithHostAndPortHeaders() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -515,20 +490,17 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetRequestUriBadHost() throws IOException, URISyntaxException
-    {
+    public void testGetRequestUriBadHost() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
         request.setMethod(Method.Get.getProtocolGivenName());
         request.addHeader(WrmlServlet.WRML_HOST_HEADER_NAME, BAD_HOST_1);
 
-        try
-        {
+        try {
             _Servlet.getRequestUri(request);
         }
-        catch (URISyntaxException use)
-        {
+        catch (URISyntaxException use) {
             Assert.assertTrue(use.getMessage().contains(BAD_HOST_1));
             return;
         }
@@ -536,8 +508,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdBadHost2() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdBadHost2() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
@@ -545,12 +516,10 @@ public class WrmlServletTest
         //request.addHeader(HttpHeaders.ACCEPT, JSON_MEDIA_TYPE);
         request.addHeader(WrmlServlet.WRML_HOST_HEADER_NAME, BAD_HOST_2);
 
-        try
-        {
+        try {
             URI resourceUri = _Servlet.getRequestUri(request);
         }
-        catch (URISyntaxException use)
-        {
+        catch (URISyntaxException use) {
             Assert.assertTrue(use.getMessage().contains(BAD_HOST_2));
             return;
         }
@@ -558,8 +527,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdHostNoChange() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdHostNoChange() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
@@ -571,8 +539,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdHost() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdHost() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
@@ -584,8 +551,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdPort() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdPort() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
@@ -597,8 +563,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdPortNoChange() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdPortNoChange() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
@@ -610,8 +575,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void testGetResourceIdHostAndPort() throws IOException, URISyntaxException
-    {
+    public void testGetResourceIdHostAndPort() throws IOException, URISyntaxException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
 
@@ -628,8 +592,7 @@ public class WrmlServletTest
      * This test is to verify that, given a wildcard accept, we use the default.
      */
     @Test
-    public void requestWithWildCardAccept() throws ServletException, IOException
-    {
+    public void requestWithWildCardAccept() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_2_ENDPOINT);
@@ -648,8 +611,7 @@ public class WrmlServletTest
 
     // This tests checking the engine for a default schema to service this request.
     @Test
-    public void requestRootWithSlash() throws ServletException, IOException
-    {
+    public void requestRootWithSlash() throws ServletException, IOException {
 
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -670,8 +632,7 @@ public class WrmlServletTest
     // --------------------------------- Method.Save tests (Input Model reading).
 
     @Test
-    public void requestPostNoData() throws ServletException, IOException
-    {
+    public void requestPostNoData() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
 
@@ -694,8 +655,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void requestWithoutEntityButWithContentType() throws ServletException, IOException
-    {
+    public void requestWithoutEntityButWithContentType() throws ServletException, IOException {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, DOCROOT_ENDPOINT);
@@ -715,14 +675,12 @@ public class WrmlServletTest
         Assert.assertEquals(response.getContentAsByteArray().length, response.getContentLength());
     }
 
-    public void readModelTest() throws Exception
-    {
+    public void readModelTest() throws Exception {
 
     }
 
     @Test
-    public void findOptimalTypeTest1() throws Exception
-    {
+    public void findOptimalTypeTest1() throws Exception {
 
         _Servlet.setEngine(_Engine);
 
@@ -751,8 +709,7 @@ public class WrmlServletTest
     }
 
     @Test
-    public void getRequestFormatUriTest() throws Exception
-    {
+    public void getRequestFormatUriTest() throws Exception {
 
         _Servlet.setEngine(_Engine);
 
@@ -768,44 +725,37 @@ public class WrmlServletTest
     }
 
     // Test support classes
-    public class TestEmptyEnum implements Enumeration<String>
-    {
+    public class TestEmptyEnum implements Enumeration<String> {
 
         @Override
-        public boolean hasMoreElements()
-        {
+        public boolean hasMoreElements() {
 
             return false;
         }
 
         @Override
-        public String nextElement()
-        {
+        public String nextElement() {
 
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 
-    public class TestTwoEnum implements Enumeration<String>
-    {
+    public class TestTwoEnum implements Enumeration<String> {
 
         private int MAX = 2;
 
         private int index = 0;
 
         @Override
-        public boolean hasMoreElements()
-        {
+        public boolean hasMoreElements() {
 
             return index < MAX;
         }
 
         @Override
-        public String nextElement()
-        {
+        public String nextElement() {
 
-            if (hasMoreElements())
-            {
+            if (hasMoreElements()) {
                 return "" + ++index;
             }
             throw new UnsupportedOperationException("Not supported yet.");

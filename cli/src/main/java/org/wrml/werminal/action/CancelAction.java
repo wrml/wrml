@@ -26,11 +26,9 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class CancelAction extends CloseBeforeAction
-{
+public class CancelAction extends CloseBeforeAction {
 
-    public CancelAction(final Werminal werminal)
-    {
+    public CancelAction(final Werminal werminal) {
 
         super(werminal, "Cancel");
     }

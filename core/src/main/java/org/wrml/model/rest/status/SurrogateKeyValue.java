@@ -30,8 +30,7 @@ import org.wrml.model.schema.ValueType;
 
 import java.net.URI;
 
-public interface SurrogateKeyValue extends Named
-{
+public interface SurrogateKeyValue extends Named {
     URI getDeclaringSchemaUri();
 
     URI setDeclaringSchemaUri(final URI declaringSchemaUri);

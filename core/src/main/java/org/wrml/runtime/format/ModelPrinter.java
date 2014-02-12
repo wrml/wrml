@@ -24,13 +24,12 @@
  */
 package org.wrml.runtime.format;
 
+import org.wrml.model.Model;
+
 import java.io.IOException;
 import java.util.List;
 
-import org.wrml.model.Model;
-
-public interface ModelPrinter
-{
+public interface ModelPrinter {
 
     void close() throws IOException, ModelPrinterException;
 

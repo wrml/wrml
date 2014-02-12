@@ -27,17 +27,14 @@ package org.wrml.werminal.action;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.terminal.TerminalAppAction;
 
-public abstract class WerminalAction extends TerminalAppAction
-{
+public abstract class WerminalAction extends TerminalAppAction {
 
-    public WerminalAction(final Werminal werminal, final String title)
-    {
+    public WerminalAction(final Werminal werminal, final String title) {
 
         super(werminal, title);
     }
 
-    public Werminal getWerminal()
-    {
+    public Werminal getWerminal() {
 
         return getApp();
     }

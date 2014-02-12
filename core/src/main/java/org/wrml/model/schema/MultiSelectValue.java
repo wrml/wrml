@@ -29,8 +29,7 @@ import org.wrml.model.MaybeRequired;
 
 import java.util.List;
 
-public interface MultiSelectValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, SelectValue
-{
+public interface MultiSelectValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, SelectValue {
 
     List<String> getDefault();
 

@@ -1,37 +1,29 @@
 {
 
-    "context" :
-    {
-        "modelCache" :
-        {
-            "name":"Cache",
-            "implementation":"org.wrml.runtime.service.cache.ShardedModelCache"
+    "context": {
+        "modelCache": {
+            "name": "Cache",
+            "implementation": "org.wrml.runtime.service.cache.ShardedModelCache"
         },
 
-        "schemaLoader" :
-        {
+        "schemaLoader": {
 
-            "factory" : "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
+            "factory": "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
 
-            "schemaClassRootDirectory":"",
-            "jsonSchemaIds":
-            [
+            "schemaClassRootDirectory": "",
+            "jsonSchemaIds": [
                 "http://www.my.schemas/schemas/my-schema.json"
             ]
         },
 
-        "serviceLoader" :
-        {
-            "services" :
-            [
-               
+        "serviceLoader": {
+            "services": [
+
             ],
 
-            "serviceChains" :
-            {
-                "*":
-                [
-                   
+            "serviceChains": {
+                "*": [
+
                 ]
             }
         }

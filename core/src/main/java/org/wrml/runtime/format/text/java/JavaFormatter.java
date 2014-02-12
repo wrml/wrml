@@ -35,7 +35,6 @@ import org.wrml.runtime.format.ModelReadingException;
 import org.wrml.runtime.format.ModelWriteOptions;
 import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.runtime.schema.generator.SchemaGenerator;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,34 +43,28 @@ import java.net.URI;
 /**
  * Format for WRML schemas for use in design tools/apps.
  */
-public class JavaFormatter extends AbstractFormatter
-{
-    public JavaFormatter()
-    {
+public class JavaFormatter extends AbstractFormatter {
+    public JavaFormatter() {
 
     }
 
     @Override
-    public boolean isApplicableTo(final URI schemaUri)
-    {
+    public boolean isApplicableTo(final URI schemaUri) {
 
         final SchemaLoader schemaLoader = getContext().getSchemaLoader();
         return (schemaLoader.getSchemaSchemaUri().equals(schemaUri));
     }
 
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException {
         // TODO: Write a Java compiler. =)
         throw new UnsupportedOperationException("The \"readModel\" operation is not supported by the \"" + getFormatUri() + "\" format.");
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
-        if (!(model instanceof Schema))
-        {
+        if (!(model instanceof Schema)) {
             throw new ModelWritingException("The \"" + getFormatUri() + "\" format cannot write the model.", null, this);
         }
 
@@ -80,15 +73,13 @@ public class JavaFormatter extends AbstractFormatter
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
-        try
-        {
+        try {
             final SchemaInterfacePrinter schemaInterfacePrinter = new SchemaInterfacePrinter(schema, out);
             final byte[] schemaBytecode = schemaLoader.getSchemaInterfaceBytecode(schema);
             final ClassReader classReader = new ClassReader(schemaBytecode);
             classReader.accept(schemaInterfacePrinter, 0);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new ModelWritingException(getClass().getSimpleName()
                     + " encounter an error while attempting to write a SchemaDesign.  Message: " + e.getMessage(), null, this);
 

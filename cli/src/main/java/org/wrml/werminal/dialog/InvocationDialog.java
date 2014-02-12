@@ -42,15 +42,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class
-        InvocationDialog extends WerminalDialog
-{
+        InvocationDialog extends WerminalDialog {
 
     private final FormField _FunctionLinkFormField;
 
     private final FormField _ParameterFormField;
 
-    public InvocationDialog(final Werminal werminal, final String title, final Model function, final FormField functionLinkFormField) throws ClassNotFoundException
-    {
+    public InvocationDialog(final Werminal werminal, final String title, final Model function, final FormField functionLinkFormField) throws ClassNotFoundException {
 
         super(werminal, title, new SubmitAction(werminal, function, functionLinkFormField), new CancelAction(werminal));
 
@@ -61,8 +59,7 @@ public class
         final LinkProtoSlot linkProtoSlot = prototype.getProtoSlot(linkSlotName);
 
         final URI requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
-        if (requestSchemaUri != null)
-        {
+        if (requestSchemaUri != null) {
 
 
             final SchemaLoader schemaLoader = werminal.getContext().getSchemaLoader();
@@ -72,19 +69,16 @@ public class
             _ParameterFormField = new FormField("Parameter", parameterType, parameterFormFieldOpenAction);
             parameterFormFieldOpenAction.setFormField(_ParameterFormField);
         }
-        else
-        {
+        else {
             _ParameterFormField = null;
         }
 
         render();
     }
 
-    public Model getParameter()
-    {
+    public Model getParameter() {
 
-        if (_ParameterFormField != null)
-        {
+        if (_ParameterFormField != null) {
             return _ParameterFormField.getFieldValueTextBox().getValue();
         }
 
@@ -92,13 +86,11 @@ public class
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         removeAllComponents();
 
-        if (_FunctionLinkFormField == null)
-        {
+        if (_FunctionLinkFormField == null) {
             return;
         }
 
@@ -119,8 +111,7 @@ public class
 
         formFieldMap.put(functionUriFormField.getFieldName(), functionUriFormField);
 
-        if (_ParameterFormField != null)
-        {
+        if (_ParameterFormField != null) {
             formFieldMap.put(_ParameterFormField.getFieldName(), _ParameterFormField);
         }
 

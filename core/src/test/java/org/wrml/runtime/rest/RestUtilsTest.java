@@ -24,37 +24,34 @@
  */
 package org.wrml.runtime.rest;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RestUtilsTest
-{
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+
+public class RestUtilsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestUtilsTest.class);
 
     @Before
-    public void init()
-    {
+    public void init() {
 
     }
 
     @After
-    public void destruct()
-    {
+    public void destruct() {
 
     }
 
     // No params
     // @Test
-    public void testSimpleContentType1()
-    {
+    public void testSimpleContentType1() {
+
         String contentType = "Content-Type: text/plain";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -67,8 +64,8 @@ public class RestUtilsTest
 
     // No params
     // @Test
-    public void testSimpleContentType2()
-    {
+    public void testSimpleContentType2() {
+
         String contentType = "Content-Type: text/plain;";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -81,8 +78,8 @@ public class RestUtilsTest
 
     // One parameter
     // @Test
-    public void testSimpleContentType3()
-    {
+    public void testSimpleContentType3() {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -97,8 +94,8 @@ public class RestUtilsTest
 
     // Three (n) parameters
     // @Test
-    public void testContentType1()
-    {
+    public void testContentType1() {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii;ben=test; space=\"aliens\"";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -115,8 +112,8 @@ public class RestUtilsTest
 
     // Three (n) parameters
     // @Test
-    public void testContentType2()
-    {
+    public void testContentType2() {
+
         String contentType = "Content-Type: text/plain; charset=us-ascii;ben=test; space=\"ali;ens\"";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -132,8 +129,8 @@ public class RestUtilsTest
     }
 
     // @Test
-    public void testSimpleAccepts1()
-    {
+    public void testSimpleAccepts1() {
+
         String accepts = "Accept: audio/*";
         List<MediaType> types = RestUtils.extractMediaTypesFromAcceptHeaderValue(accepts);
 
@@ -148,8 +145,8 @@ public class RestUtilsTest
     }
 
     // @Test
-    public void testSimpleAccepts2()
-    {
+    public void testSimpleAccepts2() {
+
         String accepts = "Accept: audio/*;";
         List<MediaType> types = RestUtils.extractMediaTypesFromAcceptHeaderValue(accepts);
 
@@ -164,8 +161,8 @@ public class RestUtilsTest
     }
 
     @Test
-    public void testAccepts1()
-    {
+    public void testAccepts1() {
+
         String accepts = "Accept: audio/*; q=0.2; z=35, audio/basic, audio/ben;crazy";
         List<MediaType> types = RestUtils.extractMediaTypesFromAcceptHeaderValue(accepts);
 
@@ -194,8 +191,8 @@ public class RestUtilsTest
     }
 
     @Test
-    public void testLongAccepts1()
-    {
+    public void testLongAccepts1() {
+
         String accepts = "Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1,text/html;level=2;q=0.4, */*;q=0.5";
         List<MediaType> types = RestUtils.extractMediaTypesFromAcceptHeaderValue(accepts);
 
@@ -239,8 +236,8 @@ public class RestUtilsTest
     }
 
     // @Test
-    public void wrmlContentTypeTest1()
-    {
+    public void wrmlContentTypeTest1() {
+
         String contentType = "Content-Type: application/wrml; schema=http://schema.api.wrml.org/org/wrml/example/model/Caprica;format=\"http://format.api.wrml.org/org/wrml/format/application/json\"";
         MediaType type = RestUtils.extractMediaTypeFromContentTypeHeaderValue(contentType);
 
@@ -254,8 +251,8 @@ public class RestUtilsTest
     }
 
     @Test
-    public void wrmlAcceptTest1()
-    {
+    public void wrmlAcceptTest1() {
+
         String accepts = "Accept: application/wrml; schema=http://schema.api.wrml.org/org/wrml/example/model/Caprica;format=\"http://format.api.wrml.org/org/wrml/format/application/json\"";
         List<MediaType> types = RestUtils.extractMediaTypesFromAcceptHeaderValue(accepts);
 

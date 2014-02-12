@@ -41,8 +41,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-public class EmbeddedGroovyService extends AbstractService
-{
+public class EmbeddedGroovyService extends AbstractService {
     public static final String SERVICE_ABS_LOCATION_KEY = "absGroovyService";
 
     public static final String SERVICE_RES_LOCATION_KEY = "resGroovyService";
@@ -53,36 +52,30 @@ public class EmbeddedGroovyService extends AbstractService
 
     private GroovyServiceInterface _GroovyService;
 
-    public GroovyServiceInterface getGroovyService()
-    {
+    public GroovyServiceInterface getGroovyService() {
 
         return _GroovyService;
     }
 
     @Override
-    public void initFromConfiguration(final ServiceConfiguration serviceConfig)
-    {
+    public void initFromConfiguration(final ServiceConfiguration serviceConfig) {
 
         Map<String, String> config = serviceConfig.getSettings();
         File scriptLocation = null;
         String givenLocation;
-        if (config.containsKey(SERVICE_ABS_LOCATION_KEY))
-        {
+        if (config.containsKey(SERVICE_ABS_LOCATION_KEY)) {
             givenLocation = config.get(SERVICE_ABS_LOCATION_KEY);
             scriptLocation = new File(givenLocation);
         }
-        else if (config.containsKey(SERVICE_RES_LOCATION_KEY))
-        {
+        else if (config.containsKey(SERVICE_RES_LOCATION_KEY)) {
             givenLocation = config.get(SERVICE_RES_LOCATION_KEY);
             URL resourceLocation = getClass().getResource(givenLocation);
-            if (resourceLocation == null)
-            {
+            if (resourceLocation == null) {
                 throw new ServiceException("Service script specified not found. " + givenLocation, null, this);
             }
             scriptLocation = new File(resourceLocation.getFile());
         }
-        else
-        {
+        else {
             throw new ServiceException("No service script specified to start EmbeddedGroovy.", null, this);
         }
 
@@ -90,45 +83,38 @@ public class EmbeddedGroovyService extends AbstractService
         _Loader = new GroovyClassLoader(parent);
 
         Class groovyServiceClass;
-        try
-        {
+        try {
             groovyServiceClass = _Loader.parseClass(scriptLocation);
         }
-        catch (CompilationFailedException | IOException ex)
-        {
+        catch (CompilationFailedException | IOException ex) {
             String message = "Unable to parse given script into class. " + scriptLocation;
             LOG.error(message, ex);
             throw new ServiceException(message, ex, this);
         }
 
-        try
-        {
+        try {
             _GroovyService = (GroovyServiceInterface) groovyServiceClass.newInstance();
         }
-        catch (InstantiationException | IllegalAccessException ex)
-        {
+        catch (InstantiationException | IllegalAccessException ex) {
             String message = "Unable to instantiate Groovy Service class " + scriptLocation + ".";
             LOG.error(message, ex);
             throw new ServiceException(message, ex, this);
         }
 
         // TODO, comment out
-        if (_GroovyService == null)
-        {
+        if (_GroovyService == null) {
             throw new ServiceException("Unable to find given script name to load. " + scriptLocation, null, this);
         }
     }
 
     @Override
-    public void delete(Keys keys, final Dimensions dimensions)
-    {
+    public void delete(Keys keys, final Dimensions dimensions) {
 
         _GroovyService.delete(getContext(), keys);
     }
 
     @Override
-    public Model get(Keys keys, Dimensions dimensions)
-    {
+    public Model get(Keys keys, Dimensions dimensions) {
 
         final Context context = getContext();
         // Create an instance of the model
@@ -140,8 +126,7 @@ public class EmbeddedGroovyService extends AbstractService
     }
 
     @Override
-    public Model save(Model model)
-    {
+    public Model save(Model model) {
 
         model = _GroovyService.save(model);
 

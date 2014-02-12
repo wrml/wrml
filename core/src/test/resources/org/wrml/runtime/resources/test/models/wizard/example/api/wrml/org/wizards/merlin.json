@@ -1,7 +1,7 @@
 {
-    "wizardId" : "merlin",
-    "guildId" : 7,
-    "primarySpellId" : "heal",
-    "secondarySpellId" : "tornado",
-    "spellBookSpellIds" : ["fireball", "heal", "lightningBolt", "tornado"]
+    "wizardId": "merlin",
+    "guildId": 7,
+    "primarySpellId": "heal",
+    "secondarySpellId": "tornado",
+    "spellBookSpellIds": ["fireball", "heal", "lightningBolt", "tornado"]
 }

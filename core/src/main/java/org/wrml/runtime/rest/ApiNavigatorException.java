@@ -29,8 +29,7 @@ import org.wrml.model.rest.status.Status;
 /**
  * The {@link ApiNavigator}'s associated error type.
  */
-public class ApiNavigatorException extends RuntimeException
-{
+public class ApiNavigatorException extends RuntimeException {
 
     private final ApiNavigator _ApiNavigator;
 
@@ -40,36 +39,26 @@ public class ApiNavigatorException extends RuntimeException
 
     /**
      * Create a new exception to communicate a problem about the specified {@link ApiNavigator}.
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param apiNavigator
-     *            The impacted {@link ApiNavigator}.
-     * 
+     *
+     * @param message      The message to explain what is going on.
+     * @param apiNavigator The impacted {@link ApiNavigator}.
      */
-    ApiNavigatorException(final String message, final Throwable cause, final ApiNavigator apiNavigator)
-    {
+    ApiNavigatorException(final String message, final Throwable cause, final ApiNavigator apiNavigator) {
+
         this(message, cause, apiNavigator, null);
     }
 
     /**
      * Create a new exception to communicate a problem about the specified {@link ApiNavigator}.
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param apiNavigator
-     *            The impacted {@link ApiNavigator}.
-     * 
-     * @param status
-     *            The status to classify this exception as reflecting an HTTP
-     *            rule enforcement.
-     * 
+     *
+     * @param message      The message to explain what is going on.
+     * @param apiNavigator The impacted {@link ApiNavigator}.
+     * @param status       The status to classify this exception as reflecting an HTTP
+     *                     rule enforcement.
      */
     ApiNavigatorException(final String message, final Throwable cause, final ApiNavigator apiNavigator,
-            final Status status)
-    {
+                          final Status status) {
+
         super(message, cause);
         _ApiNavigator = apiNavigator;
         _Status = status;
@@ -77,23 +66,23 @@ public class ApiNavigatorException extends RuntimeException
 
     /**
      * Get the {@link ApiNavigator} associated with this error.
-     * 
+     *
      * @return The {@link ApiNavigator} that raised this exception.
      */
-    public ApiNavigator getApiNavigator()
-    {
+    public ApiNavigator getApiNavigator() {
+
         return _ApiNavigator;
     }
 
     /**
      * The associated {@link Status} or null if this exception "type" has no
      * REST status equivalent.
-     * 
+     *
      * @return The HTTP Status or null if there is no logical peer (in REST) for
-     *         this kind of problem in the WRML runtime.
+     * this kind of problem in the WRML runtime.
      */
-    public Status getStatus()
-    {
+    public Status getStatus() {
+
         return _Status;
     }
 }

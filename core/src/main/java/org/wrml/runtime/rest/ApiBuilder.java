@@ -31,183 +31,153 @@ import org.wrml.runtime.Keys;
 import org.wrml.runtime.schema.LinkProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
-import org.wrml.util.JavaMethod;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.*;
 
 /**
  * A helper utility to build Api models.
  */
-public final class ApiBuilder
-{
+public final class ApiBuilder {
 
     private final Context _Context;
 
     private final Api _Api;
 
-    public ApiBuilder(final Context context)
-    {
+    public ApiBuilder(final Context context) {
 
         this((Api) context.newModel(Api.class));
     }
 
-    public ApiBuilder(final Api api)
-    {
+    public ApiBuilder(final Api api) {
 
         _Context = api.getContext();
         _Api = api;
 
     }
 
-    public ApiBuilder uri(final URI uri)
-    {
+    public ApiBuilder uri(final URI uri) {
 
         _Api.setUri(uri);
         return this;
     }
 
-    public ApiBuilder description(final String description)
-    {
+    public ApiBuilder description(final String description) {
 
         _Api.setDescription(description);
         return this;
     }
 
-    public ApiBuilder title(final String title)
-    {
+    public ApiBuilder title(final String title) {
 
         _Api.setTitle(title);
         return this;
     }
 
-    public ApiNavigator navigate()
-    {
+    public ApiNavigator navigate() {
 
         return (ApiNavigator.isApiNavigable(_Api)) ? new ApiNavigator(_Api) : null;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         final ApiNavigator navigator = navigate();
-        if (navigator != null)
-        {
+        if (navigator != null) {
             return navigator.toString();
         }
 
         return _Api.toString();
     }
 
-    public Api toApi()
-    {
+    public Api toApi() {
 
         return _Api;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
-    public ApiNavigator load()
-    {
+    public ApiNavigator load() {
 
         final ApiLoader apiLoader = _Context.getApiLoader();
         return apiLoader.loadApi(_Api);
     }
 
-    public ApiBuilder resource(final String fullPath)
-    {
+    public ApiBuilder resource(final String fullPath) {
 
         return resource(fullPath, (UUID) null);
     }
 
-    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId)
-    {
+    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId) {
 
         return resource(fullPath, resourceTemplateId, (URI) null);
     }
 
-    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final Class<?> defaultSchemaInterface)
-    {
+    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final Class<?> defaultSchemaInterface) {
 
         return resource(fullPath, resourceTemplateId, defaultSchemaInterface, false);
     }
 
-    public ApiBuilder resource(final String fullPath, final Class<?> defaultSchemaInterface)
-    {
+    public ApiBuilder resource(final String fullPath, final Class<?> defaultSchemaInterface) {
 
         return resource(fullPath, null, defaultSchemaInterface);
     }
 
-    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final Class<?> defaultSchemaInterface, final boolean addDefaultLinks)
-    {
+    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final Class<?> defaultSchemaInterface, final boolean addDefaultLinks) {
 
         final URI defaultSchemaUri = (defaultSchemaInterface != null) ? getContext().getSchemaLoader().getTypeUri(defaultSchemaInterface) : null;
         return resource(fullPath, resourceTemplateId, defaultSchemaUri, addDefaultLinks);
     }
 
-    public ApiBuilder resource(final String fullPath, final Class<?> defaultSchemaInterface, final boolean addDefaultLinks)
-    {
+    public ApiBuilder resource(final String fullPath, final Class<?> defaultSchemaInterface, final boolean addDefaultLinks) {
 
         return resource(fullPath, null, defaultSchemaInterface, addDefaultLinks);
     }
 
-    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final URI defaultSchemaUri)
-    {
+    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final URI defaultSchemaUri) {
 
         return resource(fullPath, resourceTemplateId, defaultSchemaUri, false);
     }
 
-    public ApiBuilder resource(final String fullPath, final URI defaultSchemaUri)
-    {
+    public ApiBuilder resource(final String fullPath, final URI defaultSchemaUri) {
 
         return resource(fullPath, null, defaultSchemaUri);
     }
 
-    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final URI defaultSchemaUri, final boolean addDefaultLinks)
-    {
+    public ApiBuilder resource(final String fullPath, final UUID resourceTemplateId, final URI defaultSchemaUri, final boolean addDefaultLinks) {
 
         final Context context = getContext();
 
-        if (fullPath == null)
-        {
+        if (fullPath == null) {
             throw new IllegalArgumentException("The resource path cannot be null.");
         }
 
         String path = fullPath.trim();
-        if (fullPath.isEmpty())
-        {
+        if (fullPath.isEmpty()) {
             path = UriTemplate.PATH_SEPARATOR;
         }
 
-        if (!path.startsWith(UriTemplate.PATH_SEPARATOR))
-        {
+        if (!path.startsWith(UriTemplate.PATH_SEPARATOR)) {
             path = UriTemplate.PATH_SEPARATOR + path;
         }
 
         final UUID resourceId = (resourceTemplateId != null) ? resourceTemplateId : UUID.randomUUID();
 
         ResourceTemplate docroot = _Api.getDocroot();
-        if (docroot == null)
-        {
+        if (docroot == null) {
             docroot = context.newModel(ResourceTemplate.class);
             docroot.setPathSegment("");
             docroot.setUniqueId(UUID.randomUUID());
             _Api.setDocroot(docroot);
 
-            if (path.equals(UriTemplate.PATH_SEPARATOR))
-            {
+            if (path.equals(UriTemplate.PATH_SEPARATOR)) {
                 docroot.setUniqueId(resourceId);
-                if (defaultSchemaUri != null)
-                {
+                if (defaultSchemaUri != null) {
                     docroot.setDefaultSchemaUri(defaultSchemaUri);
-                    if (addDefaultLinks)
-                    {
+                    if (addDefaultLinks) {
                         addDefaultSchemaLinkTemplates(docroot);
                     }
                 }
@@ -219,38 +189,31 @@ public final class ApiBuilder
         ResourceTemplate parent = docroot;
 
         final String[] pathSegments = StringUtils.split(path, UriTemplate.PATH_SEPARATOR_CHAR);
-        for (int i = 0; i < pathSegments.length; i++)
-        {
+        for (int i = 0; i < pathSegments.length; i++) {
             final String pathSegment = pathSegments[i];
             final boolean isLastSegment = (i == (pathSegments.length - 1));
 
             ResourceTemplate segmentTemplate = null;
             final List<ResourceTemplate> children = parent.getChildren();
 
-            for (final ResourceTemplate resourceTemplate : children)
-            {
-                if (pathSegment.equals(resourceTemplate.getPathSegment()))
-                {
+            for (final ResourceTemplate resourceTemplate : children) {
+                if (pathSegment.equals(resourceTemplate.getPathSegment())) {
                     segmentTemplate = resourceTemplate;
                     break;
                 }
             }
 
-            if (segmentTemplate == null)
-            {
+            if (segmentTemplate == null) {
                 segmentTemplate = context.newModel(ResourceTemplate.class);
                 segmentTemplate.setPathSegment(pathSegment);
                 segmentTemplate.setUniqueId(UUID.randomUUID());
                 children.add(segmentTemplate);
 
-                if (isLastSegment)
-                {
+                if (isLastSegment) {
                     segmentTemplate.setUniqueId(resourceId);
-                    if (defaultSchemaUri != null)
-                    {
+                    if (defaultSchemaUri != null) {
                         segmentTemplate.setDefaultSchemaUri(defaultSchemaUri);
-                        if (addDefaultLinks)
-                        {
+                        if (addDefaultLinks) {
                             addDefaultSchemaLinkTemplates(segmentTemplate);
                         }
                     }
@@ -263,56 +226,47 @@ public final class ApiBuilder
         return this;
     }
 
-    public ApiBuilder resource(final String fullPath, final URI defaultSchemaUri, final boolean addDefaultLinks)
-    {
+    public ApiBuilder resource(final String fullPath, final URI defaultSchemaUri, final boolean addDefaultLinks) {
 
         return resource(fullPath, UUID.randomUUID(), defaultSchemaUri, addDefaultLinks);
     }
 
-    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final Class<?> responseSchemaInterface)
-    {
+    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final Class<?> responseSchemaInterface) {
 
         return link(referrerFullPath, linkRelationUri, endpointFullPath, responseSchemaInterface, null);
     }
 
-    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final Class<?> responseSchemaInterface, final Class<?> requestSchemaInterface)
-    {
+    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final Class<?> responseSchemaInterface, final Class<?> requestSchemaInterface) {
 
         final URI responseSchemaUri = (responseSchemaInterface != null) ? getContext().getSchemaLoader().getTypeUri(responseSchemaInterface) : null;
         final URI requestSchemaUri = (requestSchemaInterface != null) ? getContext().getSchemaLoader().getTypeUri(requestSchemaInterface) : null;
         return link(referrerFullPath, linkRelationUri, endpointFullPath, responseSchemaUri, requestSchemaUri);
     }
 
-    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final URI responseSchemaUri)
-    {
+    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final URI responseSchemaUri) {
 
         return link(referrerFullPath, linkRelationUri, endpointFullPath, responseSchemaUri, null);
     }
 
-    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final URI responseSchemaUri, final URI requestSchemaUri)
-    {
+    public ApiBuilder link(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath, final URI responseSchemaUri, final URI requestSchemaUri) {
 
-        if (referrerFullPath == null)
-        {
+        if (referrerFullPath == null) {
             throw new IllegalArgumentException("The referrer full path cannot be null.");
         }
 
-        if (endpointFullPath == null)
-        {
+        if (endpointFullPath == null) {
             throw new IllegalArgumentException("The enpdoint full path cannot be null.");
         }
 
         final Context context = getContext();
 
         final UUID referrerResourceTemplateId = getResourceTemplateId(referrerFullPath);
-        if (referrerResourceTemplateId == null)
-        {
+        if (referrerResourceTemplateId == null) {
             throw new IllegalArgumentException("The resource template was not found for: " + referrerFullPath);
         }
 
         final UUID endpointResourceTemplateId = getResourceTemplateId(endpointFullPath);
-        if (endpointResourceTemplateId == null)
-        {
+        if (endpointResourceTemplateId == null) {
             throw new IllegalArgumentException("The resource template was not found for: " + endpointFullPath);
         }
 
@@ -321,8 +275,7 @@ public final class ApiBuilder
         return this;
     }
 
-    public ApiBuilder autoLink()
-    {
+    public ApiBuilder autoLink() {
 
         final ApiNavigator apiNavigator = navigate();
         final Resource docroot = apiNavigator.getDocroot();
@@ -332,12 +285,10 @@ public final class ApiBuilder
         return this;
     }
 
-    private void addDefaultSchemaLinkTemplates(final ResourceTemplate resourceTemplate)
-    {
+    private void addDefaultSchemaLinkTemplates(final ResourceTemplate resourceTemplate) {
 
         final URI defaultSchemaUri = resourceTemplate.getDefaultSchemaUri();
-        if (defaultSchemaUri == null)
-        {
+        if (defaultSchemaUri == null) {
             return;
         }
 
@@ -351,8 +302,7 @@ public final class ApiBuilder
 
         final List<LinkTemplate> defaultLinkTemplates = new ArrayList<>(schemaLinkRelationUris.size());
 
-        for (final URI linkRelationUri : schemaLinkRelationUris.values())
-        {
+        for (final URI linkRelationUri : schemaLinkRelationUris.values()) {
             final LinkTemplate linkTemplate = context.newModel(LinkTemplate.class);
 
             linkTemplate.setReferrerId(resourceTemplateId);
@@ -361,43 +311,35 @@ public final class ApiBuilder
             final Keys linkRelationKeys = apiLoader.buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
             final LinkRelation linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
 
-            if (linkRelation == null)
-            {
+            if (linkRelation == null) {
                 throw new NullPointerException("The link relation: " + linkRelationUri + " was not found");
             }
 
             final Method method = linkRelation.getMethod();
-            if (method == Method.Save)
-            {
+            if (method == Method.Save) {
                 final URI linkRelationRequestSchemaUri = linkRelation.getRequestSchemaUri();
-                if (linkRelationRequestSchemaUri == null || linkRelationRequestSchemaUri.equals(defaultSchemaUri) || linkRelationRequestSchemaUri.equals(documentSchemaUriConstant))
-                {
+                if (linkRelationRequestSchemaUri == null || linkRelationRequestSchemaUri.equals(defaultSchemaUri) || linkRelationRequestSchemaUri.equals(documentSchemaUriConstant)) {
                     linkTemplate.setRequestSchemaUri(defaultSchemaUri);
                     linkTemplate.setEndPointId(resourceTemplateId);
                 }
-                else
-                {
+                else {
                     linkTemplate.setRequestSchemaUri(linkRelationRequestSchemaUri);
                 }
 
             }
 
-            if (method == Method.Get || method == Method.Save)
-            {
+            if (method == Method.Get || method == Method.Save) {
                 final URI linkRelationResponseSchemaUri = linkRelation.getResponseSchemaUri();
-                if (linkRelationResponseSchemaUri == null || linkRelationResponseSchemaUri.equals(defaultSchemaUri) || linkRelationResponseSchemaUri.equals(documentSchemaUriConstant))
-                {
+                if (linkRelationResponseSchemaUri == null || linkRelationResponseSchemaUri.equals(defaultSchemaUri) || linkRelationResponseSchemaUri.equals(documentSchemaUriConstant)) {
                     linkTemplate.setResponseSchemaUri(defaultSchemaUri);
                     linkTemplate.setEndPointId(resourceTemplateId);
                 }
-                else
-                {
+                else {
                     linkTemplate.setResponseSchemaUri(linkRelationResponseSchemaUri);
                 }
             }
 
-            if (!method.isEntityAllowedInRequestMessage() && !method.isEntityAllowedInResponseMessage())
-            {
+            if (!method.isEntityAllowedInRequestMessage() && !method.isEntityAllowedInResponseMessage()) {
                 linkTemplate.setEndPointId(resourceTemplateId);
             }
 
@@ -408,63 +350,52 @@ public final class ApiBuilder
 
     }
 
-    private UUID getResourceTemplateId(final String fullPath)
-    {
+    private UUID getResourceTemplateId(final String fullPath) {
 
-        if (fullPath == null)
-        {
+        if (fullPath == null) {
             throw new IllegalArgumentException("The resource path cannot be null.");
         }
 
         String path = fullPath.trim();
-        if (fullPath.isEmpty())
-        {
+        if (fullPath.isEmpty()) {
             path = UriTemplate.PATH_SEPARATOR;
         }
 
-        if (!path.startsWith(UriTemplate.PATH_SEPARATOR))
-        {
+        if (!path.startsWith(UriTemplate.PATH_SEPARATOR)) {
             path = UriTemplate.PATH_SEPARATOR + path;
         }
 
         final ResourceTemplate docroot = _Api.getDocroot();
-        if (docroot == null)
-        {
+        if (docroot == null) {
             return null;
         }
 
-        if (path.equals(UriTemplate.PATH_SEPARATOR))
-        {
+        if (path.equals(UriTemplate.PATH_SEPARATOR)) {
             return docroot.getUniqueId();
         }
 
         ResourceTemplate parent = docroot;
 
         final String[] pathSegments = StringUtils.split(path, UriTemplate.PATH_SEPARATOR_CHAR);
-        for (int i = 0; i < pathSegments.length; i++)
-        {
+        for (int i = 0; i < pathSegments.length; i++) {
             final String pathSegment = pathSegments[i];
             final boolean isLastSegment = (i == (pathSegments.length - 1));
 
             ResourceTemplate segmentTemplate = null;
             final List<ResourceTemplate> children = parent.getChildren();
 
-            for (final ResourceTemplate resourceTemplate : children)
-            {
-                if (pathSegment.equals(resourceTemplate.getPathSegment()))
-                {
+            for (final ResourceTemplate resourceTemplate : children) {
+                if (pathSegment.equals(resourceTemplate.getPathSegment())) {
                     segmentTemplate = resourceTemplate;
                     break;
                 }
             }
 
-            if (segmentTemplate == null)
-            {
+            if (segmentTemplate == null) {
                 return null;
             }
 
-            if (isLastSegment)
-            {
+            if (isLastSegment) {
                 return segmentTemplate.getUniqueId();
             }
 
@@ -474,38 +405,31 @@ public final class ApiBuilder
         return null;
     }
 
-    private LinkTemplate getLinkTemplate(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath)
-    {
+    private LinkTemplate getLinkTemplate(final String referrerFullPath, final URI linkRelationUri, final String endpointFullPath) {
 
-        if (referrerFullPath == null)
-        {
+        if (referrerFullPath == null) {
             throw new IllegalArgumentException("The referrer full path cannot be null.");
         }
 
-        if (endpointFullPath == null)
-        {
+        if (endpointFullPath == null) {
             throw new IllegalArgumentException("The enpdoint full path cannot be null.");
         }
 
         final UUID referrerResourceTemplateId = getResourceTemplateId(referrerFullPath);
-        if (referrerResourceTemplateId == null)
-        {
+        if (referrerResourceTemplateId == null) {
             throw new IllegalArgumentException("The resource template was not found for: " + referrerFullPath);
         }
 
         final UUID endpointResourceTemplateId = getResourceTemplateId(endpointFullPath);
-        if (endpointResourceTemplateId == null)
-        {
+        if (endpointResourceTemplateId == null) {
             throw new IllegalArgumentException("The resource template was not found for: " + endpointFullPath);
         }
 
         final List<LinkTemplate> linkTemplates = _Api.getLinkTemplates();
-        for (final LinkTemplate linkTemplate : linkTemplates)
-        {
+        for (final LinkTemplate linkTemplate : linkTemplates) {
             if (linkTemplate.getReferrerId().equals(referrerResourceTemplateId) &&
                     linkTemplate.getLinkRelationUri().equals(linkRelationUri) &&
-                    linkTemplate.getEndPointId().equals(endpointResourceTemplateId))
-            {
+                    linkTemplate.getEndPointId().equals(endpointResourceTemplateId)) {
                 return linkTemplate;
             }
         }
@@ -513,8 +437,7 @@ public final class ApiBuilder
         return null;
     }
 
-    private void link(final UUID referrerResourceTemplateId, final URI linkRelationUri, final UUID endpointResourceTemplateId, final URI responseSchemaUri, final URI requestSchemaUri)
-    {
+    private void link(final UUID referrerResourceTemplateId, final URI linkRelationUri, final UUID endpointResourceTemplateId, final URI responseSchemaUri, final URI requestSchemaUri) {
 
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
@@ -526,36 +449,30 @@ public final class ApiBuilder
         final LinkRelation linkRelation = apiLoader.loadLinkRelation(linkRelationUri);
 
         final Method method = linkRelation.getMethod();
-        if (method.isEntityAllowedInResponseMessage() && responseSchemaUri != null)
-        {
+        if (method.isEntityAllowedInResponseMessage() && responseSchemaUri != null) {
             linkTemplate.setResponseSchemaUri(responseSchemaUri);
         }
 
-        if (method.isEntityAllowedInRequestMessage() && requestSchemaUri != null)
-        {
+        if (method.isEntityAllowedInRequestMessage() && requestSchemaUri != null) {
             linkTemplate.setRequestSchemaUri(requestSchemaUri);
         }
 
         _Api.getLinkTemplates().add(linkTemplate);
     }
 
-    private void autoLink(final Resource resource)
-    {
+    private void autoLink(final Resource resource) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI defaultSchemaUri = resource.getDefaultSchemaUri();
-        if (defaultSchemaUri != null)
-        {
+        if (defaultSchemaUri != null) {
             final Prototype defaultPrototype = schemaLoader.getPrototype(defaultSchemaUri);
             autoLink(resource, defaultPrototype);
         }
 
         final Set<URI> responseSchemaUris = resource.getResponseSchemaUris(Method.Get);
-        if (responseSchemaUris != null)
-        {
-            for (final URI responseSchemaUri : responseSchemaUris)
-            {
+        if (responseSchemaUris != null) {
+            for (final URI responseSchemaUri : responseSchemaUris) {
                 final Prototype responsePrototype = schemaLoader.getPrototype(responseSchemaUri);
                 autoLink(resource, responsePrototype);
             }
@@ -563,26 +480,22 @@ public final class ApiBuilder
         }
 
         final List<Resource> allChildResources = resource.getAllChildResources();
-        for (final Resource subresource : allChildResources)
-        {
+        for (final Resource subresource : allChildResources) {
             autoLink(subresource);
         }
 
     }
 
-    private void autoLink(final Resource referrerResource, final Prototype prototype)
-    {
+    private void autoLink(final Resource referrerResource, final Prototype prototype) {
 
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final Collection<LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots().values();
-        for (final LinkProtoSlot linkProtoSlot : linkProtoSlots)
-        {
+        for (final LinkProtoSlot linkProtoSlot : linkProtoSlots) {
 
             URI linkResponseSchemaUri = linkProtoSlot.getResponseSchemaUri();
-            if (linkResponseSchemaUri == null)
-            {
+            if (linkResponseSchemaUri == null) {
                 continue;
             }
 
@@ -594,15 +507,12 @@ public final class ApiBuilder
             final UUID referrerResourceTemplateId = referrerResource.getResourceTemplateId();
 
             final Resource endpointResource = findSuitableLinkEndpoint(referrerResource, linkRelation, linkResponseSchemaUri);
-            if (endpointResource != null)
-            {
+            if (endpointResource != null) {
                 final UUID endpointResourceTemplateId = endpointResource.getResourceTemplateId();
 
-                if (linkResponseSchemaUri.equals(schemaLoader.getDocumentSchemaUri()))
-                {
+                if (linkResponseSchemaUri.equals(schemaLoader.getDocumentSchemaUri())) {
                     final URI defaultSchemaUri = endpointResource.getDefaultSchemaUri();
-                    if (defaultSchemaUri != null)
-                    {
+                    if (defaultSchemaUri != null) {
                         linkResponseSchemaUri = defaultSchemaUri;
                     }
 
@@ -613,11 +523,9 @@ public final class ApiBuilder
         }
     }
 
-    private Resource findSuitableLinkEndpoint(final Resource referrerResource, final LinkRelation linkRelation, final URI linkResponseSchemaUri)
-    {
+    private Resource findSuitableLinkEndpoint(final Resource referrerResource, final LinkRelation linkRelation, final URI linkResponseSchemaUri) {
 
-        if (isSuitableLinkEndpoint(referrerResource, linkRelation, referrerResource, linkResponseSchemaUri))
-        {
+        if (isSuitableLinkEndpoint(referrerResource, linkRelation, referrerResource, linkResponseSchemaUri)) {
             return referrerResource;
         }
 
@@ -625,15 +533,12 @@ public final class ApiBuilder
         final Map<UUID, Resource> allResourceMap = apiNavigator.getAllResources();
 
         final SortedSet<Resource> resourceSet = new TreeSet<>(allResourceMap.values());
-        for (final Resource resource : resourceSet)
-        {
-            if (resource == referrerResource)
-            {
+        for (final Resource resource : resourceSet) {
+            if (resource == referrerResource) {
                 continue;
             }
 
-            if (isSuitableLinkEndpoint(referrerResource, linkRelation, resource, linkResponseSchemaUri))
-            {
+            if (isSuitableLinkEndpoint(referrerResource, linkRelation, resource, linkResponseSchemaUri)) {
                 return resource;
             }
         }
@@ -641,16 +546,13 @@ public final class ApiBuilder
         return null;
     }
 
-    private boolean isSuitableLinkEndpoint(final Resource referrerResource, final LinkRelation linkRelation, final Resource endpointResource, final URI linkResponseSchemaUri)
-    {
+    private boolean isSuitableLinkEndpoint(final Resource referrerResource, final LinkRelation linkRelation, final Resource endpointResource, final URI linkResponseSchemaUri) {
 
-        if (referrerResource == null || linkRelation == null || endpointResource == null || linkResponseSchemaUri == null)
-        {
+        if (referrerResource == null || linkRelation == null || endpointResource == null || linkResponseSchemaUri == null) {
             return false;
         }
 
-        if (linkRelation.getUri().equals(SystemLinkRelation.self.getUri()) && (referrerResource == endpointResource))
-        {
+        if (linkRelation.getUri().equals(SystemLinkRelation.self.getUri()) && (referrerResource == endpointResource)) {
             return true;
         }
 
@@ -660,16 +562,13 @@ public final class ApiBuilder
 
 
         final URI defaultSchemaUri = endpointResource.getDefaultSchemaUri();
-        if (defaultSchemaUri != null)
-        {
-            if (defaultSchemaUri.equals(linkResponseSchemaUri))
-            {
+        if (defaultSchemaUri != null) {
+            if (defaultSchemaUri.equals(linkResponseSchemaUri)) {
                 return true;
             }
 
             final Prototype defaultSchemaPrototype = schemaLoader.getPrototype(defaultSchemaUri);
-            if (defaultSchemaPrototype.isAssignableFrom(linkResponseSchemaUri))
-            {
+            if (defaultSchemaPrototype.isAssignableFrom(linkResponseSchemaUri)) {
                 return true;
             }
 
@@ -678,21 +577,16 @@ public final class ApiBuilder
 
         final Method method = linkRelation.getMethod();
         final Set<URI> responseSchemaUris = endpointResource.getResponseSchemaUris(method);
-        if (responseSchemaUris != null)
-        {
-            if (responseSchemaUris.contains(linkResponseSchemaUri))
-            {
+        if (responseSchemaUris != null) {
+            if (responseSchemaUris.contains(linkResponseSchemaUri)) {
                 return true;
             }
 
-            if (responseSchemaUris.size() > 0)
-            {
+            if (responseSchemaUris.size() > 0) {
 
-                for (final URI responseSchemaUri : responseSchemaUris)
-                {
+                for (final URI responseSchemaUri : responseSchemaUris) {
                     final Prototype responseSchemaPrototype = schemaLoader.getPrototype(responseSchemaUri);
-                    if (responseSchemaPrototype.isAssignableFrom(linkResponseSchemaUri))
-                    {
+                    if (responseSchemaPrototype.isAssignableFrom(linkResponseSchemaUri)) {
                         return true;
                     }
                 }

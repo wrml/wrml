@@ -24,25 +24,23 @@
  */
 package org.wrml.model.schema;
 
-import java.net.URI;
-import java.util.UUID;
-
 import org.wrml.model.MaybeReadOnly;
 import org.wrml.model.MaybeRequired;
 import org.wrml.model.Model;
-
 import org.wrml.runtime.schema.DefaultValue;
+
+import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
  * A text-based ({@link String}) value, which may conform to some defined {@link Syntax}.
  * </p>
- * 
+ *
  * @see Syntax
  */
-public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value, Model
-{
+public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inextensible, Value, Model {
 
     /**
      * The WRML constant name for a TextValue's <i>maximumLength</i> slot.
@@ -64,7 +62,7 @@ public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inex
      * <p>
      * The <i>optional</i> default associated with this value.
      * </p>
-     * 
+     *
      * @see DefaultValue
      */
     String getDefault();
@@ -83,7 +81,7 @@ public interface TextValue extends MaybeReadOnly, MaybeRequired, Primitive, Inex
      * {@link TextValue}'s {@link Syntax} association to automatically <i>coerce</i> {@link String} values into their
      * more useful runtime counterparts (e.g. {@link URI}, {@link UUID} etc.).
      * </p>
-     * 
+     *
      * @see Syntax
      */
     URI getSyntaxUri();

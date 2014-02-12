@@ -35,14 +35,12 @@ import org.wrml.werminal.terminal.TerminalAppKeyboardInteraction;
 import org.wrml.werminal.terminal.TerminalAppToolBar;
 import org.wrml.werminal.window.WerminalWindow;
 
-public class EnumValueDialog extends WerminalWindow
-{
+public class EnumValueDialog extends WerminalWindow {
 
     private final EnumValuesCheckBoxList _EnumValuesCheckBoxList;
 
     public EnumValueDialog(final Werminal werminal, final String title, final WerminalAction confirmAction,
-                           final WerminalAction dismissAction)
-    {
+                           final WerminalAction dismissAction) {
 
         super(werminal, title);
 
@@ -60,66 +58,55 @@ public class EnumValueDialog extends WerminalWindow
     }
 
     @SuppressWarnings("unchecked")
-    public final <E extends Enum<?>> E getSelectedValue()
-    {
+    public final <E extends Enum<?>> E getSelectedValue() {
 
         return (E) _EnumValuesCheckBoxList.getItemAt(_EnumValuesCheckBoxList.getCheckedItemIndex());
     }
 
     @SuppressWarnings("unchecked")
-    public final void setSelectedValue(final Enum<?> selectedValue)
-    {
+    public final void setSelectedValue(final Enum<?> selectedValue) {
 
         _EnumValuesCheckBoxList.clearItems();
 
-        if (selectedValue == null)
-        {
+        if (selectedValue == null) {
             return;
         }
 
         final Class<Enum<?>> enumType = (Class<Enum<?>>) selectedValue.getDeclaringClass();
         final Enum<?>[] allEnumValues = enumType.getEnumConstants();
 
-        for (int i = 0; i < allEnumValues.length; i++)
-        {
+        for (int i = 0; i < allEnumValues.length; i++) {
             final Enum<?> enumValue = allEnumValues[i];
             _EnumValuesCheckBoxList.addItem(enumValue);
-            if (enumValue == selectedValue)
-            {
+            if (enumValue == selectedValue) {
                 _EnumValuesCheckBoxList.setCheckedItemIndex(i);
             }
         }
 
     }
 
-    public static class EnumValuesCheckBoxList extends RadioCheckBoxList
-    {
+    public static class EnumValuesCheckBoxList extends RadioCheckBoxList {
 
         private final TerminalAppKeyboardInteraction _KeyboardInteraction;
 
-        public EnumValuesCheckBoxList(final Werminal werminal, final WerminalAction confirmAction)
-        {
+        public EnumValuesCheckBoxList(final Werminal werminal, final WerminalAction confirmAction) {
 
             _KeyboardInteraction = new TerminalAppKeyboardInteraction(werminal, confirmAction, true);
         }
 
         @Override
-        public Result keyboardInteraction(final Key key)
-        {
+        public Result keyboardInteraction(final Key key) {
 
-            if (!isVisible())
-            {
+            if (!isVisible()) {
                 return Result.EVENT_HANDLED;
             }
 
-            if (key.getKind() == Key.Kind.Enter)
-            {
+            if (key.getKind() == Key.Kind.Enter) {
                 super.keyboardInteraction(key);
             }
 
 
-            if (_KeyboardInteraction.handleKeyboardInteraction(key))
-            {
+            if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                 return Result.EVENT_HANDLED;
             }
 

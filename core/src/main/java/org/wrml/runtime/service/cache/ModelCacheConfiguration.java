@@ -29,11 +29,10 @@ import org.wrml.runtime.service.DefaultServiceConfiguration;
 /**
  * {@link ModelCache}'s config.
  */
-public class ModelCacheConfiguration extends DefaultServiceConfiguration
-{
+public class ModelCacheConfiguration extends DefaultServiceConfiguration {
 
-    public ModelCacheConfiguration()
-    {
+    public ModelCacheConfiguration() {
+
     }
 
 }

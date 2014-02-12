@@ -27,19 +27,18 @@ package org.wrml.runtime.format;
 /**
  * The {@link ModelWriter}'s associated error type.
  */
-public class ModelWriterException extends ModelWritingException
-{
+public class ModelWriterException extends ModelWritingException {
 
     private static final long serialVersionUID = 1L;
 
-    ModelWriterException(final String message, final Throwable cause, final ModelWriter modelWriter)
-    {
+    ModelWriterException(final String message, final Throwable cause, final ModelWriter modelWriter) {
+
         super(message, cause, modelWriter);
 
     }
 
-    public ModelWriter getModelWriter()
-    {
+    public ModelWriter getModelWriter() {
+
         return getSource();
     }
 }

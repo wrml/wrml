@@ -29,13 +29,11 @@ import org.wrml.werminal.terminal.TerminalAppException;
 /**
  * The {@link Werminal}'s associated error type.
  */
-public class WerminalException extends TerminalAppException
-{
+public class WerminalException extends TerminalAppException {
 
     private static final long serialVersionUID = 1L;
 
-    WerminalException(final String message, final Throwable cause, final Werminal werminal)
-    {
+    WerminalException(final String message, final Throwable cause, final Werminal werminal) {
 
         super(message, cause, werminal);
 

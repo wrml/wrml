@@ -44,8 +44,7 @@ import java.util.LinkedList;
  * {@link TerminalApp} is a terminal (command line) application.
  * </p>
  */
-public class TerminalApp
-{
+public class TerminalApp {
 
     private static final Logger LOG = LoggerFactory.getLogger(TerminalApp.class);
 
@@ -57,24 +56,20 @@ public class TerminalApp
 
     private final LinkedList<Window> _WindowStack;
 
-    public TerminalApp(final String appTitle, final Context context) throws Exception
-    {
+    public TerminalApp(final String appTitle, final Context context) throws Exception {
 
         this(appTitle, context, TerminalType.Swing);
     }
 
-    public TerminalApp(final String appTitle, final Context context, final TerminalType terminalType) throws Exception
-    {
+    public TerminalApp(final String appTitle, final Context context, final TerminalType terminalType) throws Exception {
 
         _AppTitle = appTitle;
         _Context = context;
 
         final Terminal terminal;
-        switch (terminalType)
-        {
+        switch (terminalType) {
 
-            case Swing:
-            {
+            case Swing: {
             /*
              * This construction of the GUIScreen leads to the less cool looking
              * (but still pretty cool) Swing Terminal emulator.
@@ -83,8 +78,7 @@ public class TerminalApp
                 terminal = TerminalFacade.createSwingTerminal(110, 60);
                 break;
             }
-            case Unix:
-            {
+            case Unix: {
             /*
              * Using the UnixTerminal forces the use of the much cooler looking
              * Terminal shell (on Mac OS X at least).
@@ -101,25 +95,21 @@ public class TerminalApp
 
         _WindowStack = new LinkedList<>();
 
-        if (_GuiScreen == null)
-        {
+        if (_GuiScreen == null) {
             LOG.error("Couldn't allocate a terminal!");
             throw new TerminalAppException("Couldn't allocate a terminal!", null, this);
         }
 
     }
 
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
-    public final void closeTopWindow()
-    {
+    public final void closeTopWindow() {
 
-        if (_WindowStack.isEmpty())
-        {
+        if (_WindowStack.isEmpty()) {
             return;
         }
 
@@ -135,8 +125,7 @@ public class TerminalApp
     /**
      * Keeps line breaks in input string but also adds additional to wrap to fit screen.
      */
-    public final String formatMessageBoxTextToWrap(final String input)
-    {
+    public final String formatMessageBoxTextToWrap(final String input) {
 
         // TODO: Write a better algorithm for preservation of leading whitespace
         final String funkyText = "`Z!0";
@@ -148,15 +137,12 @@ public class TerminalApp
 
         final String[] lines = text.split("\n");
 
-        for (final String line : lines)
-        {
+        for (final String line : lines) {
             int lineLen = 0;
             final String[] words = line.split("\\s+");
 
-            for (final String word : words)
-            {
-                if (lineLen + word.length() > maxWidth)
-                {
+            for (final String word : words) {
+                if (lineLen + word.length() > maxWidth) {
                     wrapped.append("\n");
                     lineLen = 0;
                 }
@@ -171,39 +157,32 @@ public class TerminalApp
         return wrapped.toString().replace(funkyText, "    ");
     }
 
-    public final GUIScreen getGuiScreen()
-    {
+    public final GUIScreen getGuiScreen() {
 
         return _GuiScreen;
     }
 
-    public final Window getTopWindow()
-    {
+    public final Window getTopWindow() {
 
         return _WindowStack.peek();
     }
 
-    public final void showError(final String errorMessage)
-    {
+    public final void showError(final String errorMessage) {
 
         showError(errorMessage, null);
     }
 
-    public final void showError(final String errorMessage, final Throwable t)
-    {
+    public final void showError(final String errorMessage, final Throwable t) {
 
-        if (t != null)
-        {
+        if (t != null) {
             showMessageBox("Error", "\n" + errorMessage + "\n\nError Details:\n\n" + t + "\n\nError Stack:\n\n" + Arrays.deepToString(t.getStackTrace()));
         }
-        else
-        {
+        else {
             showMessageBox("Error", "\n" + errorMessage);
         }
     }
 
-    public final DialogResult showMessageBox(final String title, final String message)
-    {
+    public final DialogResult showMessageBox(final String title, final String message) {
 
         final StringBuilder titleBuilder = new StringBuilder("  ").append(getAppTitle()).append(" - ")
                 .append(title).append("  ");
@@ -211,20 +190,17 @@ public class TerminalApp
         return MessageBox.showMessageBox(_GuiScreen, titleBuilder.toString(), formatMessageBoxTextToWrap(message));
     }
 
-    public final String getAppTitle()
-    {
+    public final String getAppTitle() {
 
         return _AppTitle;
     }
 
-    public final void showWindow(final Window window)
-    {
+    public final void showWindow(final Window window) {
 
         showWindow(window, GUIScreen.Position.CENTER);
     }
 
-    public final void showWindow(final Window window, final GUIScreen.Position position)
-    {
+    public final void showWindow(final Window window, final GUIScreen.Position position) {
 
         _WindowStack.push(window);
         _GuiScreen.showWindow(window, position);

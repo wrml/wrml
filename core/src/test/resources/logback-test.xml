@@ -8,33 +8,34 @@
 <!-- -->
 <configuration debug="false">
 
-	<!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
-			<pattern><![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
-		</encoder>
-	</appender>
+    <!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
+            <pattern>
+                <![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
+        </encoder>
+    </appender>
 
-	<!-- org.wrml loggers first -->
-	<logger name="org.wrml" level="DEBUG" />
-	<logger name="org.wrml.runtime" level="INFO" />
-	<logger name="org.wrml.runtime.format.ModelReader" level="WARN" />
-	<logger name="org.wrml.runtime.schema.Prototype" level="WARN" />
-	<logger name="org.wrml.runtime.DefaultContext" level="DEBUG" />
-	<logger name="org.wrml.runtime.ContextTest" level="DEBUG" />
-	<logger name="org.wrml.runtime.EngineConfiguration" level="DEBUG" />
-	
-	<!-- third party loggers last, lexicographically -->
-	<logger name="org.apache.cxf" level="WARN" />
-	<logger name="org.apache.http" level="WARN" />
-	<logger name="org.eclipse.jetty" level="WARN" />
-	<logger name="org.reflections" level="WARN" />
-	<logger name="org.springframework" level="WARN" />
+    <!-- org.wrml loggers first -->
+    <logger name="org.wrml" level="DEBUG"/>
+    <logger name="org.wrml.runtime" level="INFO"/>
+    <logger name="org.wrml.runtime.format.ModelReader" level="WARN"/>
+    <logger name="org.wrml.runtime.schema.Prototype" level="WARN"/>
+    <logger name="org.wrml.runtime.DefaultContext" level="DEBUG"/>
+    <logger name="org.wrml.runtime.ContextTest" level="DEBUG"/>
+    <logger name="org.wrml.runtime.EngineConfiguration" level="DEBUG"/>
 
-	<!-- logback-test.xml should typically be DEBUG.  logback.xml should typically be INFO or WARN. -->
-	<root level="DEBUG">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <!-- third party loggers last, lexicographically -->
+    <logger name="org.apache.cxf" level="WARN"/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.reflections" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+
+    <!-- logback-test.xml should typically be DEBUG.  logback.xml should typically be INFO or WARN. -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
 
 </configuration>

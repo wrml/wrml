@@ -33,37 +33,38 @@ import java.util.List;
 
 /**
  * OPTIONS model for a {@code Resource} node or {@link Api} root.
- * <p>
+ * <p/>
  * In the context of a {@code Resource} node, the OPTIONS discoverable by consumers of the node.
- * <p>
+ * <p/>
  * In the context of a root {@code Api}, all {@code Resource} nodes may be traversed and all child OPTIONS will be collected.
- * <p>
+ * <p/>
  * Extends {@link Model} <i>(as opposed to {@code Document})</i> since an OPTIONS request should not be a uniquely identifiable location.
- * <p>
- * 
+ * <p/>
+ *
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">RFC 2626 [w3.org]</a>
  * @see <a href="http://ws-rest.org/2011/proc/a3-steiner.pdf">HTTP OPTIONS Hypermedia Constraint white paper [ws-rest.org]</a>
  * @see <a href="http://zacstewart.com/2012/04/14/http-options-method.html">HTTP OPTIONS method, self-describing RESTful APIs [zacstewart.com]</a>
  */
-public interface ResourceOptions extends Model, Described
-{
+public interface ResourceOptions extends Model, Described {
 
     /**
-     * @param status
-     *            - a RESTful {@link org.wrml.model.rest.status.Status}.
+     * @param status - a RESTful {@link org.wrml.model.rest.status.Status}.
      */
     void setStatus(Status status);
 
-    /** @return- the RESTful {@link Status}. */
+    /**
+     * @return- the RESTful {@link Status}.
+     */
     Status getStatus();
 
     /**
-     * @param allow
-     *            - the {@link List} of {@link CommonHeader#ALLOW ALLOW}-able {@link Method}s
+     * @param allow - the {@link List} of {@link CommonHeader#ALLOW ALLOW}-able {@link Method}s
      */
     void setAllow(List<Method> allow);
 
-    /** @return {@link CommonHeader#ALLOW ALLOW}-able {@link Method}s. */
+    /**
+     * @return {@link CommonHeader#ALLOW ALLOW}-able {@link Method}s.
+     */
     List<Method> getAllow();
 
     // TODO: change to return a header with content-type and other info? TBD.

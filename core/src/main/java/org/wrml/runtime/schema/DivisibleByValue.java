@@ -24,11 +24,7 @@
  */
 package org.wrml.runtime.schema;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Used by the WRML runtime to annotate Schema "slots" (getter methods) with a default value that is available at
@@ -36,9 +32,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface DivisibleByValue
-{
+@Target({ElementType.METHOD})
+public @interface DivisibleByValue {
 
     String value();
 }

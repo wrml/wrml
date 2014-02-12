@@ -66,8 +66,7 @@ import java.util.List;
  */
 @Title("API")
 @WRML(comparableSlotNames = {"title", "version"})
-public interface Api extends Titled, Versioned, Described, Document
-{
+public interface Api extends Titled, Versioned, Described, Document {
 
     /**
      * <p>

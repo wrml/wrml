@@ -24,12 +24,6 @@
  */
 package org.wrml.util;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +34,7 @@ import org.wrml.model.Model;
 import org.wrml.model.rest.Api;
 import org.wrml.model.rest.LinkTemplate;
 import org.wrml.model.rest.ResourceTemplate;
-import org.wrml.runtime.Context;
-import org.wrml.runtime.DefaultContext;
-import org.wrml.runtime.Dimensions;
-import org.wrml.runtime.Engine;
-import org.wrml.runtime.EngineTest;
+import org.wrml.runtime.*;
 import org.wrml.runtime.rest.ApiNavigator;
 import org.wrml.runtime.rest.Resource;
 import org.wrml.runtime.schema.DefaultSchemaLoader;
@@ -52,10 +42,13 @@ import org.wrml.runtime.schema.DefaultSchemaLoader;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Resource.class})
-public class AsciiArtTest
-{
+public class AsciiArtTest {
 
     Api _Api;
 
@@ -69,8 +62,8 @@ public class AsciiArtTest
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         _Api = mock(Api.class);
         _ApiNavigator = mock(ApiNavigator.class);
         docRoot = mock(Resource.class);
@@ -85,13 +78,13 @@ public class AsciiArtTest
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
+
     }
 
     @Test
-    public void testExpressApiNavigator()
-    {
+    public void testExpressApiNavigator() {
+
         String result = AsciiArt.express(_ApiNavigator);
         assertNotNull(result);
     }
@@ -109,8 +102,8 @@ public class AsciiArtTest
      * </ul>
      */
     @Test
-    public void testPrintAsciiTree() throws Exception
-    {
+    public void testPrintAsciiTree() throws Exception {
+
         ConcurrentHashMap<String, Resource> docRootPathResources = new ConcurrentHashMap<String, Resource>();
         ConcurrentHashMap<String, Resource> nodeAPathResources = new ConcurrentHashMap<String, Resource>();
         ConcurrentHashMap<String, Resource> nodeBPathResources = new ConcurrentHashMap<String, Resource>();
@@ -144,8 +137,8 @@ public class AsciiArtTest
     }
 
     @Test
-    public void testExpressModel() throws Exception
-    {
+    public void testExpressModel() throws Exception {
+
         final Model model = mock(Model.class);
         final Dimensions dimensions = mock(Dimensions.class);
         final Engine engine = EngineTest.createTestEngine();
@@ -158,8 +151,8 @@ public class AsciiArtTest
     }
 
     @Test
-    public void testExpressObject()
-    {
+    public void testExpressObject() {
+
         String result = AsciiArt.express((Object) "abc");
         assertNotNull(result);
     }
@@ -169,26 +162,26 @@ public class AsciiArtTest
      * @see {@link DefaultSchemaLoader#toString()} (does <b>NOT</b> override {@link Object#toString() toString()})
      */
     @Test
-    public void testExpressRecursiveObject()
-    {
+    public void testExpressRecursiveObject() {
+
         assertNotNull(AsciiArt.express(new DefaultContext()));
         assertNull(AsciiArt.express(new DefaultSchemaLoader()));
     }
 
     @Test
-    public void testExpressObjectNull()
-    {
+    public void testExpressObjectNull() {
+
         assertNull(null);
     }
 
     /**
      * Test to resolve issue WRML-213.
-     * 
+     *
      * @see https://wrmlorg.jira.com/browse/WRML-213
      */
     @Test
-    public void testNoAsciiPrintDeadEnds() throws Exception
-    {
+    public void testNoAsciiPrintDeadEnds() throws Exception {
+
         ConcurrentHashMap<String, Resource> docRootPathResources = new ConcurrentHashMap<String, Resource>();
         ConcurrentHashMap<String, Resource> nodeAPathResources = new ConcurrentHashMap<String, Resource>();
         final Resource a = mock(Resource.class);

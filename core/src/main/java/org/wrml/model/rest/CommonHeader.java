@@ -29,8 +29,7 @@ import java.util.Map;
 
 // Generated from a Web Resource Schema
 // TODO: link to Web Resource Schema, document
-public enum CommonHeader
-{
+public enum CommonHeader {
     ACCEPT("Accept", HeaderCategory.REQUEST),
     ACCEPT_CHARSET("Accept-Charset", HeaderCategory.REQUEST),
     ACCEPT_ENCODING("Accept-Encoding", HeaderCategory.REQUEST),
@@ -83,21 +82,17 @@ public enum CommonHeader
 
     private static final Map<String, CommonHeader> STRING_MAP;
 
-    static
-    {
+    static {
         final CommonHeader[] values = CommonHeader.values();
         STRING_MAP = new HashMap<String, CommonHeader>(values.length);
-        for (final CommonHeader e : values)
-        {
+        for (final CommonHeader e : values) {
             CommonHeader.STRING_MAP.put(e.toString(), e);
         }
     }
 
-    public static final CommonHeader fromString(final String string)
-    {
+    public static final CommonHeader fromString(final String string) {
 
-        if (!CommonHeader.STRING_MAP.containsKey(string))
-        {
+        if (!CommonHeader.STRING_MAP.containsKey(string)) {
             return null;
         }
 
@@ -108,25 +103,25 @@ public enum CommonHeader
 
     private final HeaderCategory _Category;
 
-    private CommonHeader(final String name, final HeaderCategory category)
-    {
+    private CommonHeader(final String name, final HeaderCategory category) {
+
         _Name = name;
         _Category = category;
     }
 
-    public HeaderCategory getCategory()
-    {
+    public HeaderCategory getCategory() {
+
         return _Category;
     }
 
-    public String getName()
-    {
+    public String getName() {
+
         return _Name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         return getName();
     }
 

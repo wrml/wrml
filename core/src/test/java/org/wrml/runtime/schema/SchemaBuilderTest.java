@@ -39,13 +39,11 @@ import org.wrml.util.UniqueName;
 import java.net.URI;
 import java.util.Date;
 
-public class SchemaBuilderTest
-{
+public class SchemaBuilderTest {
     private Context _Context;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         final Engine engine = EngineTest.createTestEngine();
         _Context = engine.getContext();
@@ -53,30 +51,26 @@ public class SchemaBuilderTest
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
         _Context = null;
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructorParamContextNullFailure()
-    {
+    public void constructorParamContextNullFailure() {
 
         new SchemaBuilder(null);
     }
 
     @Test
-    public void contextNotNull()
-    {
+    public void contextNotNull() {
 
         final SchemaBuilder schemaBuilder = new SchemaBuilder(_Context);
         Assert.assertNotNull(schemaBuilder.getContext());
     }
 
     @Test
-    public void schemaNotNull()
-    {
+    public void schemaNotNull() {
 
         final SchemaBuilder schemaBuilder = new SchemaBuilder(_Context);
         Assert.assertNotNull(schemaBuilder.toSchema());
@@ -84,8 +78,7 @@ public class SchemaBuilderTest
     }
 
     @Test
-    public void loadSchema001() throws ClassNotFoundException
-    {
+    public void loadSchema001() throws ClassNotFoundException {
 
         final UniqueName uniqueName = UniqueName.createTemporaryUniqueName();
         final URI uri = SystemApi.Schema.getUri().resolve("/" + uniqueName.toString());

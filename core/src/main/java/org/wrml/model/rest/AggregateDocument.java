@@ -46,6 +46,5 @@ import org.wrml.model.Virtual;
  * the response JSON object (with embedded objects); aka the aggregate model.
  * </p>
  */
-public interface AggregateDocument extends Abstract, Virtual, Document
-{
+public interface AggregateDocument extends Abstract, Virtual, Document {
 }

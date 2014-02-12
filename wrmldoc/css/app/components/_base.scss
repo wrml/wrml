@@ -1,25 +1,21 @@
-html
-{
-	height: 100%;  	
+html {
+  height: 100%;
 }
 
-body								
-{  
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-	height: 100%;  	
-	
-}                                                                                  
+body {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  height: 100%;
 
-ul, ol, dl								
-{  
-	list-style-type: none;  
-}      
+}
+
+ul, ol, dl {
+  list-style-type: none;
+}
 
 // Remove this hack and replace with JS
-input:focus, textarea:focus 
-{ 
-	background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
-	background-size: contain;
+input:focus, textarea:focus {
+  background: $white url(/_wrml/wrmldoc/img/wormle/eyeFocus.png) no-repeat 98% center;
+  background-size: contain;
 }
 
 input,
@@ -27,7 +23,7 @@ button,
 select,
 textarea {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-}                                                                   
+}
 
 textarea,
 input[type="text"],
@@ -44,10 +40,9 @@ input[type="url"],
 input[type="search"],
 input[type="tel"],
 input[type="color"],
-.uneditable-input 
-{
-	//margin-top: 10px;
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+.uneditable-input {
+  //margin-top: 10px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 }
 
 textarea:focus,
@@ -65,25 +60,22 @@ input[type="url"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
-.uneditable-input:focus 
-{
+.uneditable-input:focus {
 
-	color: $focusForegroundColor;
-	border-color: $focusBorderColor;
+  color: $focusForegroundColor;
+  border-color: $focusBorderColor;
 
-	 -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px $focusBorderGradientColor;
 }
 
-.table 
-{	
-	border-bottom: 1px solid #dddddd;
+.table {
+  border-bottom: 1px solid #dddddd;
 }
 
-.well 
-{
-	padding-bottom: 10px;
+.well {
+  padding-bottom: 10px;
 }
 
 .container,
@@ -93,157 +85,132 @@ input[type="color"]:focus,
   width: $containerWidth;
 }
 
+.dropdown-menu {
 
-.dropdown-menu 
+  li {
+    a:hover, a:focus {
+      color: #ffffff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+      background-color: #363636;
+      *background-color: #222222;
+      background-image: -moz-linear-gradient(top, #444444, #222222);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
+      background-image: -webkit-linear-gradient(top, #444444, #222222);
+      background-image: -o-linear-gradient(top, #444444, #222222);
+      background-image: linear-gradient(to bottom, #444444, #222222);
+      background-repeat: repeat-x;
+      border-color: #222222 #222222 #000000;
+      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
+      filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    }
+  }
+}
+
+.section-divider {
+  height: 1px;
+  background-color: $sectionDividerColor;
+  margin-top: 40px;
+  margin-bottom: 30px;
+
+  span {
+    font-size: 21px;
+    background-color: $white;
+    position: relative;
+    top: -0.60em;
+    padding-right: 5px;
+  }
+}
+
+.readonly-label {
+  //color: $muted;
+}
+
+.wrml-subtitle {
+  float: right;
+  font-size: 0px;
+  margin-top: 7px;
+
+  .wrml-subtitle-text {
+    vertical-align: middle;
+    font-weight: normal;
+    font-size: 22px;
+    color: $muted;
+  }
+
+  .wrml-subtitle-icon {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    display: inline;
+  }
+}
+
+.wrml-code-normal,
+.wrml-code-schema,
+.wrml-code-method-GET,
+.wrml-code-method-PUT,
+.wrml-code-method-POST,
+.wrml-code-method-DELETE,
+.wrml-code-normal,
 {
-
-	li 
-	{
-		a:hover, a:focus 
-		{
-			color: #ffffff;
-			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-			background-color: #363636;
-			*background-color: #222222;
-			background-image: -moz-linear-gradient(top, #444444, #222222);
-			background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
-			background-image: -webkit-linear-gradient(top, #444444, #222222);
-			background-image: -o-linear-gradient(top, #444444, #222222);
-			background-image: linear-gradient(to bottom, #444444, #222222);
-			background-repeat: repeat-x;
-			border-color: #222222 #222222 #000000;
-			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
-			filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-		}			
-	}
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size: 12px;
 }
 
-.section-divider
-{
-	height: 1px; 
-	background-color: $sectionDividerColor; 
-	margin-top: 40px;
-	margin-bottom: 30px;
-
-	span
-	{
-		font-size: 21px;
-		background-color: $white; 
-		position: relative; 
-		top: -0.60em; 
-		padding-right: 5px;
-	}
+[class*='wrml-code-method-'] {
+  //font-weight: bold;
 }
 
-.readonly-label
-{
-	//color: $muted;	
+.wrml-code-schema {
+  color: $codeSchemaColor;
 }
 
-.wrml-subtitle
-{
-	float: right;	
-	font-size: 0px;	
-	margin-top: 7px;
-	
-	.wrml-subtitle-text
-	{		
-		vertical-align: middle;
-		font-weight: normal;
-		font-size: 22px;	
-		color: $muted;
-	}
-
-	.wrml-subtitle-icon
-	{			
-		margin-right: 5px;
-		width: 24px;
-		height: 24px;		
-		display: inline; 
-	}
+.wrml-code-method-GET {
+  color: $codeMethodGetColor;
 }
 
-.wrml-code-normal, 
-.wrml-code-schema, 
-.wrml-code-method-GET, 
-.wrml-code-method-PUT, 
-.wrml-code-method-POST, 
-.wrml-code-method-DELETE,  
-.wrml-code-normal, 
-{
-	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;			
-	font-size: 12px;
+.wrml-code-method-PUT {
+  color: $codeMethodPutColor;
 }
 
-[class*='wrml-code-method-']
-{
-	//font-weight: bold;
+.wrml-code-method-POST {
+  color: $codeMethodPostColor;
 }
 
-.wrml-code-schema
-{
-	color: $codeSchemaColor;
+.wrml-code-method-DELETE {
+  color: $codeMethodDeleteColor;
 }
 
-.wrml-code-method-GET
-{
-	color: $codeMethodGetColor;
+#wrap {
+  height: auto !important;
+  min-height: 100%;
+  margin-bottom: $wrapMarginBottom;
 }
 
-.wrml-code-method-PUT
-{
-	color: $codeMethodPutColor;
-}
+#main-region {
 
-.wrml-code-method-POST
-{
-	color: $codeMethodPostColor;
-}
+  section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-.wrml-code-method-DELETE
-{
-	color: $codeMethodDeleteColor;
-}
-
-
-#wrap											
-{  	
-	height: auto !important; 
-	min-height: 100%; 
-	margin-bottom: $wrapMarginBottom;	  	
-}  
-
-#main-region							
-{                    
-
-	section									
-	{  
-		margin-top: 20px;
-		margin-bottom: 20px;  
-	}                                                                                
-
-	#title-icon 
-	{
-		margin-top: -5px;
-		margin-right: 8px;  
-		width: 48px;
-		height: 48px;
-	}
+  #title-icon {
+    margin-top: -5px;
+    margin-right: 8px;
+    width: 48px;
+    height: 48px;
+  }
 
 }
-                 
 
-#page-header-push
-{
-	margin-top: $navbarHeight + $pageHeaderHeight;
-	margin-bottom: 40px;  
+#page-header-push {
+  margin-top: $navbarHeight + $pageHeaderHeight;
+  margin-bottom: 40px;
 }
 
-
-#push											
-{  
-	height: $footerHeightTotal;  
+#push {
+  height: $footerHeightTotal;
 }  
 
 

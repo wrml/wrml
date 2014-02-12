@@ -27,8 +27,7 @@ package org.wrml.model;
 /**
  * A {@link Textual} model has a "text" Text slot.
  */
-public interface Textual extends Abstract
-{
+public interface Textual extends Abstract {
 
     /**
      * The text associated with this {@link Textual} model.

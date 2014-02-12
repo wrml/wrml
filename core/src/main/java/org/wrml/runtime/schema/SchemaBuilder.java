@@ -41,8 +41,7 @@ import java.util.*;
 /**
  * A helper utility to build Schema models from everyday inputs (e.g. <code>Map<String, Object></code>).
  */
-public final class SchemaBuilder
-{
+public final class SchemaBuilder {
 
     private static final String JAVA_KEYWORDS[] = {
             "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
@@ -54,10 +53,8 @@ public final class SchemaBuilder
 
     private static final SortedSet<String> RESERVED_WORD_SET = new TreeSet<>();
 
-    static
-    {
-        for (final String javaKeyword : JAVA_KEYWORDS)
-        {
+    static {
+        for (final String javaKeyword : JAVA_KEYWORDS) {
             RESERVED_WORD_SET.add(javaKeyword);
         }
     }
@@ -68,112 +65,93 @@ public final class SchemaBuilder
 
     private final Map<String, Slot> _Slots;
 
-    public SchemaBuilder(final Context context)
-    {
+    public SchemaBuilder(final Context context) {
 
         this(context, (Map<String, Object>) null);
     }
 
-    public SchemaBuilder(final Context context, final Object... slots)
-    {
+    public SchemaBuilder(final Context context, final Object... slots) {
 
         this(context, (Map<String, Object>) null);
         slots(slots);
     }
 
-    public SchemaBuilder(final Context context, final Map<String, Object> startFromSlotMap)
-    {
+    public SchemaBuilder(final Context context, final Map<String, Object> startFromSlotMap) {
 
         this(context, startFromSlotMap, null);
     }
 
-    public SchemaBuilder(final Context context, final Map<String, Object> startFromSlotMap, final UniqueName name)
-    {
+    public SchemaBuilder(final Context context, final Map<String, Object> startFromSlotMap, final UniqueName name) {
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new IllegalArgumentException("Context cannot be null.");
         }
 
         _Context = context;
         _Schema = _Context.newModel(Schema.class);
 
-        if (name != null)
-        {
+        if (name != null) {
             _Schema.setUniqueName(name);
         }
 
         _Slots = new TreeMap<>();
 
-        if (startFromSlotMap != null)
-        {
+        if (startFromSlotMap != null) {
             slots(startFromSlotMap);
         }
     }
 
-    public static String ensureValidJavaIdentifier(final String identifier)
-    {
+    public static String ensureValidJavaIdentifier(final String identifier) {
 
-        if (identifier == null || RESERVED_WORD_SET.contains(identifier))
-        {
+        if (identifier == null || RESERVED_WORD_SET.contains(identifier)) {
             return null;
         }
 
         String validJavaIdentifier = identifier;
 
         int index = validJavaIdentifier.indexOf('-');
-        if (index > 0)
-        {
+        if (index > 0) {
             validJavaIdentifier = validJavaIdentifier.replace('-', '_');
         }
 
-        if (!Character.isJavaIdentifierStart(validJavaIdentifier.charAt(0)))
-        {
+        if (!Character.isJavaIdentifierStart(validJavaIdentifier.charAt(0))) {
             validJavaIdentifier = "_" + validJavaIdentifier;
         }
 
         final int validJavaIdentifierLength = validJavaIdentifier.length();
         String replaceCharacters = "";
-        for (int i = 1; i < validJavaIdentifierLength; i++)
-        {
+        for (int i = 1; i < validJavaIdentifierLength; i++) {
             char c = validJavaIdentifier.charAt(i);
-            if (!Character.isJavaIdentifierPart(c))
-            {
+            if (!Character.isJavaIdentifierPart(c)) {
                 replaceCharacters += c;
             }
         }
 
-        if (!replaceCharacters.isEmpty())
-        {
+        if (!replaceCharacters.isEmpty()) {
             validJavaIdentifier = StringUtils.replaceChars(validJavaIdentifier, replaceCharacters, "$");
         }
 
         return validJavaIdentifier;
     }
 
-    public SchemaBuilder extend(final URI baseSchemaUri, final URI... baseSchemaUris)
-    {
+    public SchemaBuilder extend(final URI baseSchemaUri, final URI... baseSchemaUris) {
 
         _Schema.getBaseSchemaUris().add(baseSchemaUri);
 
-        if (baseSchemaUris != null)
-        {
+        if (baseSchemaUris != null) {
             _Schema.getBaseSchemaUris().addAll(Arrays.asList(baseSchemaUris));
         }
 
         return this;
     }
 
-    public SchemaBuilder extend(final Schema baseSchema, final Schema... baseSchemas)
-    {
+    public SchemaBuilder extend(final Schema baseSchema, final Schema... baseSchemas) {
 
         extend(baseSchema.getUri());
 
-        if (baseSchemas != null)
-        {
+        if (baseSchemas != null) {
             final LinkedHashSet<URI> baseSchemaUris = new LinkedHashSet<>(baseSchemas.length);
-            for (final Schema schema : baseSchemas)
-            {
+            for (final Schema schema : baseSchemas) {
                 baseSchemaUris.add(schema.getUri());
             }
 
@@ -183,17 +161,14 @@ public final class SchemaBuilder
         return this;
     }
 
-    public SchemaBuilder extend(final Class<?> baseSchemaInterface, final Class<?>... baseSchemaInterfaces)
-    {
+    public SchemaBuilder extend(final Class<?> baseSchemaInterface, final Class<?>... baseSchemaInterfaces) {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         extend(schemaLoader.getTypeUri(baseSchemaInterface));
 
-        if (baseSchemaInterfaces != null)
-        {
+        if (baseSchemaInterfaces != null) {
             final LinkedHashSet<URI> baseSchemaUris = new LinkedHashSet<>(baseSchemaInterfaces.length);
-            for (final Class<?> schemaInterface : baseSchemaInterfaces)
-            {
+            for (final Class<?> schemaInterface : baseSchemaInterfaces) {
                 baseSchemaUris.add(schemaLoader.getTypeUri(schemaInterface));
             }
 
@@ -203,43 +178,35 @@ public final class SchemaBuilder
         return this;
     }
 
-    public SchemaBuilder extend(final Collection<URI> baseSchemaUris)
-    {
+    public SchemaBuilder extend(final Collection<URI> baseSchemaUris) {
 
         _Schema.getBaseSchemaUris().addAll(baseSchemaUris);
         return this;
     }
 
-    public SchemaBuilder slots(final Map<String, Object> slotMap)
-    {
+    public SchemaBuilder slots(final Map<String, Object> slotMap) {
 
         final Set<String> slotNames = slotMap.keySet();
-        for (final String slotName : slotNames)
-        {
+        for (final String slotName : slotNames) {
             slot(slotName, slotMap.get(slotName));
         }
 
         return this;
     }
 
-    public SchemaBuilder slots(final Object... slots)
-    {
+    public SchemaBuilder slots(final Object... slots) {
 
-        if (slots == null)
-        {
+        if (slots == null) {
             throw new IllegalArgumentException("The slots cannot be null.");
         }
 
-        if ((slots.length % 2) != 0)
-        {
+        if ((slots.length % 2) != 0) {
             throw new IllegalArgumentException("The slots must be in name/value pair order. Slots: " + Arrays.deepToString(slots));
         }
 
-        for (int i = 0; i < slots.length; i++)
-        {
+        for (int i = 0; i < slots.length; i++) {
 
-            if (!(slots[i] instanceof String))
-            {
+            if (!(slots[i] instanceof String)) {
                 throw new IllegalArgumentException("The slot's _definition_ array must contain a (String) name and (Object) value. Slots: " + Arrays.deepToString(slots));
             }
 
@@ -255,24 +222,20 @@ public final class SchemaBuilder
         return this;
     }
 
-    public SchemaBuilder slot(final String slotName, final Object slotValue)
-    {
+    public SchemaBuilder slot(final String slotName, final Object slotValue) {
 
-        if (slotName == null)
-        {
+        if (slotName == null) {
             throw new IllegalArgumentException("Slot name cannot be null.");
         }
 
         final String validName = ensureValidJavaIdentifier(slotName);
 
-        if (validName == null)
-        {
+        if (validName == null) {
             throw new IllegalArgumentException("Invalid slot name: " + slotName);
         }
 
         final ProtoSlot protoSlot = _Schema.getPrototype().getProtoSlot(validName, false);
-        if (protoSlot != null)
-        {
+        if (protoSlot != null) {
             _Schema.setSlotValue(validName, slotValue);
             return this;
         }
@@ -281,8 +244,7 @@ public final class SchemaBuilder
         slot.setName(validName);
 
         final Value value = createValue(slotValue);
-        if (value == null)
-        {
+        if (value == null) {
             throw new IllegalArgumentException("Invalid slot value: " + slotValue);
         }
 
@@ -294,14 +256,12 @@ public final class SchemaBuilder
         return this;
     }
 
-    public SchemaBuilder link(final LinkRelation linkRelation)
-    {
+    public SchemaBuilder link(final LinkRelation linkRelation) {
 
         return link(linkRelation.getUri(), linkRelation.getUniqueName().getLocalName());
     }
 
-    public SchemaBuilder link(final URI linkRelationUri)
-    {
+    public SchemaBuilder link(final URI linkRelationUri) {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final Keys keys = new KeysBuilder().addKey(schemaLoader.getDocumentSchemaUri(), linkRelationUri).toKeys();
@@ -310,36 +270,30 @@ public final class SchemaBuilder
         return link(linkRelation);
     }
 
-    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName)
-    {
+    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName) {
 
         return link(linkRelationUri, linkSlotName, null);
     }
 
-    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName, final URI responseSchemaUri)
-    {
+    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName, final URI responseSchemaUri) {
 
         return link(linkRelationUri, linkSlotName, responseSchemaUri, false);
     }
 
-    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName, final URI responseSchemaUri, final boolean embedded)
-    {
+    public SchemaBuilder link(final URI linkRelationUri, final String linkSlotName, final URI responseSchemaUri, final boolean embedded) {
 
-        if (linkRelationUri == null)
-        {
+        if (linkRelationUri == null) {
             throw new IllegalArgumentException("Link Relation URI cannot be null.");
         }
 
-        if (linkSlotName == null)
-        {
+        if (linkSlotName == null) {
             throw new IllegalArgumentException("Link slot name cannot be null.");
         }
 
 
         final String validName = ensureValidJavaIdentifier(linkSlotName);
 
-        if (validName == null)
-        {
+        if (validName == null) {
             throw new IllegalArgumentException("Invalid link slot name: " + linkSlotName);
         }
 
@@ -349,8 +303,7 @@ public final class SchemaBuilder
 
         final LinkValue linkValue = _Context.newModel(LinkValue.class);
         linkValue.setLinkRelationUri(linkRelationUri);
-        if (responseSchemaUri != null)
-        {
+        if (responseSchemaUri != null) {
             linkValue.setResponseSchemaUri(responseSchemaUri);
         }
 
@@ -365,28 +318,22 @@ public final class SchemaBuilder
 
     }
 
-    public SchemaBuilder key(final String keySlotName)
-    {
+    public SchemaBuilder key(final String keySlotName) {
 
         return keys(keySlotName, (String[]) null);
     }
 
-    public SchemaBuilder keys(final String keySlotName, final String... keySlotNames)
-    {
+    public SchemaBuilder keys(final String keySlotName, final String... keySlotNames) {
 
-        if (keySlotName == null)
-        {
+        if (keySlotName == null) {
             throw new IllegalArgumentException("Key slot name cannot be null.");
         }
 
         _Schema.getKeySlotNames().add(keySlotName);
 
-        if (keySlotNames != null)
-        {
-            for (final String slotName : keySlotNames)
-            {
-                if (slotName == null)
-                {
+        if (keySlotNames != null) {
+            for (final String slotName : keySlotNames) {
+                if (slotName == null) {
                     throw new IllegalArgumentException("Key slot name cannot be null.");
                 }
 
@@ -397,38 +344,32 @@ public final class SchemaBuilder
         return this;
     }
 
-    public SchemaBuilder keys(final Collection<String> keySlotNames)
-    {
+    public SchemaBuilder keys(final Collection<String> keySlotNames) {
 
         _Schema.getKeySlotNames().addAll(keySlotNames);
         return this;
     }
 
-    public Schema toSchema()
-    {
+    public Schema toSchema() {
 
         return _Schema;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
-    public Slot getSlot(final String slotName)
-    {
+    public Slot getSlot(final String slotName) {
 
-        if (!_Slots.containsKey(slotName))
-        {
+        if (!_Slots.containsKey(slotName)) {
             return null;
         }
 
         return _Slots.get(slotName);
     }
 
-    public Class<?> load() throws ClassNotFoundException
-    {
+    public Class<?> load() throws ClassNotFoundException {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final Schema schema = toSchema();
@@ -436,30 +377,24 @@ public final class SchemaBuilder
         return schemaLoader.getSchemaInterface(schema.getUri());
     }
 
-    private Value createValue(final ValueType valueType)
-    {
+    private Value createValue(final ValueType valueType) {
 
         return createValue(valueType, null);
     }
 
-    private Value createValue(final Object value)
-    {
+    private Value createValue(final Object value) {
 
         final Value slotValue;
-        if (value instanceof ValueType)
-        {
+        if (value instanceof ValueType) {
             slotValue = createValue((ValueType) value);
         }
-        else if (value instanceof Class<?>)
-        {
+        else if (value instanceof Class<?>) {
             slotValue = createValue((Class<?>) value);
         }
-        else
-        {
+        else {
             slotValue = createValue(value.getClass());
 
-            if (slotValue != null && slotValue.getPrototype().getProtoSlot(Value.SLOT_NAME_DEFAULT, false) != null)
-            {
+            if (slotValue != null && slotValue.getPrototype().getProtoSlot(Value.SLOT_NAME_DEFAULT, false) != null) {
                 slotValue.setSlotValue(Value.SLOT_NAME_DEFAULT, value);
             }
         }
@@ -467,24 +402,21 @@ public final class SchemaBuilder
         return slotValue;
     }
 
-    private Value createValue(final Class<?> heapValueType)
-    {
+    private Value createValue(final Class<?> heapValueType) {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final ValueType valueType = schemaLoader.getValueType(heapValueType);
         return createValue(valueType, heapValueType);
     }
 
-    private Value createValue(final ValueType valueType, final Class<?> heapValueType)
-    {
+    private Value createValue(final ValueType valueType, final Class<?> heapValueType) {
 
         final SchemaLoader schemaLoader = _Context.getSchemaLoader();
         final SyntaxLoader syntaxLoader = _Context.getSyntaxLoader();
 
         Value value = null;
 
-        switch (valueType)
-        {
+        switch (valueType) {
             case Boolean:
                 final BooleanValue booleanValue = _Context.newModel(BooleanValue.class);
                 value = booleanValue;
@@ -509,8 +441,7 @@ public final class SchemaBuilder
             case Model:
 
                 final ModelValue modelValue = _Context.newModel(ModelValue.class);
-                if (heapValueType != null)
-                {
+                if (heapValueType != null) {
                     final URI modelSchemaUri = schemaLoader.getTypeUri(heapValueType);
                     modelValue.setModelSchemaUri(modelSchemaUri);
                 }
@@ -547,8 +478,7 @@ public final class SchemaBuilder
             case Text:
                 final TextValue textValue = _Context.newModel(TextValue.class);
 
-                if (heapValueType != null && !String.class.equals(heapValueType))
-                {
+                if (heapValueType != null && !String.class.equals(heapValueType)) {
                     final URI syntaxUri = syntaxLoader.getSyntaxUri(heapValueType);
                     textValue.setSyntaxUri(syntaxUri);
                 }

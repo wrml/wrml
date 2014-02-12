@@ -24,23 +24,28 @@
  */
 package org.wrml.runtime.rest;
 
-import java.net.URI;
-
 import org.wrml.model.rest.Method;
 import org.wrml.util.UniqueName;
+
+import java.net.URI;
 
 /**
  * The WRML built-in link relations.
  */
-public enum SystemLinkRelation
-{
+public enum SystemLinkRelation {
 
-    create(Method.Invoke),     // C.
-    self(Method.Get),          // R.
-    save(Method.Save),         // U.
-    delete(Method.Delete),     // D.
-    metadata(Method.Metadata), // HEAD
-    options(Method.Options),   // OPTIONS
+    create(Method.Invoke),
+    // C.
+    self(Method.Get),
+    // R.
+    save(Method.Save),
+    // U.
+    delete(Method.Delete),
+    // D.
+    metadata(Method.Metadata),
+    // HEAD
+    options(Method.Options),
+    // OPTIONS
     element(Method.Get),
     child(Method.Get),
 
@@ -55,8 +60,8 @@ public enum SystemLinkRelation
 
     private final URI _Uri;
 
-    private SystemLinkRelation(final Method method)
-    {
+    private SystemLinkRelation(final Method method) {
+
         _Method = method;
         final String localName = toString();
         _UniqueName = new UniqueName(Constants.NAMESPACE, localName);
@@ -64,23 +69,22 @@ public enum SystemLinkRelation
         _Uri = SystemApi.LinkRelation.getUri().resolve(relativeUri);
     }
 
-    public Method getMethod()
-    {
+    public Method getMethod() {
+
         return _Method;
     }
 
-    public UniqueName getUniqueName()
-    {
+    public UniqueName getUniqueName() {
+
         return _UniqueName;
     }
 
-    public URI getUri()
-    {
+    public URI getUri() {
+
         return _Uri;
     }
 
-    public static interface Constants
-    {
+    public static interface Constants {
 
         public static final UniqueName NAMESPACE = new UniqueName("org/wrml/relation");
 

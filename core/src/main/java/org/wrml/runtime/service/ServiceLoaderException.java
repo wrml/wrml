@@ -28,11 +28,10 @@ package org.wrml.runtime.service;
  * <p>
  * The {@link ServiceLoader}'s associated error type.
  * </p>
- * 
+ *
  * @see ServiceLoader
  */
-public class ServiceLoaderException extends RuntimeException
-{
+public class ServiceLoaderException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,26 +41,20 @@ public class ServiceLoaderException extends RuntimeException
      * <p>
      * Create a new exception to communicate a problem about the specified {@link ServiceLoader}.
      * </p>
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param cause
-     *            The root cause of the {@link ServiceLoaderException} (or <code>null</code>, if this
-     *            <i>is</i> the root {@link Throwable}).
-     * 
-     * @param serviceLoader
-     *            The impacted {@link ServiceLoader}.
-     * 
+     *
+     * @param message       The message to explain what is going on.
+     * @param cause         The root cause of the {@link ServiceLoaderException} (or <code>null</code>, if this
+     *                      <i>is</i> the root {@link Throwable}).
+     * @param serviceLoader The impacted {@link ServiceLoader}.
      */
-    public ServiceLoaderException(final String message, final Throwable cause, final ServiceLoader serviceLoader)
-    {
+    public ServiceLoaderException(final String message, final Throwable cause, final ServiceLoader serviceLoader) {
+
         super(message, cause);
         _ServiceLoader = serviceLoader;
     }
 
-    public ServiceLoader getServiceLoader()
-    {
+    public ServiceLoader getServiceLoader() {
+
         return _ServiceLoader;
     }
 }

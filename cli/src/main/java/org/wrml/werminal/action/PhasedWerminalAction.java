@@ -26,23 +26,18 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public abstract class PhasedWerminalAction extends WerminalAction
-{
+public abstract class PhasedWerminalAction extends WerminalAction {
 
-    public PhasedWerminalAction(final Werminal werminal, final String title)
-    {
+    public PhasedWerminalAction(final Werminal werminal, final String title) {
 
         super(werminal, title);
     }
 
     @Override
-    public final void doAction()
-    {
+    public final void doAction() {
 
-        if (preDoIt())
-        {
-            if (doIt())
-            {
+        if (preDoIt()) {
+            if (doIt()) {
                 postDoIt();
             }
         }

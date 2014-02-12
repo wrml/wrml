@@ -26,27 +26,23 @@ package org.wrml.werminal.terminal;
 
 import com.googlecode.lanterna.gui.Border;
 
-public class TerminalAppTextBoxPanel extends TerminalAppPanel
-{
+public class TerminalAppTextBoxPanel extends TerminalAppPanel {
 
     private final TerminalAppTextBox _TextBox;
 
-    public TerminalAppTextBoxPanel(final TerminalApp app, final String title, final int textBoxWidth)
-    {
+    public TerminalAppTextBoxPanel(final TerminalApp app, final String title, final int textBoxWidth) {
 
         this(app, title, new TerminalAppTextBox(app, textBoxWidth));
     }
 
-    public TerminalAppTextBoxPanel(final TerminalApp app, final String title, final TerminalAppTextBox terminalTextBox)
-    {
+    public TerminalAppTextBoxPanel(final TerminalApp app, final String title, final TerminalAppTextBox terminalTextBox) {
 
         super(app, title, new Border.Standard(), Orientation.HORISONTAL, false, false);
         _TextBox = terminalTextBox;
         addComponent(_TextBox);
     }
 
-    public TerminalAppTextBox getTextBox()
-    {
+    public TerminalAppTextBox getTextBox() {
 
         return _TextBox;
     }

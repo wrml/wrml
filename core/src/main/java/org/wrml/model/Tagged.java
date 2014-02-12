@@ -29,8 +29,7 @@ import java.util.List;
 /**
  * Something with a list of tags. A <i>composable</i> Tagged model manages the state of a "tags" list slot.
  */
-public interface Tagged extends Abstract
-{
+public interface Tagged extends Abstract {
 
     /**
      * The tags associated with this {@link Tagged} model.

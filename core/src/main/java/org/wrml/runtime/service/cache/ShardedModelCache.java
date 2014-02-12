@@ -60,8 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </code>
  * </p>
  */
-public class ShardedModelCache extends AbstractService implements ModelCache
-{
+public class ShardedModelCache extends AbstractService implements ModelCache {
 
     /**
      * Mapping of Model heap id to cached Models.
@@ -73,54 +72,45 @@ public class ShardedModelCache extends AbstractService implements ModelCache
      */
     private final ConcurrentHashMap<URI, ConcurrentHashMap<Object, UUID>> _Shards;
 
-    public ShardedModelCache()
-    {
+    public ShardedModelCache() {
 
         _Models = new ConcurrentHashMap<UUID, Model>();
         _Shards = new ConcurrentHashMap<URI, ConcurrentHashMap<Object, UUID>>();
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
 
         _Shards.clear();
         _Models.clear();
     }
 
     @Override
-    public boolean contains(final Keys keys, final Dimensions requestedDimensions)
-    {
+    public boolean contains(final Keys keys, final Dimensions requestedDimensions) {
 
         final UUID heapId = getCachedHeapId(keys);
         return heapId != null;
     }
 
     @Override
-    public void delete(final Keys keys, final Dimensions dimensions)
-    {
+    public void delete(final Keys keys, final Dimensions dimensions) {
 
         final UUID heapId = getCachedHeapId(keys);
-        if (heapId == null)
-        {
+        if (heapId == null) {
             return;
         }
 
         _Models.remove(heapId);
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-        for (final URI keyedSchemaUri : keyedSchemaUris)
-        {
-            if (keyedSchemaUri != null && _Shards.containsKey(keyedSchemaUri))
-            {
+        for (final URI keyedSchemaUri : keyedSchemaUris) {
+            if (keyedSchemaUri != null && _Shards.containsKey(keyedSchemaUri)) {
                 final ConcurrentHashMap<Object, UUID> shard = _Shards.get(keyedSchemaUri);
                 final Object key = keys.getValue(keyedSchemaUri);
-                if (key != null && shard.containsKey(key))
-                {
+                if (key != null && shard.containsKey(key)) {
                     shard.remove(key);
                 }
 
-                if (shard.isEmpty())
-                {
+                if (shard.isEmpty()) {
                     _Shards.remove(keyedSchemaUri);
                 }
             }
@@ -130,12 +120,10 @@ public class ShardedModelCache extends AbstractService implements ModelCache
 
     @SuppressWarnings("unchecked")
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions)
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) {
 
         final UUID heapId = getCachedHeapId(keys);
-        if (heapId == null)
-        {
+        if (heapId == null) {
             return null;
         }
 
@@ -143,31 +131,26 @@ public class ShardedModelCache extends AbstractService implements ModelCache
     }
 
     @Override
-    public Model save(final Model model)
-    {
+    public Model save(final Model model) {
 
         final Keys keys = model.getKeys();
         final UUID heapId = model.getHeapId();
         _Models.put(heapId, model);
 
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-        for (final URI keyedSchemaUri : keyedSchemaUris)
-        {
-            if (keyedSchemaUri == null)
-            {
+        for (final URI keyedSchemaUri : keyedSchemaUris) {
+            if (keyedSchemaUri == null) {
                 continue;
             }
 
-            if (!_Shards.containsKey(keyedSchemaUri))
-            {
+            if (!_Shards.containsKey(keyedSchemaUri)) {
                 _Shards.put(keyedSchemaUri, new ConcurrentHashMap<Object, UUID>());
             }
 
             final ConcurrentHashMap<Object, UUID> shard = _Shards.get(keyedSchemaUri);
 
             final Object key = keys.getValue(keyedSchemaUri);
-            if (key != null)
-            {
+            if (key != null) {
                 shard.put(key, heapId);
             }
         }
@@ -176,23 +159,18 @@ public class ShardedModelCache extends AbstractService implements ModelCache
     }
 
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
     }
 
-    private UUID getCachedHeapId(final Keys keys)
-    {
+    private UUID getCachedHeapId(final Keys keys) {
 
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
-        for (final URI keyedSchemaUri : keyedSchemaUris)
-        {
-            if (keyedSchemaUri != null && _Shards.containsKey(keyedSchemaUri))
-            {
+        for (final URI keyedSchemaUri : keyedSchemaUris) {
+            if (keyedSchemaUri != null && _Shards.containsKey(keyedSchemaUri)) {
                 final ConcurrentHashMap<Object, UUID> shard = _Shards.get(keyedSchemaUri);
                 final Object key = keys.getValue(keyedSchemaUri);
-                if (key != null && shard.containsKey(key))
-                {
+                if (key != null && shard.containsKey(key)) {
                     final UUID heapId = shard.get(key);
                     return heapId;
                 }

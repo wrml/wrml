@@ -30,11 +30,9 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 
-public class ClipboardUtils
-{
+public class ClipboardUtils {
 
-    public static String getClipboardText()
-    {
+    public static String getClipboardText() {
 
         String text = null;
         final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -42,31 +40,25 @@ public class ClipboardUtils
         final Transferable contents = clipboard.getContents(null);
         final boolean hasTransferableText = (contents != null)
                 && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-        if (hasTransferableText)
-        {
-            try
-            {
+        if (hasTransferableText) {
+            try {
                 text = (String) contents.getTransferData(DataFlavor.stringFlavor);
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
             }
         }
 
         return text;
     }
 
-    public static void setClipboardText(final String text)
-    {
+    public static void setClipboardText(final String text) {
 
         final StringSelection stringSelection = new StringSelection(text);
-        try
-        {
+        try {
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
         }
     }
 }

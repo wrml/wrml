@@ -31,47 +31,40 @@ import org.wrml.werminal.dialog.ListValueDialog;
 
 import java.util.List;
 
-public class ListValueDialogConfirmationAction extends CloseBeforeAction
-{
+public class ListValueDialogConfirmationAction extends CloseBeforeAction {
 
     private final WerminalTextBox _ValueTextBox;
 
     private ListValueDialog _ListValueDialog;
 
-    public ListValueDialogConfirmationAction(final Werminal werminal, final WerminalTextBox valueTextBox)
-    {
+    public ListValueDialogConfirmationAction(final Werminal werminal, final WerminalTextBox valueTextBox) {
 
         super(werminal, "OK");
         _ValueTextBox = valueTextBox;
     }
 
-    public ListValueDialog getListValueDialog()
-    {
+    public ListValueDialog getListValueDialog() {
 
         return _ListValueDialog;
     }
 
-    public WerminalTextBox getValueTextBox()
-    {
+    public WerminalTextBox getValueTextBox() {
 
         return _ValueTextBox;
     }
 
-    public void setListValueDialog(final ListValueDialog listValueDialog)
-    {
+    public void setListValueDialog(final ListValueDialog listValueDialog) {
 
         _ListValueDialog = listValueDialog;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final List<?> dialogValue = _ListValueDialog.getList();
         final List<?> currentValue = _ValueTextBox.getValue();
 
-        if (!ListUtils.isEqualList(dialogValue, currentValue))
-        {
+        if (!ListUtils.isEqualList(dialogValue, currentValue)) {
             _ValueTextBox.setValue(dialogValue, false);
         }
 

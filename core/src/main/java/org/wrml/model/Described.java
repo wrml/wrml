@@ -32,8 +32,7 @@ import org.wrml.runtime.schema.Title;
  * Something with a description. A <i>composable</i> Described model manages the state of a "description" text slot.
  */
 @Description("Something with a description. A Described model declares a \"description\" Text slot.")
-public interface Described extends Abstract
-{
+public interface Described extends Abstract {
 
     @Title("Description")
     @Description("The description of the model. The description slot is typically used to \"display\" information about a model to a user.")

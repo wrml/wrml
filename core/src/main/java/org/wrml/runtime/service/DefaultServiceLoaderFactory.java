@@ -26,11 +26,9 @@ package org.wrml.runtime.service;
 
 import org.wrml.runtime.Factory;
 
-public class DefaultServiceLoaderFactory implements Factory<ServiceLoader>
-{
+public class DefaultServiceLoaderFactory implements Factory<ServiceLoader> {
     @Override
-    public ServiceLoader create()
-    {
+    public ServiceLoader create() {
 
         return new DefaultServiceLoader();
     }

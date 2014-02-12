@@ -53,8 +53,7 @@ import java.util.regex.Pattern;
  * @see org.wrml.model.schema.CollectionValue
  * @see org.wrml.model.schema.CollectionValueSearchCriterion
  */
-public final class ProtoSearchCriteria
-{
+public final class ProtoSearchCriteria {
 
     private final CollectionPropertyProtoSlot _CollectionPropertyProtoSlot;
 
@@ -66,8 +65,7 @@ public final class ProtoSearchCriteria
 
     private final List<ProtoSearchCriterion> _Or;
 
-    ProtoSearchCriteria(CollectionPropertyProtoSlot collectionPropertyProtoSlot, final Prototype referencePrototype, final Prototype referrerPrototype)
-    {
+    ProtoSearchCriteria(CollectionPropertyProtoSlot collectionPropertyProtoSlot, final Prototype referencePrototype, final Prototype referrerPrototype) {
 
         _CollectionPropertyProtoSlot = collectionPropertyProtoSlot;
         _ReferencePrototype = referencePrototype;
@@ -75,70 +73,58 @@ public final class ProtoSearchCriteria
 
         final CollectionSlot collectionSlot = collectionPropertyProtoSlot.getCollectionSlot();
         final CollectionSlotCriterion[] andArray = collectionSlot.and();
-        if (andArray.length > 0)
-        {
+        if (andArray.length > 0) {
 
             _And = new ArrayList<>(andArray.length);
-            for (final CollectionSlotCriterion criterion : andArray)
-            {
+            for (final CollectionSlotCriterion criterion : andArray) {
                 final ProtoSearchCriterion protoSearchCriterion = new ProtoSearchCriterion(this, criterion);
                 _And.add(protoSearchCriterion);
             }
         }
-        else
-        {
+        else {
             _And = null;
         }
 
         final CollectionSlotCriterion[] orArray = collectionSlot.or();
-        if (orArray.length > 0)
-        {
+        if (orArray.length > 0) {
 
             _Or = new ArrayList<>(orArray.length);
-            for (final CollectionSlotCriterion criterion : orArray)
-            {
+            for (final CollectionSlotCriterion criterion : orArray) {
                 final ProtoSearchCriterion protoSearchCriterion = new ProtoSearchCriterion(this, criterion);
                 _Or.add(protoSearchCriterion);
             }
         }
-        else
-        {
+        else {
             _Or = null;
         }
     }
 
-    public CollectionPropertyProtoSlot getCollectionPropertyProtoSlot()
-    {
+    public CollectionPropertyProtoSlot getCollectionPropertyProtoSlot() {
 
         return _CollectionPropertyProtoSlot;
     }
 
-    public Prototype getReferencePrototype()
-    {
+    public Prototype getReferencePrototype() {
 
         return _ReferencePrototype;
     }
 
-    public Prototype getReferrerPrototype()
-    {
+    public Prototype getReferrerPrototype() {
 
         return _ReferrerPrototype;
     }
 
-    public List<ProtoSearchCriterion> getAnd()
-    {
+    public List<ProtoSearchCriterion> getAnd() {
 
         return _And;
     }
 
-    public List<ProtoSearchCriterion> getOr()
-    {
+    public List<ProtoSearchCriterion> getOr() {
 
         return _Or;
     }
 
-    public SearchCriteria buildSearchCriteria(final Model referrer)
-    {
+    public SearchCriteria buildSearchCriteria(final Model referrer) {
 
         final List<SearchCriterion> and = buildSearchCriterionList(referrer, _And);
         final List<SearchCriterion> or = buildSearchCriterionList(referrer, _Or);
@@ -155,18 +141,15 @@ public final class ProtoSearchCriteria
         return searchCriteria;
     }
 
-    private List<SearchCriterion> buildSearchCriterionList(final Model referrer, final List<ProtoSearchCriterion> protoSearchCriterionList)
-    {
+    private List<SearchCriterion> buildSearchCriterionList(final Model referrer, final List<ProtoSearchCriterion> protoSearchCriterionList) {
 
-        if (protoSearchCriterionList == null || protoSearchCriterionList.isEmpty())
-        {
+        if (protoSearchCriterionList == null || protoSearchCriterionList.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
 
         final List<SearchCriterion> searchCriterionList = new LinkedList<>();
 
-        for (final ProtoSearchCriterion protoSearchCriterion : protoSearchCriterionList)
-        {
+        for (final ProtoSearchCriterion protoSearchCriterion : protoSearchCriterionList) {
 
             final ProtoValueSource protoValueSource = protoSearchCriterion.getProtoValueSource();
             final String referenceSlot = protoValueSource.getReferenceSlot();
@@ -183,24 +166,20 @@ public final class ProtoSearchCriteria
         return searchCriterionList;
     }
 
-    private Dimensions buildResultDimensions(final Model referrer)
-    {
+    private Dimensions buildResultDimensions(final Model referrer) {
 
         final Dimensions referrerDimensions = referrer.getDimensions();
         final DimensionsBuilder dimensionsBuilder = new DimensionsBuilder(_ReferencePrototype.getSchemaUri());
 
         URI referrerUri = null;
-        if (referrer instanceof Document)
-        {
+        if (referrer instanceof Document) {
             referrerUri = ((Document) referrer).getUri();
         }
-        else if (referrer instanceof Embedded)
-        {
+        else if (referrer instanceof Embedded) {
             referrerUri = ((Embedded) referrer).getDocumentUri();
         }
 
-        if (referrerUri != null)
-        {
+        if (referrerUri != null) {
             dimensionsBuilder.setReferrerUri(referrerUri);
         }
 
@@ -218,69 +197,55 @@ public final class ProtoSearchCriteria
         return dimensionsBuilder.toDimensions();
     }
 
-    private void subscopeDimension(final String prefix, final List<String> fromList, final List<String> toList)
-    {
+    private void subscopeDimension(final String prefix, final List<String> fromList, final List<String> toList) {
 
-        if (fromList == null || fromList.isEmpty())
-        {
+        if (fromList == null || fromList.isEmpty()) {
             return;
         }
 
         final int beginIndex = prefix.length();
 
-        for (final String item : fromList)
-        {
-            if (item.startsWith(prefix))
-            {
+        for (final String item : fromList) {
+            if (item.startsWith(prefix)) {
                 final String subscopedItem = item.substring(beginIndex);
                 toList.add(subscopedItem);
             }
         }
     }
 
-    private void subscopeDimension(final String prefix, final Map<String, String> fromMap, final Map<String, String> toMap)
-    {
+    private void subscopeDimension(final String prefix, final Map<String, String> fromMap, final Map<String, String> toMap) {
 
-        if (fromMap == null || fromMap.isEmpty())
-        {
+        if (fromMap == null || fromMap.isEmpty()) {
             return;
         }
 
         final int beginIndex = prefix.length();
         final Set<String> keys = fromMap.keySet();
-        for (final String key : keys)
-        {
-            if (key.startsWith(prefix))
-            {
+        for (final String key : keys) {
+            if (key.startsWith(prefix)) {
                 final String subscopedKey = key.substring(beginIndex);
                 toMap.put(subscopedKey, fromMap.get(key));
             }
         }
     }
 
-    private Set<String> buildProjectionFromDimensions(final Dimensions resultDimensions)
-    {
+    private Set<String> buildProjectionFromDimensions(final Dimensions resultDimensions) {
 
         final Set<String> projectionSlotNames = new TreeSet<>();
 
         final List<String> includedSlotNames = resultDimensions.getIncludedSlotNames();
-        if (!includedSlotNames.isEmpty())
-        {
+        if (!includedSlotNames.isEmpty()) {
             projectionSlotNames.addAll(includedSlotNames);
         }
-        else
-        {
+        else {
             final List<String> excludedSlotNames = resultDimensions.getExcludedSlotNames();
-            if (!excludedSlotNames.isEmpty())
-            {
+            if (!excludedSlotNames.isEmpty()) {
                 final SortedSet<String> allSlotNames = _ReferencePrototype.getAllSlotNames();
-                for (final String slotName : allSlotNames)
-                {
+                for (final String slotName : allSlotNames) {
 
                     final ProtoSlot protoSlot = _ReferencePrototype.getProtoSlot(slotName);
 
-                    if (protoSlot instanceof PropertyProtoSlot && !(protoSlot instanceof CollectionPropertyProtoSlot))
-                    {
+                    if (protoSlot instanceof PropertyProtoSlot && !(protoSlot instanceof CollectionPropertyProtoSlot)) {
                         // The query's projection should include "property" slots only (not link or collection slots since they aren't persisted).
                         projectionSlotNames.add(slotName);
                     }
@@ -296,8 +261,7 @@ public final class ProtoSearchCriteria
     /**
      * Default <i>POJO</i> implementation of the {@link SearchCriteria} interface.
      */
-    private static final class DefaultSearchCriteria implements SearchCriteria
-    {
+    private static final class DefaultSearchCriteria implements SearchCriteria {
 
         private final Dimensions _ResultDimensions;
 
@@ -319,8 +283,7 @@ public final class ProtoSearchCriteria
                               final Set<String> projectionSlotNames,
                               final Integer resultLimit,
                               final Model referrer,
-                              final String referrerCollectionSlotName)
-        {
+                              final String referrerCollectionSlotName) {
 
             _ResultDimensions = resultDimensions;
             _And = and;
@@ -334,50 +297,43 @@ public final class ProtoSearchCriteria
         }
 
         @Override
-        public Dimensions getResultDimensions()
-        {
+        public Dimensions getResultDimensions() {
 
             return _ResultDimensions;
         }
 
         @Override
-        public List<SearchCriterion> getAnd()
-        {
+        public List<SearchCriterion> getAnd() {
 
             return _And;
         }
 
         @Override
-        public List<SearchCriterion> getOr()
-        {
+        public List<SearchCriterion> getOr() {
 
             return _Or;
         }
 
         @Override
-        public Set<String> getProjectionSlotNames()
-        {
+        public Set<String> getProjectionSlotNames() {
 
             return _ProjectionSlotNames;
         }
 
         @Override
-        public Integer getResultLimit()
-        {
+        public Integer getResultLimit() {
 
             return _ResultLimit;
         }
 
         @Override
-        public Model getReferrer()
-        {
+        public Model getReferrer() {
 
             return _Referrer;
         }
 
         @Override
-        public String getReferrerCollectionSlotName()
-        {
+        public String getReferrerCollectionSlotName() {
 
             return _ReferrerCollectionSlotName;
         }
@@ -386,8 +342,7 @@ public final class ProtoSearchCriteria
     /**
      * Default <i>POJO</i> implementation of the {@link SearchCriterion} interface.
      */
-    private static final class DefaultSearchCriterion implements SearchCriterion
-    {
+    private static final class DefaultSearchCriterion implements SearchCriterion {
 
 
         private final String _ReferenceSlot;
@@ -404,8 +359,7 @@ public final class ProtoSearchCriteria
                                final Object comparisonValue,
                                final ComparisonOperator comparisonOperator,
                                final String regex,
-                               final Pattern regexPattern)
-        {
+                               final Pattern regexPattern) {
 
             _ReferenceSlot = referenceSlot;
             _ComparisonValue = comparisonValue;
@@ -415,36 +369,31 @@ public final class ProtoSearchCriteria
         }
 
         @Override
-        public String getReferenceSlot()
-        {
+        public String getReferenceSlot() {
 
             return _ReferenceSlot;
         }
 
         @Override
-        public Object getComparisonValue()
-        {
+        public Object getComparisonValue() {
 
             return _ComparisonValue;
         }
 
         @Override
-        public ComparisonOperator getComparisonOperator()
-        {
+        public ComparisonOperator getComparisonOperator() {
 
             return _ComparisonOperator;
         }
 
         @Override
-        public String getRegex()
-        {
+        public String getRegex() {
 
             return _Regex;
         }
 
         @Override
-        public Pattern getRegexPattern()
-        {
+        public Pattern getRegexPattern() {
 
             return _RegexPattern;
         }

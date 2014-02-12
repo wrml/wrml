@@ -26,6 +26,5 @@
 # CoffeeScript
 
 @Wrmldoc.module "ApiApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Api extends App.Views.ItemView
-		template: "api/show/api_show"
+  class Show.Api extends App.Views.ItemView
+    template: "api/show/api_show"

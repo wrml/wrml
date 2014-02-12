@@ -27,8 +27,7 @@ package org.wrml.runtime;
 /**
  * A runtime component that is sensitive to (dependent on) the current the runtime {@link org.wrml.runtime.Context}.
  */
-public interface ContextSensitive
-{
+public interface ContextSensitive {
 
     /**
      * Returns the runtime {@link org.wrml.runtime.Context} which owns this {@link org.wrml.runtime.ContextSensitive}.

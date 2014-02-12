@@ -39,8 +39,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.*;
 
-public class PrinterModelGraph extends ModelGraph
-{
+public class PrinterModelGraph extends ModelGraph {
 
     private final Model _RootModel;
 
@@ -50,8 +49,7 @@ public class PrinterModelGraph extends ModelGraph
 
     private final ModelWriteOptions _WriteOptions;
 
-    public PrinterModelGraph(final Model rootModel, final ModelWriteOptions writeOptions)
-    {
+    public PrinterModelGraph(final Model rootModel, final ModelWriteOptions writeOptions) {
 
         super(rootModel.getContext());
 
@@ -59,12 +57,10 @@ public class PrinterModelGraph extends ModelGraph
         _ModelNodes = new WeakHashMap<>();
         _WriteOptions = writeOptions;
 
-        if (_WriteOptions != null)
-        {
+        if (_WriteOptions != null) {
             final Set<URI> excludedSchemaUris = _WriteOptions.getExcludedSchemaUris();
 
-            if (excludedSchemaUris != null && excludedSchemaUris.contains(rootModel.getSchemaUri()))
-            {
+            if (excludedSchemaUris != null && excludedSchemaUris.contains(rootModel.getSchemaUri())) {
                 throw new ModelGraphException("The root model's schema is excluded from the graph.", this);
             }
         }
@@ -72,20 +68,17 @@ public class PrinterModelGraph extends ModelGraph
         _RootModelNode = new ModelNode(null, _RootModel);
     }
 
-    public Model getRootModel()
-    {
+    public Model getRootModel() {
 
         return _RootModel;
     }
 
-    public ModelNode getRootModelNode()
-    {
+    public ModelNode getRootModelNode() {
 
         return _RootModelNode;
     }
 
-    public class ListNode extends Node
-    {
+    public class ListNode extends Node {
 
         private final List<Object> _PrintableElements;
 
@@ -93,40 +86,33 @@ public class PrinterModelGraph extends ModelGraph
 
         private URI _MonomorphicSchemaUri;
 
-        ListNode(final Node parent, final List<?> list)
-        {
+        ListNode(final Node parent, final List<?> list) {
 
             super(parent);
 
             _PrintableElements = new ArrayList<Object>(list.size());
 
             boolean isMonomorphic = true;
-            for (final Object element : list)
-            {
+            for (final Object element : list) {
                 final Object printableElement = makeValuePrintable(element);
-                if (printableElement == null)
-                {
+                if (printableElement == null) {
                     continue;
                 }
 
                 _PrintableElements.add(printableElement);
 
-                if (printableElement instanceof ModelNode)
-                {
+                if (printableElement instanceof ModelNode) {
                     final URI schemaUri = ((ModelNode) printableElement).getModel().getSchemaUri();
 
-                    if (isMonomorphic && _MonomorphicSchemaUri == null)
-                    {
+                    if (isMonomorphic && _MonomorphicSchemaUri == null) {
                         _MonomorphicSchemaUri = schemaUri;
                     }
-                    else if (_MonomorphicSchemaUri != null && !_MonomorphicSchemaUri.equals(schemaUri))
-                    {
+                    else if (_MonomorphicSchemaUri != null && !_MonomorphicSchemaUri.equals(schemaUri)) {
                         isMonomorphic = false;
                         _MonomorphicSchemaUri = null;
                     }
                 }
-                else
-                {
+                else {
                     isMonomorphic = false;
                     _MonomorphicSchemaUri = null;
                 }
@@ -135,26 +121,22 @@ public class PrinterModelGraph extends ModelGraph
 
         }
 
-        public URI getMonomorphicSchemaUri()
-        {
+        public URI getMonomorphicSchemaUri() {
 
             return _MonomorphicSchemaUri;
         }
 
-        public List<Object> getPrintableElements()
-        {
+        public List<Object> getPrintableElements() {
 
             return _PrintableElements;
         }
 
-        public boolean isElementSchemaUriRequired()
-        {
+        public boolean isElementSchemaUriRequired() {
 
             return _ElementSchemaUriRequired;
         }
 
-        public void setElementSchemaUriRequired(final boolean elementSchemaUriRequired)
-        {
+        public void setElementSchemaUriRequired(final boolean elementSchemaUriRequired) {
 
             _ElementSchemaUriRequired = elementSchemaUriRequired;
 
@@ -162,8 +144,7 @@ public class PrinterModelGraph extends ModelGraph
 
     }
 
-    public class ModelNode extends Node
-    {
+    public class ModelNode extends Node {
 
         private final Model _Model;
 
@@ -173,8 +154,7 @@ public class PrinterModelGraph extends ModelGraph
 
         private boolean _SchemaUriRequired;
 
-        ModelNode(final Node parent, final Model model)
-        {
+        ModelNode(final Node parent, final Model model) {
 
             super(parent);
 
@@ -187,75 +167,61 @@ public class PrinterModelGraph extends ModelGraph
             _PrintableSlots = makeSlotsPrintable(getRawSlots());
         }
 
-        public Model getModel()
-        {
+        public Model getModel() {
 
             return _Model;
         }
 
-        public Map<String, Object> getPrintableSlots()
-        {
+        public Map<String, Object> getPrintableSlots() {
 
             return _PrintableSlots;
         }
 
-        public boolean isHeapIdRequired()
-        {
+        public boolean isHeapIdRequired() {
 
             return _HeapIdRequired;
         }
 
-        public boolean isSchemaUriRequired()
-        {
+        public boolean isSchemaUriRequired() {
 
             return _SchemaUriRequired;
         }
 
-        public void setHeapIdRequired(final boolean heapIdRequired)
-        {
+        public void setHeapIdRequired(final boolean heapIdRequired) {
 
             _HeapIdRequired = heapIdRequired;
         }
 
-        public void setSchemaUriRequired(final boolean schemaUriRequired)
-        {
+        public void setSchemaUriRequired(final boolean schemaUriRequired) {
 
             _SchemaUriRequired = schemaUriRequired;
         }
 
-        private Map<String, Object> getRawSlots()
-        {
+        private Map<String, Object> getRawSlots() {
 
             final Model model = getModel();
 
             Map<String, Object> rawSlots = new HashMap<>(model.getSlotMap());
 
-            if (model instanceof Embedded)
-            {
+            if (model instanceof Embedded) {
                 rawSlots.remove(Embedded.SLOT_NAME_DOCUMENT_URI);
             }
 
             final Dimensions dimensions = model.getDimensions();
 
             final List<String> excludedSlotNames = dimensions.getExcludedSlotNames();
-            if (excludedSlotNames != null && !excludedSlotNames.isEmpty())
-            {
-                for (final String excludedSlotName : excludedSlotNames)
-                {
+            if (excludedSlotNames != null && !excludedSlotNames.isEmpty()) {
+                for (final String excludedSlotName : excludedSlotNames) {
                     rawSlots.remove(excludedSlotName);
                 }
             }
-            else
-            {
+            else {
                 final List<String> includedSlotNames = dimensions.getIncludedSlotNames();
-                if (includedSlotNames != null && !includedSlotNames.isEmpty())
-                {
+                if (includedSlotNames != null && !includedSlotNames.isEmpty()) {
 
                     final Map<String, Object> includedSlots = new HashMap<String, Object>(includedSlotNames.size());
-                    for (final String includedSlotName : includedSlotNames)
-                    {
-                        if (rawSlots.containsKey(includedSlotName))
-                        {
+                    for (final String includedSlotName : includedSlotNames) {
+                        if (rawSlots.containsKey(includedSlotName)) {
                             final Object value = rawSlots.get(includedSlotName);
                             includedSlots.put(includedSlotName, value);
                         }
@@ -268,8 +234,7 @@ public class PrinterModelGraph extends ModelGraph
             return rawSlots;
         }
 
-        private Map<String, Object> makeSlotsPrintable(final Map<String, Object> rawSlots)
-        {
+        private Map<String, Object> makeSlotsPrintable(final Map<String, Object> rawSlots) {
 
             final Model model = getModel();
             final URI schemaUri = model.getSchemaUri();
@@ -280,8 +245,7 @@ public class PrinterModelGraph extends ModelGraph
             boolean isLinksExcluded = false;
             boolean isCollectionsExcluded = false;
 
-            if (_WriteOptions != null)
-            {
+            if (_WriteOptions != null) {
                 excludedSchemaUris = _WriteOptions.getExcludedSchemaUris();
 
                 isDocumentKeyExcludedIfSecondary = _WriteOptions.isDocumentKeyExcludedIfSecondary();
@@ -291,8 +255,7 @@ public class PrinterModelGraph extends ModelGraph
             }
 
             final Set<String> slotNameSet = rawSlots.keySet();
-            if (slotNameSet.isEmpty())
-            {
+            if (slotNameSet.isEmpty()) {
                 return rawSlots;
             }
 
@@ -301,27 +264,22 @@ public class PrinterModelGraph extends ModelGraph
 
             final SortedSet<String> slotNames = new TreeSet<String>(slotNameSet);
 
-            if (prototype != null)
-            {
+            if (prototype != null) {
                 final Collection<String> aliases = prototype.getSlotAliases();
-                for (final String alias : aliases)
-                {
+                for (final String alias : aliases) {
                     final String realSlotName = prototype.getRealSlotName(alias);
-                    if (realSlotName != null && rawSlots.containsKey(realSlotName))
-                    {
+                    if (realSlotName != null && rawSlots.containsKey(realSlotName)) {
                         slotNames.add(alias);
                     }
                 }
             }
 
-            for (final String slotName : slotNames)
-            {
+            for (final String slotName : slotNames) {
 
                 String realSlotName = slotName;
 
                 ProtoSlot protoSlot = null;
-                if (prototype != null)
-                {
+                if (prototype != null) {
                     protoSlot = prototype.getProtoSlot(slotName);
                     realSlotName = protoSlot.getRealName();
 
@@ -331,8 +289,7 @@ public class PrinterModelGraph extends ModelGraph
                             (isDocumentKeyExcludedIfSecondary && Document.SLOT_NAME_URI.equals(realSlotName) && prototype.getAllKeySlotNames().size() > 1) ||
                             (isEmbeddedDocumentUriExcluded && Embedded.SLOT_NAME_DOCUMENT_URI.equals(realSlotName)) ||
                             (isLinksExcluded && protoSlot instanceof LinkProtoSlot) ||
-                            (isCollectionsExcluded && protoSlot instanceof CollectionPropertyProtoSlot))
-                    {
+                            (isCollectionsExcluded && protoSlot instanceof CollectionPropertyProtoSlot)) {
                         rawSlots.remove(realSlotName);
                         continue;
                     }
@@ -342,85 +299,70 @@ public class PrinterModelGraph extends ModelGraph
 
                 final Object printableValue = makeValuePrintable(slotValue);
 
-                if (printableValue == null && slotValue != null)
-                {
+                if (printableValue == null && slotValue != null) {
 
                     // The printable value signals slot removal by turning the initially non-null slot value into a null
                     // printable value.
 
                     rawSlots.remove(realSlotName);
                 }
-                else
-                {
+                else {
                     rawSlots.put(slotName, printableValue);
 
-                    if (schemaUri == null)
-                    {
+                    if (schemaUri == null) {
                         continue;
                     }
 
-                    if (protoSlot != null && !(protoSlot instanceof PropertyProtoSlot))
-                    {
+                    if (protoSlot != null && !(protoSlot instanceof PropertyProtoSlot)) {
                         continue;
                     }
 
                     final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
-                    if (printableValue instanceof ModelNode)
-                    {
+                    if (printableValue instanceof ModelNode) {
 
                         final URI declaredSchemaUri = propertyProtoSlot.getModelSchemaUri();
                         Class<?> declaredSchemaIterface;
-                        try
-                        {
+                        try {
                             declaredSchemaIterface = schemaLoader.getSchemaInterface(declaredSchemaUri);
                         }
-                        catch (final ClassNotFoundException e)
-                        {
+                        catch (final ClassNotFoundException e) {
                             throw new ModelGraphException(e.getMessage(), e, PrinterModelGraph.this);
                         }
 
                         final ModelNode modelNode = (ModelNode) printableValue;
                         final URI actualSchemaUri = modelNode.getModel().getSchemaUri();
                         Class<?> actualSchemaInterface;
-                        try
-                        {
+                        try {
                             actualSchemaInterface = schemaLoader.getSchemaInterface(actualSchemaUri);
                         }
-                        catch (final ClassNotFoundException e)
-                        {
+                        catch (final ClassNotFoundException e) {
                             throw new ModelGraphException(e.getMessage(), e, PrinterModelGraph.this);
                         }
 
-                        if (schemaLoader.isSubschema(declaredSchemaIterface, actualSchemaInterface))
-                        {
+                        if (schemaLoader.isSubschema(declaredSchemaIterface, actualSchemaInterface)) {
                             modelNode.setSchemaUriRequired(true);
                         }
 
                     }
-                    else if (printableValue instanceof ListNode)
-                    {
+                    else if (printableValue instanceof ListNode) {
 
                         final ListNode listNode = (ListNode) printableValue;
                         final Type declaredElementType = propertyProtoSlot.getListElementType();
                         final URI monomorphicSchemaUri = listNode.getMonomorphicSchemaUri();
 
-                        if (monomorphicSchemaUri == null)
-                        {
+                        if (monomorphicSchemaUri == null) {
                             continue;
                         }
 
                         final Type monomorphicElementType;
-                        try
-                        {
+                        try {
                             monomorphicElementType = schemaLoader.getSchemaInterface(monomorphicSchemaUri);
                         }
-                        catch (final ClassNotFoundException e)
-                        {
+                        catch (final ClassNotFoundException e) {
                             throw new ModelGraphException(e.getMessage(), e, PrinterModelGraph.this);
                         }
 
-                        if (schemaLoader.isSubschema(declaredElementType, monomorphicElementType))
-                        {
+                        if (schemaLoader.isSubschema(declaredElementType, monomorphicElementType)) {
                             listNode.setElementSchemaUriRequired(true);
                         }
 
@@ -434,54 +376,45 @@ public class PrinterModelGraph extends ModelGraph
         }
     }
 
-    public class ModelReferenceNode extends Node
-    {
+    public class ModelReferenceNode extends Node {
 
         private final UUID _TargetHeapId;
 
-        ModelReferenceNode(final Node parent, final UUID targetHeapId)
-        {
+        ModelReferenceNode(final Node parent, final UUID targetHeapId) {
 
             super(parent);
             _TargetHeapId = targetHeapId;
         }
 
-        public ModelNode getReferencedNode()
-        {
+        public ModelNode getReferencedNode() {
 
             return _ModelNodes.get(getTargetHeapId());
         }
 
-        public UUID getTargetHeapId()
-        {
+        public UUID getTargetHeapId() {
 
             return _TargetHeapId;
         }
 
     }
 
-    public abstract class Node
-    {
+    public abstract class Node {
 
         private final Node _Parent;
 
-        Node(final Node parent)
-        {
+        Node(final Node parent) {
 
             _Parent = parent;
         }
 
-        public final Node getParent()
-        {
+        public final Node getParent() {
 
             return _Parent;
         }
 
-        public Object makeValuePrintable(final Object value)
-        {
+        public Object makeValuePrintable(final Object value) {
 
-            if (value == null)
-            {
+            if (value == null) {
                 return null;
             }
 
@@ -494,11 +427,9 @@ public class PrinterModelGraph extends ModelGraph
 
             Object printableValue = value;
 
-            switch (valueType)
-            {
+            switch (valueType) {
 
-                case Date:
-                {
+                case Date: {
 
                     final SyntaxHandler<Date> dateSyntaxHandler = syntaxLoader.getSyntaxHandler(Date.class);
                     final String dateString = dateSyntaxHandler.formatSyntaxValue((Date) value);
@@ -506,31 +437,27 @@ public class PrinterModelGraph extends ModelGraph
                     break;
 
                 }
-                case Link:
-                {
+                case Link: {
                     final Link link = (Link) value;
                     printableValue = new ModelNode(this, link);
 
                     break;
                 }
-                case List:
-                {
+                case List: {
 
                     final List<?> list = (List<?>) value;
                     final ListNode listNode = new ListNode(this, list);
                     printableValue = listNode;
                     break;
                 }
-                case Model:
-                {
+                case Model: {
                     final Model model = (Model) value;
 
                     // Use a Map to track model heap ids and ensure that models
                     // containing themselves are not infinitely printed.
 
                     final UUID heapId = model.getHeapId();
-                    if (_ModelNodes.containsKey(heapId))
-                    {
+                    if (_ModelNodes.containsKey(heapId)) {
 
                         final ModelNode targetModelNode = _ModelNodes.get(heapId);
 
@@ -540,47 +467,39 @@ public class PrinterModelGraph extends ModelGraph
 
                         printableValue = new ModelReferenceNode(this, heapId);
                     }
-                    else
-                    {
+                    else {
                         printableValue = new ModelNode(this, model);
                     }
 
                     break;
                 }
-                case SingleSelect:
-                {
+                case SingleSelect: {
                     final String textValue = ((Enum<?>) value).name();
                     printableValue = textValue;
                     break;
                 }
-                case Text:
-                {
+                case Text: {
 
-                    if (value instanceof String)
-                    {
+                    if (value instanceof String) {
                         printableValue = value;
                     }
-                    else
-                    {
+                    else {
                         @SuppressWarnings("rawtypes")
                         final SyntaxHandler syntaxHandler = syntaxLoader.getSyntaxHandler(heapValueType);
 
-                        if (syntaxHandler != null)
-                        {
+                        if (syntaxHandler != null) {
                             @SuppressWarnings("unchecked")
                             final String textValue = syntaxHandler.formatSyntaxValue(value);
                             printableValue = textValue;
                         }
-                        else
-                        {
+                        else {
                             printableValue = null;
                         }
                     }
 
                     break;
                 }
-                default:
-                {
+                default: {
                     break;
                 }
 

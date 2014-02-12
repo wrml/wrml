@@ -27,41 +27,35 @@ package org.wrml.werminal.terminal;
 import com.googlecode.lanterna.gui.Action;
 import org.wrml.runtime.Context;
 
-public abstract class TerminalAppAction implements Action
-{
+public abstract class TerminalAppAction implements Action {
 
     private final TerminalApp _App;
 
     private String _Title;
 
-    public TerminalAppAction(final TerminalApp app, final String title)
-    {
+    public TerminalAppAction(final TerminalApp app, final String title) {
 
         _App = app;
         _Title = title;
     }
 
     @SuppressWarnings("unchecked")
-    public final <T extends TerminalApp> T getApp()
-    {
+    public final <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }
 
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return getApp().getContext();
     }
 
-    public final String getTitle()
-    {
+    public final String getTitle() {
 
         return _Title;
     }
 
-    public final void setTitle(final String title)
-    {
+    public final void setTitle(final String title) {
 
         _Title = title;
     }

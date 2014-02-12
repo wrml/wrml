@@ -29,43 +29,36 @@ import org.wrml.werminal.Werminal;
 import java.io.IOException;
 import java.net.URI;
 
-public class WrmlOrgAction extends WerminalAction
-{
+public class WrmlOrgAction extends WerminalAction {
 
     private final URI WRML_ORG = URI.create("http://www.wrml.org");
 
-    public WrmlOrgAction(final Werminal werminal)
-    {
+    public WrmlOrgAction(final Werminal werminal) {
 
         super(werminal, "WRML.org");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
 
-        if (!java.awt.Desktop.isDesktopSupported())
-        {
+        if (!java.awt.Desktop.isDesktopSupported()) {
             werminal.showSplashWindow();
             return;
         }
 
         final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
-        if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE))
-        {
+        if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
             werminal.showSplashWindow();
             return;
         }
 
-        try
-        {
+        try {
             desktop.browse(WRML_ORG);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             System.err.println(e.getMessage());
             werminal.showSplashWindow();
             return;

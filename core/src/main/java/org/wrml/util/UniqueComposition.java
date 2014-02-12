@@ -30,8 +30,7 @@ import java.util.Arrays;
  * A component-based unique. Hash code is computed *ONCE* upon first request as
  * this is intended to be used only for immutable components.
  */
-public class UniqueComposition
-{
+public class UniqueComposition {
     private final Object[] _Components;
 
     private Integer _HashCode;
@@ -41,57 +40,47 @@ public class UniqueComposition
      *
      * @param components the components to compose.
      */
-    public UniqueComposition(final Object... components)
-    {
+    public UniqueComposition(final Object... components) {
 
         _Components = components;
-        if ((_Components == null) || (_Components.length == 0))
-        {
+        if ((_Components == null) || (_Components.length == 0)) {
             throw new NullPointerException();
         }
     }
 
     @Override
-    public boolean equals(final Object obj)
-    {
+    public boolean equals(final Object obj) {
 
-        if (this == obj)
-        {
+        if (this == obj) {
             return true;
         }
 
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
 
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 
         final UniqueComposition other = (UniqueComposition) obj;
 
-        if (!Arrays.deepEquals(_Components, other._Components))
-        {
+        if (!Arrays.deepEquals(_Components, other._Components)) {
             return false;
         }
 
         return true;
     }
 
-    public Object[] getComponents()
-    {
+    public Object[] getComponents() {
 
         return _Components;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
-        if (_HashCode == null)
-        {
+        if (_HashCode == null) {
             _HashCode = 31 + Arrays.deepHashCode(_Components);
         }
 
@@ -99,8 +88,7 @@ public class UniqueComposition
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getCanonicalName() + " :: { \"components\" : [" + Arrays.toString(_Components) + "] }";
     }

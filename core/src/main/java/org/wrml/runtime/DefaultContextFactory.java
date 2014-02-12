@@ -24,11 +24,9 @@
  */
 package org.wrml.runtime;
 
-public class DefaultContextFactory implements Factory<Context>
-{
+public class DefaultContextFactory implements Factory<Context> {
     @Override
-    public Context create()
-    {
+    public Context create() {
 
         return new DefaultContext();
     }

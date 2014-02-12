@@ -29,41 +29,35 @@ import org.wrml.runtime.DefaultConfiguration;
 /**
  * Simple POJO implementation of the {@link ServiceConfiguration} interface.
  */
-public class DefaultServiceConfiguration extends DefaultConfiguration implements ServiceConfiguration
-{
+public class DefaultServiceConfiguration extends DefaultConfiguration implements ServiceConfiguration {
 
     private String _Name;
 
     private String _ServiceClassName;
 
 
-    public DefaultServiceConfiguration()
-    {
+    public DefaultServiceConfiguration() {
 
     }
 
     @Override
-    public String getImplementation()
-    {
+    public String getImplementation() {
 
         return _ServiceClassName;
     }
 
-    public void setImplementation(final String serviceClassName)
-    {
+    public void setImplementation(final String serviceClassName) {
 
         _ServiceClassName = serviceClassName;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
 
         return _Name;
     }
 
-    public void setName(final String name)
-    {
+    public void setName(final String name) {
 
         _Name = name;
     }

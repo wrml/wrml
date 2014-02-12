@@ -26,11 +26,9 @@ package org.wrml.runtime.schema;
 
 import org.wrml.runtime.Factory;
 
-public class DefaultSchemaLoaderFactory implements Factory<SchemaLoader>
-{
+public class DefaultSchemaLoaderFactory implements Factory<SchemaLoader> {
     @Override
-    public SchemaLoader create()
-    {
+    public SchemaLoader create() {
 
         return new DefaultSchemaLoader();
     }

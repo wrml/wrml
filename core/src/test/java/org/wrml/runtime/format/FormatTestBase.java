@@ -53,8 +53,7 @@ import static org.mockito.Mockito.when;
  * Base {@link TestCase} for testing {@link Formatter} implementations using {@link Mockito} mocks.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public abstract class FormatTestBase extends TestCase
-{
+public abstract class FormatTestBase extends TestCase {
 
     protected final String _BadInputData = ">}]<[{this is badly formed data. fo reals.";
 
@@ -79,8 +78,7 @@ public abstract class FormatTestBase extends TestCase
      *
      * @return a {@code Model} used for round-trip serialization/deserialization
      */
-    protected Model getMockSchema()
-    {
+    protected Model getMockSchema() {
 
         Model model = Mockito.mock(Schema.class);
 
@@ -89,8 +87,7 @@ public abstract class FormatTestBase extends TestCase
     }
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         super.setUp();
         _MockContext = mock(DefaultContext.class);
@@ -110,30 +107,26 @@ public abstract class FormatTestBase extends TestCase
     }
 
     @Test
-    public void testFormatterConstructor()
-    {
+    public void testFormatterConstructor() {
 
         assertNotNull(_Formatter);
     }
 
     @Test
-    public void testGetContext()
-    {
+    public void testGetContext() {
 
         assertNotNull(_Formatter.getContext());
         assertEquals(_MockContext, _Formatter.getContext());
     }
 
     @Test
-    public void testGetFormatUri()
-    {
+    public void testGetFormatUri() {
 
         assertNotNull(_Formatter.getFormatUri());
     }
 
     @Test
-    public void testIsApplicableTo()
-    {
+    public void testIsApplicableTo() {
         // happy path
         assertTrue(_Formatter.isApplicableTo(_MockSchemaSchemaUri));
         // null check
@@ -144,8 +137,7 @@ public abstract class FormatTestBase extends TestCase
 
     @Ignore // The sub classes throw different errors
     @Test(expected = UnsupportedOperationException.class)
-    public void testReadModelException() throws ModelReadingException
-    {
+    public void testReadModelException() throws ModelReadingException {
 
         _MockDimensions = mock(Dimensions.class);
         when(_MockDimensions.getSchemaUri()).thenReturn(null);
@@ -160,18 +152,15 @@ public abstract class FormatTestBase extends TestCase
      * @throws ModelReadingException - optional upon @Override
      */
     @Test
-    public void testReadModel() throws ModelReadingException
-    {
+    public void testReadModel() throws ModelReadingException {
 
-        try
-        {
+        try {
             Model mockModel = getMockSchema();
             Model result = getFormatter().readModel(mock(InputStream.class), _MockKeys, _MockDimensions);
             assertNotNull(result);
             assertEquals(mockModel, result);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             fail("This test should not actually invoke the underlying Fomatter's marshaller.  Might need to @Override this test with a mock impl that is a pure unit test.  Error: "
                     + e.getMessage());
         }
@@ -184,8 +173,7 @@ public abstract class FormatTestBase extends TestCase
      */
     @Ignore // The sub classes throw different errors
     @Test(expected = ModelReadingException.class)
-    public void testReadModelBadData() throws ModelReadingException
-    {
+    public void testReadModelBadData() throws ModelReadingException {
 
         InputStream in = new ByteArrayInputStream(_BadInputData.getBytes());
         _Formatter.readModel(in, _MockKeys, _MockDimensions);
@@ -193,8 +181,7 @@ public abstract class FormatTestBase extends TestCase
     }
 
     @Test
-    public void testWriteModel() throws ModelWritingException
-    {
+    public void testWriteModel() throws ModelWritingException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Model obj = getMockSchema();
@@ -205,8 +192,7 @@ public abstract class FormatTestBase extends TestCase
     }
 
     @Test(expected = ModelWritingException.class)
-    public void testWriteModelException() throws ModelWritingException
-    {
+    public void testWriteModelException() throws ModelWritingException {
 
         Model obj = getMockSchema();
         _Formatter.writeModel(null, obj, null);
@@ -215,16 +201,14 @@ public abstract class FormatTestBase extends TestCase
 
     @Ignore // The sub classes throw different errors
     @Test(expected = UnsupportedOperationException.class)
-    public void testWriteModelNotSchemaException() throws ModelWritingException
-    {
+    public void testWriteModelNotSchemaException() throws ModelWritingException {
 
         Model notSchema = mock(Model.class);
         _Formatter.writeModel(null, notSchema, null);
     }
 
     @Test
-    public void testRoundTrip() throws ModelWritingException, ModelReadingException
-    {
+    public void testRoundTrip() throws ModelWritingException, ModelReadingException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();

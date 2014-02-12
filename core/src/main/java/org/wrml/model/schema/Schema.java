@@ -41,14 +41,13 @@ import java.util.List;
  * </p>
  *
  * @see <a
- *      href="http://blog.programmableweb.com/2011/11/18/rest-api-design-putting-the-type-in-content-type/">ProgrammableWeb.com
- *      blog post</a>
+ * href="http://blog.programmableweb.com/2011/11/18/rest-api-design-putting-the-type-in-content-type/">ProgrammableWeb.com
+ * blog post</a>
  */
 @WRML(keySlotNames = {"uniqueName"})
 @Version(1)
 @Description("This is the Meta Schema. Schema models describe the structure for a \"class\" of models.  Schema models are like Java Class object instances. WRML Schema models are also a bit like: SQL tables, XML DTDS, JSON or XML schemas, AVRO schemas, XLS templates, CMS content types, etc.")
-public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Titled, Thumbnailed, UniquelyNamed, Document
-{
+public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Titled, Thumbnailed, UniquelyNamed, Document {
 
     /**
      * The WRML constant name for a Schema's <i>keySlotNames</i> slot.
@@ -71,7 +70,7 @@ public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Tit
      * </p>
      *
      * @return An {@link List} containing the base schema documents'
-     *         URIs.
+     * URIs.
      */
     @Description("A list of this schema's base Schema ids (List of URIs). WRML supports interface style inheritance via URI reference, thus this schema indicates the schemas that it \"inherits\" from or \"mixes in\" to define its own models. WRML's schematic inheritance is recursive, meaning that base schema's are linked so that a schema inherits the base schemas of its base schemas, and their base schemas, and so on...")
     List<URI> getBaseSchemaUris();
@@ -123,6 +122,7 @@ public interface Schema extends Described, MaybeReadOnly, Versioned, Tagged, Tit
 
     /**
      * An optional {@link String} that names the slot value that should be used when displaying the title of models conforming this {@link org.wrml.model.schema.Schema}.
+     *
      * @return The name of the slot that contains the title for this {@link org.wrml.model.schema.Schema}'s models.
      */
     String getTitleSlotName();

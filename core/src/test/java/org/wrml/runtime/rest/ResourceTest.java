@@ -24,11 +24,7 @@
  */
 package org.wrml.runtime.rest;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import junit.framework.TestCase;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -48,37 +44,42 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link Resource}.
- * <p>
+ * <p/>
  * Static method(s) are helpers for other test classes.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class ResourceTest extends TestCase
-{
+public class ResourceTest extends TestCase {
 
     // private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTest.class);
 
-    /** class under test */
+    /**
+     * class under test
+     */
     Resource _Resource;
 
     // mocks
     protected ApiNavigator mockApiNavigator;
+
     protected ResourceTemplate mockResourceTemplate;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         this.mockApiNavigator = mock(ApiNavigator.class);
         this.mockResourceTemplate = ResourceTemplateTest.getMock();
         this._Resource = ResourceTest.getMock(this.mockApiNavigator, this.mockResourceTemplate, null);
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
+
         this._Resource = null;
         this.mockApiNavigator = null;
         this.mockResourceTemplate = null;
@@ -86,27 +87,25 @@ public class ResourceTest extends TestCase
 
     /**
      * Factory method to get a test mock {@link Resource} with mocked dependencies for unit tests.
-     * 
-     * @see {@link #getMock(ApiNavigator, ResourceTemplate, Resource)}
+     *
      * @return a {@link Resource} for unit tests.
+     * @see {@link #getMock(ApiNavigator, ResourceTemplate, Resource)}
      */
-    public static Resource getMock()
-    {
+    public static Resource getMock() {
+
         return getMock(null, null, null);
     }
 
     /**
      * Factory method to get a test mock {@link Resource} with mocked dependencies for unit tests.
-     * 
-     * @param apiNavigator
-     *            [optional] the {@link ApiNavigator} to use. Defaults to a {@link Mockito#mock}.
-     * @param resourceTemplate
-     *            [optional] the {@link ResourceTemplate} to use. Defaults to a {@link Mockito#mock}.
+     *
+     * @param apiNavigator     [optional] the {@link ApiNavigator} to use. Defaults to a {@link Mockito#mock}.
+     * @param resourceTemplate [optional] the {@link ResourceTemplate} to use. Defaults to a {@link Mockito#mock}.
      * @param parentResource
      * @return a {@link Resource} for unit tests.
      */
-    public static Resource getMock(ApiNavigator apiNavigator, ResourceTemplate resourceTemplate, Resource parentResource)
-    {
+    public static Resource getMock(ApiNavigator apiNavigator, ResourceTemplate resourceTemplate, Resource parentResource) {
+
         ApiNavigator mockApiNavigator = ObjectUtils.defaultIfNull(apiNavigator, mock(ApiNavigator.class));
         ResourceTemplate mockResourceTemplate = ObjectUtils.defaultIfNull(resourceTemplate, mock(ResourceTemplate.class));
         Context mockContext = mock(DefaultContext.class);
@@ -121,36 +120,36 @@ public class ResourceTest extends TestCase
     }
 
     @Test
-    public void testResource()
-    {
+    public void testResource() {
+
         assertNotNull(this._Resource);
     }
 
     @Test(expected = ResourceException.class)
-    public void testConstructorNullApiNavigator()
-    {
+    public void testConstructorNullApiNavigator() {
+
         this._Resource = new Resource(null, this.mockResourceTemplate, null);
         fail("expeced ResourceException");
     }
 
     @Test(expected = ResourceException.class)
-    public void testConstructorNullResourceTemplate()
-    {
+    public void testConstructorNullResourceTemplate() {
+
         this._Resource = new Resource(this.mockApiNavigator, null, null);
         fail("expeced ResourceException");
     }
 
     @Test
-    public void testGetAllChildResourcesEmpty()
-    {
+    public void testGetAllChildResourcesEmpty() {
+
         List<Resource> children = this._Resource.getAllChildResources();
         assertNotNull(children);
         assertEquals(0, children.size());
     }
 
     @Test
-    public void testGetAllChildResources()
-    {
+    public void testGetAllChildResources() {
+
         Resource parentResource = getMock(mockApiNavigator, mockResourceTemplate, null);
         Resource resource = getMock(mockApiNavigator, mockResourceTemplate, parentResource);
         // return non-null on call 1 and null on (recursive) call 2
@@ -162,8 +161,8 @@ public class ResourceTest extends TestCase
     }
 
     @Test
-    public void testGetApiNavigator()
-    {
+    public void testGetApiNavigator() {
+
         assertNotNull(this._Resource.getApiNavigator());
         assertSame(this.mockApiNavigator, this._Resource.getApiNavigator());
     }
@@ -171,46 +170,46 @@ public class ResourceTest extends TestCase
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetRequestSchemaUris()
-    {
+    public void testGetRequestSchemaUris() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetDefaultSchemaUri()
-    {
+    public void testGetDefaultSchemaUri() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetLinkTemplates()
-    {
+    public void testGetLinkTemplates() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetLiteralPathSubresources()
-    {
+    public void testGetLiteralPathSubresources() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetParentResource()
-    {
+    public void testGetParentResource() {
+
         fail("Not yet implemented");
     }
 
     @Test
-    public void testGetPath()
-    {
+    public void testGetPath() {
+
         Resource parentResource = getMock(mockApiNavigator, mockResourceTemplate, null);
         Resource resource = getMock(mockApiNavigator, mockResourceTemplate, parentResource);
 
@@ -224,80 +223,80 @@ public class ResourceTest extends TestCase
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetPathSegment()
-    {
+    public void testGetPathSegment() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetPathText()
-    {
+    public void testGetPathText() {
+
         fail("Not yet implemented");
     }
 
     @Test
-    public void testGetReferenceLinkRelationUris()
-    {
+    public void testGetReferenceLinkRelationUris() {
+
         assertNull(this._Resource.getReferenceLinkRelationUris(Method.Get));
     }
 
     @Test
-    public void testGetReferenceTemplates()
-    {
+    public void testGetReferenceTemplates() {
+
         assertNotNull(this._Resource.getReferenceTemplates());
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetResourceTemplate()
-    {
+    public void testGetResourceTemplate() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetResourceTemplateId()
-    {
+    public void testGetResourceTemplateId() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetResponseSchemaUris()
-    {
+    public void testGetResponseSchemaUris() {
+
         fail("Not yet implemented");
     }
 
     @Test
-    public void testGetHrefUri()
-    {
+    public void testGetHrefUri() {
+
         assertNull(this._Resource.getHrefUri(null, null));
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetUriTemplate()
-    {
+    public void testGetUriTemplate() {
+
         fail("Not yet implemented");
     }
 
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testGetVariablePathSubresources()
-    {
+    public void testGetVariablePathSubresources() {
+
         fail("Not yet implemented");
     }
 
     @Test
-    public void testIsDocroot()
-    {
+    public void testIsDocroot() {
+
         final Resource parentResource = getMock(mockApiNavigator, mockResourceTemplate, null);
         final Resource resource = getMock(mockApiNavigator, mockResourceTemplate, parentResource);
         assertTrue(parentResource.isDocroot());
@@ -307,20 +306,20 @@ public class ResourceTest extends TestCase
     @Test
     @Ignore
     // Test coverage provided by integration tests
-    public void testAddSubresource()
-    {
+    public void testAddSubresource() {
+
         fail("Not yet implemented");
     }
 
     @Test
-    public void testToString()
-    {
+    public void testToString() {
+
         assertNotNull(this._Resource.toString());
     }
 
     @Test
-    public void testCompareTo()
-    {
+    public void testCompareTo() {
+
         final ResourceTemplate mockResourceTemplate1 = mock(ResourceTemplate.class);
         final ResourceTemplate mockResourceTemplate2 = mock(ResourceTemplate.class);
         when(mockResourceTemplate1.getPathSegment()).thenReturn("abc");

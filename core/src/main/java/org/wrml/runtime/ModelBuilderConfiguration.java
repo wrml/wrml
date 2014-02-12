@@ -24,6 +24,5 @@
  */
 package org.wrml.runtime;
 
-public class ModelBuilderConfiguration extends DefaultFactoryConfiguration
-{
+public class ModelBuilderConfiguration extends DefaultFactoryConfiguration {
 }

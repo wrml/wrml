@@ -27,21 +27,20 @@ package org.wrml.runtime;
 /**
  * The {@link Configuration}'s associated error type.
  */
-public class ConfigurationException extends RuntimeException
-{
+public class ConfigurationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final Configuration _Configuration;
 
-    ConfigurationException(final String message, final Throwable cause, final Configuration configuration)
-    {
+    ConfigurationException(final String message, final Throwable cause, final Configuration configuration) {
+
         super(message, cause);
         _Configuration = configuration;
     }
 
-    public Configuration getConfiguration()
-    {
+    public Configuration getConfiguration() {
+
         return _Configuration;
     }
 }

@@ -24,80 +24,68 @@
  */
 package org.wrml.runtime;
 
+import org.wrml.model.Model;
+import org.wrml.runtime.schema.Prototype;
+
 import java.net.URI;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.wrml.model.Model;
-
-import org.wrml.runtime.schema.Prototype;
-
-public final class ModelComparator implements Comparator<Model>
-{
+public final class ModelComparator implements Comparator<Model> {
 
     private final Context _Context;
 
-    ModelComparator(final Context context)
-    {
+    ModelComparator(final Context context) {
+
         _Context = context;
     }
 
     @Override
-    public int compare(final Model model1, final Model model2)
-    {
+    public int compare(final Model model1, final Model model2) {
+
         return compare(model1, model2, null);
     }
 
-    public int compare(final Model model1, final Model model2, Set<String> slotNames)
-    {
-        if (model1 == model2)
-        {
+    public int compare(final Model model1, final Model model2, Set<String> slotNames) {
+
+        if (model1 == model2) {
             return 0;
         }
 
-        if (model1 == null)
-        {
+        if (model1 == null) {
             return -1;
         }
 
-        if (model2 == null)
-        {
+        if (model2 == null) {
             return 1;
         }
 
         final URI schemaUri1 = model1.getSchemaUri();
         final URI schemaUri2 = model2.getSchemaUri();
 
-        if (schemaUri1 == null && schemaUri2 == null)
-        {
+        if (schemaUri1 == null && schemaUri2 == null) {
             return compareBasics(model1, model2, slotNames);
         }
-        else if (schemaUri1 == null)
-        {
+        else if (schemaUri1 == null) {
             // An undefined 1st model is less than a defined 2nd one
             return -1;
         }
-        else if (schemaUri2 == null)
-        {
+        else if (schemaUri2 == null) {
             // An defined 1st model is greater than an undefined 2nd one
             return 1;
         }
 
-        if (slotNames == null)
-        {
-            if (schemaUri1.equals(schemaUri2))
-            {
+        if (slotNames == null) {
+            if (schemaUri1.equals(schemaUri2)) {
                 final Prototype prototype = model1.getPrototype();
                 slotNames = prototype.getComparableSlotNames();
             }
-            else
-            {
+            else {
                 return schemaUri1.compareTo(schemaUri2);
             }
         }
 
-        if (slotNames == null || slotNames.size() == 0)
-        {
+        if (slotNames == null || slotNames.size() == 0) {
             return compareBasics(model1, model2, slotNames);
         }
 
@@ -111,13 +99,12 @@ public final class ModelComparator implements Comparator<Model>
         return 0;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
+
         return _Context;
     }
 
-    private int compareBasics(final Model model1, final Model model2, final Set<String> slotNames)
-    {
+    private int compareBasics(final Model model1, final Model model2, final Set<String> slotNames) {
 
         // TODO: Default sort to heap id + create time (long value)
         // TODO: Need an invoke-based implementation to handle the

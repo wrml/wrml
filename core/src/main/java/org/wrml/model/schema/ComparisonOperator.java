@@ -29,8 +29,7 @@ package org.wrml.model.schema;
  *
  * @see org.wrml.runtime.schema.CollectionSlotCriterion
  */
-public enum ComparisonOperator
-{
+public enum ComparisonOperator {
     /**
      * <p>
      * The equals operator, for equality (exact match) comparisons.

@@ -25,13 +25,13 @@
 package org.wrml.model.schema;
 
 import org.wrml.runtime.schema.DefaultValue;
+
 import java.util.List;
 
 /**
  * The WRML representation of the <code>double</code> (or {@link Double}) primitive type.
  */
-public interface DoubleValue extends Inextensible, NumericValue
-{
+public interface DoubleValue extends Inextensible, NumericValue {
 
     /**
      * <p>

@@ -24,6 +24,5 @@
  */
 package org.wrml.model.rest.status;
 
-public interface ApiNotFoundErrorReport extends NotFoundErrorReport
-{
+public interface ApiNotFoundErrorReport extends NotFoundErrorReport {
 }

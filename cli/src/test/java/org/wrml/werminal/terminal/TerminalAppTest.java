@@ -53,8 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MessageBox.class, TerminalFacade.class, DialogResult.class, Position.class})
-public class TerminalAppTest
-{
+public class TerminalAppTest {
 
     /**
      * class under test
@@ -95,8 +94,7 @@ public class TerminalAppTest
     private TerminalSize mockTerminalSize;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         mockStatic(MessageBox.class);
         mockStatic(TerminalFacade.class);
@@ -113,43 +111,37 @@ public class TerminalAppTest
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
         _TerminalApp = null;
     }
 
     @Test
-    public void testShowErrorString()
-    {
+    public void testShowErrorString() {
 
         _TerminalApp.showError(mockErrorMessage);
     }
 
     @Test
-    public void testShowErrorStringThrowable()
-    {
+    public void testShowErrorStringThrowable() {
 
         _TerminalApp.showError(mockErrorMessage, mockThrowable);
     }
 
     @Test
-    public void testShowMessageBox()
-    {
+    public void testShowMessageBox() {
 
         _TerminalApp.showMessageBox(mockTitle, mockMessage);
     }
 
     @Test
-    public void testShowWindowWindow()
-    {
+    public void testShowWindowWindow() {
 
         _TerminalApp.showWindow(mockWindow);
     }
 
     @Test
-    public void testShowWindowWindowPosition()
-    {
+    public void testShowWindowWindowPosition() {
 
         _TerminalApp.showWindow(mockWindow, mockPosition);
     }

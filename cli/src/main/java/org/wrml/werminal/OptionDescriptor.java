@@ -27,8 +27,7 @@ package org.wrml.werminal;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-public enum OptionDescriptor
-{
+public enum OptionDescriptor {
 
     config("config", "config", true, "The WRML configuration file."),
     unix("unix", "unix", false, "Runs the Werminal GUI app within a UNIX terminal."),
@@ -36,13 +35,11 @@ public enum OptionDescriptor
 
     public static final Options OPTIONS = new Options();
 
-    static
-    {
+    static {
 
         final OptionDescriptor[] optionDescriptors = OptionDescriptor.values();
 
-        for (final OptionDescriptor optionDescriptor : optionDescriptors)
-        {
+        for (final OptionDescriptor optionDescriptor : optionDescriptors) {
             OPTIONS.addOption(optionDescriptor.toOption());
         }
 
@@ -59,8 +56,7 @@ public enum OptionDescriptor
     private Option _Option;
 
     private OptionDescriptor(final String name, final String longName, final boolean paramenterized,
-                             final String description)
-    {
+                             final String description) {
 
         _Name = name;
         _LongName = longName;
@@ -68,43 +64,36 @@ public enum OptionDescriptor
         _Description = description;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
 
         return _Description;
     }
 
-    public String getLongName()
-    {
+    public String getLongName() {
 
         return _LongName;
     }
 
-    public String getName()
-    {
+    public String getName() {
 
         return _Name;
     }
 
-    public boolean isParameterized()
-    {
+    public boolean isParameterized() {
 
         return _Parameterized;
     }
 
-    public Option toOption()
-    {
+    public Option toOption() {
 
-        if (_Option == null)
-        {
+        if (_Option == null) {
             _Option = new Option(getName(), getLongName(), isParameterized(), getDescription());
         }
         return _Option;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return _Name;
     }

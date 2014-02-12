@@ -8,29 +8,30 @@
 <!-- -->
 <configuration debug="false">
 
-	<!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
-			<pattern><![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-42(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
-		</encoder>
-	</appender>
+    <!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
+            <pattern>
+                <![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-42(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
+        </encoder>
+    </appender>
 
-	<!-- org.wrml loggers first -->
-	<logger name="org.wrml" level="INFO" />
-	<logger name="org.wrml.integration" level="DEBUG" />
-	<logger name="org.wrml.runtime" level="INFO" />
-	<logger name="org.wrml.runtime.rest" level="WARN" />
-	<logger name="org.wrml.server" level="INFO" />
-	<logger name="org.wrml.util" level="WARN" />
-	<logger name="org.wrmlx" level="INFO" />
+    <!-- org.wrml loggers first -->
+    <logger name="org.wrml" level="INFO"/>
+    <logger name="org.wrml.integration" level="DEBUG"/>
+    <logger name="org.wrml.runtime" level="INFO"/>
+    <logger name="org.wrml.runtime.rest" level="WARN"/>
+    <logger name="org.wrml.server" level="INFO"/>
+    <logger name="org.wrml.util" level="WARN"/>
+    <logger name="org.wrmlx" level="INFO"/>
 
-	<!-- third party loggers last, lexicographically -->
-	<logger name="org.apache" level="DEBUG" />
+    <!-- third party loggers last, lexicographically -->
+    <logger name="org.apache" level="DEBUG"/>
 
-	<!-- logback-test.xml should typically be DEBUG.  logback.xml should typically be INFO or WARN. -->
-	<root level="DEBUG">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <!-- logback-test.xml should typically be DEBUG.  logback.xml should typically be INFO or WARN. -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
 
 </configuration>

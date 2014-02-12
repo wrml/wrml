@@ -1,132 +1,113 @@
-
 $listIndexHeaderWidth: $formFieldSetMarginRight;
 $listIndexCellSpacing: 5px;
 $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
-#main-region							
-{ 
+#main-region {
 
-	#model-page-header
-	{
-		 
-		top: $navbarHeight;
-		position: fixed;
-		z-index: 1029;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		margin-top: 0px;
-		margin-bottom: 20px;		 
-		border-bottom: 1px solid $black;
-		width: 940px;
-		background-color: $white;
-	}
+  #model-page-header {
 
-	#model-title-section
-	{
-		.untitled
-		{
-			font-style: italic;
-		}
-	}
+    top: $navbarHeight;
+    position: fixed;
+    z-index: 1029;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $black;
+    width: 940px;
+    background-color: $white;
+  }
 
-	#model-links
-	{
-		.control-label  
-		{
-			float: left;
-			width: $horizontalFormLabelWidth;
-			padding-top: 5px;
-			text-align: right;			
-			font-weight: normal;
-			margin-top: 0px;
-			color: $muted;		
-			display: inline;	
-		}
+  #model-title-section {
+    .untitled {
+      font-style: italic;
+    }
+  }
 
-		.controls 
-		{
-			*display: inline-block;
-			*padding-left: 20px;
-			margin-left: $horizontalFormMarginLeft;
-			*margin-left: 0;		
+  #model-links {
+    .control-label {
+      float: left;
+      width: $horizontalFormLabelWidth;
+      padding-top: 5px;
+      text-align: right;
+      font-weight: normal;
+      margin-top: 0px;
+      color: $muted;
+      display: inline;
+    }
 
-			.model-link-href-input
-			{
-				width: $horizontalFormTextInputWidth;
-			}
+    .controls {
+      *display: inline-block;
+      *padding-left: 20px;
+      margin-left: $horizontalFormMarginLeft;
+      *margin-left: 0;
 
-			.model-link-relation-input
-			{
-				width: 200px;
-			}
+      .model-link-href-input {
+        width: $horizontalFormTextInputWidth;
+      }
 
-			.model-link-entity-input
-			{
-				width: 400px;
-			}
-		}		
+      .model-link-relation-input {
+        width: 200px;
+      }
 
-	
-	}
+      .model-link-entity-input {
+        width: 400px;
+      }
+    }
 
-	.model-form
-	{
+  }
 
-	}
+  .model-form {
 
-	.model-list-table
-	{
+  }
 
-		width: $formTableWidth;
-		margin-bottom: 10px;
+  .model-list-table {
 
-		th {
-			font-style: italic;
-			font-weight: normal;
-		}
+    width: $formTableWidth;
+    margin-bottom: 10px;
 
-		th.list-index-header 
-		{
-			width: $listIndexHeaderWidth; 
-			text-align: right;
-			padding-right: $listIndexCellSpacing;
-			margin-right: 0px;  		
-		}
+    th {
+      font-style: italic;
+      font-weight: normal;
+    }
 
-		.list-index-icon
-		{		
-			width: 16px;
-			height: 16px;
-			padding-right: $listIndexCellSpacing;
-			display: inline; 
-			margin-top: -2px;		
-		}
+    th.list-index-header {
+      width: $listIndexHeaderWidth;
+      text-align: right;
+      padding-right: $listIndexCellSpacing;
+      margin-right: 0px;
+    }
 
-		td.list-index-value
-		{
-			padding-top: 25px;
-			padding-right: $listIndexCellSpacing;
-			margin-right: 0px;
-			text-align: right;
-			color: $muted;	
-		}
+    .list-index-icon {
+      width: 16px;
+      height: 16px;
+      padding-right: $listIndexCellSpacing;
+      display: inline;
+      margin-top: -2px;
+    }
 
-		td.list-element-value
-		{
+    td.list-index-value {
+      padding-top: 25px;
+      padding-right: $listIndexCellSpacing;
+      margin-right: 0px;
+      text-align: right;
+      color: $muted;
+    }
 
-			padding-top: 20px;
+    td.list-element-value {
 
-			input[type=text],
-			input[type=password],
-			input[type=url],
-			textarea,
-			.uneditable-input 
-			{
-				width: $listValueTextInputWidth;
-			}
-		
-		}
-	}
+      padding-top: 20px;
+
+      input[type=text],
+      input[type=password],
+      input[type=url],
+      textarea,
+      .uneditable-input {
+        width: $listValueTextInputWidth;
+      }
+
+    }
+  }
 
 }
 

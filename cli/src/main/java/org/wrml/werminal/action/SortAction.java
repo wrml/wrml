@@ -24,7 +24,6 @@
  */
 package org.wrml.werminal.action;
 
-public class SortAction
-{
+public class SortAction {
 
 }

@@ -1,4 +1,3 @@
-def static getAddress()
-{
+def static getAddress() {
     8L
 }    

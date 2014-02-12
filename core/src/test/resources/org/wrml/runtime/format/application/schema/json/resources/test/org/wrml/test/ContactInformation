@@ -1,26 +1,26 @@
 {
     "title": "Contact Information",
-    "description" : "Example Contact Information JSON Schema",
-    "type" : "object",
-    "properties" : {
-        "name" : {
-            "type" : "string",
-            "enum" : ["home", "work", "other"]
+    "description": "Example Contact Information JSON Schema",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "enum": ["home", "work", "other"]
         },
-        "phone" : {
-            "type" : "string",
-            "optional" : true,
-            "format" : "phone"
+        "phone": {
+            "type": "string",
+            "optional": true,
+            "format": "phone"
         },
-        "mobile" : {
-            "type" : "string",
-            "optional" : true,
-            "format" : "phone"
+        "mobile": {
+            "type": "string",
+            "optional": true,
+            "format": "phone"
         },
-        "email" : {
-            "type" : "string",
-            "optional" : true,
-            "format" : "email"
+        "email": {
+            "type": "string",
+            "optional": true,
+            "format": "email"
         }
     }
 }

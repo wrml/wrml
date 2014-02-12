@@ -30,20 +30,17 @@ import org.wrml.werminal.dialog.ListValueDialog;
 import java.lang.reflect.Type;
 import java.net.URI;
 
-public class AddAction extends WerminalAction
-{
+public class AddAction extends WerminalAction {
 
     private ListValueDialog _ListValueDialog;
 
-    public AddAction(final Werminal werminal)
-    {
+    public AddAction(final Werminal werminal) {
 
         super(werminal, "Add...");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
 
@@ -51,12 +48,10 @@ public class AddAction extends WerminalAction
         Object initialValue = null;
 
         final Type listElementType = listValueDialog.getListElementType();
-        if (String.class.equals(listElementType))
-        {
+        if (String.class.equals(listElementType)) {
 
         }
-        else if (URI.class.equals(listElementType))
-        {
+        else if (URI.class.equals(listElementType)) {
             // TODO: Only do this for base schema uris slot
             initialValue = werminal.createSchemaUri("MyBaseModel");
         }
@@ -65,14 +60,12 @@ public class AddAction extends WerminalAction
 
     }
 
-    public ListValueDialog getListValueDialog()
-    {
+    public ListValueDialog getListValueDialog() {
 
         return _ListValueDialog;
     }
 
-    public void setListValueDialog(final ListValueDialog listValueDialog)
-    {
+    public void setListValueDialog(final ListValueDialog listValueDialog) {
 
         _ListValueDialog = listValueDialog;
     }

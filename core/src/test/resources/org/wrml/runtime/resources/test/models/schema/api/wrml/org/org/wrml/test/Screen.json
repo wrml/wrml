@@ -1,70 +1,62 @@
 {
-    "uniqueName" : "org/wrml/test/Screen",
-    "version" : 1,
-    "description" : "The aggregate Screen test schema",
+    "uniqueName": "org/wrml/test/Screen",
+    "version": 1,
+    "description": "The aggregate Screen test schema",
 
-    "keySlotNames" :
-    [
+    "keySlotNames": [
         "aKey",
         "bKey",
         "cKey"
     ],
 
-    "baseSchemaUris" :
-    [
+    "baseSchemaUris": [
         "http://schema.api.wrml.org/org/wrml/model/rest/AggregateDocument"
     ],
 
-    "slots" :
-    [
+    "slots": [
         {
-            "name" : "aKey",
-            "value" :
-            {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            "name": "aKey",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
             }
         },
         {
-            "name" : "bKey",
-            "value" :
-            {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            "name": "bKey",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
             }
         },
         {
-            "name" : "cKey",
-            "value" :
-            {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
+            "name": "cKey",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/IntegerValue"
             }
         },
         {
-            "name" : "a",
-            "value" :
-            {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
-                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/A",
-                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/a",
-                "embedded" : true
+            "name": "a",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri": "http://schema.api.wrml.org/org/wrml/test/A",
+                "linkRelationUri": "http://relation.api.wrml.org/org/wrml/test/a",
+                "embedded": true
             }
         },
         {
-            "name" : "b",
-            "value" :
-            {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
-                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/B",
-                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/b",
-                "embedded" : true
+            "name": "b",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri": "http://schema.api.wrml.org/org/wrml/test/B",
+                "linkRelationUri": "http://relation.api.wrml.org/org/wrml/test/b",
+                "embedded": true
             }
         },
         {
-            "name" : "c",
-            "value" : {
-                "schemaUri" : "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
-                "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/C",
-                "linkRelationUri" : "http://relation.api.wrml.org/org/wrml/test/c",
-                "embedded" : true
+            "name": "c",
+            "value": {
+                "schemaUri": "http://schema.api.wrml.org/org/wrml/model/schema/LinkValue",
+                "responseSchemaUri": "http://schema.api.wrml.org/org/wrml/test/C",
+                "linkRelationUri": "http://relation.api.wrml.org/org/wrml/test/c",
+                "embedded": true
             }
         }
     ]

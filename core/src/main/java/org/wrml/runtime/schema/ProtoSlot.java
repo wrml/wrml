@@ -24,6 +24,7 @@
  */
 package org.wrml.runtime.schema;
 
+import com.google.common.collect.ComparisonChain;
 import org.wrml.model.schema.Slot;
 import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.Context;
@@ -36,7 +37,6 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.google.common.collect.ComparisonChain;
 /**
  * <p>
  * A ProtoSlot (prototypical slot) is a {@link Prototype}'s runtime-optimized rendition of a schema {@link Slot}.
@@ -45,21 +45,19 @@ import com.google.common.collect.ComparisonChain;
  * @see Prototype
  * @see Slot
  */
-public abstract class ProtoSlot implements Comparable<ProtoSlot>
-{
+public abstract class ProtoSlot implements Comparable<ProtoSlot> {
 
-    public static Comparator<ProtoSlot> ALPHA_ORDER = new Comparator<ProtoSlot>()
-    {
+    public static Comparator<ProtoSlot> ALPHA_ORDER = new Comparator<ProtoSlot>() {
 
         @Override
-        public int compare(final ProtoSlot protoSlot1, final ProtoSlot protoSlot2)
-        {
+        public int compare(final ProtoSlot protoSlot1, final ProtoSlot protoSlot2) {
+
             return ComparisonChain.start()//
                     .compare(protoSlot1.getClass().getName(), protoSlot2.getClass().getName())//
-                    // .compare(protoSlot1.getPrototype(), protoSlot2.getPrototype())// not Comparable
+                            // .compare(protoSlot1.getPrototype(), protoSlot2.getPrototype())// not Comparable
                     .compare(protoSlot1.getName(), protoSlot2.getName())//
                     .compare(protoSlot1.getValueType(), protoSlot2.getValueType())//
-                    // .compare(protoSlot1.getHeapValueType(), protoSlot2.getHeapValueType())// not Comparable
+                            // .compare(protoSlot1.getHeapValueType(), protoSlot2.getHeapValueType())// not Comparable
                     .compare(protoSlot1.getSchemaUri(), protoSlot2.getSchemaUri())//
                     .compare(protoSlot1.getDeclaringSchemaUri(), protoSlot2.getDeclaringSchemaUri())//
                     .compare(protoSlot1.toString(), protoSlot2.toString())// fallback
@@ -90,11 +88,9 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @param prototype The slot's owning {@link Prototype}.
      * @param slotName  The slot's name.
      */
-    ProtoSlot(final Prototype prototype, final String slotName)
-    {
+    ProtoSlot(final Prototype prototype, final String slotName) {
 
-        if (prototype == null || slotName == null)
-        {
+        if (prototype == null || slotName == null) {
             throw new PrototypeException("Neither the prototype nor the name may be null.", null, prototype, slotName);
         }
 
@@ -104,49 +100,38 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
     }
 
     @Override
-    public final int compareTo(final ProtoSlot other)
-    {
+    public final int compareTo(final ProtoSlot other) {
 
         return ProtoSlot.ALPHA_ORDER.compare(this, other);
     }
 
     @Override
-    public final boolean equals(final Object obj)
-    {
+    public final boolean equals(final Object obj) {
         // TODO: Replace with guava's Objects.equal() OR apache EqualsBuilder?
-        if (this == obj)
-        {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final ProtoSlot other = (ProtoSlot) obj;
-        if (_Name == null)
-        {
-            if (other._Name != null)
-            {
+        if (_Name == null) {
+            if (other._Name != null) {
                 return false;
             }
         }
-        else if (!_Name.equals(other._Name))
-        {
+        else if (!_Name.equals(other._Name)) {
             return false;
         }
-        if (_Prototype == null)
-        {
-            if (other._Prototype != null)
-            {
+        if (_Prototype == null) {
+            if (other._Prototype != null) {
                 return false;
             }
         }
-        else if (!_Prototype.equals(other._Prototype))
-        {
+        else if (!_Prototype.equals(other._Prototype)) {
             return false;
         }
         return true;
@@ -157,30 +142,24 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      *
      * @return The aliases, or alternative names, for this slot or <code>null</code> if this slot has no aliases.
      */
-    public SortedSet<String> getAliases()
-    {
+    public SortedSet<String> getAliases() {
 
-        if (_Aliases == null)
-        {
+        if (_Aliases == null) {
 
             final Aliases aliases = getAnnotation(Aliases.class);
-            if (aliases != null)
-            {
+            if (aliases != null) {
                 final String[] aliasArray = aliases.value();
 
-                if ((aliasArray != null) && (aliasArray.length > 0))
-                {
+                if ((aliasArray != null) && (aliasArray.length > 0)) {
                     _Aliases = new TreeSet<String>(Arrays.asList(aliasArray));
                 }
 
-                if (_Aliases != null && _Aliases.contains(getName()))
-                {
+                if (_Aliases != null && _Aliases.contains(getName())) {
                     // Not allowed to contain own name (aliases cannot have aliases).
                     _Aliases = null;
                 }
             }
-            else
-            {
+            else {
                 _Aliases = null;
             }
         }
@@ -193,8 +172,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      *
      * @return The {@link Context} for this {@link ProtoSlot}.
      */
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return getSchemaLoader().getContext();
     }
@@ -214,12 +192,10 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @return The description of the slot or <code>null</code> if this slot has not be described.
      * @see Description
      */
-    public final String getDescription()
-    {
+    public final String getDescription() {
         // NOTE: This method relies on a subclass hook (thus the lazy init design).
         // TODO: Refactor to address lazy init design?
-        if (_Description == null)
-        {
+        if (_Description == null) {
             final Description description = getAnnotation(Description.class);
             _Description = (description != null) ? description.value() : null;
         }
@@ -240,8 +216,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      *
      * @return The slot's name.
      */
-    public final String getName()
-    {
+    public final String getName() {
 
         return _Name;
     }
@@ -251,8 +226,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      *
      * @return The {@link Prototype} that owns this slot.
      */
-    public final Prototype getPrototype()
-    {
+    public final Prototype getPrototype() {
 
         return _Prototype;
     }
@@ -264,8 +238,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @see #getName()
      * @see #isAlias()
      */
-    public String getRealName()
-    {
+    public String getRealName() {
 
         return _RealName;
     }
@@ -277,8 +250,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @see #isAlias()
      * @see #getRealName()
      */
-    void setRealName(final String realName)
-    {
+    void setRealName(final String realName) {
 
         _RealName = realName;
     }
@@ -289,8 +261,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @return The {@link URI} of the {@link org.wrml.model.schema.Schema} that contains this slot, which it may have inherited from a base schema.
      * @see #getDeclaringSchemaUri()
      */
-    public final URI getSchemaUri()
-    {
+    public final URI getSchemaUri() {
 
         return getPrototype().getSchemaUri();
     }
@@ -300,8 +271,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      *
      * @return The {@link SchemaLoader} responsible for this slot's {@link Prototype}.
      */
-    public final SchemaLoader getSchemaLoader()
-    {
+    public final SchemaLoader getSchemaLoader() {
 
         return getPrototype().getSchemaLoader();
     }
@@ -312,11 +282,9 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @return The title (display name) of this slot or <code>null</code> if this slot was not given a title.
      * @see Title
      */
-    public final String getTitle()
-    {
+    public final String getTitle() {
 
-        if (_Title == null)
-        {
+        if (_Title == null) {
             final Title title = getAnnotation(Title.class);
             _Title = (title != null) ? title.value() : getName();
         }
@@ -330,21 +298,17 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @see #getHeapValueType()
      * @see ValueType#getValueType(java.lang.reflect.Type)
      */
-    public final ValueType getValueType()
-    {
+    public final ValueType getValueType() {
 
         // NOTE: This method relies on a subclass hook (thus the lazy init design).
         // TODO: Refactor to address lazy init design?
 
-        if (_ValueType == null)
-        {
+        if (_ValueType == null) {
             final Type heapValueType = getHeapValueType();
-            try
-            {
+            try {
                 _ValueType = getSchemaLoader().getValueType(heapValueType);
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
 
                 throw new PrototypeException("Prototype: " + getPrototype()
                         + " encountered an error while attempting to determine the value type of the slot named \""
@@ -356,8 +320,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
     }
 
     @Override
-    public final int hashCode()
-    {
+    public final int hashCode() {
 
         final int prime = 31;
         int result = 1;
@@ -373,8 +336,7 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @see #getName()
      * @see #getRealName()
      */
-    public boolean isAlias()
-    {
+    public boolean isAlias() {
 
         return _Alias;
     }
@@ -386,15 +348,13 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @see #isAlias()
      * @see #setRealName(String)
      */
-    void setAlias(final boolean alias)
-    {
+    void setAlias(final boolean alias) {
 
         _Alias = alias;
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
 
         return getClass().getName() + " [prototype = " + getPrototype() + ", name = " + getName() + ", valueType = "
                 + getValueType() + ", heapValueType = " + getHeapValueType() + ", schemaUri = " + getSchemaUri()
@@ -408,11 +368,9 @@ public abstract class ProtoSlot implements Comparable<ProtoSlot>
      * @param <T>             The generic {@link Annotation} type token that enables safe usage without the caller needing to cast the result.
      * @return The {@link Annotation} instance.
      */
-    protected final <T extends Annotation> T getAnnotation(final Class<T> annotationClass)
-    {
+    protected final <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
 
-        if (isAlias())
-        {
+        if (isAlias()) {
             return getPrototype().getProtoSlot(getRealName()).getAnnotation(annotationClass);
         }
 

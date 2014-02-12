@@ -24,11 +24,8 @@
  */
 package org.wrml.runtime.format.application.schema.json;
 
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +47,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * http://tools.ietf.org/html/draft-zyp-json-schema-03
  */
-public class JsonSchema
-{
+public class JsonSchema {
 
     private final JsonSchemaLoader _JsonSchemaLoader;
 
@@ -64,13 +60,13 @@ public class JsonSchema
     private final CopyOnWriteArrayList<Link> _Links;
 
     private final CopyOnWriteArraySet<URI> _ExtendsSet;
-    
+
     private final CopyOnWriteArrayList<Property> _Required;
-    
+
     private final Map<String, List<Property>> _Dependencies;
 
-    JsonSchema(final JsonSchemaLoader loader, final ObjectNode rootNode)
-    {
+    JsonSchema(final JsonSchemaLoader loader, final ObjectNode rootNode) {
+
         _JsonSchemaLoader = loader;
         _RootNode = rootNode;
 
@@ -83,7 +79,7 @@ public class JsonSchema
         _Dependencies = new ConcurrentHashMap<>();
         _Required = new CopyOnWriteArrayList<>();
         _Links = new CopyOnWriteArrayList<>();
-        
+
         // TODO not pass the args...
         parseExtensions(rootNode, syntaxLoader);
         parseProperties();
@@ -91,66 +87,52 @@ public class JsonSchema
         parseRequireds();
         parseDependencies();
     }
-    
-    private void parseExtensions(final ObjectNode rootNode, final SyntaxLoader syntaxLoader)
-    {
+
+    private void parseExtensions(final ObjectNode rootNode, final SyntaxLoader syntaxLoader) {
         // v3 uses the extends keyword
-        if (rootNode.has(PropertyType.Extends.getName()))
-        {
+        if (rootNode.has(PropertyType.Extends.getName())) {
             final JsonNode extendsJsonNode = rootNode.get(PropertyType.Extends.getName());
 
-            if (extendsJsonNode instanceof ArrayNode)
-            {
+            if (extendsJsonNode instanceof ArrayNode) {
                 final ArrayNode extendsArrayNode = (ArrayNode) extendsJsonNode;
                 final Iterator<JsonNode> elements = extendsArrayNode.elements();
-                while (elements.hasNext())
-                {
+                while (elements.hasNext()) {
                     final JsonNode baseSchemaUriNode = elements.next();
                     final String baseSchemaUriString = baseSchemaUriNode.asText();
-                    if (baseSchemaUriString != null && !baseSchemaUriString.isEmpty())
-                    {
+                    if (baseSchemaUriString != null && !baseSchemaUriString.isEmpty()) {
                         final URI baseSchemaUri = syntaxLoader.parseSyntacticText(baseSchemaUriString, URI.class);
-                        if (baseSchemaUri != null)
-                        {
+                        if (baseSchemaUri != null) {
                             _ExtendsSet.add(baseSchemaUri);
                         }
                     }
                 }
             }
-            else if (extendsJsonNode instanceof TextNode)
-            {
+            else if (extendsJsonNode instanceof TextNode) {
                 final String baseSchemaUriString = extendsJsonNode.asText();
-                if (baseSchemaUriString != null && !baseSchemaUriString.isEmpty())
-                {
+                if (baseSchemaUriString != null && !baseSchemaUriString.isEmpty()) {
                     final URI baseSchemaUri = syntaxLoader.parseSyntacticText(baseSchemaUriString, URI.class);
-                    if (baseSchemaUri != null)
-                    {
+                    if (baseSchemaUri != null) {
                         _ExtendsSet.add(baseSchemaUri);
                     }
                 }
 
             }
         }
-        
+
         // v4 uses the allOf keyword
-        if (rootNode.has(PropertyType.AllOf.getName()))
-        {
+        if (rootNode.has(PropertyType.AllOf.getName())) {
             final JsonNode allOfJsonNode = rootNode.get(PropertyType.AllOf.getName());
-            
+
             // This element type MUST be an array
-            if (allOfJsonNode instanceof ArrayNode)
-            {
+            if (allOfJsonNode instanceof ArrayNode) {
                 final ArrayNode allOfArrayNode = (ArrayNode) allOfJsonNode;
                 final Iterator<JsonNode> elements = allOfArrayNode.elements();
-                while (elements.hasNext())
-                {
+                while (elements.hasNext()) {
                     final JsonNode schemaNode = elements.next();
                     final JsonNode baseSchemaUriNode = schemaNode.get(PropertyType.$Ref.getName());
-                    if (baseSchemaUriNode != null)
-                    {
+                    if (baseSchemaUriNode != null) {
                         final URI baseSchemaUri = syntaxLoader.parseSyntacticText(baseSchemaUriNode.asText(), URI.class);
-                        if (baseSchemaUri != null)
-                        {
+                        if (baseSchemaUri != null) {
                             _ExtendsSet.add(baseSchemaUri);
                         }
                     }
@@ -158,136 +140,117 @@ public class JsonSchema
             }
         }
     }
-    
-    private void parseProperties()
-    {
+
+    private void parseProperties() {
+
         final ObjectNode propertiesNode = (ObjectNode) Definitions.PropertyType.Properties.getValueNode(_RootNode);
 
-        if (propertiesNode != null)
-        {
+        if (propertiesNode != null) {
 
             final Iterator<String> propertyNames = propertiesNode.fieldNames();
-            while (propertyNames.hasNext())
-            {
+            while (propertyNames.hasNext()) {
                 final String name = propertyNames.next();
 
                 final ObjectNode propertyNode = (ObjectNode) propertiesNode.get(name);
 
                 Property property;
-                try
-                {
+                try {
                     property = new Property(this, name, propertyNode);
                 }
-                catch (final IOException e)
-                {
+                catch (final IOException e) {
                     continue;
                 }
 
                 // Add to the required set if noted
                 Object value = property.getValue(PropertyType.Required);
-                if (value != null && (Boolean)value)
-                {
+                if (value != null && (Boolean) value) {
                     _Required.add(property);
                 }
-                
+
                 _Properties.put(name, property);
 
             }
         }
     }
-    
-    private void parseLinks()
-    {
+
+    private void parseLinks() {
+
         final ArrayNode linksNode = Definitions.PropertyType.Links.getValueNode(_RootNode);
 
-        if (linksNode != null)
-        {
+        if (linksNode != null) {
 
-            for (final JsonNode linkNode : linksNode)
-            {
+            for (final JsonNode linkNode : linksNode) {
                 final Link link = new Link(this, (ObjectNode) linkNode);
                 _Links.add(link);
             }
 
         }
     }
-    
-    private void parseRequireds()
-    {
+
+    private void parseRequireds() {
+
         final JsonNode requiredPreNode = Definitions.PropertyType.Required.getValueNode(_RootNode);
-        
-        if (requiredPreNode != null && requiredPreNode instanceof ArrayNode)
-        {
-            final ArrayNode requiredNode = (ArrayNode)requiredPreNode;
-            for (final JsonNode requiredSubNode : requiredNode)
-            {
+
+        if (requiredPreNode != null && requiredPreNode instanceof ArrayNode) {
+            final ArrayNode requiredNode = (ArrayNode) requiredPreNode;
+            for (final JsonNode requiredSubNode : requiredNode) {
                 final String propertyName = requiredSubNode.asText();
                 final Property property = _Properties.get(propertyName);
                 _Required.add(property);
-                if (property != null)
-                {
+                if (property != null) {
                     ObjectNode node = property.getPropertyNode();
                     node.put(PropertyType.Required.getName(), true);
                 }
             }
         }
     }
-    
-    private void parseDependencies()
-    {
+
+    private void parseDependencies() {
+
         final ObjectNode dependenciesNode = Definitions.PropertyType.Dependencies.getValueNode(_RootNode);
-        
-        if (dependenciesNode != null)
-        {
+
+        if (dependenciesNode != null) {
             Iterator<Entry<String, JsonNode>> iter2 = dependenciesNode.fields();
-            
-            while (iter2.hasNext())
-            {
+
+            while (iter2.hasNext()) {
                 Entry<String, JsonNode> current = iter2.next();
                 String dependent = current.getKey();
                 JsonNode dependencies = current.getValue();
-                
+
                 List<Property> propertyDependencies = new ArrayList<Property>();
-                
-                if (dependencies instanceof ArrayNode)
-                {
-                    ArrayNode dependenciesArray = (ArrayNode)dependencies;
+
+                if (dependencies instanceof ArrayNode) {
+                    ArrayNode dependenciesArray = (ArrayNode) dependencies;
                     Iterator<JsonNode> iter3 = dependenciesArray.iterator();
-                    
-                    while (iter3.hasNext())
-                    {
+
+                    while (iter3.hasNext()) {
                         JsonNode dependency = iter3.next();
                         String depText = dependency.asText();
                         Property prop = _Properties.get(depText);
-                        if(prop != null)
-                        {
+                        if (prop != null) {
                             propertyDependencies.add(prop);
                         }
                     }
                 }
-                
+
                 // Only add if our list has values that map.
-                if (!propertyDependencies.isEmpty())
-                {
+                if (!propertyDependencies.isEmpty()) {
                     _Dependencies.put(dependent, propertyDependencies);
                 }
             }
         }
     }
 
-    public static UniqueName createJsonSchemaUniqueName(final URI schemaUri)
-    {
+    public static UniqueName createJsonSchemaUniqueName(final URI schemaUri) {
 
         String uniqueNameString = schemaUri.getPath();
         uniqueNameString = StringUtils.stripStart(uniqueNameString, "/");
         uniqueNameString = StringUtils.stripEnd(uniqueNameString, "#");
-        if (uniqueNameString.endsWith(".json"))
-        {
+        if (uniqueNameString.endsWith(".json")) {
             uniqueNameString = uniqueNameString.substring(0, uniqueNameString.length() - ".json".length());
         }
 
-        if (!uniqueNameString.contains("/"))
-        {
+        if (!uniqueNameString.contains("/")) {
             uniqueNameString = "schemas/" + uniqueNameString;
         }
 
@@ -295,75 +258,65 @@ public class JsonSchema
         return literalUniqueName;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
 
         final SyntaxLoader syntaxLoader = _JsonSchemaLoader.getContext().getSyntaxLoader();
         return Definitions.PropertyType.Description.getValue(getRootNode(), syntaxLoader);
     }
 
-    public Set<URI> getExtendedSchemaUris()
-    {
+    public Set<URI> getExtendedSchemaUris() {
 
         return _ExtendsSet;
     }
 
-    public URI getId()
-    {
+    public URI getId() {
 
         final SyntaxLoader syntaxLoader = _JsonSchemaLoader.getContext().getSyntaxLoader();
         return Definitions.PropertyType.Id.getValue(_RootNode, syntaxLoader);
     }
 
-    public List<Link> getLinks()
-    {
+    public List<Link> getLinks() {
 
         return _Links;
     }
-    
-    public List<Property> getRequired()
-    {
+
+    public List<Property> getRequired() {
+
         return _Required;
     }
-    
-    public Map<String, List<Property>> getDependencies()
-    {
+
+    public Map<String, List<Property>> getDependencies() {
+
         return _Dependencies;
     }
 
-    public JsonSchemaLoader getLoader()
-    {
+    public JsonSchemaLoader getLoader() {
 
         return _JsonSchemaLoader;
     }
 
-    public ConcurrentMap<String, Property> getProperties()
-    {
+    public ConcurrentMap<String, Property> getProperties() {
 
         return _Properties;
     }
 
-    public ObjectNode getRootNode()
-    {
+    public ObjectNode getRootNode() {
 
         return _RootNode;
     }
 
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
 
         return _SchemaUri;
     }
 
-    public JsonNode getTypeNode()
-    {
+    public JsonNode getTypeNode() {
 
         return Definitions.PropertyType.Type.getValueNode(getRootNode());
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return String.valueOf(getRootNode());
     }
@@ -407,8 +360,7 @@ public class JsonSchema
      *
      * host-name This SHOULD be a host-name.
      */
-    public enum JsonStringFormat
-    {
+    public enum JsonStringFormat {
         DateTime("date-time", Date.class),
         Date("date", Date.class),
         Time("time", Date.class),
@@ -418,10 +370,8 @@ public class JsonSchema
 
         private final static Map<Class<?>, JsonStringFormat> JAVA_TYPE_MAP = new HashMap<>();
 
-        static
-        {
-            for (final JsonStringFormat jsonStringFormat : JsonStringFormat.values())
-            {
+        static {
+            for (final JsonStringFormat jsonStringFormat : JsonStringFormat.values()) {
                 KEYWORD_MAP.put(jsonStringFormat.getKeyword(), jsonStringFormat);
                 JAVA_TYPE_MAP.put(jsonStringFormat.getJavaType(), jsonStringFormat);
             }
@@ -431,55 +381,46 @@ public class JsonSchema
 
         private final Class<?> _JavaType;
 
-        JsonStringFormat(final String keyword, final Class<?> javaType)
-        {
+        JsonStringFormat(final String keyword, final Class<?> javaType) {
 
             _Keyword = keyword;
             _JavaType = javaType;
         }
 
-        public static JsonStringFormat forJavaType(final Class<?> javaType)
-        {
+        public static JsonStringFormat forJavaType(final Class<?> javaType) {
 
-            if (!JAVA_TYPE_MAP.containsKey(javaType))
-            {
+            if (!JAVA_TYPE_MAP.containsKey(javaType)) {
                 return null;
             }
             return JAVA_TYPE_MAP.get(javaType);
         }
 
-        public static JsonStringFormat forKeyword(final String keyword)
-        {
+        public static JsonStringFormat forKeyword(final String keyword) {
 
-            if (!KEYWORD_MAP.containsKey(keyword))
-            {
+            if (!KEYWORD_MAP.containsKey(keyword)) {
                 return null;
             }
             return KEYWORD_MAP.get(keyword);
         }
 
-        public Class<?> getJavaType()
-        {
+        public Class<?> getJavaType() {
 
             return _JavaType;
         }
 
-        public String getKeyword()
-        {
+        public String getKeyword() {
 
             return _Keyword;
         }
 
     }
 
-    public static interface Definitions
-    {
+    public static interface Definitions {
 
         /**
          * http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.1
          */
-        public static enum JsonType
-        {
+        public static enum JsonType {
 
             /**
              * Value MAY be of any type including null.
@@ -525,34 +466,28 @@ public class JsonSchema
 
             private final static Map<String, JsonType> KEYWORD_MAP = new HashMap<>();
 
-            static
-            {
-                for (final JsonType jsonType : JsonType.values())
-                {
+            static {
+                for (final JsonType jsonType : JsonType.values()) {
                     KEYWORD_MAP.put(jsonType.getKeyword(), jsonType);
                 }
             }
 
             private final String _Keyword;
 
-            JsonType(final String keyword)
-            {
+            JsonType(final String keyword) {
 
                 _Keyword = keyword;
             }
 
-            public static JsonType forKeyword(final String keyword)
-            {
+            public static JsonType forKeyword(final String keyword) {
 
-                if (!KEYWORD_MAP.containsKey(keyword))
-                {
+                if (!KEYWORD_MAP.containsKey(keyword)) {
                     return null;
                 }
                 return KEYWORD_MAP.get(keyword);
             }
 
-            public String getKeyword()
-            {
+            public String getKeyword() {
 
                 return _Keyword;
             }
@@ -562,8 +497,7 @@ public class JsonSchema
         /**
          * http://tools.ietf.org/html/draft-zyp-json-schema-03
          */
-        public static enum PropertyType
-        {
+        public static enum PropertyType {
 
             AdditionalItems("additionalItems", JsonType.Any),
             AdditionalProperties("additionalProperties", JsonType.Any),
@@ -611,13 +545,10 @@ public class JsonSchema
 
             private final static Map<String, PropertyType> NAME_MAP = new HashMap<>();
 
-            static
-            {
-                for (final PropertyType propertyType : PropertyType.values())
-                {
+            static {
+                for (final PropertyType propertyType : PropertyType.values()) {
                     final String name = propertyType.getName();
-                    if (NAME_MAP.containsKey(name))
-                    {
+                    if (NAME_MAP.containsKey(name)) {
                         throw new RuntimeException("Duplicate mappings detected.");
                     }
 
@@ -633,21 +564,18 @@ public class JsonSchema
 
             private final Class<?> _Format;
 
-            private PropertyType(final String textPropertyName, final Class<?> format)
-            {
+            private PropertyType(final String textPropertyName, final Class<?> format) {
 
                 this(textPropertyName, JsonType.String, format, null);
             }
 
-            private PropertyType(final String propertyName, final JsonType jsonType)
-            {
+            private PropertyType(final String propertyName, final JsonType jsonType) {
 
                 this(propertyName, jsonType, null, null);
             }
 
             private PropertyType(final String propertyName, final JsonType jsonType, final Class<?> format,
-                                 final Object defaultValue)
-            {
+                                 final Object defaultValue) {
 
                 _Name = propertyName;
                 _JsonType = jsonType;
@@ -655,152 +583,122 @@ public class JsonSchema
                 _DefaultValue = defaultValue;
             }
 
-            private PropertyType(final String propertyName, final JsonType jsonType, final Object defaultValue)
-            {
+            private PropertyType(final String propertyName, final JsonType jsonType, final Object defaultValue) {
 
                 this(propertyName, jsonType, null, defaultValue);
             }
 
-            public static PropertyType forName(final String name)
-            {
+            public static PropertyType forName(final String name) {
 
-                if (!NAME_MAP.containsKey(name))
-                {
+                if (!NAME_MAP.containsKey(name)) {
                     return null;
                 }
                 return NAME_MAP.get(name);
             }
 
-            public Object getDefaultValue()
-            {
+            public Object getDefaultValue() {
 
                 return _DefaultValue;
             }
 
-            public Class<?> getFormat()
-            {
+            public Class<?> getFormat() {
 
                 return _Format;
             }
 
-            public JsonType getJsonType()
-            {
+            public JsonType getJsonType() {
 
                 return _JsonType;
             }
 
-            public String getName()
-            {
+            public String getName() {
 
                 return _Name;
             }
 
             @SuppressWarnings("unchecked")
-            public <T> T getValue(final JsonNode jsonNode, final SyntaxLoader syntaxLoader)
-            {
+            public <T> T getValue(final JsonNode jsonNode, final SyntaxLoader syntaxLoader) {
 
                 final JsonNode valueNode = getValueNode(jsonNode);
-                if (valueNode == null)
-                {
+                if (valueNode == null) {
                     return null;
                 }
 
                 final T value;
 
-                switch (_JsonType)
-                {
+                switch (_JsonType) {
 
-                    case Any:
-                    {
+                    case Any: {
 
                         value = (T) valueNode.asText();
                         break;
                     }
-                    case Array:
-                    {
+                    case Array: {
                         value = null;
                         break;
                     }
-                    case Boolean:
-                    {
+                    case Boolean: {
 
-                        if (valueNode.isBoolean())
-                        {
+                        if (valueNode.isBoolean()) {
                             value = (T) ((valueNode.asBoolean()) ? Boolean.TRUE : Boolean.FALSE);
                         }
-                        else
-                        {
+                        else {
                             value = null;
                         }
 
                         break;
                     }
-                    case Integer:
-                    {
+                    case Integer: {
 
-                        if (valueNode.isIntegralNumber())
-                        {
+                        if (valueNode.isIntegralNumber()) {
                             value = (T) new Integer(valueNode.asInt());
                         }
-                        else
-                        {
+                        else {
                             value = null;
                         }
 
                         break;
                     }
-                    case Null:
-                    {
+                    case Null: {
                         value = null;
                         break;
                     }
-                    case Number:
-                    {
-                        if (valueNode.isFloatingPointNumber())
-                        {
+                    case Number: {
+                        if (valueNode.isFloatingPointNumber()) {
                             value = (T) new Double(valueNode.asDouble());
                         }
-                        else if (valueNode.isIntegralNumber())
-                        {
+                        else if (valueNode.isIntegralNumber()) {
                             value = (T) new Integer(valueNode.asInt());
                         }
-                        else
-                        {
+                        else {
                             value = null;
                         }
 
                         break;
                     }
-                    case Object:
-                    {
+                    case Object: {
                         value = (T) valueNode;
                         break;
                     }
-                    case String:
-                    {
+                    case String: {
 
-                        if (valueNode.isTextual())
-                        {
+                        if (valueNode.isTextual()) {
                             final String textValue = valueNode.textValue();
 
-                            if (_Format != null && textValue != null && !(textValue.trim()).isEmpty())
-                            {
+                            if (_Format != null && textValue != null && !(textValue.trim()).isEmpty()) {
                                 value = syntaxLoader.parseSyntacticText(textValue, _Format);
                             }
-                            else
-                            {
+                            else {
                                 value = (T) textValue;
                             }
                         }
-                        else
-                        {
+                        else {
                             value = null;
                         }
 
                         break;
                     }
-                    default:
-                    {
+                    default: {
                         value = null;
                         break;
                     }
@@ -810,103 +708,80 @@ public class JsonSchema
             }
 
             @SuppressWarnings("unchecked")
-            public <T extends JsonNode> T getValueNode(final JsonNode jsonNode)
-            {
+            public <T extends JsonNode> T getValueNode(final JsonNode jsonNode) {
 
                 return (T) jsonNode.get(_Name);
             }
 
-            public void setValue(final ObjectNode jsonNode, final Object value, final SyntaxLoader syntaxLoader)
-            {
+            public void setValue(final ObjectNode jsonNode, final Object value, final SyntaxLoader syntaxLoader) {
 
-                if (value == null)
-                {
+                if (value == null) {
                     return;
                 }
 
                 final String name = getName();
-                switch (_JsonType)
-                {
-                    case Any:
-                    {
-                        if (value instanceof String)
-                        {
+                switch (_JsonType) {
+                    case Any: {
+                        if (value instanceof String) {
                             jsonNode.put(name, (String) value);
                         }
-                        else if (value instanceof Integer)
-                        {
+                        else if (value instanceof Integer) {
                             jsonNode.put(name, (Integer) value);
                         }
-                        else if (value instanceof Long)
-                        {
+                        else if (value instanceof Long) {
                             jsonNode.put(name, (Long) value);
                         }
-                        else if (value instanceof Double)
-                        {
+                        else if (value instanceof Double) {
                             jsonNode.put(name, (Double) value);
                         }
-                        else if (value instanceof Boolean)
-                        {
+                        else if (value instanceof Boolean) {
                             jsonNode.put(name, (Boolean) value);
                         }
-                        else
-                        {
+                        else {
                             final String formattedValue = syntaxLoader.formatSyntaxValue(value);
-                            if (formattedValue != null)
-                            {
+                            if (formattedValue != null) {
                                 jsonNode.put(name, formattedValue);
                             }
                         }
                         break;
                     }
-                    case Array:
-                    {
+                    case Array: {
                         break;
                     }
-                    case Boolean:
-                    {
+                    case Boolean: {
                         jsonNode.put(name, (Boolean) value);
                         break;
                     }
-                    case Integer:
-                    {
+                    case Integer: {
                         jsonNode.put(name, (Integer) value);
                         break;
                     }
-                    case Null:
-                    {
+                    case Null: {
                         break;
                     }
-                    case Number:
-                    {
-                        if (value instanceof Integer)
-                        {
+                    case Number: {
+                        if (value instanceof Integer) {
                             jsonNode.put(name, (Integer) value);
                         }
-                        else if (value instanceof Long)
-                        {
+                        else if (value instanceof Long) {
                             jsonNode.put(name, (Long) value);
                         }
-                        else if (value instanceof Double)
-                        {
+                        else if (value instanceof Double) {
                             jsonNode.put(name, (Double) value);
                         }
 
                         break;
                     }
-                    case Object:
-                    {
+                    case Object: {
                         jsonNode.putObject(name);
                         break;
 
                     }
-                    case String:
-                    {
+                    case String: {
                         jsonNode.put(name, syntaxLoader.formatSyntaxValue(value));
                         break;
                     }
-                    default:
-                    {
+                    default: {
                         break;
                     }
 
@@ -917,8 +792,7 @@ public class JsonSchema
 
     }
 
-    public static final class Link
-    {
+    public static final class Link {
 
         private final JsonSchema _JsonSchema;
 
@@ -932,11 +806,9 @@ public class JsonSchema
 
         private final URI _TargetSchemaId;
 
-        public Link(final JsonSchema jsonSchema, final ObjectNode linkNode)
-        {
+        public Link(final JsonSchema jsonSchema, final ObjectNode linkNode) {
 
-            if (jsonSchema == null || linkNode == null)
-            {
+            if (jsonSchema == null || linkNode == null) {
                 throw new NullPointerException();
             }
             _JsonSchema = jsonSchema;
@@ -947,12 +819,10 @@ public class JsonSchema
             _Rel = PropertyType.Rel.getValue(getLinkNode(), syntaxLoader);
 
             URI linkRelationUri = null;
-            try
-            {
+            try {
                 linkRelationUri = new URI(_Rel);
             }
-            catch (final URISyntaxException e)
-            {
+            catch (final URISyntaxException e) {
 
             }
 
@@ -961,12 +831,10 @@ public class JsonSchema
             // isolate()
             {
                 final ObjectNode targetSchemaNode = PropertyType.TargetSchema.getValueNode(getLinkNode());
-                if (targetSchemaNode == null)
-                {
+                if (targetSchemaNode == null) {
                     _TargetSchemaId = null;
                 }
-                else
-                {
+                else {
                     _TargetSchemaId = PropertyType.$Ref.getValue(targetSchemaNode, syntaxLoader);
                 }
             }
@@ -975,58 +843,49 @@ public class JsonSchema
             {
 
                 final ObjectNode schemaNode = PropertyType.Schema.getValueNode(getLinkNode());
-                if (schemaNode == null)
-                {
+                if (schemaNode == null) {
                     _SchemaId = null;
                 }
-                else
-                {
+                else {
                     _SchemaId = PropertyType.$Ref.getValue(schemaNode, syntaxLoader);
                 }
             }
 
         }
 
-        public JsonSchema getJsonSchema()
-        {
+        public JsonSchema getJsonSchema() {
 
             return _JsonSchema;
         }
 
-        public ObjectNode getLinkNode()
-        {
+        public ObjectNode getLinkNode() {
 
             return _LinkNode;
         }
 
-        public String getRel()
-        {
+        public String getRel() {
 
             return _Rel;
         }
 
-        public URI getRelId()
-        {
+        public URI getRelId() {
 
             return _RelId;
         }
 
-        public URI getSchemaId()
-        {
+        public URI getSchemaId() {
 
             return _SchemaId;
         }
 
-        public URI getTargetSchemaId()
-        {
+        public URI getTargetSchemaId() {
 
             return _TargetSchemaId;
         }
 
     }
 
-    public static final class Property
-    {
+    public static final class Property {
 
         private final JsonSchema _JsonSchema;
 
@@ -1037,11 +896,9 @@ public class JsonSchema
         private final JsonType _JsonType;
 
         public Property(final JsonSchema jsonSchema, final String name, final ObjectNode propertyNode)
-                throws IOException
-        {
+                throws IOException {
 
-            if (jsonSchema == null || name == null || propertyNode == null)
-            {
+            if (jsonSchema == null || name == null || propertyNode == null) {
                 throw new NullPointerException();
             }
 
@@ -1049,95 +906,78 @@ public class JsonSchema
             _Name = name;
 
             final boolean isReference = isReference(propertyNode);
-            if (isReference)
-            {
+            if (isReference) {
                 final JsonSchema referencedJsonSchema = resolveReference(propertyNode);
                 _PropertyNode = referencedJsonSchema.getRootNode();
             }
-            else
-            {
+            else {
                 _PropertyNode = propertyNode;
             }
 
             final JsonNode typeNode = PropertyType.Type.getValueNode(_PropertyNode);
 
-            if (typeNode != null)
-            {
-                if (typeNode.isTextual())
-                {
+            if (typeNode != null) {
+                if (typeNode.isTextual()) {
                     final String typeName = typeNode.textValue();
                     _JsonType = Definitions.JsonType.forKeyword(typeName);
                 }
-                else if (typeNode instanceof ArrayNode)
-                {
+                else if (typeNode instanceof ArrayNode) {
                     _JsonType = JsonType.String;
                 }
-                else
-                {
+                else {
                     _JsonType = null;
                 }
             }
-            else
-            {
+            else {
                 _JsonType = null;
             }
 
         }
 
-        public JsonSchema getJsonSchema()
-        {
+        public JsonSchema getJsonSchema() {
 
             return _JsonSchema;
         }
 
-        public JsonType getJsonType()
-        {
+        public JsonType getJsonType() {
 
             return _JsonType;
         }
 
-        public String getName()
-        {
+        public String getName() {
 
             return _Name;
         }
 
-        public ObjectNode getPropertyNode()
-        {
+        public ObjectNode getPropertyNode() {
 
             return _PropertyNode;
         }
-        
-        void setRequired(final Boolean required)
-        {
-            
+
+        void setRequired(final Boolean required) {
+
         }
 
-        public PropertyType getPropertyType()
-        {
+        public PropertyType getPropertyType() {
 
             return PropertyType.forName(getName());
         }
 
-        public <T> T getValue(final PropertyType propertyType)
-        {
+        public <T> T getValue(final PropertyType propertyType) {
 
             final SyntaxLoader syntaxLoader = getJsonSchema().getLoader().getContext().getSyntaxLoader();
             return propertyType.getValue(getPropertyNode(), syntaxLoader);
         }
 
-        public JsonNode getValueNode(final PropertyType propertyType)
-        {
+        public JsonNode getValueNode(final PropertyType propertyType) {
 
             return propertyType.getValueNode(getPropertyNode());
         }
 
-        private boolean isReference(final JsonNode node)
-        {
+        private boolean isReference(final JsonNode node) {
 
             final JsonNode refNode = PropertyType.$Ref.getValueNode(node);
-            if (refNode == null)
-            {
+            if (refNode == null) {
                 return false;
             }
             final JsonSchemaLoader jsonSchemaLoader = getJsonSchema().getLoader();
@@ -1147,12 +987,10 @@ public class JsonSchema
 
         }
 
-        private JsonSchema resolveReference(final JsonNode node) throws IOException
-        {
+        private JsonSchema resolveReference(final JsonNode node) throws IOException {
 
             final JsonNode refNode = PropertyType.$Ref.getValueNode(node);
-            if (refNode == null)
-            {
+            if (refNode == null) {
                 return null;
             }
 
@@ -1160,18 +998,15 @@ public class JsonSchema
             final JsonSchemaLoader jsonSchemaLoader = jsonSchema.getLoader();
             final SyntaxLoader syntaxLoader = jsonSchemaLoader.getContext().getSyntaxLoader();
             final URI refUri = PropertyType.$Ref.getValue(node, syntaxLoader);
-            if (refUri == null)
-            {
+            if (refUri == null) {
                 return null;
             }
 
             final URI resolvedUri;
-            if (refUri.isAbsolute())
-            {
+            if (refUri.isAbsolute()) {
                 resolvedUri = refUri;
             }
-            else
-            {
+            else {
                 resolvedUri = jsonSchema.getId().resolve(refUri);
             }
 

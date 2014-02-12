@@ -26,58 +26,49 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class DelegatingPhasedWerminalAction extends PhasedWerminalAction
-{
+public class DelegatingPhasedWerminalAction extends PhasedWerminalAction {
 
     private final WerminalAction _Delegate;
 
-    public DelegatingPhasedWerminalAction(final Werminal werminal, final String title)
-    {
+    public DelegatingPhasedWerminalAction(final Werminal werminal, final String title) {
 
         this(werminal, title, null);
     }
 
-    public DelegatingPhasedWerminalAction(final Werminal werminal, final String title, final WerminalAction delegate)
-    {
+    public DelegatingPhasedWerminalAction(final Werminal werminal, final String title, final WerminalAction delegate) {
 
         super(werminal, (title != null) ? title : delegate.getTitle());
         _Delegate = delegate;
     }
 
-    public DelegatingPhasedWerminalAction(final Werminal werminal, final WerminalAction delegate)
-    {
+    public DelegatingPhasedWerminalAction(final Werminal werminal, final WerminalAction delegate) {
 
         this(werminal, null, delegate);
     }
 
 
-    public final WerminalAction getDelegate()
-    {
+    public final WerminalAction getDelegate() {
 
         return _Delegate;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final WerminalAction delegate = getDelegate();
-        if (delegate != null)
-        {
+        if (delegate != null) {
             delegate.doAction();
         }
         return true;
     }
 
     @Override
-    protected void postDoIt()
-    {
+    protected void postDoIt() {
 
     }
 
     @Override
-    protected boolean preDoIt()
-    {
+    protected boolean preDoIt() {
 
         return true;
     }

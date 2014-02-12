@@ -27,8 +27,7 @@ package org.wrml.runtime.syntax;
 import org.wrml.runtime.rest.SystemApi;
 import org.wrml.util.UniqueName;
 
-public enum SystemSyntax
-{
+public enum SystemSyntax {
 
     Boolean(new BooleanSyntaxHandler()),
     Date(new DateSyntaxHandler()),
@@ -49,8 +48,8 @@ public enum SystemSyntax
 
     private final java.net.URI _SyntaxUri;
 
-    private SystemSyntax(final SyntaxHandler<?> syntaxHandler)
-    {
+    private SystemSyntax(final SyntaxHandler<?> syntaxHandler) {
+
         _SyntaxHandler = syntaxHandler;
         final String localName = toString();
         _UniqueName = new UniqueName(Constants.NAMESPACE, localName);
@@ -58,18 +57,18 @@ public enum SystemSyntax
         _SyntaxUri = SystemApi.Syntax.getUri().resolve(relativeUri);
     }
 
-    public SyntaxHandler<?> getSyntaxHandler()
-    {
+    public SyntaxHandler<?> getSyntaxHandler() {
+
         return _SyntaxHandler;
     }
 
-    public java.net.URI getSyntaxUri()
-    {
+    public java.net.URI getSyntaxUri() {
+
         return _SyntaxUri;
     }
 
-    public UniqueName getUniqueName()
-    {
+    public UniqueName getUniqueName() {
+
         return _UniqueName;
     }
 
@@ -77,8 +76,7 @@ public enum SystemSyntax
      * It seems crazy ironic that java requires this kind of hackery to allow the Enum constrtor to access static
      * constants...
      */
-    public static interface Constants
-    {
+    public static interface Constants {
 
         public static final UniqueName NAMESPACE = new UniqueName("org/wrml/syntax");
 

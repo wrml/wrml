@@ -27,14 +27,12 @@ package org.wrml.runtime.syntax;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class UrlSyntaxHandler extends SyntaxHandler<URL>
-{
+public class UrlSyntaxHandler extends SyntaxHandler<URL> {
 
     @Override
-    public String formatSyntaxValue(final URL url)
-    {
-        if (url == null)
-        {
+    public String formatSyntaxValue(final URL url) {
+
+        if (url == null) {
             return null;
         }
 
@@ -42,19 +40,16 @@ public class UrlSyntaxHandler extends SyntaxHandler<URL>
     }
 
     @Override
-    public URL parseSyntacticText(final String urlString)
-    {
-        if (urlString == null || urlString.isEmpty())
-        {
+    public URL parseSyntacticText(final String urlString) {
+
+        if (urlString == null || urlString.isEmpty()) {
             return null;
         }
 
-        try
-        {
+        try {
             return new URL(urlString);
         }
-        catch (final MalformedURLException e)
-        {
+        catch (final MalformedURLException e) {
             throw new SyntaxHandlerException(e.getMessage(), e, this);
         }
     }

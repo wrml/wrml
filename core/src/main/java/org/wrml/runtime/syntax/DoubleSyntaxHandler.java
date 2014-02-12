@@ -24,14 +24,12 @@
  */
 package org.wrml.runtime.syntax;
 
-public class DoubleSyntaxHandler extends SyntaxHandler<Double>
-{
+public class DoubleSyntaxHandler extends SyntaxHandler<Double> {
 
     @Override
-    public String formatSyntaxValue(final Double syntaxValue) throws SyntaxHandlerException
-    {
-        if (syntaxValue == null)
-        {
+    public String formatSyntaxValue(final Double syntaxValue) throws SyntaxHandlerException {
+
+        if (syntaxValue == null) {
             return "";
         }
 
@@ -39,10 +37,9 @@ public class DoubleSyntaxHandler extends SyntaxHandler<Double>
     }
 
     @Override
-    public Double parseSyntacticText(final String bValue) throws SyntaxHandlerException
-    {
-        if (bValue == null || bValue.isEmpty())
-        {
+    public Double parseSyntacticText(final String bValue) throws SyntaxHandlerException {
+
+        if (bValue == null || bValue.isEmpty()) {
             return null;
         }
 

@@ -25,7 +25,6 @@
 package org.wrml.model.schema;
 
 import org.wrml.model.rest.*;
-import org.wrml.model.rest.Method;
 
 import java.net.URI;
 import java.util.List;
@@ -43,8 +42,7 @@ import java.util.List;
  * @see Document
  * @see org.wrml.runtime.schema.LinkSlot
  */
-public interface LinkValue extends Primitive, Inextensible, Value
-{
+public interface LinkValue extends Primitive, Inextensible, Value {
 
     /**
      * <p>
@@ -114,7 +112,7 @@ public interface LinkValue extends Primitive, Inextensible, Value
      * form their "href" values.
      *
      * @return The optional list of {@link LinkValueBinding}s that convey how this {@link LinkValue}'s instance {@link Link}s will
-     *         form their "href" values.
+     * form their "href" values.
      * @see org.wrml.model.rest.Link#getHref()
      */
     List<LinkValueBinding> getBindings();

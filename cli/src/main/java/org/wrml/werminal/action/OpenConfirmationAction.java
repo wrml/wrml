@@ -40,18 +40,15 @@ import org.wrml.werminal.dialog.OpenModelDialog;
 
 import java.net.URI;
 
-public class OpenConfirmationAction extends CloseBeforeAction
-{
+public class OpenConfirmationAction extends CloseBeforeAction {
 
-    public OpenConfirmationAction(final Werminal werminal)
-    {
+    public OpenConfirmationAction(final Werminal werminal) {
 
         super(werminal, "OK");
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
         final Context context = werminal.getContext();
@@ -64,12 +61,10 @@ public class OpenConfirmationAction extends CloseBeforeAction
         URI uri = null;
         ApiNavigator apiNavigator = null;
 
-        if (keys != null)
-        {
+        if (keys != null) {
             final ApiLoader apiLoader = context.getApiLoader();
             uri = keys.getValue(schemaLoader.getDocumentSchemaUri());
-            if (uri != null)
-            {
+            if (uri != null) {
                 apiNavigator = apiLoader.getParentApiNavigator(uri);
             }
         }
@@ -77,18 +72,15 @@ public class OpenConfirmationAction extends CloseBeforeAction
         Window window = null;
         boolean cancelled = false;
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             werminal.showError("\nPlease indicate the type of data that you would like to open by entering a Schema URI value.\n\n ");
             cancelled = true;
         }
-        else if (keys == null || keys.getKeyedSchemaUris().isEmpty())
-        {
+        else if (keys == null || keys.getKeyedSchemaUris().isEmpty()) {
             werminal.showError("\nPlease enter one or more key values to identify the data that you would like to open.\n\n ");
             cancelled = true;
         }
-        else if (uri != null && !schemaLoader.getApiSchemaUri().equals(schemaUri) && apiNavigator == null)
-        {
+        else if (uri != null && !schemaLoader.getApiSchemaUri().equals(schemaUri) && apiNavigator == null) {
 
             final GUIScreen owner = werminal.getGuiScreen();
             final String title = "Load Parent REST API Metadata?";
@@ -99,31 +91,26 @@ public class OpenConfirmationAction extends CloseBeforeAction
             final DialogButtons buttons = DialogButtons.YES_NO_CANCEL;
             final DialogResult result = MessageBox.showMessageBox(owner, title, message, buttons);
 
-            if (result == DialogResult.YES)
-            {
+            if (result == DialogResult.YES) {
                 final LoadApiDialog loadApiDialog = werminal.getLoadApiDialog();
                 loadApiDialog.setApiUri(uri);
                 werminal.showWindow(loadApiDialog);
-                if (loadApiDialog.isCancelled())
-                {
+                if (loadApiDialog.isCancelled()) {
                     cancelled = true;
                 }
 
             }
-            else if (result == DialogResult.CANCEL)
-            {
+            else if (result == DialogResult.CANCEL) {
                 cancelled = true;
             }
 
         }
 
-        if (!cancelled)
-        {
+        if (!cancelled) {
             window = werminal.openModelWindow(schemaUri, keys, openModelDialog.getHeapId());
         }
 
-        if (window == null)
-        {
+        if (window == null) {
             // Kind of a hack, re-open the open dialog.
             werminal.getOpenAction().doAction();
             return false;

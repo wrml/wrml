@@ -24,8 +24,7 @@
  */
 package org.wrml.runtime.format;
 
-public enum ModelToken
-{
+public enum ModelToken {
 
     MODEL_START,
     MODEL_END,

@@ -27,21 +27,20 @@ package org.wrml.runtime;
 /**
  * The {@link Engine}'s associated error type.
  */
-public class EngineException extends RuntimeException
-{
+public class EngineException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final Engine _Engine;
 
-    EngineException(final String message, final Throwable cause, final Engine engine)
-    {
+    EngineException(final String message, final Throwable cause, final Engine engine) {
+
         super(message, cause);
         _Engine = engine;
     }
 
-    public Engine getEngine()
-    {
+    public Engine getEngine() {
+
         return _Engine;
     }
 }

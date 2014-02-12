@@ -27,21 +27,20 @@ package org.wrml.runtime.syntax;
 /**
  * The {@link SyntaxLoader}'s associated error type.
  */
-public class SyntaxRegistryException extends RuntimeException
-{
+public class SyntaxRegistryException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final SyntaxLoader _syntaxLoader;
 
-    SyntaxRegistryException(final String message, final Throwable cause, final SyntaxLoader syntaxLoader)
-    {
+    SyntaxRegistryException(final String message, final Throwable cause, final SyntaxLoader syntaxLoader) {
+
         super(message, cause);
         _syntaxLoader = syntaxLoader;
     }
 
-    public SyntaxLoader getSyntaxLoader()
-    {
+    public SyntaxLoader getSyntaxLoader() {
+
         return _syntaxLoader;
     }
 }

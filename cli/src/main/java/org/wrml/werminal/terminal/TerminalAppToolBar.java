@@ -28,13 +28,11 @@ import com.googlecode.lanterna.gui.Border;
 import com.googlecode.lanterna.gui.Component;
 import com.googlecode.lanterna.gui.component.EmptySpace;
 
-public class TerminalAppToolBar extends TerminalAppPanel
-{
+public class TerminalAppToolBar extends TerminalAppPanel {
 
     private final Component[] _Components;
 
-    public TerminalAppToolBar(final TerminalApp app, final Component[] components)
-    {
+    public TerminalAppToolBar(final TerminalApp app, final Component[] components) {
 
         super(app, "", new Border.Invisible(), Orientation.HORISONTAL);
 
@@ -42,16 +40,14 @@ public class TerminalAppToolBar extends TerminalAppPanel
 
         // setBetweenComponentsPadding(0);
 
-        for (final Component component : components)
-        {
+        for (final Component component : components) {
             addComponent(component);
             addComponent(new EmptySpace(2, 0));
         }
 
     }
 
-    public Component[] getComponents()
-    {
+    public Component[] getComponents() {
 
         return _Components;
     }

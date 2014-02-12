@@ -1,47 +1,39 @@
 {
 
-    "context" :
-    {
-        "modelCache" :
-        {
-            "name":"Cache",
-            "implementation":"org.wrml.runtime.service.cache.ShardedModelCache"
+    "context": {
+        "modelCache": {
+            "name": "Cache",
+            "implementation": "org.wrml.runtime.service.cache.ShardedModelCache"
         },
 
-        "schemaLoader" :
-        {
+        "schemaLoader": {
 
-            "factory" : "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
-            "schemaClassRootDirectory":"./src/test/resources/schemaClassRootDirectory"
+            "factory": "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
+            "schemaClassRootDirectory": "./src/test/resources/schemaClassRootDirectory"
         },
 
-        "serviceLoader" :
-        {
-            "services" :
-            [
+        "serviceLoader": {
+            "services": [
                 {
-                    "name" : "File",
-                    "implementation" : "org.wrml.runtime.service.file.FileSystemService",
-                    "settings" :
-                    {
-                        "rootDirectory" : "./src/test/resources/fileSystemServiceRootDirectory"
+                    "name": "File",
+                    "implementation": "org.wrml.runtime.service.file.FileSystemService",
+                    "settings": {
+                        "rootDirectory": "./src/test/resources/fileSystemServiceRootDirectory"
                     }
                 },
                 {
-                    "name" : "ApiDesigner",
-                    "implementation" : "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
-                    "settings" :
-                    {
-                        "apiUri" : "http://design.api.wrml.org"
+                    "name": "ApiDesigner",
+                    "implementation": "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
+                    "settings": {
+                        "apiUri": "http://design.api.wrml.org"
                     }
                 }
 
             ],
 
-            "serviceMapping" :
-            {
-                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*" : "ApiDesigner",
-                "*" : "File"
+            "serviceMapping": {
+                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*": "ApiDesigner",
+                "*": "File"
             }
         }
     }

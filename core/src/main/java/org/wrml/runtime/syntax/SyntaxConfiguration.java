@@ -24,44 +24,43 @@
  */
 package org.wrml.runtime.syntax;
 
-import java.net.URI;
-
 import org.wrml.runtime.DefaultConfiguration;
 
-public class SyntaxConfiguration extends DefaultConfiguration
-{
+import java.net.URI;
+
+public class SyntaxConfiguration extends DefaultConfiguration {
 
     private URI _SyntaxUri;
 
     private String _HandlerClassName;
 
-    public SyntaxConfiguration()
-    {
+    public SyntaxConfiguration() {
+
     }
 
-    public SyntaxConfiguration(final String syntaxUriString, final String syntaxHandlerClassName)
-    {
+    public SyntaxConfiguration(final String syntaxUriString, final String syntaxHandlerClassName) {
+
         setSyntaxUri(URI.create(syntaxUriString));
         setHandler(syntaxHandlerClassName);
     }
 
-    public String getHandler()
-    {
+    public String getHandler() {
+
         return _HandlerClassName;
     }
 
-    public URI getSyntaxUri()
-    {
+    public URI getSyntaxUri() {
+
         return _SyntaxUri;
     }
 
-    public void setHandler(final String syntaxHandlerClassName)
-    {
+    public void setHandler(final String syntaxHandlerClassName) {
+
         _HandlerClassName = syntaxHandlerClassName;
     }
 
-    public void setSyntaxUri(final URI syntaxUri)
-    {
+    public void setSyntaxUri(final URI syntaxUri) {
+
         _SyntaxUri = syntaxUri;
     }
 }

@@ -58,8 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p/>
  * See <a href="http://en.wikipedia.org/wiki/HATEOAS">Wikipedia</a> or <a href="https://www.google.com/search?q=hateoas">Google</a> for more information about hypermedia systems.
  */
-public class ApiNavigator
-{
+public class ApiNavigator {
 
     public static final char PATH_SEPARATOR_CHAR = '/';
 
@@ -93,16 +92,13 @@ public class ApiNavigator
 
     private Dimensions _SchemaDimensions;
 
-    public ApiNavigator(final Api api)
-    {
+    public ApiNavigator(final Api api) {
 
-        if (api == null)
-        {
+        if (api == null) {
             throw new ApiNavigatorException("The Api cannot be null.", null, this);
         }
 
-        if (api.getUri() == null)
-        {
+        if (api.getUri() == null) {
             throw new ApiNavigatorException("The Api's URI cannot be null.", null, this);
         }
 
@@ -134,11 +130,9 @@ public class ApiNavigator
 
     }
 
-    public static final boolean isApiNavigable(final Api api)
-    {
+    public static final boolean isApiNavigable(final Api api) {
 
-        if (api == null)
-        {
+        if (api == null) {
             return false;
         }
         final URI apiUri = api.getUri();
@@ -149,54 +143,45 @@ public class ApiNavigator
 
     }
 
-    public Resource addResource(final UUID parentResourceTemplateId, final ResourceTemplate childResourceTemplate)
-    {
+    public Resource addResource(final UUID parentResourceTemplateId, final ResourceTemplate childResourceTemplate) {
 
         final Resource child = new Resource(this, childResourceTemplate, getResource(parentResourceTemplateId));
         addResource(child);
         return child;
     }
 
-    public Map<UUID, Resource> getAllResources()
-    {
+    public Map<UUID, Resource> getAllResources() {
 
         return _AllResources;
     }
 
-    public Api getApi()
-    {
+    public Api getApi() {
 
         return _Api;
     }
 
-    public Dimensions getApiDimensions()
-    {
+    public Dimensions getApiDimensions() {
 
         return _ApiDimensions;
     }
 
-    public void setApiDimensions(final Dimensions apiDimensions)
-    {
+    public void setApiDimensions(final Dimensions apiDimensions) {
 
         _ApiDimensions = apiDimensions;
     }
 
-    public Set<LinkRelation> getApiLinkRelations()
-    {
+    public Set<LinkRelation> getApiLinkRelations() {
 
         final Api api = getApi();
         final Context context = api.getContext();
         final ApiLoader apiLoader = context.getApiLoader();
         final Set<LinkRelation> allLinkRelations = new LinkedHashSet<>();
         final List<LinkTemplate> linkTemplates = getApi().getLinkTemplates();
-        for (final LinkTemplate linkTemplate : linkTemplates)
-        {
+        for (final LinkTemplate linkTemplate : linkTemplates) {
             final URI linkRelationUri = linkTemplate.getLinkRelationUri();
-            if (linkRelationUri != null)
-            {
+            if (linkRelationUri != null) {
                 final LinkRelation linkRelation = apiLoader.loadLinkRelation(linkRelationUri);
-                if (linkRelation != null)
-                {
+                if (linkRelation != null) {
                     allLinkRelations.add(linkRelation);
                 }
             }
@@ -205,30 +190,24 @@ public class ApiNavigator
         return allLinkRelations;
     }
 
-    public Set<Schema> getApiSchemas()
-    {
+    public Set<Schema> getApiSchemas() {
 
         final SchemaLoader schemaLoader = getApi().getContext().getSchemaLoader();
         final Set<Schema> allSchemas = new LinkedHashSet<>();
         final List<LinkTemplate> linkTemplates = getApi().getLinkTemplates();
-        for (final LinkTemplate linkTemplate : linkTemplates)
-        {
+        for (final LinkTemplate linkTemplate : linkTemplates) {
             final URI requestSchemaUri = linkTemplate.getRequestSchemaUri();
-            if (requestSchemaUri != null)
-            {
+            if (requestSchemaUri != null) {
                 final Schema schema = schemaLoader.load(requestSchemaUri);
-                if (schema != null)
-                {
+                if (schema != null) {
                     allSchemas.add(schema);
                 }
             }
 
             final URI responseSchemaUri = linkTemplate.getResponseSchemaUri();
-            if (responseSchemaUri != null)
-            {
+            if (responseSchemaUri != null) {
                 final Schema schema = schemaLoader.load(responseSchemaUri);
-                if (schema != null)
-                {
+                if (schema != null) {
                     allSchemas.add(schema);
                 }
             }
@@ -236,14 +215,11 @@ public class ApiNavigator
         }
 
         final Map<UUID, Resource> allResources = getAllResources();
-        for (final Resource resource : allResources.values())
-        {
+        for (final Resource resource : allResources.values()) {
             final URI defaultSchemaUri = resource.getDefaultSchemaUri();
-            if (defaultSchemaUri != null)
-            {
+            if (defaultSchemaUri != null) {
                 final Schema schema = schemaLoader.load(defaultSchemaUri);
-                if (schema != null)
-                {
+                if (schema != null) {
                     allSchemas.add(schema);
                 }
 
@@ -253,26 +229,22 @@ public class ApiNavigator
         return allSchemas;
     }
 
-    public URI getApiUri()
-    {
+    public URI getApiUri() {
 
         return getApi().getUri();
     }
 
-    public Dimensions getDefaultApiDimensions()
-    {
+    public Dimensions getDefaultApiDimensions() {
 
         return _DefaultApiDimensions;
     }
 
-    public Dimensions getDefaultLinkRelationDimensions()
-    {
+    public Dimensions getDefaultLinkRelationDimensions() {
 
         return _DefaultLinkRelationDimensions;
     }
 
-    public Resource getDocroot()
-    {
+    public Resource getDocroot() {
 
         return _Docroot;
     }
@@ -280,11 +252,9 @@ public class ApiNavigator
     /**
      * Helper function that returns the {@link Resource} associated with the link's endpoint.
      */
-    public Resource getEndpointResource(final URI linkRelationUri, final URI referrerDocumentUri)
-    {
+    public Resource getEndpointResource(final URI linkRelationUri, final URI referrerDocumentUri) {
 
-        if (linkRelationUri == null)
-        {
+        if (linkRelationUri == null) {
             throw new ApiNavigatorException("The link's relation URI cannot be null.", null, this);
         }
 
@@ -293,8 +263,7 @@ public class ApiNavigator
          * metadata description of the document's corresponding resource.
          */
         final UUID referrerResourceTemplateId = getResourceTemplateId(referrerDocumentUri);
-        if (referrerResourceTemplateId == null)
-        {
+        if (referrerResourceTemplateId == null) {
             /*
              * throw new ApiNavigatorException( "The referring document is not a representation of any resources described by this " + getClass().getName() + "'s " +
              * Api.class.getName() + " (" + getApi() + ").", null, this);
@@ -312,8 +281,7 @@ public class ApiNavigator
          * method's Link param.
          */
         final LinkTemplate linkTemplate = referrerResource.getLinkTemplates().get(linkRelationUri);
-        if (linkTemplate == null)
-        {
+        if (linkTemplate == null) {
 
             // TODO: Strict mode?
             /*
@@ -335,31 +303,26 @@ public class ApiNavigator
         return endPointResource;
     }
 
-    public Dimensions getLinkRelationDimensions()
-    {
+    public Dimensions getLinkRelationDimensions() {
 
         return _LinkRelationDimensions;
     }
 
-    public void setLinkRelationDimensions(final Dimensions linkRelationDimensions)
-    {
+    public void setLinkRelationDimensions(final Dimensions linkRelationDimensions) {
 
         _LinkRelationDimensions = linkRelationDimensions;
     }
 
-    public Set<Resource> getRepresentativeResources(final URI schemaUri)
-    {
+    public Set<Resource> getRepresentativeResources(final URI schemaUri) {
 
-        if (schemaUri != null && _RepresentativeResources.containsKey(schemaUri))
-        {
+        if (schemaUri != null && _RepresentativeResources.containsKey(schemaUri)) {
             return _RepresentativeResources.get(schemaUri);
         }
 
         return null;
     }
 
-    public Resource getResource(final URI uri)
-    {
+    public Resource getResource(final URI uri) {
 
         final UUID resourceTemplateId = getResourceTemplateId(uri);
         return getResource(resourceTemplateId);
@@ -371,36 +334,30 @@ public class ApiNavigator
      * @param resourceTemplateId The {@link URI} that identifies the {@link Resource}'s associated {@link ResourceTemplate}.
      * @return The {@link Resource} associated with the specified {@link ResourceTemplate}'s id.
      */
-    public Resource getResource(final UUID resourceTemplateId)
-    {
+    public Resource getResource(final UUID resourceTemplateId) {
 
-        if ((resourceTemplateId == null) || !(_AllResources.containsKey(resourceTemplateId)))
-        {
+        if ((resourceTemplateId == null) || !(_AllResources.containsKey(resourceTemplateId))) {
             return null;
         }
 
         return _AllResources.get(resourceTemplateId);
     }
 
-    public Dimensions getResourceTemplateDimensions()
-    {
+    public Dimensions getResourceTemplateDimensions() {
 
         return _ResourceTemplateDimensions;
     }
 
-    public void setResourceTemplateDimensions(final Dimensions resourceTemplateDimensions)
-    {
+    public void setResourceTemplateDimensions(final Dimensions resourceTemplateDimensions) {
 
         _ResourceTemplateDimensions = resourceTemplateDimensions;
     }
 
-    public UUID getResourceTemplateId(final URI uri)
-    {
+    public UUID getResourceTemplateId(final URI uri) {
 
         final SortedSet<ResourceMatchResult> results = match(uri);
 
-        if (results == null || results.isEmpty())
-        {
+        if (results == null || results.isEmpty()) {
             return null;
         }
 
@@ -409,13 +366,11 @@ public class ApiNavigator
         return resource.getResourceTemplateId();
     }
 
-    public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype)
-    {
+    public SortedSet<Parameter> getSurrogateKeyComponents(final URI uri, final Prototype prototype) {
 
         final SortedSet<ResourceMatchResult> results = match(uri);
 
-        if (results == null || results.isEmpty())
-        {
+        if (results == null || results.isEmpty()) {
             final URI apiUri = getApiUri();
             ApiNavigator.LOG.error("2 This ApiNavigator has charted \"{}\", which is not a match for the specified URI: {}", new Object[]{apiUri, uri});
             throw new ApiNavigatorException("This ApiNavigator has charted \"" + apiUri + "\", which is not a match for the specified URI: " + uri + ".", null, this,
@@ -424,14 +379,12 @@ public class ApiNavigator
 
         SortedSet<Parameter> surrogateKeyComponents = null;
 
-        for (final ResourceMatchResult result : results)
-        {
+        for (final ResourceMatchResult result : results) {
 
             final Resource resource = result.getResource();
             surrogateKeyComponents = resource.getSurrogateKeyComponents(uri, prototype);
 
-            if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty())
-            {
+            if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty()) {
                 break;
             }
         }
@@ -440,33 +393,27 @@ public class ApiNavigator
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return AsciiArt.express(this);
     }
 
-    public <M extends Model> M visitLink(final Link link, final Model referrer, final URI referrerUri, final DimensionsBuilder dimensionsBuilder, final Model parameter)
-    {
+    public <M extends Model> M visitLink(final Link link, final Model referrer, final URI referrerUri, final DimensionsBuilder dimensionsBuilder, final Model parameter) {
 
-        if (referrer == null)
-        {
+        if (referrer == null) {
             throw new ApiNavigatorException("The referrer cannot be null.", null, this);
         }
 
-        if (referrerUri == null)
-        {
+        if (referrerUri == null) {
             throw new ApiNavigatorException("The referrer's Document URI cannot be null.", null, this);
         }
 
-        if (link == null)
-        {
+        if (link == null) {
             throw new ApiNavigatorException("The link cannot be null.", null, this);
         }
 
         final Model embeddedModel = link.getDoc();
-        if (embeddedModel != null)
-        {
+        if (embeddedModel != null) {
             return (M) embeddedModel;
         }
 
@@ -475,28 +422,24 @@ public class ApiNavigator
 
         final ApiLoader apiLoader = getApi().getContext().getApiLoader();
         final LinkRelation linkRelation = apiLoader.loadLinkRelation(referenceRelationUri);
-        if (linkRelation == null)
-        {
+        if (linkRelation == null) {
             throw new ApiNavigatorException("The link relation cannot be null.", null, this);
         }
 
         final Method method = linkRelation.getMethod();
 
         final Resource endPointResource = getEndpointResource(referenceRelationUri, referrerUri);
-        if (endPointResource == null)
-        {
+        if (endPointResource == null) {
             throw new ApiNavigatorException("The end point cannot be null.", null, this);
         }
 
         URI uri = link.getHref();
 
-        if (uri == null)
-        {
+        if (uri == null) {
 
             uri = endPointResource.getHrefUri(referrer, referenceRelationUri);
 
-            if (uri == null)
-            {
+            if (uri == null) {
                 throw new ApiNavigatorException("The end point's document URI (link's href) cannot be null.", null, this);
             }
         }
@@ -506,30 +449,25 @@ public class ApiNavigator
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
         final DimensionsBuilder responseDimensionsBuilder;
-        if (dimensionsBuilder == null)
-        {
+        if (dimensionsBuilder == null) {
             final URI responseSchemaUri = getDefaultResponseSchemaUri(method, uri);
 
             responseDimensionsBuilder = new DimensionsBuilder(responseSchemaUri);
         }
-        else
-        {
+        else {
             responseDimensionsBuilder = dimensionsBuilder;
         }
 
         responseDimensionsBuilder.setReferrerUri(referrerUri);
         URI schemaUri = responseDimensionsBuilder.getSchemaUri();
 
-        if (method == Method.Get && (schemaUri == null || schemaUri.equals(schemaLoader.getDocumentSchemaUri())))
-        {
-            if (referrerUri != null && referrerUri.equals(uri))
-            {
+        if (method == Method.Get && (schemaUri == null || schemaUri.equals(schemaLoader.getDocumentSchemaUri()))) {
+            if (referrerUri != null && referrerUri.equals(uri)) {
                 schemaUri = referrerSchemaUri;
             }
         }
 
-        if (schemaUri != null)
-        {
+        if (schemaUri != null) {
             responseDimensionsBuilder.setSchemaUri(schemaUri);
         }
 
@@ -537,31 +475,25 @@ public class ApiNavigator
         final Keys keys = apiLoader.buildDocumentKeys(uri, responseDimensions.getSchemaUri());
 
         Set<URI> requestSchemaUris = endPointResource.getRequestSchemaUris(method);
-        if (parameter != null)
-        {
+        if (parameter != null) {
             // Determine if the parameter is allowed
 
             final URI parameterSchemaUri = parameter.getSchemaUri();
-            if (requestSchemaUris.isEmpty())
-            {
+            if (requestSchemaUris.isEmpty()) {
                 throw new ApiNavigatorException("The " + linkRelation.getUri() + " does not allow any parameter to be passed to resource: " + endPointResource, null, this);
             }
-            else if (!requestSchemaUris.contains(parameterSchemaUri))
-            {
+            else if (!requestSchemaUris.contains(parameterSchemaUri)) {
 
                 boolean isParameterSubType = false;
-                for (final URI requestSchemaUri : requestSchemaUris)
-                {
+                for (final URI requestSchemaUri : requestSchemaUris) {
                     final Prototype requestPrototype = schemaLoader.getPrototype(requestSchemaUri);
-                    if (requestPrototype.isAssignableFrom(parameterSchemaUri))
-                    {
+                    if (requestPrototype.isAssignableFrom(parameterSchemaUri)) {
                         isParameterSubType = true;
                         break;
                     }
                 }
 
-                if (!isParameterSubType)
-                {
+                if (!isParameterSubType) {
                     throw new ApiNavigatorException("The " + linkRelation.getUri() + " does not allow a " + parameterSchemaUri + " parameter to be passed to resource: "
                             + endPointResource, null, this);
                 }
@@ -571,35 +503,28 @@ public class ApiNavigator
         Model param = parameter;
 
         // Handle special case for "Save" links to enable the referrer model automatically passes itself as the parameter.
-        if (method == Method.Save && param == null && (!requestSchemaUris.isEmpty()))
-        {
-            for (final URI requestSchemaUri : requestSchemaUris)
-            {
+        if (method == Method.Save && param == null && (!requestSchemaUris.isEmpty())) {
+            for (final URI requestSchemaUri : requestSchemaUris) {
 
                 Class<?> requestSchemaInterface;
-                try
-                {
+                try {
                     requestSchemaInterface = schemaLoader.getSchemaInterface(requestSchemaUri);
                 }
-                catch (final ClassNotFoundException e)
-                {
+                catch (final ClassNotFoundException e) {
                     throw new ApiNavigatorException("Failed to load the schema interface for: \"" + requestSchemaUri + "\"", e, this);
                 }
 
                 // Determine if the referrer may be inferred as a (this) parameter.
 
                 Class<?> referrerSchemaInterface;
-                try
-                {
+                try {
                     referrerSchemaInterface = schemaLoader.getSchemaInterface(referrerSchemaUri);
                 }
-                catch (final ClassNotFoundException e)
-                {
+                catch (final ClassNotFoundException e) {
                     throw new ApiNavigatorException("Failed to load the schema interface for referrer schema id: \"" + referrerSchemaUri + "\"", e, this);
                 }
 
-                if (requestSchemaInterface.isAssignableFrom(referrerSchemaInterface))
-                {
+                if (requestSchemaInterface.isAssignableFrom(referrerSchemaInterface)) {
                     /*
                      * The param was null and the referrer's type matches the link's content-type expectation, so set the referrer as the param.
                      */
@@ -613,41 +538,34 @@ public class ApiNavigator
 
     }
 
-    public final URI getDefaultResponseSchemaUri(final Method requestMethod, final URI uri)
-    {
+    public final URI getDefaultResponseSchemaUri(final Method requestMethod, final URI uri) {
 
         final Resource resource = getResource(uri);
         final ResourceTemplate resourceTemplate = resource.getResourceTemplate();
         final URI resourceTemplateDefaultSchemaUri = resourceTemplate.getDefaultSchemaUri();
-        if (resourceTemplateDefaultSchemaUri != null)
-        {
+        if (resourceTemplateDefaultSchemaUri != null) {
             return resourceTemplateDefaultSchemaUri;
         }
 
         final Set<URI> responseSchemaUris = resource.getResponseSchemaUris(requestMethod);
-        if (responseSchemaUris != null && !responseSchemaUris.isEmpty())
-        {
+        if (responseSchemaUris != null && !responseSchemaUris.isEmpty()) {
             return responseSchemaUris.iterator().next();
         }
-        else
-        {
+        else {
             throw new ApiNavigatorException("The method used is not supported by the api. METHOD [" + requestMethod + "]", null, this);
         }
     }
 
-    private void addResource(final Resource resource)
-    {
+    private void addResource(final Resource resource) {
 
         final ResourceTemplate resourceTemplate = resource.getResourceTemplate();
 
         final UUID resourceTemplateId = resourceTemplate.getUniqueId();
-        if (resourceTemplateId == null)
-        {
+        if (resourceTemplateId == null) {
             throw new ApiNavigatorException("The ResourceTemplate id cannot be null. (Resource: " + resource + ")", null, this);
         }
 
-        if (_AllResources.containsKey(resourceTemplateId))
-        {
+        if (_AllResources.containsKey(resourceTemplateId)) {
             return;
         }
 
@@ -658,8 +576,7 @@ public class ApiNavigator
 
         final List<ResourceTemplate> subresourceTemplates = resourceTemplate.getChildren();
 
-        for (final ResourceTemplate subresourceTemplate : subresourceTemplates)
-        {
+        for (final ResourceTemplate subresourceTemplate : subresourceTemplates) {
             final Resource subresource = new Resource(this, subresourceTemplate, resource);
             resource.addSubresource(subresource);
             addResource(subresource);
@@ -667,15 +584,12 @@ public class ApiNavigator
 
     }
 
-    private void updateRepresentativeResources(final Resource resource, final Method requestMethod)
-    {
+    private void updateRepresentativeResources(final Resource resource, final Method requestMethod) {
 
         final URI defaultSchemaUri = resource.getDefaultSchemaUri();
         Set<URI> responseSchemaUris = resource.getResponseSchemaUris(requestMethod);
-        if (responseSchemaUris == null)
-        {
-            if (defaultSchemaUri != null)
-            {
+        if (responseSchemaUris == null) {
+            if (defaultSchemaUri != null) {
                 responseSchemaUris = new LinkedHashSet<>();
                 responseSchemaUris.add(defaultSchemaUri);
             }
@@ -685,15 +599,12 @@ public class ApiNavigator
 
         }
 
-        for (final URI schemaUri : responseSchemaUris)
-        {
+        for (final URI schemaUri : responseSchemaUris) {
             final Set<Resource> resourceSet;
-            if (_RepresentativeResources.containsKey(schemaUri))
-            {
+            if (_RepresentativeResources.containsKey(schemaUri)) {
                 resourceSet = _RepresentativeResources.get(schemaUri);
             }
-            else
-            {
+            else {
                 resourceSet = new LinkedHashSet<>();
                 _RepresentativeResources.put(schemaUri, resourceSet);
             }
@@ -702,14 +613,12 @@ public class ApiNavigator
         }
     }
 
-    private Dimensions getSchemaDimensions()
-    {
+    private Dimensions getSchemaDimensions() {
 
         return _SchemaDimensions;
     }
 
-    public void setSchemaDimensions(final Dimensions schemaDimensions)
-    {
+    public void setSchemaDimensions(final Dimensions schemaDimensions) {
 
         _SchemaDimensions = schemaDimensions;
     }
@@ -719,13 +628,11 @@ public class ApiNavigator
      * <p/>
      * Note: This needs to be as fast as possible because it is used during client request handling.
      */
-    private SortedSet<ResourceMatchResult> match(final URI uri)
-    {
+    private SortedSet<ResourceMatchResult> match(final URI uri) {
 
         ApiNavigator.LOG.debug("Attempting match on URI {}", new Object[]{uri});
 
-        if (uri == null)
-        {
+        if (uri == null) {
             ApiNavigator.LOG.error("3 This ApiNavigator cannot locate a resource with a *null* identifier.");
             throw new ApiNavigatorException("This ApiNavigator cannot locate a resource with a *null* identifier.", null, this);
 
@@ -734,10 +641,9 @@ public class ApiNavigator
         final URI apiUri = getApiUri();
 
         final String requestUriString = uri.toString();
-        final String apiUriString =  apiUri.toString();
+        final String apiUriString = apiUri.toString();
 
-        if (!requestUriString.startsWith(apiUriString))
-        {
+        if (!requestUriString.startsWith(apiUriString)) {
             ApiNavigator.LOG.error("4 This ApiNavigator has charted \"" + apiUri + "\", which does not manage the specified resource (" + uri + ")");
             throw new ApiNavigatorException("This ApiNavigator has charted \"" + apiUri + "\", which does not manage the specified resource (" + uri + ")", null, this,
                     Status.NOT_FOUND);
@@ -747,42 +653,35 @@ public class ApiNavigator
 
         final SortedSet<ResourceMatchResult> results = matchPath(path);
 
-        if (results == null || results.isEmpty() || results.size() == 1)
-        {
+        if (results == null || results.isEmpty() || results.size() == 1) {
             return results;
         }
 
         int resultsTiedForFirst = 0;
         final int highestScore = results.first().getScore();
-        for (final ResourceMatchResult result : results)
-        {
+        for (final ResourceMatchResult result : results) {
             final int score = result.getScore();
-            if (score == highestScore)
-            {
+            if (score == highestScore) {
                 resultsTiedForFirst++;
             }
-            else
-            {
+            else {
                 break;
             }
         }
 
         // TODO there's no differentiation here; either a lot of logic missing, or a lot of unnecessary logic
-        if (resultsTiedForFirst == 1)
-        {
+        if (resultsTiedForFirst == 1) {
             return results;
         }
 
         return results;
     }
 
-    private SortedSet<ResourceMatchResult> matchPath(String path)
-    {
+    private SortedSet<ResourceMatchResult> matchPath(String path) {
 
         // TODO Is this needed? The path should be sanitized before getting this far....
         path = StringUtils.trim(path);
-        if (path.length() == 0 || ApiNavigator.DOCROOT_PATH.equals(path))
-        {
+        if (path.length() == 0 || ApiNavigator.DOCROOT_PATH.equals(path)) {
             return _DocrootResults;
         }
 
@@ -796,19 +695,16 @@ public class ApiNavigator
         return results;
     }
 
-    private void matchPathSegment(final Resource resource, final String[] pathSegments, final int segmentIndex, int score, final SortedSet<ResourceMatchResult> results)
-    {
+    private void matchPathSegment(final Resource resource, final String[] pathSegments, final int segmentIndex, int score, final SortedSet<ResourceMatchResult> results) {
 
-        if (resource == null)
-        {
+        if (resource == null) {
             // No resource branch to investigate.
             return;
         }
 
         final int segmentCount = pathSegments.length;
 
-        if (segmentIndex >= segmentCount)
-        {
+        if (segmentIndex >= segmentCount) {
             // No segments left to match.
             return;
         }
@@ -816,8 +712,7 @@ public class ApiNavigator
         final Map<String, Resource> literalPathSubresources = resource.getLiteralPathSubresources();
         final Map<String, Resource> variablePathSubresources = resource.getVariablePathSubresources();
 
-        if (literalPathSubresources == null && variablePathSubresources == null)
-        {
+        if (literalPathSubresources == null && variablePathSubresources == null) {
             // Still have segments to go, but there is nothing to match them
             // against.
             return;
@@ -829,13 +724,11 @@ public class ApiNavigator
 
         score += nextSegmentIndex;
 
-        if (literalPathSubresources != null && literalPathSubresources.containsKey(segment))
-        {
+        if (literalPathSubresources != null && literalPathSubresources.containsKey(segment)) {
 
             final Resource literalPathSubresource = literalPathSubresources.get(segment);
 
-            if (isLastSegment)
-            {
+            if (isLastSegment) {
 
                 // The last segment is significant because it means we can add a
                 // matching result with a bonus score and then return the result
@@ -846,44 +739,36 @@ public class ApiNavigator
                 // /{key} that matches with link with score 7, giving wrong order in results
 
                 final Map<URI, LinkTemplate> linkTemplates = literalPathSubresource.getLinkTemplates();
-                if (!linkTemplates.isEmpty())
-                {
+                if (!linkTemplates.isEmpty()) {
                     final ResourceMatchResult result = new ResourceMatchResult(literalPathSubresource, score + 10);
                     results.add(result);
                 }
             }
-            else
-            {
+            else {
                 // There are more paths following ours.
                 matchPathSegment(literalPathSubresource, pathSegments, nextSegmentIndex, score + 10, results);
             }
         }
 
-        if (variablePathSubresources != null)
-        {
+        if (variablePathSubresources != null) {
 
-            for (final String variablePathSegment : variablePathSubresources.keySet())
-            {
+            for (final String variablePathSegment : variablePathSubresources.keySet()) {
                 final Resource variablePathSubresource = variablePathSubresources.get(variablePathSegment);
 
                 int bonus = 0;
-                if (isLastSegment)
-                {
-                    if (variablePathSubresource.getLiteralPathSubresources() == null && variablePathSubresource.getVariablePathSubresources() == null)
-                    {
+                if (isLastSegment) {
+                    if (variablePathSubresource.getLiteralPathSubresources() == null && variablePathSubresource.getVariablePathSubresources() == null) {
                         bonus += 1;
                     }
                 }
 
                 // TODO verify this behavior
-                if (!variablePathSubresource.getLinkTemplates().isEmpty())
-                {
+                if (!variablePathSubresource.getLinkTemplates().isEmpty()) {
                     final ResourceMatchResult result = new ResourceMatchResult(variablePathSubresource, score + 5 + bonus);
                     results.add(result);
                 }
 
-                if (!isLastSegment)
-                {
+                if (!isLastSegment) {
                     matchPathSegment(variablePathSubresource, pathSegments, nextSegmentIndex, score + 5, results);
                 }
             }
@@ -892,21 +777,17 @@ public class ApiNavigator
     }
 
 
-    private static class ResourceMatchResult implements Comparable<ResourceMatchResult>
-    {
+    private static class ResourceMatchResult implements Comparable<ResourceMatchResult> {
 
         /**
          * When used on sets of results, the highest scoring results will sort as first. Note that the higher scores are *always* greater positive numbers.
          */
-        public static Comparator<ResourceMatchResult> HIGHEST_SCORE_FIRST = new Comparator<ResourceMatchResult>()
-        {
+        public static Comparator<ResourceMatchResult> HIGHEST_SCORE_FIRST = new Comparator<ResourceMatchResult>() {
 
             @Override
-            public int compare(final ResourceMatchResult result1, final ResourceMatchResult result2)
-            {
+            public int compare(final ResourceMatchResult result1, final ResourceMatchResult result2) {
 
-                if (result1 == result2)
-                {
+                if (result1 == result2) {
                     return 0;
                 }
                 return Integer.signum(result2.getScore() - result1.getScore());
@@ -917,8 +798,7 @@ public class ApiNavigator
 
         private final int _Score;
 
-        ResourceMatchResult(final Resource resource, final int score)
-        {
+        ResourceMatchResult(final Resource resource, final int score) {
 
             _Resource = resource;
             _Score = score;
@@ -926,27 +806,23 @@ public class ApiNavigator
         }
 
         @Override
-        public final int compareTo(final ResourceMatchResult other)
-        {
+        public final int compareTo(final ResourceMatchResult other) {
 
             return ResourceMatchResult.HIGHEST_SCORE_FIRST.compare(this, other);
         }
 
-        public Resource getResource()
-        {
+        public Resource getResource() {
 
             return _Resource;
         }
 
-        public int getScore()
-        {
+        public int getScore() {
 
             return _Score;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
             return "Resource: " + _Resource.toString() + "\nScore: " + _Score;
         }

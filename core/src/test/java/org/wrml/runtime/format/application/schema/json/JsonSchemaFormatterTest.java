@@ -24,10 +24,7 @@
  */
 package org.wrml.runtime.format.application.schema.json;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,20 +38,20 @@ import org.wrml.runtime.schema.Prototype;
 
 import java.net.URI;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link JsonSchemaFormatter} using {@link Mockito} mocks.
- * 
+ *
  * @see {@link FormatTestBase} for base {@link Test}s common to all {@link Formatter}s.
  */
-public class JsonSchemaFormatterTest extends FormatTestBase
-{
+public class JsonSchemaFormatterTest extends FormatTestBase {
 
     @Override
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         super.setUp();
         JsonSchemaLoader mockJsonSchemaLoader = mock(JsonSchemaLoader.class);
@@ -69,8 +66,7 @@ public class JsonSchemaFormatterTest extends FormatTestBase
     }
 
     @Override
-    protected Formatter getFormatter()
-    {
+    protected Formatter getFormatter() {
 
         final JsonSchemaFormatter formatter = new JsonSchemaFormatter();
         final FormatterConfiguration formatterConfiguration = new FormatterConfiguration();
@@ -84,8 +80,7 @@ public class JsonSchemaFormatterTest extends FormatTestBase
      */
     @Override
     @Test
-    public void testIsApplicableTo()
-    {
+    public void testIsApplicableTo() {
 
         Prototype mockPrototype1 = mock(Prototype.class);
         Prototype mockPrototype2 = mock(Prototype.class);
@@ -105,16 +100,14 @@ public class JsonSchemaFormatterTest extends FormatTestBase
     @Override
     @Ignore
     @Test
-    public void testReadModel()
-    {
+    public void testReadModel() {
         // TODO: fix this test
     }
 
     @Test
     @Ignore
     @Override
-    public void testRoundTrip()
-    {
+    public void testRoundTrip() {
         // TODO: fix this test
     }
 }

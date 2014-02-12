@@ -24,8 +24,7 @@
  */
 package org.wrml.runtime;
 
-public interface Loader extends ContextSensitive
-{
+public interface Loader extends ContextSensitive {
 
     void loadInitialState();
 

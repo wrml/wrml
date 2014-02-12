@@ -26,6 +26,5 @@
 # CoffeeScript
 
 @Wrmldoc.module "SchemaApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Schema extends App.Views.ItemView
-		template: "schema/show/schema_show"
+  class Show.Schema extends App.Views.ItemView
+    template: "schema/show/schema_show"

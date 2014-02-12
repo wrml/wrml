@@ -29,11 +29,10 @@ import java.util.Map;
 
 /**
  * See HTTP's <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">method</a>.
- * 
+ *
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP/1.1 Request Method</a>
  */
-public enum Method
-{
+public enum Method {
 
     Get("GET", true, true, false, true),
     Metadata("HEAD", true, true, false, false),
@@ -44,20 +43,16 @@ public enum Method
 
     private static final Map<String, Method> PROTOCOL_GIVEN_NAME_MAP = new HashMap<>();
 
-    static
-    {
+    static {
         final Method[] methods = Method.values();
-        for (final Method method : methods)
-        {
+        for (final Method method : methods) {
             PROTOCOL_GIVEN_NAME_MAP.put(method.getProtocolGivenName(), method);
         }
     }
 
-    public static Method fromProtocolGivenName(final String protocolGivenName)
-    {
+    public static Method fromProtocolGivenName(final String protocolGivenName) {
 
-        if (!PROTOCOL_GIVEN_NAME_MAP.containsKey(protocolGivenName))
-        {
+        if (!PROTOCOL_GIVEN_NAME_MAP.containsKey(protocolGivenName)) {
             throw new IllegalArgumentException("\"" + protocolGivenName
                     + "\" is not a valid (HTTP/1.1) protocol method name.");
         }
@@ -86,8 +81,8 @@ public enum Method
     private final boolean _Safe;
 
     private Method(final String protocolGivenName, final boolean safe, final boolean idempotent,
-            final boolean entityAllowedInRequestMessage, final boolean entityAllowedInResponseMessage)
-    {
+                   final boolean entityAllowedInRequestMessage, final boolean entityAllowedInResponseMessage) {
+
         _ProtocolGivenName = protocolGivenName;
         _Safe = safe;
         _Idempotent = idempotent;
@@ -95,28 +90,28 @@ public enum Method
         _EntityAllowedInResponseMessage = entityAllowedInResponseMessage;
     }
 
-    public String getProtocolGivenName()
-    {
+    public String getProtocolGivenName() {
+
         return _ProtocolGivenName;
     }
 
-    public boolean isEntityAllowedInRequestMessage()
-    {
+    public boolean isEntityAllowedInRequestMessage() {
+
         return _EntityAllowedInRequestMessage;
     }
 
-    public boolean isEntityAllowedInResponseMessage()
-    {
+    public boolean isEntityAllowedInResponseMessage() {
+
         return _EntityAllowedInResponseMessage;
     }
 
-    public boolean isIdempotent()
-    {
+    public boolean isIdempotent() {
+
         return _Idempotent;
     }
 
-    public boolean isSafe()
-    {
+    public boolean isSafe() {
+
         return _Safe;
     }
 }

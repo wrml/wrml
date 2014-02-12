@@ -27,21 +27,20 @@ package org.wrml.runtime.rest;
 /**
  * The {@link UriTemplate}'s associated error type.
  */
-public class UriTemplateException extends RuntimeException
-{
+public class UriTemplateException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final UriTemplate _UriTemplate;
 
-    UriTemplateException(final String message, final Throwable cause, final UriTemplate uriTemplate)
-    {
+    UriTemplateException(final String message, final Throwable cause, final UriTemplate uriTemplate) {
+
         super(message, cause);
         _UriTemplate = uriTemplate;
     }
 
-    public UriTemplate getUriTemplate()
-    {
+    public UriTemplate getUriTemplate() {
+
         return _UriTemplate;
     }
 }

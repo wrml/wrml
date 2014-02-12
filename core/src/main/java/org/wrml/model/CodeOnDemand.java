@@ -32,8 +32,7 @@ import java.net.URI;
  * Manifest file, etc) and design a REST API-based exchange hidden behind WRML's
  * Service Java API.
  */
-public interface CodeOnDemand extends Named, Versioned, Described, Model
-{
+public interface CodeOnDemand extends Named, Versioned, Described, Model {
 
     URI getCodeLocation();
 

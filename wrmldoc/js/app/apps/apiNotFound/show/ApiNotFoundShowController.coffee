@@ -21,19 +21,17 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###            
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "ApiNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Controller extends App.Controllers.Base
-		
-		initialize: (wrmlData) ->
-			showView = @createShowView(wrmlData)
-			@show showView
-		
-		createShowView: (wrmlData) ->
+  class Show.Controller extends App.Controllers.Base
 
-			new Show.ApiNotFound
-				model: wrmlData
+    initialize: (wrmlData) ->
+      showView = @createShowView(wrmlData)
+      @show showView
+
+    createShowView: (wrmlData) ->
+      new Show.ApiNotFound
+        model: wrmlData

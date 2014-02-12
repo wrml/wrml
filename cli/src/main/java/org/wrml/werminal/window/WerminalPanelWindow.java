@@ -34,8 +34,7 @@ import org.wrml.werminal.terminal.TerminalAppToolBar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WerminalPanelWindow extends WerminalWindow
-{
+public class WerminalPanelWindow extends WerminalWindow {
 
     private final static int PREVIOUS_BUTTON_INDEX = 0;
 
@@ -49,8 +48,7 @@ public class WerminalPanelWindow extends WerminalWindow
 
     private final WerminalAction _PreviousAction;
 
-    public WerminalPanelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents)
-    {
+    public WerminalPanelWindow(final Werminal werminal, final String title, final Component[] toolBarComponents) {
 
         super(werminal, title, toolBarComponents);
 
@@ -60,153 +58,127 @@ public class WerminalPanelWindow extends WerminalWindow
         _PreviousAction = new PreviousAction(werminal);
     }
 
-    public final WerminalPanel getCurrentPanel()
-    {
+    public final WerminalPanel getCurrentPanel() {
 
         return _CurrentPanel;
     }
 
-    public final WerminalAction getNextAction()
-    {
+    public final WerminalAction getNextAction() {
 
         return _NextAction;
     }
 
-    public final int getPanelCount()
-    {
+    public final int getPanelCount() {
 
         return _Panels.size();
     }
 
     @SuppressWarnings("unchecked")
-    public final <W extends WerminalPanel> List<W> getPanels()
-    {
+    public final <W extends WerminalPanel> List<W> getPanels() {
 
         return (List<W>) _Panels;
     }
 
-    public final WerminalAction getPreviousAction()
-    {
+    public final WerminalAction getPreviousAction() {
 
         return _PreviousAction;
     }
 
-    public final void goToFirstPanel()
-    {
+    public final void goToFirstPanel() {
 
-        if (_Panels.isEmpty())
-        {
+        if (_Panels.isEmpty()) {
             return;
         }
         setCurrentPanel(_Panels.get(0));
     }
 
-    public final void goToLastPanel()
-    {
+    public final void goToLastPanel() {
 
-        if (_Panels.isEmpty())
-        {
+        if (_Panels.isEmpty()) {
             return;
         }
         setCurrentPanel(_Panels.get(_Panels.size() - 1));
     }
 
-    public final void goToNextPanel()
-    {
+    public final void goToNextPanel() {
 
-        if (_Panels.isEmpty())
-        {
+        if (_Panels.isEmpty()) {
             return;
         }
         directPanel(false);
     }
 
-    public final void goToPreviousPanel()
-    {
+    public final void goToPreviousPanel() {
 
-        if (_Panels.isEmpty())
-        {
+        if (_Panels.isEmpty()) {
             return;
         }
         directPanel(true);
     }
 
-    public final void setCurrentPanel(final WerminalPanel currentPanel)
-    {
+    public final void setCurrentPanel(final WerminalPanel currentPanel) {
 
         _CurrentPanel = currentPanel;
         render();
     }
 
-    protected final void directPanel(final boolean reverse)
-    {
+    protected final void directPanel(final boolean reverse) {
 
         final int panelIndexIncrement = (reverse) ? -1 : 1;
 
         setCurrentPanel(_Panels.get(getCurrentPanel().getPanelIndex() + panelIndexIncrement));
 
         final TerminalAppToolBar toolBar = getCurrentPanel().getToolBar();
-        if (toolBar != null)
-        {
+        if (toolBar != null) {
             final int toolBarComponentCount = toolBar.getComponents().length;
             int toolBarButtonIndex = (reverse) ? WerminalPanelWindow.PREVIOUS_BUTTON_INDEX
                     : WerminalPanelWindow.NEXT_BUTTON_INDEX;
             toolBarButtonIndex = (toolBarButtonIndex < toolBarComponentCount) ? toolBarButtonIndex : 0;
             final Component focusComponent = toolBar.getComponents()[toolBarButtonIndex];
-            if (focusComponent instanceof TerminalAppButtonPanel)
-            {
+            if (focusComponent instanceof TerminalAppButtonPanel) {
                 setFocus(((TerminalAppButtonPanel) focusComponent).getButton());
             }
         }
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         super.render();
         renderCurrentPanel();
     }
 
-    protected void renderCurrentPanel()
-    {
+    protected void renderCurrentPanel() {
 
-        if (_CurrentPanel != null)
-        {
+        if (_CurrentPanel != null) {
             addComponent(_CurrentPanel);
         }
     }
 
-    private class NextAction extends WerminalAction
-    {
+    private class NextAction extends WerminalAction {
 
-        protected NextAction(final Werminal werminal)
-        {
+        protected NextAction(final Werminal werminal) {
 
             super(werminal, "Next");
         }
 
         @Override
-        public void doAction()
-        {
+        public void doAction() {
 
             goToNextPanel();
         }
 
     }
 
-    private class PreviousAction extends WerminalAction
-    {
+    private class PreviousAction extends WerminalAction {
 
-        protected PreviousAction(final Werminal werminal)
-        {
+        protected PreviousAction(final Werminal werminal) {
 
             super(werminal, "Previous");
         }
 
         @Override
-        public void doAction()
-        {
+        public void doAction() {
 
             goToPreviousPanel();
         }

@@ -62,8 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Implements the transformation of Schema to Java Class (.class bytecode).
  * </p>
  */
-public class SchemaGenerator implements Opcodes
-{
+public class SchemaGenerator implements Opcodes {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(SchemaGenerator.class);
@@ -181,12 +180,10 @@ public class SchemaGenerator implements Opcodes
      *
      * @param schemaLoader The SchemaLoader (a ClassLoader) instance that will use this SchemaGenerator to load Schema Java interfaces from Schema models and other sources.
      */
-    public SchemaGenerator(final SchemaLoader schemaLoader)
-    {
+    public SchemaGenerator(final SchemaLoader schemaLoader) {
 
         _SchemaLoader = schemaLoader;
-        if (_SchemaLoader == null)
-        {
+        if (_SchemaLoader == null) {
             throw new NullPointerException("The SchemaLoader is null");
         }
 
@@ -196,29 +193,24 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    public static final String classToInternalTypeName(final Class<?> clazz)
-    {
+    public static final String classToInternalTypeName(final Class<?> clazz) {
 
         return SchemaGenerator.externalTypeNameToInternalTypeName(clazz.getCanonicalName());
     }
 
-    public static final String externalTypeNameToInternalTypeName(final String externalTypeName)
-    {
+    public static final String externalTypeNameToInternalTypeName(final String externalTypeName) {
 
         return externalTypeName.replace('.', '/');
     }
 
-    public static final String internalTypeNameToExternalTypeName(final String internalTypeName)
-    {
+    public static final String internalTypeNameToExternalTypeName(final String internalTypeName) {
 
         return internalTypeName.replace('/', '.');
     }
 
-    public Choices generateChoices(final Class<?> nativeChoicesEnumClass)
-    {
+    public Choices generateChoices(final Class<?> nativeChoicesEnumClass) {
 
-        if (nativeChoicesEnumClass == null || !nativeChoicesEnumClass.isEnum())
-        {
+        if (nativeChoicesEnumClass == null || !nativeChoicesEnumClass.isEnum()) {
             return null;
         }
 
@@ -232,12 +224,10 @@ public class SchemaGenerator implements Opcodes
         choices.setUniqueName(choicesUniqueName);
 
         final Object[] enumConstants = nativeChoicesEnumClass.getEnumConstants();
-        if (enumConstants != null && enumConstants.length > 0)
-        {
+        if (enumConstants != null && enumConstants.length > 0) {
             final LinkedHashSet choiceSet = new LinkedHashSet(enumConstants.length);
 
-            for (final Object enumConstant : enumConstants)
-            {
+            for (final Object enumConstant : enumConstants) {
                 final String choice = String.valueOf(enumConstant);
                 choiceSet.add(enumConstant);
             }
@@ -252,12 +242,10 @@ public class SchemaGenerator implements Opcodes
     /**
      * Yay Bytecode!
      */
-    public JavaBytecodeClass generateChoicesEnum(final Choices choices)
-    {
+    public JavaBytecodeClass generateChoicesEnum(final Choices choices) {
 
 
-        if (choices == null)
-        {
+        if (choices == null) {
             return null;
         }
 
@@ -282,8 +270,7 @@ public class SchemaGenerator implements Opcodes
         classWriter.visit(51, ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM, enumName, "L" + ENUM_INTERNAL_NAME + "<" + enumTypeName + ">;", ENUM_INTERNAL_NAME, null);
 
         {
-            for (final String choice : choicesList)
-            {
+            for (final String choice : choicesList) {
                 fieldVisitor = classWriter.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM, choice, enumTypeName, null, null);
                 fieldVisitor.visitEnd();
             }
@@ -330,8 +317,7 @@ public class SchemaGenerator implements Opcodes
             methodVisitor.visitCode();
 
             int constantIndex = 0;
-            for (final String choice : choicesList)
-            {
+            for (final String choice : choicesList) {
                 methodVisitor.visitTypeInsn(NEW, enumName);
                 methodVisitor.visitInsn(DUP);
                 methodVisitor.visitLdcInsn(choice);
@@ -348,8 +334,7 @@ public class SchemaGenerator implements Opcodes
 
 
             constantIndex = 0;
-            for (final String choice : choicesList)
-            {
+            for (final String choice : choicesList) {
                 methodVisitor.visitInsn(DUP);
 
                 visitConstantIncrement(methodVisitor, constantIndex);
@@ -374,11 +359,9 @@ public class SchemaGenerator implements Opcodes
         return enumByteCodeClass;
     }
 
-    private void visitConstantIncrement(final MethodVisitor methodVisitor, final int constantIndex)
-    {
+    private void visitConstantIncrement(final MethodVisitor methodVisitor, final int constantIndex) {
 
-        switch (constantIndex)
-        {
+        switch (constantIndex) {
 
             case 0:
                 methodVisitor.visitInsn(ICONST_0);
@@ -412,8 +395,7 @@ public class SchemaGenerator implements Opcodes
     }
 
     public Schema generateSchema(final JsonSchema jsonSchema, final URI... baseSchemaUris)
-            throws SchemaGeneratorException
-    {
+            throws SchemaGeneratorException {
 
         final URI schemaUri = jsonSchema.getId();
         final Context context = getContext();
@@ -427,20 +409,17 @@ public class SchemaGenerator implements Opcodes
         final UniqueName uniqueName = new UniqueName(namespace, localName);
         schema.setUniqueName(uniqueName);
         final String schemaDescription = jsonSchema.getDescription();
-        if (schemaDescription != null)
-        {
+        if (schemaDescription != null) {
             schema.setDescription(schemaDescription);
         }
 
         final String schemaTitle = uniqueName.getLocalName();
-        if (schemaTitle != null)
-        {
+        if (schemaTitle != null) {
             schema.setTitle(schemaTitle);
         }
 
         final Set<URI> baseSchemaUriSet = new HashSet<>();
-        if (baseSchemaUris != null)
-        {
+        if (baseSchemaUris != null) {
             baseSchemaUriSet.addAll(Arrays.asList(baseSchemaUris));
         }
 
@@ -450,8 +429,7 @@ public class SchemaGenerator implements Opcodes
         final List<Slot> slots = schema.getSlots();
         final Map<String, JsonSchema.Property> properties = jsonSchema.getProperties();
 
-        for (final String name : properties.keySet())
-        {
+        for (final String name : properties.keySet()) {
 
             final JsonSchema.Property property = properties.get(name);
 
@@ -459,20 +437,17 @@ public class SchemaGenerator implements Opcodes
             slot.setName(name);
 
             final String slotDescription = property.getValue(PropertyType.Description);
-            if (slotDescription != null)
-            {
+            if (slotDescription != null) {
                 slot.setDescription(slotDescription);
             }
             final String slotTitle = property.getValue(PropertyType.Title);
-            if (slotTitle != null)
-            {
+            if (slotTitle != null) {
                 slot.setTitle(slotTitle);
             }
 
             final Value value = generateValue(jsonSchema, property);
 
-            if (value == null)
-            {
+            if (value == null) {
                 throw new SchemaGeneratorException("Failed to generate a Value for slot: " + name, null, this);
             }
 
@@ -483,23 +458,19 @@ public class SchemaGenerator implements Opcodes
         }
 
         final List<JsonSchema.Link> links = jsonSchema.getLinks();
-        for (final JsonSchema.Link jsonSchemaLink : links)
-        {
+        for (final JsonSchema.Link jsonSchemaLink : links) {
             final Slot linkSlot = context.newModel(Slot.class);
             final URI linkRelationUri = jsonSchemaLink.getRelId();
-            if (linkRelationUri == null)
-            {
+            if (linkRelationUri == null) {
                 continue;
             }
 
             final LinkRelation linkRelation = getContext().getApiLoader().loadLinkRelation(linkRelationUri);
-            if (linkRelation == null)
-            {
+            if (linkRelation == null) {
                 continue;
             }
             final String linkSlotName = linkRelation.getUniqueName().getLocalName();
-            if (linkSlotName == null)
-            {
+            if (linkSlotName == null) {
                 continue;
             }
 
@@ -510,8 +481,7 @@ public class SchemaGenerator implements Opcodes
             linkValue.setLinkRelationUri(linkRelationUri);
 
             final URI targetSchemaUri = jsonSchemaLink.getTargetSchemaId();
-            if (targetSchemaUri != null)
-            {
+            if (targetSchemaUri != null) {
                 linkValue.setResponseSchemaUri(targetSchemaUri);
             }
 
@@ -522,16 +492,13 @@ public class SchemaGenerator implements Opcodes
         }
 
         final ObjectNode rootNode = jsonSchema.getRootNode();
-        if (rootNode.has(Schema.SLOT_NAME_KEY_SLOT_NAMES))
-        {
+        if (rootNode.has(Schema.SLOT_NAME_KEY_SLOT_NAMES)) {
             final JsonNode keySlotNamesJsonNode = rootNode.get(Schema.SLOT_NAME_KEY_SLOT_NAMES);
 
-            if (keySlotNamesJsonNode instanceof ArrayNode)
-            {
+            if (keySlotNamesJsonNode instanceof ArrayNode) {
                 final ArrayNode keySlotNamesArrayNode = (ArrayNode) keySlotNamesJsonNode;
                 final Iterator<JsonNode> elements = keySlotNamesArrayNode.elements();
-                while (elements.hasNext())
-                {
+                while (elements.hasNext()) {
                     final JsonNode keySlotNameJsonNode = elements.next();
                     final String keySlotName = keySlotNameJsonNode.asText();
                     schema.getKeySlotNames().add(keySlotName);
@@ -546,8 +513,7 @@ public class SchemaGenerator implements Opcodes
     }
 
     @SuppressWarnings("unchecked")
-    public Schema generateSchema(final Prototype prototype)
-    {
+    public Schema generateSchema(final Prototype prototype) {
 
         final URI schemaUri = prototype.getSchemaUri();
         final Context context = getContext();
@@ -557,8 +523,7 @@ public class SchemaGenerator implements Opcodes
         schema.setDescription(prototype.getDescription());
 
         final boolean isReadOnly = prototype.isReadOnly();
-        if (isReadOnly)
-        {
+        if (isReadOnly) {
             schema.setReadOnly(true);
         }
 
@@ -570,40 +535,33 @@ public class SchemaGenerator implements Opcodes
         schema.setUri(schemaUri);
 
         final Set<URI> prototypeBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (prototypeBaseSchemaUris != null)
-        {
+        if (prototypeBaseSchemaUris != null) {
             schema.getBaseSchemaUris().addAll(prototypeBaseSchemaUris);
         }
 
         final SortedSet<String> prototypeKeySlotNames = prototype.getDeclaredKeySlotNames();
-        if (prototypeKeySlotNames != null)
-        {
+        if (prototypeKeySlotNames != null) {
             schema.getKeySlotNames().addAll(prototypeKeySlotNames);
         }
 
         final Set<String> prototypeComparableSlotNames = prototype.getComparableSlotNames();
-        if (prototypeComparableSlotNames != null)
-        {
+        if (prototypeComparableSlotNames != null) {
             schema.getComparableSlotNames().addAll(prototypeComparableSlotNames);
         }
 
         final SortedSet<String> prototypeTags = prototype.getTags();
-        if (prototypeTags != null)
-        {
+        if (prototypeTags != null) {
             schema.getTags().addAll(prototypeTags);
         }
 
         final List<Slot> slots = schema.getSlots();
         final SortedSet<String> prototypeAllSlotNames = prototype.getAllSlotNames();
-        if (prototypeAllSlotNames != null)
-        {
+        if (prototypeAllSlotNames != null) {
 
-            for (final String name : prototypeAllSlotNames)
-            {
+            for (final String name : prototypeAllSlotNames) {
                 final ProtoSlot protoSlot = prototype.getProtoSlot(name);
                 final URI slotDeclaredSchemaUri = protoSlot.getDeclaringSchemaUri();
-                if (!schemaUri.equals(slotDeclaredSchemaUri))
-                {
+                if (!schemaUri.equals(slotDeclaredSchemaUri)) {
                     continue;
                 }
 
@@ -611,8 +569,7 @@ public class SchemaGenerator implements Opcodes
                 slot.setName(name);
 
                 final SortedSet<String> aliases = protoSlot.getAliases();
-                if (aliases != null)
-                {
+                if (aliases != null) {
                     slot.getAliases().addAll(aliases);
                 }
 
@@ -622,80 +579,67 @@ public class SchemaGenerator implements Opcodes
                 final Type slotHeapValueType = protoSlot.getHeapValueType();
                 final Value value = generateValue(slotHeapValueType, protoSlot);
 
-                if (value == null)
-                {
+                if (value == null) {
                     throw new SchemaGeneratorException("Failed to generate a Value for slot: " + protoSlot, null, this);
                 }
 
-                if (protoSlot instanceof PropertyProtoSlot)
-                {
+                if (protoSlot instanceof PropertyProtoSlot) {
                     final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
                     final Object propertyDefaultValue = propertyProtoSlot.getDefaultValue();
                     final ValueType propertyValueType = propertyProtoSlot.getValueType();
                     final Object valueTypeDefaultValue = propertyValueType.getDefaultValue();
-                    if (propertyDefaultValue != null && !propertyDefaultValue.equals(valueTypeDefaultValue))
-                    {
+                    if (propertyDefaultValue != null && !propertyDefaultValue.equals(valueTypeDefaultValue)) {
                         value.setSlotValue(Value.SLOT_NAME_DEFAULT, propertyDefaultValue);
                     }
 
                     @SuppressWarnings("rawtypes")
                     final Set disallowedValues = propertyProtoSlot.getDisallowedValues();
-                    if (disallowedValues != null && !disallowedValues.isEmpty())
-                    {
+                    if (disallowedValues != null && !disallowedValues.isEmpty()) {
                         propertyProtoSlot.getDisallowedValues().addAll(disallowedValues);
                     }
 
                     final Object divisibleByValue = propertyProtoSlot.getDivisibleByValue();
-                    if (divisibleByValue != null)
-                    {
+                    if (divisibleByValue != null) {
                         value.setSlotValue(NumericValue.SLOT_NAME_DIVISIBLE_BY, divisibleByValue);
                     }
 
                     final Integer maximumLength = propertyProtoSlot.getMaximumLength();
-                    if (maximumLength != null)
-                    {
+                    if (maximumLength != null) {
                         value.setSlotValue(TextValue.SLOT_NAME_MAXIMUM_LENGTH, maximumLength);
                     }
 
                     final Integer maximumSize = propertyProtoSlot.getMaximumSize();
-                    if (maximumSize != null)
-                    {
+                    if (maximumSize != null) {
                         value.setSlotValue(ListValue.SLOT_NAME_MAXIMUM_SIZE, maximumSize);
                     }
 
                     final Object maximumValue = propertyProtoSlot.getMaximumValue();
-                    if (maximumValue != null)
-                    {
+                    if (maximumValue != null) {
                         value.setSlotValue(NumericValue.SLOT_NAME_MAXIMUM, maximumValue);
                     }
 
                     final Integer minimumLength = propertyProtoSlot.getMinimumLength();
-                    if (minimumLength != null)
-                    {
+                    if (minimumLength != null) {
                         value.setSlotValue(TextValue.SLOT_NAME_MINIMUM_LENGTH, minimumLength);
                     }
 
                     final Integer minimumSize = propertyProtoSlot.getMinimumSize();
-                    if (minimumSize != null)
-                    {
+                    if (minimumSize != null) {
                         value.setSlotValue(ListValue.SLOT_NAME_MINIMUM_SIZE, minimumSize);
                     }
 
                     final Object minimumValue = propertyProtoSlot.getMinimumValue();
-                    if (minimumValue != null)
-                    {
+                    if (minimumValue != null) {
                         value.setSlotValue(NumericValue.SLOT_NAME_MINIMUM, minimumValue);
                     }
 
                     final boolean isMultiline = propertyProtoSlot.isMultiline();
-                    if (isMultiline)
-                    {
+                    if (isMultiline) {
                         value.setSlotValue(TextValue.SLOT_NAME_MULTILINE, isMultiline);
                     }
 
                     if (slotHeapValueType instanceof Class<?>
-                            && Set.class.isAssignableFrom((Class<?>) slotHeapValueType))
-                    {
+                            && Set.class.isAssignableFrom((Class<?>) slotHeapValueType)) {
                         value.setSlotValue(ListValue.SLOT_NAME_ELEMENT_UNIQUENESS_CONSTRAINED, Boolean.TRUE);
                     }
 
@@ -723,8 +667,7 @@ public class SchemaGenerator implements Opcodes
      * @param schema The Schema to represent as a Java class.
      * @return The Java class representation of the specified schema.
      */
-    public JavaBytecodeClass generateSchemaInterface(final Schema schema)
-    {
+    public JavaBytecodeClass generateSchemaInterface(final Schema schema) {
 
         /*
          * Create the simple POJO that will return the transformation
@@ -744,13 +687,11 @@ public class SchemaGenerator implements Opcodes
          * class-level annotation.
          */
         final List<String> keySlotNames = schema.getKeySlotNames();
-        if (keySlotNames != null && keySlotNames.size() > 0)
-        {
+        if (keySlotNames != null && keySlotNames.size() > 0) {
             keySlotNameSet.addAll(keySlotNames);
         }
 
-        if (!keySlotNameSet.isEmpty())
-        {
+        if (!keySlotNameSet.isEmpty()) {
             final String[] keySlotNamesArray = new String[keySlotNameSet.size()];
             wrmlAnnotation.setAttributeValue(AnnotationParameterName.keySlotNames.name(), keySlotNameSet.toArray(keySlotNamesArray));
         }
@@ -760,8 +701,7 @@ public class SchemaGenerator implements Opcodes
          * class-level annotation.
          */
         final List<String> comparableSlotNames = schema.getComparableSlotNames();
-        if (comparableSlotNames != null && comparableSlotNames.size() > 0)
-        {
+        if (comparableSlotNames != null && comparableSlotNames.size() > 0) {
             final String[] comparableSlotNamesArray = new String[comparableSlotNames.size()];
             wrmlAnnotation.setAttributeValue(AnnotationParameterName.comparableSlotNames.name(), comparableSlotNames.toArray(comparableSlotNamesArray));
         }
@@ -795,16 +735,14 @@ public class SchemaGenerator implements Opcodes
          * schema's description.
          */
         final String schemaDescription = schema.getDescription();
-        if (schemaDescription != null && !schemaDescription.trim().isEmpty())
-        {
+        if (schemaDescription != null && !schemaDescription.trim().isEmpty()) {
             final JavaBytecodeAnnotation schemaDescriptionAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_DESCRIPTION);
             schemaDescriptionAnnotation.setAttributeValue(AnnotationParameterName.value.name(), schemaDescription);
             javaBytecodeClass.getAnnotations().add(schemaDescriptionAnnotation);
         }
 
         String schemaTitle = schema.getTitle();
-        if (schemaTitle == null || schemaTitle.trim().isEmpty())
-        {
+        if (schemaTitle == null || schemaTitle.trim().isEmpty()) {
             schemaTitle = schema.getUniqueName().getLocalName();
         }
 
@@ -813,8 +751,7 @@ public class SchemaGenerator implements Opcodes
         javaBytecodeClass.getAnnotations().add(schemaTitleAnnotation);
 
         final URI schemaThumbnailImageLocation = schema.getThumbnailLocation();
-        if (schemaThumbnailImageLocation != null)
-        {
+        if (schemaThumbnailImageLocation != null) {
             final JavaBytecodeAnnotation schemaThumbnailImageAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_THUMBNAIL_IMAGE);
             schemaThumbnailImageAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     schemaThumbnailImageLocation.toString());
@@ -829,22 +766,18 @@ public class SchemaGenerator implements Opcodes
          * (aka extended) interfaces.
          */
         final List<URI> baseSchemaUris = schema.getBaseSchemaUris();
-        for (final URI baseSchemaUri : baseSchemaUris)
-        {
+        for (final URI baseSchemaUri : baseSchemaUris) {
             final String baseSchemaInternalName = uriToInternalTypeName(baseSchemaUri);
             javaBytecodeClass.getInterfaces().add(baseSchemaInternalName);
 
 
-            if (!isAggregate && getSchemaLoader().getAggregateDocumentSchemaUri().equals(baseSchemaUri))
-            {
+            if (!isAggregate && getSchemaLoader().getAggregateDocumentSchemaUri().equals(baseSchemaUri)) {
                 isAggregate = true;
 
                 final List<Slot> slots = schema.getSlots();
-                for (final Slot slot : slots)
-                {
+                for (final Slot slot : slots) {
                     final Value value = slot.getValue();
-                    if (!(value instanceof LinkValue || value instanceof ModelValue || value instanceof MultiSelectValue))
-                    {
+                    if (!(value instanceof LinkValue || value instanceof ModelValue || value instanceof MultiSelectValue)) {
                         keySlotNameSet.add(slot.getName());
                     }
                 }
@@ -859,8 +792,7 @@ public class SchemaGenerator implements Opcodes
          * Add the class-level Tags annotation to capture the schema's tags.
          */
         final List<String> schemaTags = schema.getTags();
-        if (schemaTags != null && schemaTags.size() > 0)
-        {
+        if (schemaTags != null && schemaTags.size() > 0) {
             final JavaBytecodeAnnotation tagsAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_TAGS);
             final String[] tagsArray = new String[schemaTags.size()];
             tagsAnnotation.setAttributeValue(AnnotationParameterName.value.name(), schemaTags.toArray(tagsArray));
@@ -868,16 +800,14 @@ public class SchemaGenerator implements Opcodes
         }
 
         final Long schemaVersion = schema.getVersion();
-        if (schemaVersion != null)
-        {
+        if (schemaVersion != null) {
             final JavaBytecodeAnnotation versionAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_VERSION);
             versionAnnotation.setAttributeValue(AnnotationParameterName.value.name(), schemaVersion);
             javaBytecodeClass.getAnnotations().add(versionAnnotation);
         }
 
         final Boolean maybeReadOnly = schema.isReadOnly();
-        if (maybeReadOnly != null && maybeReadOnly)
-        {
+        if (maybeReadOnly != null && maybeReadOnly) {
             final JavaBytecodeAnnotation readOnlyAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_READ_ONLY);
             javaBytecodeClass.getAnnotations().add(readOnlyAnnotation);
         }
@@ -907,54 +837,42 @@ public class SchemaGenerator implements Opcodes
         return javaBytecodeClass;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return getSchemaLoader().getContext();
     }
 
-    public SchemaLoader getSchemaLoader()
-    {
+    public SchemaLoader getSchemaLoader() {
 
         return _SchemaLoader;
     }
 
-    private void addAnnotations(final JavaBytecodeMethod method, final JavaBytecodeAnnotation... annotations)
-    {
+    private void addAnnotations(final JavaBytecodeMethod method, final JavaBytecodeAnnotation... annotations) {
 
-        if (annotations != null && annotations.length > 0)
-        {
+        if (annotations != null && annotations.length > 0) {
             final List<JavaBytecodeAnnotation> methodAnnotations = method.getAnnotations();
-            for (final JavaBytecodeAnnotation annotation : annotations)
-            {
-                if (annotation != null)
-                {
+            for (final JavaBytecodeAnnotation annotation : annotations) {
+                if (annotation != null) {
                     methodAnnotations.add(annotation);
                 }
             }
         }
     }
 
-    private String generateArgs(final String... args)
-    {
+    private String generateArgs(final String... args) {
 
-        if (args == null || args.length == 0)
-        {
+        if (args == null || args.length == 0) {
             return SchemaGenerator.EMPTY_PARENTHESES;
         }
-        else
-        {
+        else {
             StringBuilder argsStringBuilder = null;
 
-            for (final String arg : args)
-            {
-                if (arg == null)
-                {
+            for (final String arg : args) {
+                if (arg == null) {
                     continue;
                 }
 
-                if (argsStringBuilder == null)
-                {
+                if (argsStringBuilder == null) {
                     argsStringBuilder = new StringBuilder();
                     argsStringBuilder.append(SchemaGenerator.OPEN_PARENTHESIS);
                 }
@@ -963,8 +881,7 @@ public class SchemaGenerator implements Opcodes
 
             }
 
-            if (argsStringBuilder != null)
-            {
+            if (argsStringBuilder != null) {
                 argsStringBuilder.append(SchemaGenerator.CLOSE_PARENTHESIS);
                 return argsStringBuilder.toString();
             }
@@ -974,26 +891,21 @@ public class SchemaGenerator implements Opcodes
         return null;
     }
 
-    private String generateArgsDescriptor(final JavaBytecodeType... argumentTypes)
-    {
+    private String generateArgsDescriptor(final JavaBytecodeType... argumentTypes) {
 
-        if (argumentTypes == null || argumentTypes.length == 0)
-        {
+        if (argumentTypes == null || argumentTypes.length == 0) {
             return generateArgs((String[]) null);
         }
 
         final List<String> argList = new ArrayList<String>();
-        for (int i = 0; i < argumentTypes.length; i++)
-        {
+        for (int i = 0; i < argumentTypes.length; i++) {
             final JavaBytecodeType argType = argumentTypes[i];
-            if (argType != null)
-            {
+            if (argType != null) {
                 argList.add(argType.getDescriptor());
             }
         }
 
-        if (argList.size() > 0)
-        {
+        if (argList.size() > 0) {
             String[] args = new String[argList.size()];
             args = argList.toArray(args);
             return generateArgs(args);
@@ -1002,26 +914,21 @@ public class SchemaGenerator implements Opcodes
         return generateArgs((String[]) null);
     }
 
-    private String generateArgsSignature(final JavaBytecodeType... argumentTypes)
-    {
+    private String generateArgsSignature(final JavaBytecodeType... argumentTypes) {
 
-        if (argumentTypes == null || argumentTypes.length == 0)
-        {
+        if (argumentTypes == null || argumentTypes.length == 0) {
             return generateArgs((String[]) null);
         }
 
         final List<String> argList = new ArrayList<String>();
-        for (int i = 0; i < argumentTypes.length; i++)
-        {
+        for (int i = 0; i < argumentTypes.length; i++) {
             final JavaBytecodeType argType = argumentTypes[i];
-            if (argType != null)
-            {
+            if (argType != null) {
                 argList.add(argType.getGenericSignature());
             }
         }
 
-        if (argList.size() > 0)
-        {
+        if (argList.size() > 0) {
             String[] args = new String[argList.size()];
             args = argList.toArray(args);
             return generateArgs(args);
@@ -1030,8 +937,7 @@ public class SchemaGenerator implements Opcodes
         return null;
     }
 
-    private void generateBeanAccessorMethods(final JavaBytecodeClass javaBytecodeClass, final Schema schema, final boolean isAggregate, final Slot slot)
-    {
+    private void generateBeanAccessorMethods(final JavaBytecodeClass javaBytecodeClass, final Schema schema, final boolean isAggregate, final Slot slot) {
 
         final String slotName = slot.getName();
         final Value slotValue = slot.getValue();
@@ -1052,30 +958,26 @@ public class SchemaGenerator implements Opcodes
         JavaBytecodeAnnotation defaultValueAnnotation = null;
 
         final List<String> aliases = slot.getAliases();
-        if (aliases != null && aliases.size() > 0)
-        {
+        if (aliases != null && aliases.size() > 0) {
             aliasAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_ALIASES);
             final String[] aliasesArray = new String[aliases.size()];
             aliasAnnotation.setAttributeValue(AnnotationParameterName.value.name(), aliases.toArray(aliasesArray));
         }
 
         final String descriptionString = slot.getDescription();
-        if (descriptionString != null && !descriptionString.isEmpty())
-        {
+        if (descriptionString != null && !descriptionString.isEmpty()) {
             descriptionAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_DESCRIPTION);
             descriptionAnnotation.setAttributeValue(AnnotationParameterName.value.name(), descriptionString);
         }
 
         final String titleString = slot.getTitle();
-        if (titleString != null && !titleString.isEmpty())
-        {
+        if (titleString != null && !titleString.isEmpty()) {
             titleAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_TITLE);
             titleAnnotation.setAttributeValue(AnnotationParameterName.value.name(), titleString);
         }
 
         final String defaultValueString = getDefaultValueString(slotValue);
-        if (defaultValueString != null && !defaultValueString.isEmpty())
-        {
+        if (defaultValueString != null && !defaultValueString.isEmpty()) {
             defaultValueAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_DEFAULT_VALUE);
             defaultValueAnnotation.setAttributeValue(AnnotationParameterName.value.name(), defaultValueString);
         }
@@ -1092,18 +994,15 @@ public class SchemaGenerator implements Opcodes
 
         JavaBytecodeAnnotation collectionSlotAnnotation = null;
 
-        if (slotValue.containsSlotValue(Value.SLOT_NAME_DISALLOWED_VALUES))
-        {
+        if (slotValue.containsSlotValue(Value.SLOT_NAME_DISALLOWED_VALUES)) {
 
             final List<?> disallowedValues = (List<?>) slotValue.getSlotValue(Value.SLOT_NAME_DISALLOWED_VALUES);
-            if (disallowedValues != null && disallowedValues.size() > 0)
-            {
+            if (disallowedValues != null && disallowedValues.size() > 0) {
                 disallowedValuesAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_DISALLOWED_VALUES);
 
                 final String[] values = new String[disallowedValues.size()];
 
-                for (int i = 0; i < values.length; i++)
-                {
+                for (int i = 0; i < values.length; i++) {
                     values[i] = String.valueOf(disallowedValues.get(i));
                 }
 
@@ -1113,17 +1012,14 @@ public class SchemaGenerator implements Opcodes
 
         }
 
-        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MULTILINE) && slotValue instanceof TextValue)
-        {
+        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MULTILINE) && slotValue instanceof TextValue) {
             final boolean isMultiline = (boolean) slotValue.getSlotValue(TextValue.SLOT_NAME_MULTILINE);
-            if (isMultiline)
-            {
+            if (isMultiline) {
                 multilineAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MULTILINE);
             }
         }
 
-        if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_DIVISIBLE_BY) && (slotValue instanceof IntegerValue || slotValue instanceof LongValue))
-        {
+        if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_DIVISIBLE_BY) && (slotValue instanceof IntegerValue || slotValue instanceof LongValue)) {
             divisibleByAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_DIVISIBLE_BY_VALUE);
             divisibleByAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     String.valueOf(slotValue.getSlotValue(NumericValue.SLOT_NAME_DIVISIBLE_BY)));
@@ -1132,22 +1028,19 @@ public class SchemaGenerator implements Opcodes
 
         // Maximum values
 
-        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MAXIMUM_LENGTH) && slotValue instanceof TextValue)
-        {
+        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MAXIMUM_LENGTH) && slotValue instanceof TextValue) {
             maximumLengthAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MAXIMUM_LENGTH);
             maximumLengthAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     (int) slotValue.getSlotValue(TextValue.SLOT_NAME_MAXIMUM_LENGTH));
 
         }
-        else if (slotValue.containsSlotValue(ListValue.SLOT_NAME_MAXIMUM_SIZE) && slotValue instanceof ListValue)
-        {
+        else if (slotValue.containsSlotValue(ListValue.SLOT_NAME_MAXIMUM_SIZE) && slotValue instanceof ListValue) {
             maximumSizeAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MAXIMUM_SIZE);
             maximumSizeAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     (int) slotValue.getSlotValue(ListValue.SLOT_NAME_MAXIMUM_SIZE));
 
         }
-        else if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_MAXIMUM) && slotValue instanceof NumericValue)
-        {
+        else if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_MAXIMUM) && slotValue instanceof NumericValue) {
             maximumValueAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MAXIMUM_VALUE);
             maximumValueAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     String.valueOf(slotValue.getSlotValue(NumericValue.SLOT_NAME_MAXIMUM)));
@@ -1159,22 +1052,19 @@ public class SchemaGenerator implements Opcodes
 
         // Minimum values
 
-        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MINIMUM_LENGTH) && slotValue instanceof TextValue)
-        {
+        if (slotValue.containsSlotValue(TextValue.SLOT_NAME_MINIMUM_LENGTH) && slotValue instanceof TextValue) {
             minimumLengthAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MINIMUM_LENGTH);
             minimumLengthAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     (int) slotValue.getSlotValue(TextValue.SLOT_NAME_MINIMUM_LENGTH));
 
         }
-        else if (slotValue.containsSlotValue(ListValue.SLOT_NAME_MINIMUM_SIZE) && slotValue instanceof ListValue)
-        {
+        else if (slotValue.containsSlotValue(ListValue.SLOT_NAME_MINIMUM_SIZE) && slotValue instanceof ListValue) {
             minimumSizeAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MINIMUM_SIZE);
             minimumSizeAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     (int) slotValue.getSlotValue(ListValue.SLOT_NAME_MINIMUM_SIZE));
 
         }
-        else if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_MINIMUM) && slotValue instanceof NumericValue)
-        {
+        else if (slotValue.containsSlotValue(NumericValue.SLOT_NAME_MINIMUM) && slotValue instanceof NumericValue) {
             minimumValueAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_MINIMUM_VALUE);
             minimumValueAnnotation.setAttributeValue(AnnotationParameterName.value.name(),
                     String.valueOf(slotValue.getSlotValue(NumericValue.SLOT_NAME_MINIMUM)));
@@ -1185,20 +1075,17 @@ public class SchemaGenerator implements Opcodes
         }
 
 
-        if (slotValue instanceof CollectionValue)
-        {
+        if (slotValue instanceof CollectionValue) {
 
             final CollectionValue collectionValue = (CollectionValue) slotValue;
             final Slot elementSlot = collectionValue.getElementSlot();
 
-            if (elementSlot == null)
-            {
+            if (elementSlot == null) {
                 throw new SchemaGeneratorException("The collection value: " + collectionValue + " does not define an element slot. Collection values must have an element type of " + ModelValue.class, null, this);
             }
 
             final Value elementValue = collectionValue.getElementSlot().getValue();
-            if (!(elementValue instanceof ModelValue))
-            {
+            if (!(elementValue instanceof ModelValue)) {
                 throw new SchemaGeneratorException("The collection value: " + collectionValue + " does not define a model-based element slot. Collection values must have an element type of " + ModelValue.class, null, this);
             }
 
@@ -1208,10 +1095,8 @@ public class SchemaGenerator implements Opcodes
             collectionSlotAnnotation.setAttributeValue(AnnotationParameterName.linkRelationUri.name(), linkRelationUri.toString());
 
             final Integer limit = collectionValue.getLimit();
-            if (limit != null)
-            {
-                if (limit < 1)
-                {
+            if (limit != null) {
+                if (limit < 1) {
                     throw new SchemaGeneratorException("The collection value: " + collectionValue + " defines an invalid limit: " + limit, null, this);
                 }
 
@@ -1219,15 +1104,13 @@ public class SchemaGenerator implements Opcodes
             }
 
             final List<CollectionValueSearchCriterion> andedCriterionList = collectionValue.getAnd();
-            if (andedCriterionList.size() > 0)
-            {
+            if (andedCriterionList.size() > 0) {
                 final JavaBytecodeAnnotation[] andCriterionArray = generateCollectionSlotCriterionArray(andedCriterionList);
                 collectionSlotAnnotation.setAttributeValue(AnnotationParameterName.and.name(), andCriterionArray);
             }
 
             final List<CollectionValueSearchCriterion> oredCriterionList = collectionValue.getOr();
-            if (oredCriterionList.size() > 0)
-            {
+            if (oredCriterionList.size() > 0) {
                 final JavaBytecodeAnnotation[] orCriterionArray = generateCollectionSlotCriterionArray(oredCriterionList);
                 collectionSlotAnnotation.setAttributeValue(AnnotationParameterName.or.name(), orCriterionArray);
             }
@@ -1248,12 +1131,9 @@ public class SchemaGenerator implements Opcodes
 
         javaBytecodeClass.getMethods().add(readMethod);
 
-        if (aliases != null && aliases.size() > 0)
-        {
-            for (final String alias : aliases)
-            {
-                if (alias == null)
-                {
+        if (aliases != null && aliases.size() > 0) {
+            for (final String alias : aliases) {
+                if (alias == null) {
                     continue;
                 }
 
@@ -1267,23 +1147,19 @@ public class SchemaGenerator implements Opcodes
             }
         }
 
-        if (slotValue instanceof MaybeReadOnly)
-        {
+        if (slotValue instanceof MaybeReadOnly) {
 
             final Boolean maybeReadOnly = ((MaybeReadOnly) slotValue).isReadOnly();
 
-            if (maybeReadOnly == null || !maybeReadOnly)
-            {
+            if (maybeReadOnly == null || !maybeReadOnly) {
 
                 final String writeMethodName = JavaBean.SET + methodNameSuffix;
 
                 JavaBytecodeAnnotation nonNullAnnotation = null;  // ;-)
-                if (slotValue instanceof MaybeRequired)
-                {
+                if (slotValue instanceof MaybeRequired) {
                     final Boolean maybeRequired = ((MaybeRequired) slotValue).isRequired();
                     final boolean required = (maybeRequired != null && maybeRequired);
-                    if (required && !(slotValue instanceof NumericValue) && !(slotValue instanceof BooleanValue))
-                    {
+                    if (required && !(slotValue instanceof NumericValue) && !(slotValue instanceof BooleanValue)) {
                         nonNullAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_NON_NULL);
                     }
                 }
@@ -1296,12 +1172,9 @@ public class SchemaGenerator implements Opcodes
                 final JavaBytecodeMethod writeMethod = generateMethod(writeMethodName, type, type, nonNullAnnotation);
                 javaBytecodeClass.getMethods().add(writeMethod);
 
-                if (aliases != null && aliases.size() > 0)
-                {
-                    for (final String alias : aliases)
-                    {
-                        if (alias == null)
-                        {
+                if (aliases != null && aliases.size() > 0) {
+                    for (final String alias : aliases) {
+                        if (alias == null) {
                             continue;
                         }
 
@@ -1317,12 +1190,10 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private JavaBytecodeAnnotation[] generateCollectionSlotCriterionArray(final List<CollectionValueSearchCriterion> criterionList)
-    {
+    private JavaBytecodeAnnotation[] generateCollectionSlotCriterionArray(final List<CollectionValueSearchCriterion> criterionList) {
 
         final JavaBytecodeAnnotation[] criterionArray = new JavaBytecodeAnnotation[criterionList.size()];
-        for (int i = 0; i < criterionArray.length; i++)
-        {
+        for (int i = 0; i < criterionArray.length; i++) {
 
             final CollectionValueSearchCriterion criterion = criterionList.get(i);
             final JavaBytecodeAnnotation collectionSlotCriterionAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_COLLECTION_SLOT_CRITERION);
@@ -1339,15 +1210,13 @@ public class SchemaGenerator implements Opcodes
             final String linkValueSource = criterion.getValueSource();
             final ValueSourceType linkValueSourceType = criterion.getValueSourceType();
 
-            if (operator != ComparisonOperator.exists && operator != ComparisonOperator.notExists && linkValueSource != null)
-            {
+            if (operator != ComparisonOperator.exists && operator != ComparisonOperator.notExists && linkValueSource != null) {
                 collectionSlotCriterionAnnotation.setAttributeValue(AnnotationParameterName.valueSource.name(), linkValueSource);
                 collectionSlotCriterionAnnotation.setAttributeValue(AnnotationParameterName.valueSourceType.name(), linkValueSourceType);
             }
 
             final String regex = criterion.getRegex();
-            if (operator == ComparisonOperator.regex && regex != null)
-            {
+            if (operator == ComparisonOperator.regex && regex != null) {
                 collectionSlotCriterionAnnotation.setAttributeValue(AnnotationParameterName.regex.name(), regex);
             }
 
@@ -1357,17 +1226,14 @@ public class SchemaGenerator implements Opcodes
         return criterionArray;
     }
 
-    private List<CollectionValueSearchCriterion> generateCollectionValueSearchCriterionList(final List<ProtoSearchCriterion> protoSearchCriterionList)
-    {
+    private List<CollectionValueSearchCriterion> generateCollectionValueSearchCriterionList(final List<ProtoSearchCriterion> protoSearchCriterionList) {
 
         final int listSize = (protoSearchCriterionList != null) ? protoSearchCriterionList.size() : 0;
         final List<CollectionValueSearchCriterion> criterionList = new ArrayList<>(listSize);
 
         final Context context = getContext();
-        if (protoSearchCriterionList != null)
-        {
-            for (final ProtoSearchCriterion protoSearchCriterion : protoSearchCriterionList)
-            {
+        if (protoSearchCriterionList != null) {
+            for (final ProtoSearchCriterion protoSearchCriterion : protoSearchCriterionList) {
 
                 final CollectionValueSearchCriterion searchCriterion = context.newModel(CollectionValueSearchCriterion.class);
 
@@ -1378,15 +1244,13 @@ public class SchemaGenerator implements Opcodes
                 final ProtoValueSource protoValueSource = protoSearchCriterion.getProtoValueSource();
                 searchCriterion.setReferenceSlot(protoValueSource.getReferenceSlot());
 
-                if (operator != ComparisonOperator.exists && operator != ComparisonOperator.notExists)
-                {
+                if (operator != ComparisonOperator.exists && operator != ComparisonOperator.notExists) {
                     searchCriterion.setValueSourceType(protoValueSource.getValueSourceType());
                     searchCriterion.setValueSource(protoValueSource.getValueSource());
 
                 }
 
-                if (operator == ComparisonOperator.regex)
-                {
+                if (operator == ComparisonOperator.regex) {
                     searchCriterion.setRegex(protoSearchCriterion.getRegex());
                 }
 
@@ -1404,15 +1268,13 @@ public class SchemaGenerator implements Opcodes
      * @param isAggregate       <code>true</code> if the {@link Schema} that owns the link {@link Slot} is an {@link org.wrml.model.rest.AggregateDocument}.
      * @param slot              The slot holding the LinkValue to use as a template for a set of generated Java methods.
      */
-    private void generateLinkMethod(final JavaBytecodeClass javaBytecodeClass, final boolean isAggregate, final Slot slot)
-    {
+    private void generateLinkMethod(final JavaBytecodeClass javaBytecodeClass, final boolean isAggregate, final Slot slot) {
 
 
         JavaBytecodeAnnotation aliasAnnotation = null;
 
         final List<String> aliases = slot.getAliases();
-        if (aliases != null && aliases.size() > 0)
-        {
+        if (aliases != null && aliases.size() > 0) {
             aliasAnnotation = new JavaBytecodeAnnotation(SchemaGenerator.ANNOTATION_INTERNAL_NAME_ALIASES);
             final String[] aliasesArray = new String[aliases.size()];
             aliasAnnotation.setAttributeValue(AnnotationParameterName.value.name(), aliases.toArray(aliasesArray));
@@ -1423,14 +1285,12 @@ public class SchemaGenerator implements Opcodes
         final LinkValue linkValue = (LinkValue) slot.getValue();
 
         final URI linkRelationUri = linkValue.getLinkRelationUri();
-        if (linkRelationUri == null)
-        {
+        if (linkRelationUri == null) {
             throw new SchemaGeneratorException("The link must specify a URI value in its \"linkRelationUri\" slot.", null, this);
         }
 
         final String linkRelationUriString = linkRelationUri.toASCIIString();
-        if (linkRelationUriString == null || linkRelationUriString.isEmpty())
-        {
+        if (linkRelationUriString == null || linkRelationUriString.isEmpty()) {
             throw new SchemaGeneratorException("The link must specify a URI value in its \"linkRelationUri\" slot.", null, this);
         }
 
@@ -1438,8 +1298,7 @@ public class SchemaGenerator implements Opcodes
 
         final ApiLoader apiLoader = getContext().getApiLoader();
         final LinkRelation linkRelation = apiLoader.loadLinkRelation(linkRelationUri);
-        if (linkRelation == null)
-        {
+        if (linkRelation == null) {
             throw new SchemaGeneratorException("Could not get the LinkRelation with URI: " + linkRelationUri, null, this);
         }
 
@@ -1463,17 +1322,14 @@ public class SchemaGenerator implements Opcodes
         final URI methodParameterSchemaUri = (linkValueRequestSchemaUri != null) ? linkValueRequestSchemaUri : linkRelationRequestSchemaUri;
 
         final JavaBytecodeMethod linkMethod;
-        if (methodParameterSchemaUri != null)
-        {
+        if (methodParameterSchemaUri != null) {
             // Link method accepts a parameter
             final JavaBytecodeType methodParameterType = javaBytecodeTypeForSchemaUri(methodParameterSchemaUri);
             linkMethod = generateMethod(linkMethodName, methodReturnType, methodParameterType, aliasAnnotation, linkSlotAnnotation);
         }
-        else
-        {
+        else {
             // A zero argument link method
-            if (method == Method.Get)
-            {
+            if (method == Method.Get) {
                 // Links with GET semantics are named with a pattern: get{LinkSlotName}()
                 linkMethodName = JavaBean.GET + StringUtils.capitalize(linkMethodName);
             }
@@ -1485,12 +1341,10 @@ public class SchemaGenerator implements Opcodes
         linkSlotAnnotation.setAttributeValue(AnnotationParameterName.embedded.name(), embedded);
 
         List<LinkValueBinding> linkValueBindings = linkValue.getBindings();
-        if (!linkValueBindings.isEmpty())
-        {
+        if (!linkValueBindings.isEmpty()) {
 
             final JavaBytecodeAnnotation[] bindingsArray = new JavaBytecodeAnnotation[linkValueBindings.size()];
-            for (int i = 0; i < bindingsArray.length; i++)
-            {
+            for (int i = 0; i < bindingsArray.length; i++) {
 
                 final LinkValueBinding linkValueBinding = linkValueBindings.get(i);
                 final String referenceSlot = linkValueBinding.getReferenceSlot();
@@ -1514,15 +1368,13 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private List<LinkValueBinding> generateLinkValueBindingList(final LinkProtoSlot linkProtoSlot)
-    {
+    private List<LinkValueBinding> generateLinkValueBindingList(final LinkProtoSlot linkProtoSlot) {
 
         final Context context = getContext();
         final Map<String, ProtoValueSource> linkSlotBindings = linkProtoSlot.getLinkSlotBindings();
         final List<LinkValueBinding> linkValueBindingList = new ArrayList<>(linkSlotBindings.size());
         final Collection<ProtoValueSource> protoValueSources = linkSlotBindings.values();
-        for (final ProtoValueSource protoValueSource : protoValueSources)
-        {
+        for (final ProtoValueSource protoValueSource : protoValueSources) {
             final LinkValueBinding linkValueBinding = context.newModel(LinkValueBinding.class);
             linkValueBindingList.add(linkValueBinding);
 
@@ -1536,15 +1388,13 @@ public class SchemaGenerator implements Opcodes
     }
 
     private JavaBytecodeMethod generateMethod(final String name, final JavaBytecodeType returnType,
-                                              final JavaBytecodeAnnotation... annotations)
-    {
+                                              final JavaBytecodeAnnotation... annotations) {
 
         return generateMethod(name, returnType, (JavaBytecodeType) null, annotations);
     }
 
     private JavaBytecodeMethod generateMethod(final String name, final JavaBytecodeType returnType,
-                                              final JavaBytecodeType argumentType, final JavaBytecodeAnnotation... annotations)
-    {
+                                              final JavaBytecodeType argumentType, final JavaBytecodeAnnotation... annotations) {
 
         final JavaBytecodeMethod method = new JavaBytecodeMethod();
         method.setName(StringUtils.deleteWhitespace(name));
@@ -1554,8 +1404,7 @@ public class SchemaGenerator implements Opcodes
         return method;
     }
 
-    private String generateMethodDescriptor(final JavaBytecodeType returnType, final JavaBytecodeType argumentType)
-    {
+    private String generateMethodDescriptor(final JavaBytecodeType returnType, final JavaBytecodeType argumentType) {
 
         final String returnTypeDescriptor = generateReturnTypeDescriptor(returnType);
         final String argsDescriptor = generateArgsDescriptor(argumentType);
@@ -1563,8 +1412,7 @@ public class SchemaGenerator implements Opcodes
         return methodDescriptor;
     }
 
-    private String generateMethodDescriptor(final JavaBytecodeType returnType, final JavaBytecodeType[] argumentTypes)
-    {
+    private String generateMethodDescriptor(final JavaBytecodeType returnType, final JavaBytecodeType[] argumentTypes) {
 
         final String returnTypeDescriptor = generateReturnTypeDescriptor(returnType);
         final String argsDescriptor = generateArgsDescriptor(argumentTypes);
@@ -1572,8 +1420,7 @@ public class SchemaGenerator implements Opcodes
         return methodDescriptor;
     }
 
-    private String generateMethodSignature(final JavaBytecodeType returnType, final JavaBytecodeType argumentType)
-    {
+    private String generateMethodSignature(final JavaBytecodeType returnType, final JavaBytecodeType argumentType) {
 
         final String returnTypeSignature = generateReturnTypeSignature(returnType);
         final String argsSignature = generateArgsSignature(argumentType);
@@ -1582,8 +1429,7 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private String generateMethodSignature(final JavaBytecodeType returnType, final JavaBytecodeType[] argumentTypes)
-    {
+    private String generateMethodSignature(final JavaBytecodeType returnType, final JavaBytecodeType[] argumentTypes) {
 
         final String returnTypeSignature = generateReturnTypeSignature(returnType);
         final String argsSignature = generateArgsSignature(argumentTypes);
@@ -1591,56 +1437,45 @@ public class SchemaGenerator implements Opcodes
         return methodSignature;
     }
 
-    private String generateMethodSignature(final String returnTypeSignature, final String argsSignature)
-    {
+    private String generateMethodSignature(final String returnTypeSignature, final String argsSignature) {
 
-        if (returnTypeSignature == null && argsSignature == null)
-        {
+        if (returnTypeSignature == null && argsSignature == null) {
             return null;
         }
 
-        if (returnTypeSignature == null && argsSignature != null)
-        {
+        if (returnTypeSignature == null && argsSignature != null) {
             return argsSignature + JavaBytecodeType.VoidPrimitiveBytecodeType.getDescriptor();
         }
-        else if (returnTypeSignature != null && argsSignature == null)
-        {
+        else if (returnTypeSignature != null && argsSignature == null) {
             return SchemaGenerator.EMPTY_PARENTHESES + returnTypeSignature;
         }
-        else
-        {
+        else {
             return argsSignature + returnTypeSignature;
         }
 
     }
 
-    private String generateReturnTypeDescriptor(final JavaBytecodeType returnType)
-    {
+    private String generateReturnTypeDescriptor(final JavaBytecodeType returnType) {
 
         String returnTypeDescriptor = null;
-        if (returnType != null)
-        {
+        if (returnType != null) {
             returnTypeDescriptor = returnType.getDescriptor();
         }
 
-        if (returnTypeDescriptor == null)
-        {
+        if (returnTypeDescriptor == null) {
             returnTypeDescriptor = JavaBytecodeType.VoidPrimitiveBytecodeType.getDescriptor();
         }
 
         return returnTypeDescriptor;
     }
 
-    private String generateReturnTypeSignature(final JavaBytecodeType returnType)
-    {
+    private String generateReturnTypeSignature(final JavaBytecodeType returnType) {
 
         final String returnTypeSignature;
-        if (returnType == null)
-        {
+        if (returnType == null) {
             returnTypeSignature = null;
         }
-        else
-        {
+        else {
             returnTypeSignature = returnType.getGenericSignature();
         }
         return returnTypeSignature;
@@ -1652,8 +1487,7 @@ public class SchemaGenerator implements Opcodes
      * @param classFile The Java class file information used to drive the bytecode
      *                  generation.
      */
-    private void generateSchemaInterfaceBytecode(final JavaBytecodeClass classFile)
-    {
+    private void generateSchemaInterfaceBytecode(final JavaBytecodeClass classFile) {
 
         final ClassWriter classVisitor = new ClassWriter(0);
 
@@ -1665,15 +1499,13 @@ public class SchemaGenerator implements Opcodes
         classVisitor.visit(SchemaGenerator.JVM_VERSION, SchemaGenerator.INTERFACE_ACCESS, classFile.getInternalName(),
                 classFile.getSignature(), classFile.getSuperName(), interfaceNames);
 
-        for (final JavaBytecodeAnnotation annotation : classFile.getAnnotations())
-        {
+        for (final JavaBytecodeAnnotation annotation : classFile.getAnnotations()) {
             visitAnnotation(annotation, classVisitor, null, null, null);
         }
 
         final List<JavaBytecodeMethod> methods = classFile.getMethods();
 
-        for (final JavaBytecodeMethod method : methods)
-        {
+        for (final JavaBytecodeMethod method : methods) {
 
             final List<String> exceptions = method.getExceptions();
             String[] exceptionNames = new String[exceptions.size()];
@@ -1685,8 +1517,7 @@ public class SchemaGenerator implements Opcodes
             // If we weren't simply generating Java interfaces, things would
             // get more _advanced_ right here.
 
-            for (final JavaBytecodeAnnotation annotation : method.getAnnotations())
-            {
+            for (final JavaBytecodeAnnotation annotation : method.getAnnotations()) {
                 visitAnnotation(annotation, null, methodVisitor, null, null);
             }
 
@@ -1711,12 +1542,10 @@ public class SchemaGenerator implements Opcodes
      *
      * <a href="http://docs.oracle.com/javase/tutorial/javabeans/writing/properties.html">
      */
-    private void generateSchemaInterfaceMethods(final Schema schema, final JavaBytecodeClass javaBytecodeClass, final boolean isAggregate)
-    {
+    private void generateSchemaInterfaceMethods(final Schema schema, final JavaBytecodeClass javaBytecodeClass, final boolean isAggregate) {
 
         final List<Slot> slots = schema.getSlots();
-        for (final Slot slot : slots)
-        {
+        for (final Slot slot : slots) {
 
             /*
              * WRML schema slots must be named using mixed lower case (aka
@@ -1724,8 +1553,7 @@ public class SchemaGenerator implements Opcodes
              */
             final String slotName = slot.getName();
 
-            if (_ModelJavaBean.getProperties().containsKey(slotName))
-            {
+            if (_ModelJavaBean.getProperties().containsKey(slotName)) {
 
                 // TODO: Filter other things like Java reserved words and
                 // symbols
@@ -1734,35 +1562,29 @@ public class SchemaGenerator implements Opcodes
                         + "\" is reserved, it is not legal within a Schema.", null, this);
             }
 
-            if (slot != null && slot.getValue() instanceof LinkValue)
-            {
+            if (slot != null && slot.getValue() instanceof LinkValue) {
                 generateLinkMethod(javaBytecodeClass, isAggregate, slot);
             }
-            else
-            {
+            else {
                 generateBeanAccessorMethods(javaBytecodeClass, schema, isAggregate, slot);
             }
         }
     }
 
     private Value generateValue(final JsonSchema jsonSchema, final JsonSchema.Property property)
-            throws SchemaGeneratorException
-    {
+            throws SchemaGeneratorException {
 
-        if (property == null)
-        {
+        if (property == null) {
             throw new SchemaGeneratorException("Failed to generate a Value", null, this);
         }
 
         final URI schemaUri = jsonSchema.getId();
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             throw new SchemaGeneratorException("Failed to generate a Value", null, this);
         }
 
         final JsonType jsonType = property.getJsonType();
-        if (jsonType == null)
-        {
+        if (jsonType == null) {
             throw new SchemaGeneratorException("Failed to generate a Value", null, this);
         }
 
@@ -1772,82 +1594,68 @@ public class SchemaGenerator implements Opcodes
         final ValueType valueType = getValueType(jsonType);
         Value value = null;
 
-        switch (valueType)
-        {
+        switch (valueType) {
 
-            case Boolean:
-            {
+            case Boolean: {
                 final BooleanValue booleanValue = context.newModel(BooleanValue.class);
 
                 final JsonNode defaultNode = property.getValueNode(PropertyType.Default);
-                if (defaultNode != null)
-                {
+                if (defaultNode != null) {
                     booleanValue.setDefault(defaultNode.asBoolean());
                 }
 
                 value = booleanValue;
                 break;
             }
-            case Date:
-            {
+            case Date: {
                 break;
             }
-            case Double:
-            {
+            case Double: {
                 final DoubleValue doubleValue = context.newModel(DoubleValue.class);
 
                 final JsonNode defaultNode = property.getValueNode(PropertyType.Default);
-                if (defaultNode != null)
-                {
+                if (defaultNode != null) {
                     doubleValue.setDefault(defaultNode.asDouble());
                 }
 
                 final JsonNode maximumNode = property.getValueNode(PropertyType.Maximum);
-                if (maximumNode != null)
-                {
+                if (maximumNode != null) {
                     doubleValue.setMaximum(maximumNode.asDouble());
                 }
 
                 final JsonNode minimumNode = property.getValueNode(PropertyType.Minimum);
-                if (minimumNode != null)
-                {
+                if (minimumNode != null) {
                     doubleValue.setMinimum(minimumNode.asDouble());
                 }
 
                 value = doubleValue;
                 break;
             }
-            case Integer:
-            {
+            case Integer: {
                 final IntegerValue integerValue = context.newModel(IntegerValue.class);
 
                 final JsonNode defaultNode = property.getValueNode(PropertyType.Default);
-                if (defaultNode != null)
-                {
+                if (defaultNode != null) {
                     integerValue.setDefault(defaultNode.asInt());
                 }
 
                 final JsonNode divisibleByNode = property.getValueNode(PropertyType.DivisibleBy);
-                if (divisibleByNode != null)
-                {
+                if (divisibleByNode != null) {
                     integerValue.setDivisibleBy(divisibleByNode.asInt());
                 }
 
                 final JsonNode multipleOfNode = property.getValueNode(PropertyType.MultipleOf);
-                if (multipleOfNode != null)
-                {
+                if (multipleOfNode != null) {
                     integerValue.setDivisibleBy(multipleOfNode.asInt());
                 }
 
                 final JsonNode maximumNode = property.getValueNode(PropertyType.Maximum);
-                if (maximumNode != null)
-                {
+                if (maximumNode != null) {
                     integerValue.setMaximum(maximumNode.asInt());
                 }
 
                 final JsonNode minimumNode = property.getValueNode(PropertyType.Minimum);
-                if (minimumNode != null)
-                {
+                if (minimumNode != null) {
                     integerValue.setMinimum(minimumNode.asInt());
                 }
 
@@ -1857,8 +1665,7 @@ public class SchemaGenerator implements Opcodes
             case Link:
                 // NOTE: Falling through the Link switch case on purpose to treat same as Model
                 // TODO: Revisit this design.
-            case Model:
-            {
+            case Model: {
 
                 final ModelValue modelValue = context.newModel(ModelValue.class);
                 final JsonSchemaLoader jsonSchemaLoader = schemaLoader.getJsonSchemaLoader();
@@ -1866,44 +1673,36 @@ public class SchemaGenerator implements Opcodes
 
                 final URI baseSchemaUri;
                 final JsonNode schemaIdNode = property.getValueNode(PropertyType.Id);
-                if (schemaIdNode != null)
-                {
+                if (schemaIdNode != null) {
                     baseSchemaUri = schemaLoader.getDocumentSchemaUri();
 
                     final URI modelSchemaUri = property.getValue(PropertyType.Id);
-                    if (modelSchemaUri != schemaUri)
-                    {
-                        try
-                        {
+                    if (modelSchemaUri != schemaUri) {
+                        try {
                             modelJsonSchema = jsonSchemaLoader.load(modelSchemaUri);
                         }
-                        catch (final IOException e)
-                        {
+                        catch (final IOException e) {
                             throw new SchemaGeneratorException(e.getMessage(), e, this);
                         }
                     }
-                    else
-                    {
+                    else {
                         modelJsonSchema = jsonSchema;
                     }
                 }
-                else
-                {
+                else {
 
                     baseSchemaUri = schemaLoader.getEmbeddedSchemaUri();
 
                     String modelSchemaUriString = schemaUri.toString();
 
-                    if (modelSchemaUriString.endsWith(".json"))
-                    {
+                    if (modelSchemaUriString.endsWith(".json")) {
                         modelSchemaUriString = modelSchemaUriString.substring(0,
                                 modelSchemaUriString.length() - ".json".length());
                     }
 
                     int innerClassNumber = 0;
 
-                    if (_InnerSchemaCountMap.containsKey(schemaUri))
-                    {
+                    if (_InnerSchemaCountMap.containsKey(schemaUri)) {
                         innerClassNumber = _InnerSchemaCountMap.get(schemaUri);
                     }
 
@@ -1924,8 +1723,7 @@ public class SchemaGenerator implements Opcodes
                     modelJsonSchema = jsonSchemaLoader.load(propertyNode, modelSchemaUri);
                 }
 
-                if (modelJsonSchema != jsonSchema)
-                {
+                if (modelJsonSchema != jsonSchema) {
 
                     schemaLoader.load(modelJsonSchema, baseSchemaUri);
                 }
@@ -1935,50 +1733,41 @@ public class SchemaGenerator implements Opcodes
                 value = modelValue;
                 break;
             }
-            case List:
-            {
+            case List: {
                 final ListValue listValue = context.newModel(ListValue.class);
 
                 final JsonNode uniqueItemsNode = property.getValueNode(PropertyType.UniqueItems);
-                if (uniqueItemsNode != null)
-                {
+                if (uniqueItemsNode != null) {
                     listValue.setElementUniquenessConstrained(uniqueItemsNode.asBoolean());
                 }
 
                 final JsonNode maxItemsNode = property.getValueNode(PropertyType.MaxItems);
-                if (maxItemsNode != null)
-                {
+                if (maxItemsNode != null) {
                     listValue.setMaximumSize(maxItemsNode.asInt());
                 }
 
                 final JsonNode minItemsNode = property.getValueNode(PropertyType.MinItems);
-                if (minItemsNode != null)
-                {
+                if (minItemsNode != null) {
                     listValue.setMinimumSize(minItemsNode.asInt());
                 }
 
                 final JsonNode itemsNode = property.getValueNode(PropertyType.Items);
                 ObjectNode itemNode = null;
-                if (itemsNode instanceof ObjectNode)
-                {
+                if (itemsNode instanceof ObjectNode) {
                     itemNode = (ObjectNode) itemsNode;
 
                 }
-                else if (itemsNode instanceof ArrayNode)
-                {
+                else if (itemsNode instanceof ArrayNode) {
 
                     final ArrayNode itemsArrayNode = (ArrayNode) itemsNode;
-                    if (itemsArrayNode.has(0))
-                    {
+                    if (itemsArrayNode.has(0)) {
                         itemNode = (ObjectNode) itemsArrayNode.get(0);
                     }
                 }
 
-                if (itemNode != null)
-                {
+                if (itemNode != null) {
                     Property itemsProperty;
-                    try
-                    {
+                    try {
                         itemsProperty = new Property(jsonSchema, PropertyType.Items.getName(), itemNode);
                         final Value elementValue = generateValue(jsonSchema, itemsProperty);
                         final Slot elementSlot = context.newModel(Slot.class);
@@ -1986,8 +1775,7 @@ public class SchemaGenerator implements Opcodes
                         elementSlot.setValue(elementValue);
                         listValue.setElementSlot(elementSlot);
                     }
-                    catch (final IOException e)
-                    {
+                    catch (final IOException e) {
                         throw new SchemaGeneratorException(e.getMessage(), e, this);
                     }
                 }
@@ -1995,83 +1783,69 @@ public class SchemaGenerator implements Opcodes
                 value = listValue;
                 break;
             }
-            case Long:
-            {
+            case Long: {
                 final LongValue longValue = context.newModel(LongValue.class);
 
                 final JsonNode defaultNode = property.getValueNode(PropertyType.Default);
-                if (defaultNode != null)
-                {
+                if (defaultNode != null) {
                     longValue.setDefault(defaultNode.asLong());
                 }
 
                 final JsonNode divisibleByNode = property.getValueNode(PropertyType.DivisibleBy);
-                if (divisibleByNode != null)
-                {
+                if (divisibleByNode != null) {
                     longValue.setDivisibleBy(divisibleByNode.asLong());
                 }
 
                 final JsonNode multipleOfNode = property.getValueNode(PropertyType.MultipleOf);
-                if (multipleOfNode != null)
-                {
+                if (multipleOfNode != null) {
                     longValue.setDivisibleBy(multipleOfNode.asLong());
                 }
 
                 final JsonNode maximumNode = property.getValueNode(PropertyType.Maximum);
-                if (maximumNode != null)
-                {
+                if (maximumNode != null) {
                     longValue.setMaximum(maximumNode.asLong());
                 }
 
                 final JsonNode minimumNode = property.getValueNode(PropertyType.Minimum);
-                if (minimumNode != null)
-                {
+                if (minimumNode != null) {
                     longValue.setMinimum(minimumNode.asLong());
                 }
 
                 value = longValue;
                 break;
             }
-            case Native:
-            {
+            case Native: {
                 break;
             }
-            case SingleSelect:
-            {
+            case SingleSelect: {
                 final SingleSelectValue singleSelectValue = context.newModel(SingleSelectValue.class);
                 value = singleSelectValue;
                 break;
             }
-            case Text:
-            {
+            case Text: {
                 final TextValue textValue = context.newModel(TextValue.class);
 
                 final JsonNode defaultNode = property.getValueNode(PropertyType.Default);
-                if (defaultNode != null)
-                {
+                if (defaultNode != null) {
                     textValue.setDefault(defaultNode.asText());
                 }
 
                 final JsonNode maxLengthNode = property.getValueNode(PropertyType.MaxLength);
-                if (maxLengthNode != null)
-                {
+                if (maxLengthNode != null) {
                     textValue.setMaximumLength(maxLengthNode.asInt());
                 }
 
                 final JsonNode minLengthNode = property.getValueNode(PropertyType.MinLength);
-                if (minLengthNode != null)
-                {
+                if (minLengthNode != null) {
                     textValue.setMinimumLength(minLengthNode.asInt());
                 }
 
                 final JsonNode formatNode = property.getValueNode(PropertyType.Format);
-                if (formatNode != null)
-                {
+                if (formatNode != null) {
 
                     final String formatKeyword = formatNode.asText();
                     final JsonStringFormat jsonStringFormat = JsonStringFormat.forKeyword(formatKeyword);
-                    if (jsonStringFormat != null)
-                    {
+                    if (jsonStringFormat != null) {
                         final Class<?> formatJavaType = jsonStringFormat.getJavaType();
                         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
                         final URI syntaxUri = syntaxLoader.getSyntaxUri(formatJavaType);
@@ -2085,34 +1859,28 @@ public class SchemaGenerator implements Opcodes
 
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
         }
 
-        if (value instanceof MaybeRequired)
-        {
+        if (value instanceof MaybeRequired) {
             final JsonNode requiredNode = property.getValueNode(PropertyType.Required);
-            if (requiredNode != null)
-            {
+            if (requiredNode != null) {
                 ((MaybeRequired) value).setRequired(requiredNode.asBoolean());
             }
         }
 
-        if (value instanceof NumericValue)
-        {
+        if (value instanceof NumericValue) {
             final NumericValue numericValue = (NumericValue) value;
 
             final JsonNode exclusiveMaximumNode = property.getValueNode(PropertyType.ExclusiveMaximum);
-            if (exclusiveMaximumNode != null)
-            {
+            if (exclusiveMaximumNode != null) {
                 numericValue.setExclusiveMaximum(exclusiveMaximumNode.asBoolean());
             }
 
             final JsonNode exclusiveMinimumNode = property.getValueNode(PropertyType.ExclusiveMinimum);
-            if (exclusiveMinimumNode != null)
-            {
+            if (exclusiveMinimumNode != null) {
                 numericValue.setExclusiveMinimum(exclusiveMinimumNode.asBoolean());
             }
         }
@@ -2121,13 +1889,11 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private Value generateValue(final Type heapValueType, final ProtoSlot protoSlot)
-    {
+    private Value generateValue(final Type heapValueType, final ProtoSlot protoSlot) {
 
         final Context context = getContext();
 
-        if (heapValueType == null)
-        {
+        if (heapValueType == null) {
             return null;
         }
 
@@ -2138,8 +1904,7 @@ public class SchemaGenerator implements Opcodes
         final boolean requiresNonNullValue = (heapValueClass != null && heapValueClass.isPrimitive());
         Value value = null;
 
-        switch (valueType)
-        {
+        switch (valueType) {
 
             case Boolean:
                 final BooleanValue booleanValue = context.newModel(BooleanValue.class);
@@ -2165,8 +1930,7 @@ public class SchemaGenerator implements Opcodes
             case Link:
                 final LinkValue linkValue = context.newModel(LinkValue.class);
 
-                if (protoSlot instanceof LinkProtoSlot)
-                {
+                if (protoSlot instanceof LinkProtoSlot) {
                     final LinkProtoSlot linkProtoSlot = (LinkProtoSlot) protoSlot;
 
                     linkValue.setLinkRelationUri(linkProtoSlot.getLinkRelationUri());
@@ -2194,21 +1958,18 @@ public class SchemaGenerator implements Opcodes
 
                 final ListValue listValue;
 
-                if (protoSlot instanceof CollectionPropertyProtoSlot)
-                {
+                if (protoSlot instanceof CollectionPropertyProtoSlot) {
                     final CollectionPropertyProtoSlot collectionPropertyProtoSlot = (CollectionPropertyProtoSlot) protoSlot;
                     final CollectionValue collectionValue = context.newModel(CollectionValue.class);
                     listValue = collectionValue;
 
                     final Integer limit = collectionPropertyProtoSlot.getLimit();
-                    if (limit != null && limit > 0)
-                    {
+                    if (limit != null && limit > 0) {
                         collectionValue.setLimit(limit);
                     }
 
                     final URI linkRelationUri = collectionPropertyProtoSlot.getLinkRelationUri();
-                    if (linkRelationUri != null)
-                    {
+                    if (linkRelationUri != null) {
                         collectionValue.setLinkRelationUri(linkRelationUri);
                     }
 
@@ -2220,8 +1981,7 @@ public class SchemaGenerator implements Opcodes
                     final List<CollectionValueSearchCriterion> or = generateCollectionValueSearchCriterionList(protoSearchCriteria.getOr());
                     collectionValue.getOr().addAll(or);
                 }
-                else
-                {
+                else {
                     listValue = context.newModel(ListValue.class);
                 }
 
@@ -2255,8 +2015,7 @@ public class SchemaGenerator implements Opcodes
             case Text:
                 final TextValue textValue = context.newModel(TextValue.class);
 
-                if (!String.class.equals(heapValueType) && heapValueClass != null)
-                {
+                if (!String.class.equals(heapValueType) && heapValueClass != null) {
                     final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
                     final URI syntaxUri = syntaxLoader.getSyntaxUri(heapValueClass);
                     textValue.setSyntaxUri(syntaxUri);
@@ -2271,8 +2030,7 @@ public class SchemaGenerator implements Opcodes
 
         }
 
-        if (value instanceof MaybeRequired && requiresNonNullValue)
-        {
+        if (value instanceof MaybeRequired && requiresNonNullValue) {
             ((MaybeRequired) value).setRequired(requiresNonNullValue);
         }
 
@@ -2280,66 +2038,52 @@ public class SchemaGenerator implements Opcodes
         return value;
     }
 
-    private String getDefaultValueString(final Value slotValue)
-    {
+    private String getDefaultValueString(final Value slotValue) {
 
         final Context context = getContext();
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
 
         String defaultValueString = null;
 
-        if (slotValue instanceof TextValue)
-        {
+        if (slotValue instanceof TextValue) {
             defaultValueString = ((TextValue) slotValue).getDefault();
         }
-        else if (slotValue instanceof IntegerValue)
-        {
+        else if (slotValue instanceof IntegerValue) {
             final Integer defaultValue = ((IntegerValue) slotValue).getDefault();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 defaultValueString = String.valueOf(defaultValue.intValue());
             }
         }
-        else if (slotValue instanceof SingleSelectValue)
-        {
+        else if (slotValue instanceof SingleSelectValue) {
             defaultValueString = ((SingleSelectValue) slotValue).getDefault();
         }
-        else if (slotValue instanceof MultiSelectValue)
-        {
+        else if (slotValue instanceof MultiSelectValue) {
             final List<String> defaultValue = ((MultiSelectValue) slotValue).getDefault();
             // TODO: Revisit this format
             defaultValueString = String.valueOf(defaultValue);
         }
-        else if (slotValue instanceof DateValue)
-        {
+        else if (slotValue instanceof DateValue) {
             final Date defaultValue = ((DateValue) slotValue).getDefault();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 final SyntaxHandler<Date> syntaxHandler = syntaxLoader.getSyntaxHandler(Date.class);
                 defaultValueString = syntaxHandler.formatSyntaxValue(defaultValue);
             }
         }
-        else if (slotValue instanceof BooleanValue)
-        {
+        else if (slotValue instanceof BooleanValue) {
             final Boolean defaultValue = ((BooleanValue) slotValue).getDefault();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 defaultValueString = String.valueOf(defaultValue.booleanValue());
             }
         }
-        else if (slotValue instanceof DoubleValue)
-        {
+        else if (slotValue instanceof DoubleValue) {
             final Double defaultValue = ((DoubleValue) slotValue).getDefault();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 defaultValueString = String.valueOf(defaultValue.doubleValue());
             }
         }
-        else if (slotValue instanceof LongValue)
-        {
+        else if (slotValue instanceof LongValue) {
             final Long defaultValue = ((LongValue) slotValue).getDefault();
-            if (defaultValue != null)
-            {
+            if (defaultValue != null) {
                 defaultValueString = String.valueOf(defaultValue.longValue());
             }
         }
@@ -2348,160 +2092,128 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private JavaBytecodeType getSlotType(final JavaBytecodeClass javaBytecodeClass, final Schema schema, final boolean isAggregate, final Slot slot)
-    {
+    private JavaBytecodeType getSlotType(final JavaBytecodeClass javaBytecodeClass, final Schema schema, final boolean isAggregate, final Slot slot) {
 
         final Context context = getContext();
         final Value slotValue = slot.getValue();
 
         boolean required = false;
-        if (slotValue instanceof MaybeRequired)
-        {
+        if (slotValue instanceof MaybeRequired) {
             final Boolean maybeRequired = ((MaybeRequired) slotValue).isRequired();
             required = (maybeRequired != null && maybeRequired);
         }
 
         final JavaBytecodeType type;
 
-        if (slotValue instanceof TextValue)
-        {
+        if (slotValue instanceof TextValue) {
 
             final URI syntaxUri = ((TextValue) slotValue).getSyntaxUri();
-            if (syntaxUri != null)
-            {
+            if (syntaxUri != null) {
                 final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
                 final Class<?> syntaxJavaClass = syntaxLoader.getSyntaxJavaClass(syntaxUri);
 
-                if (syntaxJavaClass != null)
-                {
+                if (syntaxJavaClass != null) {
                     type = new JavaBytecodeType(syntaxJavaClass);
                 }
-                else
-                {
+                else {
                     throw new SchemaGeneratorException("Unsupported syntax, " + syntaxUri, null, this);
                 }
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.StringBytecodeType;
             }
         }
-        else if (slotValue instanceof LinkValue)
-        {
+        else if (slotValue instanceof LinkValue) {
             type = JavaBytecodeType.LinkBytecodeType;
         }
-        else if (slotValue instanceof ModelValue)
-        {
+        else if (slotValue instanceof ModelValue) {
 
             final URI modelSchemaUri = ((ModelValue) slotValue).getModelSchemaUri();
-            if (modelSchemaUri != null)
-            {
+            if (modelSchemaUri != null) {
                 type = javaBytecodeTypeForSchemaUri(modelSchemaUri);
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.ModelBytecodeType;
             }
         }
-        else if (slotValue instanceof ListValue)
-        {
+        else if (slotValue instanceof ListValue) {
 
             final ListValue listValue = (ListValue) slotValue;
             final Slot elementSlot = listValue.getElementSlot();
-            if (elementSlot != null)
-            {
+            if (elementSlot != null) {
                 type = new JavaBytecodeType(JavaBytecodeType.ListBytecodeType.getString());
                 final JavaBytecodeType elementType = getSlotType(javaBytecodeClass, schema, isAggregate, elementSlot);
                 final SortedMap<String, JavaBytecodeType> parameters = new TreeMap<String, JavaBytecodeType>();
                 parameters.put(elementSlot.getName(), elementType);
                 type.setParameters(parameters);
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.ListBytecodeType;
             }
         }
-        else if (slotValue instanceof BooleanValue)
-        {
+        else if (slotValue instanceof BooleanValue) {
 
-            if (required)
-            {
+            if (required) {
                 // No nulls allowed, convert from a "Boolean" to a
                 // "boolean"
                 type = JavaBytecodeType.BooleanPrimitiveBytecodeType;
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.BooleanBytecodeType;
             }
 
         }
-        else if (slotValue instanceof IntegerValue)
-        {
+        else if (slotValue instanceof IntegerValue) {
 
-            if (required)
-            {
+            if (required) {
                 // No nulls allowed, convert from a "Integer" to a "int"
                 type = JavaBytecodeType.IntegerPrimitiveBytecodeType;
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.IntegerBytecodeType;
             }
         }
-        else if (slotValue instanceof LongValue)
-        {
+        else if (slotValue instanceof LongValue) {
 
-            if (required)
-            {
+            if (required) {
                 // No nulls allowed, convert from a "Long" to a "long"
                 type = JavaBytecodeType.LongPrimitiveBytecodeType;
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.LongBytecodeType;
             }
 
         }
-        else if (slotValue instanceof DoubleValue)
-        {
+        else if (slotValue instanceof DoubleValue) {
 
-            if (required)
-            {
+            if (required) {
                 // No nulls allowed, convert from a "Double" to a "double"
                 type = JavaBytecodeType.DoublePrimitiveBytecodeType;
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.DoubleBytecodeType;
             }
 
         }
-        else if (slotValue instanceof DateValue)
-        {
+        else if (slotValue instanceof DateValue) {
             type = JavaBytecodeType.DateBytecodeType;
         }
-        else if (slotValue instanceof NativeValue)
-        {
+        else if (slotValue instanceof NativeValue) {
             // TODO: Finish support for "extended" value types.
             type = JavaBytecodeType.ObjectBytecodeType;
         }
-        else if (slotValue instanceof SingleSelectValue)
-        {
+        else if (slotValue instanceof SingleSelectValue) {
 
             final URI choicesUri = ((SingleSelectValue) slotValue).getChoicesUri();
-            if (choicesUri != null)
-            {
+            if (choicesUri != null) {
                 type = javaBytecodeTypeForChoicesUri(choicesUri);
             }
-            else
-            {
+            else {
                 type = JavaBytecodeType.EnumBytecodeType;
             }
 
         }
-        else
-        {
+        else {
             throw new SchemaGeneratorException("Unhandled value, " + slotValue + ", found in: "
                     + schema.getUniqueName().getLocalName() + "." + slot.getName(), null, this);
         }
@@ -2509,11 +2221,9 @@ public class SchemaGenerator implements Opcodes
         return type;
     }
 
-    private ValueType getValueType(final JsonType jsonType)
-    {
+    private ValueType getValueType(final JsonType jsonType) {
 
-        switch (jsonType)
-        {
+        switch (jsonType) {
             case Any:
                 return ValueType.Native;
 
@@ -2545,11 +2255,9 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private JavaBytecodeType javaBytecodeTypeForChoicesUri(final URI choicesUri)
-    {
+    private JavaBytecodeType javaBytecodeTypeForChoicesUri(final URI choicesUri) {
 
-        if (choicesUri == null)
-        {
+        if (choicesUri == null) {
             return null;
         }
 
@@ -2558,11 +2266,9 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private JavaBytecodeType javaBytecodeTypeForSchemaUri(final URI schemaUri)
-    {
+    private JavaBytecodeType javaBytecodeTypeForSchemaUri(final URI schemaUri) {
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return null;
         }
 
@@ -2570,8 +2276,7 @@ public class SchemaGenerator implements Opcodes
 
     }
 
-    private String uriToInternalTypeName(final URI uri)
-    {
+    private String uriToInternalTypeName(final URI uri) {
 
         final SchemaLoader schemaLoader = getSchemaLoader();
         final String externalClassName = schemaLoader.getNativeTypeName(uri);
@@ -2579,65 +2284,51 @@ public class SchemaGenerator implements Opcodes
         return internalClassName;
     }
 
-    private void visitAnnotation(final JavaBytecodeAnnotation annotation, final ClassVisitor classVisitor, final MethodVisitor methodVisitor, final AnnotationVisitor parentAnnotationVisitor, final String parentAnnotationValueName)
-    {
+    private void visitAnnotation(final JavaBytecodeAnnotation annotation, final ClassVisitor classVisitor, final MethodVisitor methodVisitor, final AnnotationVisitor parentAnnotationVisitor, final String parentAnnotationValueName) {
 
         final String descriptor = annotation.getDescriptor();
 
         final AnnotationVisitor annotationVisitor;
-        if (parentAnnotationVisitor != null)
-        {
+        if (parentAnnotationVisitor != null) {
             annotationVisitor = parentAnnotationVisitor.visitAnnotation(parentAnnotationValueName, descriptor);
         }
-        else if (methodVisitor != null)
-        {
+        else if (methodVisitor != null) {
             annotationVisitor = methodVisitor.visitAnnotation(descriptor, true);
         }
-        else
-        {
+        else {
             annotationVisitor = classVisitor.visitAnnotation(descriptor, true);
         }
 
-        for (final String name : annotation.getAttributeNames())
-        {
+        for (final String name : annotation.getAttributeNames()) {
             final Object value = annotation.getAttributeValue(name);
-            if (name != null && value != null)
-            {
-                if (value instanceof Object[])
-                {
+            if (name != null && value != null) {
+                if (value instanceof Object[]) {
                     final AnnotationVisitor arrayValueVisitor = annotationVisitor.visitArray(name);
                     final Object[] array = (Object[]) value;
-                    for (final Object element : array)
-                    {
-                        if (element instanceof Enum)
-                        {
+                    for (final Object element : array) {
+                        if (element instanceof Enum) {
                             final String enumDescriptor = new JavaBytecodeType(element.getClass()).getDescriptor();
                             final String enumValueString = ((Enum) element).name();
                             arrayValueVisitor.visitEnum(null, enumDescriptor, enumValueString);
                         }
-                        else if (element instanceof JavaBytecodeAnnotation)
-                        {
+                        else if (element instanceof JavaBytecodeAnnotation) {
                             visitAnnotation(((JavaBytecodeAnnotation) element), classVisitor, methodVisitor, arrayValueVisitor, name);
                         }
-                        else
-                        {
+                        else {
                             arrayValueVisitor.visit(null, element);
                         }
                     }
                     arrayValueVisitor.visitEnd();
                 }
-                else if (value instanceof Enum)
-                {
+                else if (value instanceof Enum) {
                     final String enumDescriptor = new JavaBytecodeType(value.getClass()).getDescriptor();
                     final String enumValueString = ((Enum) value).name();
                     annotationVisitor.visitEnum(name, enumDescriptor, enumValueString);
                 }
-                else if (value instanceof JavaBytecodeAnnotation)
-                {
+                else if (value instanceof JavaBytecodeAnnotation) {
                     visitAnnotation(((JavaBytecodeAnnotation) value), classVisitor, methodVisitor, annotationVisitor, name);
                 }
-                else
-                {
+                else {
                     annotationVisitor.visit(name, value);
                 }
             }
@@ -2647,8 +2338,7 @@ public class SchemaGenerator implements Opcodes
     }
 
 
-    private static enum AnnotationParameterName
-    {
+    private static enum AnnotationParameterName {
         and,
         bindings,
         comparableSlotNames,

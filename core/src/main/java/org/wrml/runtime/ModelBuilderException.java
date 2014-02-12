@@ -27,21 +27,20 @@ package org.wrml.runtime;
 /**
  * The {@link ModelBuilder}'s associated error type.
  */
-public class ModelBuilderException extends RuntimeException
-{
+public class ModelBuilderException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final ModelBuilder _ModelBuilder;
 
-    ModelBuilderException(final String message, final Throwable cause, final ModelBuilder modelBuilder)
-    {
+    ModelBuilderException(final String message, final Throwable cause, final ModelBuilder modelBuilder) {
+
         super(message, cause);
         _ModelBuilder = modelBuilder;
     }
 
-    public ModelBuilder getModelBuilder()
-    {
+    public ModelBuilder getModelBuilder() {
+
         return _ModelBuilder;
     }
 }

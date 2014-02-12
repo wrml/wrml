@@ -29,31 +29,26 @@ import org.wrml.runtime.Context;
 import org.wrml.werminal.Werminal;
 import org.wrml.werminal.window.ModelWindow;
 
-public class DeleteAction extends WerminalAction
-{
+public class DeleteAction extends WerminalAction {
 
-    public DeleteAction(final Werminal werminal)
-    {
+    public DeleteAction(final Werminal werminal) {
 
         super(werminal, "Delete");
     }
 
     @Override
-    public void doAction()
-    {
+    public void doAction() {
 
         final Werminal werminal = getWerminal();
         final ModelWindow modelWindow = (ModelWindow) werminal.getTopWindow();
         final Model model = modelWindow.syncModel();
-        try
-        {
+        try {
 
             final Context context = getContext();
             context.deleteModel(model.getKeys(), model.getDimensions());
 
         }
-        catch (final Exception t)
-        {
+        catch (final Exception t) {
             werminal.showError("An unexpected error occurred while deleting the model.", t);
         }
 

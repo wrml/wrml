@@ -29,8 +29,7 @@ import org.wrml.model.Model;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 
-public interface ModelBuilder extends ContextSensitive
-{
+public interface ModelBuilder extends ContextSensitive {
     <M extends Model> M copyModel(Model model);
 
     Dimensions newDimensions(final Class<?> schemaInterface) throws ModelBuilderException;

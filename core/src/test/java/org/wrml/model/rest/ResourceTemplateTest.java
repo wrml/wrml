@@ -24,29 +24,30 @@
  */
 package org.wrml.model.rest;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.wrml.runtime.rest.ApiNavigator;
+import org.wrml.runtime.rest.Resource;
+import org.wrml.runtime.rest.ResourceTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.wrml.runtime.rest.ApiNavigator;
-import org.wrml.runtime.rest.Resource;
-import org.wrml.runtime.rest.ResourceTest;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for {@link ResourceTemplate}.
- * <p>
+ * <p/>
  * Static method(s) are helpers for other test classes.
  */
-public class ResourceTemplateTest
-{
+public class ResourceTemplateTest {
 
-    /** @return a {@link Mock} {@link ResourceTemplate} with a {@link List} of {@link Resource} children. */
-    public static ResourceTemplate getMock()
-    {
+    /**
+     * @return a {@link Mock} {@link ResourceTemplate} with a {@link List} of {@link Resource} children.
+     */
+    public static ResourceTemplate getMock() {
+
         final ResourceTemplate mockResourceTemplate = mock(ResourceTemplate.class);
         final UUID mockUUID = UUID.randomUUID();
         final ApiNavigator mockApiNavigator = mock(ApiNavigator.class);

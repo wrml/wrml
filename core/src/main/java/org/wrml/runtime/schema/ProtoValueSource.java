@@ -47,8 +47,7 @@ import java.util.Map;
  * @see CollectionPropertyProtoSlot
  * @see LinkProtoSlot
  */
-public final class ProtoValueSource
-{
+public final class ProtoValueSource {
 
     private final Prototype _ReferencePrototype;
 
@@ -65,8 +64,7 @@ public final class ProtoValueSource
     private final Object _ConstantValue;
 
 
-    ProtoValueSource(final Prototype referencePrototype, final String referenceSlot, final Prototype referrerPrototype, final String valueSource, final ValueSourceType valueSourceType)
-    {
+    ProtoValueSource(final Prototype referencePrototype, final String referenceSlot, final Prototype referrerPrototype, final String valueSource, final ValueSourceType valueSourceType) {
 
         _ReferencePrototype = referencePrototype;
         _ReferenceSlot = referenceSlot;
@@ -74,28 +72,22 @@ public final class ProtoValueSource
         _ValueSource = valueSource;
         _ValueSourceType = valueSourceType;
 
-        if (_ReferrerPrototype != null && _ReferenceSlot != null)
-        {
+        if (_ReferrerPrototype != null && _ReferenceSlot != null) {
             _ReferenceProtoSlot = _ReferencePrototype.getProtoSlot(_ReferenceSlot);
-            if (_ValueSourceType == ValueSourceType.Constant)
-            {
+            if (_ValueSourceType == ValueSourceType.Constant) {
                 _ConstantValue = coerceStringValue(_ValueSource);
             }
-            else
-            {
+            else {
                 _ConstantValue = null;
             }
 
         }
-        else
-        {
+        else {
             _ReferenceProtoSlot = null;
-            if (_ValueSourceType == ValueSourceType.Constant)
-            {
+            if (_ValueSourceType == ValueSourceType.Constant) {
                 _ConstantValue = _ValueSource;
             }
-            else
-            {
+            else {
                 _ConstantValue = null;
             }
 
@@ -108,8 +100,7 @@ public final class ProtoValueSource
      *
      * @return The {@link Prototype} associated with the referenced model.
      */
-    public Prototype getReferencePrototype()
-    {
+    public Prototype getReferencePrototype() {
 
         return _ReferencePrototype;
     }
@@ -119,8 +110,7 @@ public final class ProtoValueSource
      *
      * @return The slot within the referenced {@link org.wrml.model.schema.Schema}.
      */
-    public String getReferenceSlot()
-    {
+    public String getReferenceSlot() {
 
         return _ReferenceSlot;
     }
@@ -132,8 +122,7 @@ public final class ProtoValueSource
      * @see #getReferencePrototype()
      * @see #getReferenceSlot()
      */
-    public ProtoSlot getReferenceProtoSlot()
-    {
+    public ProtoSlot getReferenceProtoSlot() {
 
         return _ReferenceProtoSlot;
     }
@@ -143,8 +132,7 @@ public final class ProtoValueSource
      *
      * @return The {@link Prototype} associated with the referrer model.
      */
-    public Prototype getReferrerPrototype()
-    {
+    public Prototype getReferrerPrototype() {
 
         return _ReferrerPrototype;
     }
@@ -154,8 +142,7 @@ public final class ProtoValueSource
      *
      * @return The source type for the binding value.
      */
-    public ValueSourceType getValueSourceType()
-    {
+    public ValueSourceType getValueSourceType() {
 
         return _ValueSourceType;
     }
@@ -165,8 +152,7 @@ public final class ProtoValueSource
      *
      * @return The {@link String} representation of the source of the value that will be used to "fill in" the reference slot.
      */
-    public String getValueSource()
-    {
+    public String getValueSource() {
 
         return _ValueSource;
     }
@@ -178,8 +164,7 @@ public final class ProtoValueSource
      * @return The constant value associated with this {@link ProtoValueSource}.
      * @see ValueSourceType#Constant
      */
-    public <T> T getConstantValue()
-    {
+    public <T> T getConstantValue() {
 
         return (T) _ConstantValue;
     }
@@ -190,48 +175,38 @@ public final class ProtoValueSource
      * @param referrer The {@link Model} that is linking or searching for another; using the returned value to help form the bond.
      * @return The value associated with this {@link ProtoValueSource} based upon the given {@link Model} referrer.
      */
-    public <T> T getValue(final Model referrer)
-    {
+    public <T> T getValue(final Model referrer) {
 
-        switch (_ValueSourceType)
-        {
+        switch (_ValueSourceType) {
             case ReferrerSlot:
 
 
-                if (!_ValueSource.contains("."))
-                {
+                if (!_ValueSource.contains(".")) {
                     return (T) referrer.getSlotValue(_ValueSource);
                 }
-                else
-                {
+                else {
 
                     // Handle "." (dot notation)
                     final String[] propertyNames = StringUtils.split(_ValueSource, '.');
                     Object propertyValue = referrer;
 
-                    for (final String propertyName : propertyNames)
-                    {
+                    for (final String propertyName : propertyNames) {
 
-                        if (propertyValue == null)
-                        {
+                        if (propertyValue == null) {
                             return null;
                         }
 
-                        if (propertyValue instanceof Model)
-                        {
+                        if (propertyValue instanceof Model) {
                             propertyValue = ((Model) propertyValue).getSlotValue(propertyName);
                         }
-                        else
-                        {
+                        else {
                             final String getterMethodName = "get" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
                             final Class<?> propertyValueClass = propertyValue.getClass();
-                            try
-                            {
+                            try {
                                 final Method getterMethod = propertyValueClass.getMethod(getterMethodName);
                                 propertyValue = getterMethod.invoke(propertyValue);
                             }
-                            catch (Exception t)
-                            {
+                            catch (Exception t) {
                                 return null;
                             }
                         }
@@ -247,8 +222,7 @@ public final class ProtoValueSource
 
                 final Map<String, String> parameters = referrerDimensions.getQueryParameters();
 
-                if (parameters != null && parameters.containsKey(_ValueSource))
-                {
+                if (parameters != null && parameters.containsKey(_ValueSource)) {
                     final String parameterValue = parameters.get(_ValueSource);
                     final Object value = coerceStringValue(parameterValue);
                     return (T) value;
@@ -270,11 +244,9 @@ public final class ProtoValueSource
      * @param <T>         The generic return type that enables the caller to omit the cast operator.
      * @return The converted value of the specified string value.
      */
-    private <T> T coerceStringValue(final String stringValue)
-    {
+    private <T> T coerceStringValue(final String stringValue) {
 
-        if (stringValue == null || _ReferenceProtoSlot == null)
-        {
+        if (stringValue == null || _ReferenceProtoSlot == null) {
             return (T) stringValue;
         }
 
@@ -282,15 +254,13 @@ public final class ProtoValueSource
         final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
         final Type referenceSlotType = _ReferenceProtoSlot.getHeapValueType();
 
-        if (ValueType.isListType(referenceSlotType))
-        {
+        if (ValueType.isListType(referenceSlotType)) {
             // [a, b, c]
 
             String listString = stringValue.trim();
             listString = StringUtils.stripStart(listString, "[");
             listString = StringUtils.stripEnd(listString, "]");
-            if (listString.isEmpty())
-            {
+            if (listString.isEmpty()) {
                 return (T) Collections.EMPTY_LIST;
             }
 
@@ -298,16 +268,14 @@ public final class ProtoValueSource
 
             final String[] listElementsStringArray = StringUtils.split(listString, ",");
             final List<Object> listValue = new ArrayList<>(listElementsStringArray.length);
-            for (final String elementString : listElementsStringArray)
-            {
+            for (final String elementString : listElementsStringArray) {
                 final Object element = syntaxLoader.parseSyntacticText(elementString.trim(), elementType);
                 listValue.add(element);
             }
 
             return (T) listValue;
         }
-        else
-        {
+        else {
 
             final Object value = syntaxLoader.parseSyntacticText(stringValue, referenceSlotType);
             return (T) value;

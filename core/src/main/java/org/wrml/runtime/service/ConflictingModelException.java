@@ -26,13 +26,12 @@ package org.wrml.runtime.service;
 
 import org.wrml.model.rest.status.Status;
 
-public class ConflictingModelException extends ServiceException
-{
+public class ConflictingModelException extends ServiceException {
 
     private static final long serialVersionUID = 1L;
 
-    public ConflictingModelException(final String message, final Throwable cause, final Service service)
-    {
+    public ConflictingModelException(final String message, final Throwable cause, final Service service) {
+
         super(message, cause, service, Status.CONFLICT);
     }
 

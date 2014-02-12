@@ -26,15 +26,12 @@ package org.wrml.runtime.syntax;
 
 import java.util.Locale;
 
-public class LocaleSyntaxHandler extends SyntaxHandler<Locale>
-{
+public class LocaleSyntaxHandler extends SyntaxHandler<Locale> {
 
     @Override
-    public String formatSyntaxValue(final Locale locale)
-    {
+    public String formatSyntaxValue(final Locale locale) {
 
-        if (locale == null)
-        {
+        if (locale == null) {
             return null;
         }
 
@@ -42,11 +39,9 @@ public class LocaleSyntaxHandler extends SyntaxHandler<Locale>
     }
 
     @Override
-    public Locale parseSyntacticText(final String languageTag)
-    {
+    public Locale parseSyntacticText(final String languageTag) {
 
-        if (languageTag == null)
-        {
+        if (languageTag == null) {
             return null;
         }
 

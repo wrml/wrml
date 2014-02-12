@@ -38,8 +38,7 @@ import java.util.SortedSet;
  * A {@link Loader} of {@link Format} models. Allows the WRML runtime to vary its supported {@link Format}s and
  * dynamically <i>learn</i> to communicate with new {@link Format}s.
  */
-public interface FormatLoader extends Loader
-{
+public interface FormatLoader extends Loader {
 
     FormatLoaderConfiguration getConfig();
 

@@ -42,11 +42,9 @@ import java.util.Map;
 /**
  * A service supporting the REST API designer tool/app.
  */
-public class ApiDesignerService extends AbstractService
-{
+public class ApiDesignerService extends AbstractService {
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
         // TODO: Replace this with an API loaded via config
         final Map<String, String> settings = config.getSettings();
@@ -77,8 +75,7 @@ public class ApiDesignerService extends AbstractService
     }
 
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions) throws UnsupportedOperationException
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) throws UnsupportedOperationException {
 
         // TODO: Should this service extend the mongo or file service?
         // TODO: Instead of having this Service dedicated to invoke, should it be replaced by a "controller" that can be plugged into some other service(s) that are dedicated to CRUD?
@@ -90,15 +87,12 @@ public class ApiDesignerService extends AbstractService
     }
 
     @Override
-    public Model invoke(final Model function, final Dimensions responseDimensions, final Model parameter)
-    {
+    public Model invoke(final Model function, final Dimensions responseDimensions, final Model parameter) {
 
         // TODO: Should this "invocation handler" be implemented via composition instead of having this Service dedicated to invoke and other service(s) dedicated to CRUD?
 
-        if (function instanceof AutoLinkFunction)
-        {
-            if (!(parameter instanceof Api))
-            {
+        if (function instanceof AutoLinkFunction) {
+            if (!(parameter instanceof Api)) {
                 throw new ServiceException("The function: " + function.getSchemaUri() + " expects a parameter of type: " + Api.class + ", instead of: " + parameter, null, this);
             }
 

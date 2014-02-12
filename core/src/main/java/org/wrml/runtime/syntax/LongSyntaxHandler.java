@@ -24,14 +24,12 @@
  */
 package org.wrml.runtime.syntax;
 
-public class LongSyntaxHandler extends SyntaxHandler<Long>
-{
+public class LongSyntaxHandler extends SyntaxHandler<Long> {
 
     @Override
-    public String formatSyntaxValue(final Long syntaxValue) throws SyntaxHandlerException
-    {
-        if (syntaxValue == null)
-        {
+    public String formatSyntaxValue(final Long syntaxValue) throws SyntaxHandlerException {
+
+        if (syntaxValue == null) {
             return "";
         }
 
@@ -39,10 +37,9 @@ public class LongSyntaxHandler extends SyntaxHandler<Long>
     }
 
     @Override
-    public Long parseSyntacticText(final String bValue) throws SyntaxHandlerException
-    {
-        if (bValue == null || bValue.isEmpty())
-        {
+    public Long parseSyntacticText(final String bValue) throws SyntaxHandlerException {
+
+        if (bValue == null || bValue.isEmpty()) {
             return null;
         }
 

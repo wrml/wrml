@@ -40,27 +40,18 @@ import org.wrml.util.UniqueName;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
- * <p>
+ * <p/>
  * A runtime representation/descriptor of a {@link Schema}.
- * <p>
+ * <p/>
  * {@link Prototype} is designed to optimize reflection.
- * <p>
+ * <p/>
  * The implementation uses {@link Map}s to store the results of a {@link Prototype}'s construction-time reflection of its associated schema Java class. In other words, WRML's
  * runtime reflects upon each schema (Java interface) only once and quickly recalls the structure's details using a {@link Prototype}.
  */
-public class Prototype
-{
+public class Prototype {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Prototype.class);
 
@@ -159,34 +150,27 @@ public class Prototype
 
     /**
      * Creates a new Prototype to represent the identified schema.
-     * 
-     * @param schemaLoader
-     *            The schema loader for this prototype's schema.
-     * @param schemaUri
-     *            The schema identifier.
-     * @throws PrototypeException
-     *             Thrown if there are problems with the initial prototyping of the schema.
+     *
+     * @param schemaLoader The schema loader for this prototype's schema.
+     * @param schemaUri    The schema identifier.
+     * @throws PrototypeException Thrown if there are problems with the initial prototyping of the schema.
      */
-    Prototype(final SchemaLoader schemaLoader, final URI schemaUri) throws PrototypeException
-    {
+    Prototype(final SchemaLoader schemaLoader, final URI schemaUri) throws PrototypeException {
 
-        LOGGER.debug("Creating Prototype for schema ID: {}", new Object[] {schemaUri});
+        LOGGER.debug("Creating Prototype for schema ID: {}", new Object[]{schemaUri});
 
         _SchemaLoader = schemaLoader;
-        if (_SchemaLoader == null)
-        {
+        if (_SchemaLoader == null) {
 
             throw new PrototypeException("The SchemaLoader parameter value cannot be *null*.", null, this);
         }
 
         _SchemaUri = schemaUri;
-        if (_SchemaUri == null)
-        {
+        if (_SchemaUri == null) {
             throw new PrototypeException("The undefined (aka *null*) schema can not be prototyped.", null, this);
         }
 
-        if (schemaUri.equals(schemaLoader.getResourceTemplateSchemaUri()))
-        {
+        if (schemaUri.equals(schemaLoader.getResourceTemplateSchemaUri())) {
             LOGGER.debug("Creating Prototype for ResourceTemplate");
         }
 
@@ -198,12 +182,10 @@ public class Prototype
         //
         final Class<?> schemaInterface = getSchemaInterface();
 
-        if (ValueType.JAVA_TYPE_ABSTRACT.equals(schemaInterface))
-        {
+        if (ValueType.JAVA_TYPE_ABSTRACT.equals(schemaInterface)) {
             _IsAbstract = true;
         }
-        else if (Document.class.equals(schemaInterface))
-        {
+        else if (Document.class.equals(schemaInterface)) {
             _IsDocument = true;
         }
 
@@ -236,22 +218,18 @@ public class Prototype
 
             final List<Class<?>> allBaseInterfaces = ClassUtils.getAllInterfaces(schemaInterface);
             // Loop backwards to achieve desired key mapping precedence/overriding
-            for (final Class<?> baseInterface : allBaseInterfaces)
-            {
+            for (final Class<?> baseInterface : allBaseInterfaces) {
 
-                if (ValueType.isSchemaInterface(baseInterface) && (baseInterface != ValueType.JAVA_TYPE_MODEL))
-                {
+                if (ValueType.isSchemaInterface(baseInterface) && (baseInterface != ValueType.JAVA_TYPE_MODEL)) {
 
                     final URI baseSchemaUri = _SchemaLoader.getTypeUri(baseInterface);
                     _AllBaseSchemaUris.add(baseSchemaUri);
 
-                    if (Document.class.equals(baseInterface))
-                    {
+                    if (Document.class.equals(baseInterface)) {
                         _IsDocument = true;
                     }
 
-                    if (AggregateDocument.class.equals(baseInterface))
-                    {
+                    if (AggregateDocument.class.equals(baseInterface)) {
                         _IsAggregate = true;
                     }
 
@@ -262,19 +240,15 @@ public class Prototype
             // Store the immediate base schemas as well
 
             final Class<?>[] baseInterfaces = schemaInterface.getInterfaces();
-            if (baseInterfaces != null)
-            {
+            if (baseInterfaces != null) {
 
-                for (final Class<?> baseInterface : baseInterfaces)
-                {
-                    if (ValueType.isSchemaInterface(baseInterface) && (baseInterface != ValueType.JAVA_TYPE_MODEL))
-                    {
+                for (final Class<?> baseInterface : baseInterfaces) {
+                    if (ValueType.isSchemaInterface(baseInterface) && (baseInterface != ValueType.JAVA_TYPE_MODEL)) {
                         final URI baseSchemaUri = _SchemaLoader.getTypeUri(baseInterface);
                         _BaseSchemaUris.add(baseSchemaUri);
                     }
 
-                    if (ValueType.JAVA_TYPE_ABSTRACT.equals(baseInterface))
-                    {
+                    if (ValueType.JAVA_TYPE_ABSTRACT.equals(baseInterface)) {
                         _IsAbstract = true;
                     }
                 }
@@ -286,30 +260,24 @@ public class Prototype
         // initKeys(...)
         {
             final WRML wrml = schemaInterface.getAnnotation(WRML.class);
-            if (wrml != null)
-            {
+            if (wrml != null) {
                 final String[] keySlotNameArray = wrml.keySlotNames();
 
-                if ((keySlotNameArray != null) && (keySlotNameArray.length > 0))
-                {
+                if ((keySlotNameArray != null) && (keySlotNameArray.length > 0)) {
 
                     _KeySlotNames = new TreeSet<>(Arrays.asList(keySlotNameArray));
 
-                    if (_KeySlotNames.size() == 1)
-                    {
+                    if (_KeySlotNames.size() == 1) {
                         final String keySlotName = _KeySlotNames.first();
                         final Property property = _SchemaBean.getProperties().get(keySlotName);
-                        if (property != null)
-                        {
+                        if (property != null) {
                             _KeyType = property.getType();
                         }
-                        else
-                        {
+                        else {
                             throw new PrototypeException("The named key slot, \"" + keySlotName + "\", is not defined for Schema: " + schemaUri + ".", null, this);
                         }
                     }
-                    else
-                    {
+                    else {
 
                         // Schemas with Keys that use more than one slot value to
                         // determine uniqueness use the CompositeKey type (at
@@ -322,8 +290,7 @@ public class Prototype
 
                 final String[] comparableSlotNameArray = wrml.comparableSlotNames();
 
-                if ((comparableSlotNameArray != null) && (comparableSlotNameArray.length > 0))
-                {
+                if ((comparableSlotNameArray != null) && (comparableSlotNameArray.length > 0)) {
 
                     _ComparableSlotNames = new LinkedHashSet<String>(Arrays.asList(comparableSlotNameArray));
                 }
@@ -341,55 +308,45 @@ public class Prototype
         {
 
             final Description schemaDescription = schemaInterface.getAnnotation(Description.class);
-            if (schemaDescription != null)
-            {
+            if (schemaDescription != null) {
                 _Description = schemaDescription.value();
             }
-            else
-            {
+            else {
                 _Description = null;
             }
 
             final Title schemaTitle = schemaInterface.getAnnotation(Title.class);
-            if (schemaTitle != null)
-            {
+            if (schemaTitle != null) {
                 _Title = schemaTitle.value();
             }
-            else
-            {
+            else {
                 _Title = schemaInterface.getSimpleName();
             }
 
             final ThumbnailImage thumbnailImage = schemaInterface.getAnnotation(ThumbnailImage.class);
-            if (thumbnailImage != null)
-            {
+            if (thumbnailImage != null) {
                 _ThumbnailLocation = URI.create(thumbnailImage.value());
             }
-            else
-            {
+            else {
                 _ThumbnailLocation = null;
             }
 
             _ReadOnly = (schemaInterface.getAnnotation(ReadOnly.class) != null) ? true : false;
 
             final Version schemaVersion = schemaInterface.getAnnotation(Version.class);
-            if (schemaVersion != null)
-            {
+            if (schemaVersion != null) {
                 _Version = schemaVersion.value();
             }
-            else
-            {
+            else {
                 // TODO: Look for the "static final long serialVersionUID" ?
                 _Version = 1L;
             }
 
             final Tags tags = schemaInterface.getAnnotation(Tags.class);
-            if (tags != null)
-            {
+            if (tags != null) {
                 final String[] tagArray = tags.value();
 
-                if ((tagArray != null) && (tagArray.length > 0))
-                {
+                if ((tagArray != null) && (tagArray.length > 0)) {
 
                     _Tags = new TreeSet<String>(Arrays.asList(tagArray));
                 }
@@ -401,19 +358,16 @@ public class Prototype
         {
             final Map<String, Property> properties = _SchemaBean.getProperties();
 
-            for (final String slotName : properties.keySet())
-            {
+            for (final String slotName : properties.keySet()) {
                 final Property property = properties.get(slotName);
 
                 final PropertyProtoSlot propertyProtoSlot;
 
                 final CollectionSlot collectionSlot = property.getAnnotation(CollectionSlot.class);
-                if (collectionSlot != null)
-                {
+                if (collectionSlot != null) {
                     propertyProtoSlot = new CollectionPropertyProtoSlot(this, slotName, property);
                 }
-                else
-                {
+                else {
                     propertyProtoSlot = new PropertyProtoSlot(this, slotName, property);
                 }
 
@@ -431,12 +385,10 @@ public class Prototype
             final SortedMap<String, SortedSet<JavaMethod>> otherMethods = _SchemaBean.getOtherMethods();
             final Set<String> otherMethodNames = otherMethods.keySet();
 
-            for (final String methodName : otherMethodNames)
-            {
+            for (final String methodName : otherMethodNames) {
 
                 final SortedSet<JavaMethod> methodSet = otherMethods.get(methodName);
-                if (methodSet.size() != 1)
-                {
+                if (methodSet.size() != 1) {
                     throw new PrototypeException("The link method: " + methodName + " cannot be overloaded.", this);
                 }
 
@@ -444,16 +396,14 @@ public class Prototype
                 final Method method = javaMethod.getMethod();
 
                 final LinkSlot linkSlot = method.getAnnotation(LinkSlot.class);
-                if (linkSlot == null)
-                {
+                if (linkSlot == null) {
                     throw new PrototypeException("The method: " + javaMethod + " is not a link method", null, this);
                 }
 
                 final String relationUriString = linkSlot.linkRelationUri();
                 final URI linkRelationUri = URI.create(relationUriString);
 
-                if (_LinkProtoSlots.containsKey(linkRelationUri))
-                {
+                if (_LinkProtoSlots.containsKey(linkRelationUri)) {
                     throw new PrototypeException("A schema cannot use the same link relation for more than one method. Duplicate link relation: " + linkRelationUri
                             + " found in link method: " + javaMethod, this);
                 }
@@ -461,23 +411,20 @@ public class Prototype
                 final org.wrml.model.rest.Method relMethod = linkSlot.method();
 
                 String slotName = methodName;
-                if (relMethod == org.wrml.model.rest.Method.Get && slotName.startsWith(JavaBean.GET))
-                {
+                if (relMethod == org.wrml.model.rest.Method.Get && slotName.startsWith(JavaBean.GET)) {
                     slotName = slotName.substring(3);
                     slotName = Character.toLowerCase(slotName.charAt(0)) + slotName.substring(1);
                 }
                 _LinkRelationUris.put(slotName, linkRelationUri);
 
-                if (_ProtoSlots.containsKey(slotName))
-                {
+                if (_ProtoSlots.containsKey(slotName)) {
                     throw new PrototypeException("A schema cannot use the same name for more than one slot. Duplicate slot name: " + slotName + " found in link method: "
                             + javaMethod, this);
                 }
 
                 final LinkProtoSlot linkProtoSlot = new LinkProtoSlot(this, slotName, javaMethod);
 
-                if ((linkProtoSlot.isEmbedded() || isAggregate()) && (relMethod == org.wrml.model.rest.Method.Get))
-                {
+                if ((linkProtoSlot.isEmbedded() || isAggregate()) && (relMethod == org.wrml.model.rest.Method.Get)) {
                     _ContainsEmbeddedLink = true;
                 }
 
@@ -489,10 +436,8 @@ public class Prototype
 
         } // End of link slot init
 
-        if (!_SlotAliases.isEmpty())
-        {
-            for (final String alias : _SlotAliases.keySet())
-            {
+        if (!_SlotAliases.isEmpty()) {
+            for (final String alias : _SlotAliases.keySet()) {
                 final ProtoSlot protoSlot = _ProtoSlots.get(alias);
                 protoSlot.setAlias(true);
                 final String realName = _SlotAliases.get(alias);
@@ -503,30 +448,24 @@ public class Prototype
 
     }
 
-    public boolean containsEmbeddedLink()
-    {
+    public boolean containsEmbeddedLink() {
 
         return _ContainsEmbeddedLink;
     }
 
-    public Set<String> getSlotAliases()
-    {
+    public Set<String> getSlotAliases() {
 
         return _SlotAliases.keySet();
     }
 
-    public Set<Prototype> getAllBasePrototypes()
-    {
+    public Set<Prototype> getAllBasePrototypes() {
 
-        if (_AllBasePrototypes == null)
-        {
+        if (_AllBasePrototypes == null) {
             final SchemaLoader schemaLoader = getSchemaLoader();
             _AllBasePrototypes = new LinkedHashSet<Prototype>();
             final Set<URI> allBaseSchemaUris = getAllBaseSchemaUris();
-            if (allBaseSchemaUris != null && !allBaseSchemaUris.isEmpty())
-            {
-                for (final URI baseSchemaUri : allBaseSchemaUris)
-                {
+            if (allBaseSchemaUris != null && !allBaseSchemaUris.isEmpty()) {
+                for (final URI baseSchemaUri : allBaseSchemaUris) {
                     final Prototype basePrototype = schemaLoader.getPrototype(baseSchemaUri);
                     _AllBasePrototypes.add(basePrototype);
                 }
@@ -536,30 +475,24 @@ public class Prototype
         return _AllBasePrototypes;
     }
 
-    public Set<URI> getAllBaseSchemaUris()
-    {
+    public Set<URI> getAllBaseSchemaUris() {
 
         return _AllBaseSchemaUris;
     }
 
-    public Set<String> getAllKeySlotNames()
-    {
+    public Set<String> getAllKeySlotNames() {
 
-        if (_AllKeySlotNames == null)
-        {
+        if (_AllKeySlotNames == null) {
             _AllKeySlotNames = new LinkedHashSet<String>();
             final SortedSet<String> declaredKeySlotNames = getDeclaredKeySlotNames();
-            if (declaredKeySlotNames != null)
-            {
+            if (declaredKeySlotNames != null) {
                 _AllKeySlotNames.addAll(declaredKeySlotNames);
             }
 
             final Set<Prototype> allYourBase = getAllBasePrototypes();
-            for (final Prototype base : allYourBase)
-            {
+            for (final Prototype base : allYourBase) {
                 final SortedSet<String> baseDeclaredKeySlotNames = base.getDeclaredKeySlotNames();
-                if (baseDeclaredKeySlotNames != null)
-                {
+                if (baseDeclaredKeySlotNames != null) {
                     _AllKeySlotNames.addAll(baseDeclaredKeySlotNames);
                 }
             }
@@ -568,8 +501,7 @@ public class Prototype
         return _AllKeySlotNames;
     }
 
-    public Set<URI> getAllRelatedSchemaUris()
-    {
+    public Set<URI> getAllRelatedSchemaUris() {
 
         final LinkedHashSet<URI> allRelatedSchemaUris = new LinkedHashSet<>(getAllBaseSchemaUris());
 
@@ -578,30 +510,24 @@ public class Prototype
         return allRelatedSchemaUris;
     }
 
-    public SortedSet<String> getAllSlotNames()
-    {
+    public SortedSet<String> getAllSlotNames() {
 
         return _AllSlotNames;
     }
 
-    public Set<String> getComparableSlotNames()
-    {
+    public Set<String> getComparableSlotNames() {
 
         return _ComparableSlotNames;
     }
 
-    public Set<Prototype> getDeclaredBasePrototypes()
-    {
+    public Set<Prototype> getDeclaredBasePrototypes() {
 
-        if (_BasePrototypes == null)
-        {
+        if (_BasePrototypes == null) {
             final SchemaLoader schemaLoader = getSchemaLoader();
             _BasePrototypes = new LinkedHashSet<Prototype>();
             final Set<URI> baseSchemaUris = getDeclaredBaseSchemaUris();
-            if (baseSchemaUris != null && !baseSchemaUris.isEmpty())
-            {
-                for (final URI baseSchemaUri : baseSchemaUris)
-                {
+            if (baseSchemaUris != null && !baseSchemaUris.isEmpty()) {
+                for (final URI baseSchemaUri : baseSchemaUris) {
                     final Prototype basePrototype = schemaLoader.getPrototype(baseSchemaUri);
                     _BasePrototypes.add(basePrototype);
                 }
@@ -611,8 +537,7 @@ public class Prototype
         return _BasePrototypes;
     }
 
-    public Set<URI> getDeclaredBaseSchemaUris()
-    {
+    public Set<URI> getDeclaredBaseSchemaUris() {
 
         return _BaseSchemaUris;
     }
@@ -620,45 +545,38 @@ public class Prototype
     /**
      * A {@link SortedSet} of the names of the key {@link org.wrml.model.schema.Slot}s declared by this {@link Prototype}'s {@link Schema}.
      */
-    public SortedSet<String> getDeclaredKeySlotNames()
-    {
+    public SortedSet<String> getDeclaredKeySlotNames() {
 
         return _KeySlotNames;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
 
         return _Description;
     }
 
 
-    public java.lang.reflect.Type getKeyType()
-    {
+    public java.lang.reflect.Type getKeyType() {
 
         return _KeyType;
     }
 
-    public SortedMap<URI, LinkProtoSlot> getLinkProtoSlots()
-    {
+    public SortedMap<URI, LinkProtoSlot> getLinkProtoSlots() {
 
         return _LinkProtoSlots;
     }
 
-    public Map<String, CollectionPropertyProtoSlot> getCollectionPropertyProtoSlots()
-    {
+    public Map<String, CollectionPropertyProtoSlot> getCollectionPropertyProtoSlots() {
 
         return _CollectionPropertyProtoSlots;
     }
 
-    public URI getLinkRelationUri(final String linkSlotName)
-    {
+    public URI getLinkRelationUri(final String linkSlotName) {
 
         return _LinkRelationUris.get(linkSlotName);
     }
 
-    public SortedMap<String, URI> getLinkRelationUris()
-    {
+    public SortedMap<String, URI> getLinkRelationUris() {
 
         return _LinkRelationUris;
     }
@@ -666,32 +584,26 @@ public class Prototype
     /**
      * A {@link SortedSet} of the names of the {@link Searchable} {@link org.wrml.model.schema.Slot}s declared by this {@link Prototype}'s {@link Schema}.
      */
-    public SortedSet<String> getSearchableSlots()
-    {
+    public SortedSet<String> getSearchableSlots() {
 
         return _SearchableSlots;
     }
 
-    public <T extends ProtoSlot> T getProtoSlot(final String slotName)
-    {
+    public <T extends ProtoSlot> T getProtoSlot(final String slotName) {
 
         return getProtoSlot(slotName, true);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ProtoSlot> T getProtoSlot(final String slotName, final boolean strictMode)
-    {
+    public <T extends ProtoSlot> T getProtoSlot(final String slotName, final boolean strictMode) {
 
-        if (!_ProtoSlots.containsKey(slotName))
-        {
-            if (strictMode)
-            {
+        if (!_ProtoSlots.containsKey(slotName)) {
+            if (strictMode) {
                 final String error = "A (WRML) slot named \"" + slotName + "\" was not found within this prototype's schema interface (" + _SchemaBean.getIntrospectedClass() + ")";
                 LOGGER.error(error);
                 throw new PrototypeException(error, null, this);
             }
-            else
-            {
+            else {
                 return null;
             }
         }
@@ -699,171 +611,142 @@ public class Prototype
         return (T) _ProtoSlots.get(slotName);
     }
 
-    public String getRealSlotName(final String possibleAlias)
-    {
+    public String getRealSlotName(final String possibleAlias) {
 
-        if (_SlotAliases.containsKey(possibleAlias))
-        {
+        if (_SlotAliases.containsKey(possibleAlias)) {
             return _SlotAliases.get(possibleAlias);
         }
 
         return null;
     }
 
-    public JavaBean getSchemaBean()
-    {
+    public JavaBean getSchemaBean() {
 
         return _SchemaBean;
     }
 
-    public SchemaLoader getSchemaLoader()
-    {
+    public SchemaLoader getSchemaLoader() {
 
         return _SchemaLoader;
     }
 
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
 
         return _SchemaUri;
     }
 
-    public SortedSet<String> getTags()
-    {
+    public SortedSet<String> getTags() {
 
         return _Tags;
     }
 
-    public URI getThumbnailLocation()
-    {
+    public URI getThumbnailLocation() {
 
         return _ThumbnailLocation;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
 
         return _Title;
     }
 
-    public String getTitleSlotName()
-    {
+    public String getTitleSlotName() {
+
         return _TitleSlotName;
     }
 
-    public UniqueName getUniqueName()
-    {
+    public UniqueName getUniqueName() {
 
         return _UniqueName;
     }
 
-    public Long getVersion()
-    {
+    public Long getVersion() {
 
         return _Version;
     }
 
-    public boolean isAbstract()
-    {
+    public boolean isAbstract() {
 
         return _IsAbstract;
     }
 
-    public boolean isAggregate()
-    {
+    public boolean isAggregate() {
 
         return _IsAggregate;
     }
 
-    public boolean isAssignableFrom(final URI schemaUri)
-    {
+    public boolean isAssignableFrom(final URI schemaUri) {
 
-        try
-        {
+        try {
             return getSchemaInterface().isAssignableFrom(getSchemaLoader().getSchemaInterface(schemaUri));
         }
-        catch (final PrototypeException | ClassNotFoundException e)
-        {
+        catch (final PrototypeException | ClassNotFoundException e) {
             return false;
         }
     }
 
-    public boolean isDocument()
-    {
+    public boolean isDocument() {
 
         return _IsDocument;
     }
 
-    public boolean isKeySlot(final String slotName)
-    {
+    public boolean isKeySlot(final String slotName) {
 
         return getAllKeySlotNames().contains(slotName);
     }
 
-    public boolean isReadOnly()
-    {
+    public boolean isReadOnly() {
 
         return _ReadOnly;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return "Prototype [schemaUri = " + _SchemaUri + ", version = " + _Version + ", description = " + _Description + "]";
     }
 
-    private void addProtoSlot(final ProtoSlot protoSlot)
-    {
+    private void addProtoSlot(final ProtoSlot protoSlot) {
 
         final String slotName = protoSlot.getName();
         _ProtoSlots.put(slotName, protoSlot);
         _AllSlotNames.add(slotName);
 
         final SortedSet<String> aliases = protoSlot.getAliases();
-        if (aliases != null && aliases.size() > 0)
-        {
-            for (final String alias : aliases)
-            {
+        if (aliases != null && aliases.size() > 0) {
+            for (final String alias : aliases) {
                 _SlotAliases.put(alias, slotName);
             }
         }
 
-        if (protoSlot instanceof CollectionPropertyProtoSlot)
-        {
+        if (protoSlot instanceof CollectionPropertyProtoSlot) {
 
             final CollectionPropertyProtoSlot collectionPropertyProtoSlot = (CollectionPropertyProtoSlot) protoSlot;
 
             _CollectionPropertyProtoSlots.put(slotName, collectionPropertyProtoSlot);
         }
-        else if (protoSlot instanceof PropertyProtoSlot)
-        {
+        else if (protoSlot instanceof PropertyProtoSlot) {
             final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
 
             final boolean isSearchable = propertyProtoSlot.isSearchable();
 
-            if (isSearchable)
-            {
+            if (isSearchable) {
                 _SearchableSlots.add(propertyProtoSlot.getName());
             }
         }
 
     }
 
-    private Class<?> getSchemaInterface() throws PrototypeException
-    {
+    private Class<?> getSchemaInterface() throws PrototypeException {
 
         Class<?> schemaInterface = null;
-        try
-        {
+        try {
             schemaInterface = _SchemaLoader.getSchemaInterface(_SchemaUri);
-            if (schemaInterface == null)
-            {
+            if (schemaInterface == null) {
                 throw new PrototypeException("SchemaLoader returned a null Schema for: " + _SchemaUri, this);
             }
         }
-        catch (final Exception t)
-        {
+        catch (final Exception t) {
             throw new PrototypeException("Interface not found for schema: " + String.valueOf(_SchemaUri), t, this);
         }
 

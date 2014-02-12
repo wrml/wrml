@@ -18,11 +18,13 @@ import java.util.List;
 public class IntegrationTestRunner extends BlockJUnit4ClassRunner {
 
     public IntegrationTestRunner(Class<?> klazz) throws InitializationError {
+
         super(klazz);
     }
 
     @Override
     public List<FrameworkMethod> computeTestMethods() {
+
         return getTestClass().getAnnotatedMethods(IntegrationTest.class);
     }
 

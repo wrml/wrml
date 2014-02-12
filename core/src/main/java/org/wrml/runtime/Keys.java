@@ -106,8 +106,7 @@ import java.util.Set;
  * @see Schema#getKeySlotNames()
  * @see <a href="http://www.w3.org/DesignIssues/Axioms.html#opaque">The Opacity Axiom</a>
  */
-public interface Keys extends Serializable
-{
+public interface Keys extends Serializable {
 
     /**
      * Returns the number (N >= 1) of individual keys in this Keys

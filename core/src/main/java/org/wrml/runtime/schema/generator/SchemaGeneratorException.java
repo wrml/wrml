@@ -27,21 +27,20 @@ package org.wrml.runtime.schema.generator;
 /**
  * The {@link SchemaGenerator}'s associated error type.
  */
-public class SchemaGeneratorException extends RuntimeException
-{
+public class SchemaGeneratorException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final SchemaGenerator _SchemaGenerator;
 
-    SchemaGeneratorException(final String message, final Throwable cause, final SchemaGenerator schemaGenerator)
-    {
+    SchemaGeneratorException(final String message, final Throwable cause, final SchemaGenerator schemaGenerator) {
+
         super(message, cause);
         _SchemaGenerator = schemaGenerator;
     }
 
-    public SchemaGenerator getSchemaGenerator()
-    {
+    public SchemaGenerator getSchemaGenerator() {
+
         return _SchemaGenerator;
     }
 }

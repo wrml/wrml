@@ -35,8 +35,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AcceptableMediaTypeList extends ArrayList<MediaType>
-{
+public class AcceptableMediaTypeList extends ArrayList<MediaType> {
 
     public static final Pattern ACCEPT = Pattern.compile(CommonHeader.ACCEPT.getName() + ":( *)(.*)");
 
@@ -48,34 +47,28 @@ public class AcceptableMediaTypeList extends ArrayList<MediaType>
 
     private static final QSorter SORTER = new QSorter();
 
-    public AcceptableMediaTypeList(String acceptHeaderValueString)
-    {
+    public AcceptableMediaTypeList(String acceptHeaderValueString) {
 
-        if (acceptHeaderValueString == null)
-        {
+        if (acceptHeaderValueString == null) {
             return;
         }
 
         Matcher accept = ACCEPT.matcher(acceptHeaderValueString);
 
         // Remove front if present
-        if (accept.find())
-        {
+        if (accept.find()) {
             acceptHeaderValueString = accept.group(2);
         }
 
         accept = ACCEPT_MAJOR.matcher(acceptHeaderValueString);
 
-        while (accept.find())
-        {
+        while (accept.find()) {
             final String group = accept.group(2);
-            try
-            {
+            try {
                 final MediaType type = new MediaType(group);
                 add(type);
             }
-            catch (final MediaTypeException ex)
-            {
+            catch (final MediaTypeException ex) {
                 LOG.debug("Unable to extract MediaType from string " + group, ex);
             }
         }
@@ -86,24 +79,20 @@ public class AcceptableMediaTypeList extends ArrayList<MediaType>
     /**
      * Sorts based on the q parameter. A MediaType lacking this parameter has a value of 1 (highest).
      */
-    public static class QSorter implements Comparator<MediaType>
-    {
+    public static class QSorter implements Comparator<MediaType> {
 
         public static final String Q_NAME = "q";
 
         @Override
-        public int compare(final MediaType obj1, final MediaType obj2)
-        {
+        public int compare(final MediaType obj1, final MediaType obj2) {
 
             Double q1 = 1.0;
-            if (obj1.getParameter(Q_NAME) != null)
-            {
+            if (obj1.getParameter(Q_NAME) != null) {
                 q1 = Double.valueOf(obj1.getParameter(Q_NAME));
             }
 
             Double q2 = 1.0;
-            if (obj2.getParameter(Q_NAME) != null)
-            {
+            if (obj2.getParameter(Q_NAME) != null) {
                 q2 = Double.valueOf(obj2.getParameter(Q_NAME));
             }
 

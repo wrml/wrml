@@ -21,19 +21,19 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
  See the License for the specific language governing permissions and         
  limitations under the License.                                              
-###          
+###
 
 # CoffeeScript
 
 @Wrmldoc.module "RegistrationApp", (RegistrationApp, App, Backbone, Marionette, $, _) ->
-	@startWithParent = false
+  @startWithParent = false
 
-	class RegistrationApp.Router extends Marionette.AppRouter
+  class RegistrationApp.Router extends Marionette.AppRouter
 
-	API =
-		show: (wrmlData) ->
-			new RegistrationApp.Show.Controller(wrmlData)
-	
+  API =
+    show: (wrmlData) ->
+      new RegistrationApp.Show.Controller(wrmlData)
 
-	RegistrationApp.on "start", (wrmlData) ->
-		API.show(wrmlData)
+
+  RegistrationApp.on "start", (wrmlData) ->
+    API.show(wrmlData)

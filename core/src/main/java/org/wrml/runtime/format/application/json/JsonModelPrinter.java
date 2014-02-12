@@ -24,32 +24,28 @@
  */
 package org.wrml.runtime.format.application.json;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import org.wrml.model.Model;
-
 import org.wrml.runtime.format.ModelPrinter;
 import org.wrml.runtime.format.ModelPrinterException;
 import org.wrml.runtime.format.ModelWriteOptions;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import java.io.IOException;
+import java.util.List;
 
-public class JsonModelPrinter implements ModelPrinter
-{
+public class JsonModelPrinter implements ModelPrinter {
 
     private final JsonGenerator _JsonGenerator;
 
     private final ModelWriteOptions _WriteOptions;
 
-    public JsonModelPrinter(final JsonGenerator jsonGenerator, final ModelWriteOptions writeOptions)
-    {
+    public JsonModelPrinter(final JsonGenerator jsonGenerator, final ModelWriteOptions writeOptions) {
+
         _JsonGenerator = jsonGenerator;
         _WriteOptions = writeOptions;
 
-        if (_WriteOptions.isPrettyPrint())
-        {
+        if (_WriteOptions.isPrettyPrint()) {
             final DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
             prettyPrinter.indentObjectsWith(new DefaultPrettyPrinter.Lf2SpacesIndenter());
             prettyPrinter.indentArraysWith(new DefaultPrettyPrinter.Lf2SpacesIndenter());
@@ -60,85 +56,85 @@ public class JsonModelPrinter implements ModelPrinter
     }
 
     @Override
-    public void close() throws IOException, ModelPrinterException
-    {
+    public void close() throws IOException, ModelPrinterException {
+
         _JsonGenerator.close();
     }
 
-    public JsonGenerator getJsonGenerator()
-    {
+    public JsonGenerator getJsonGenerator() {
+
         return _JsonGenerator;
     }
 
     @Override
-    public ModelWriteOptions getWriteOptions()
-    {
+    public ModelWriteOptions getWriteOptions() {
+
         return _WriteOptions;
     }
 
     @Override
-    public void printBooleanValue(final boolean booleanValue) throws IOException, ModelPrinterException
-    {
+    public void printBooleanValue(final boolean booleanValue) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeBoolean(booleanValue);
     }
 
     @Override
-    public void printDoubleValue(final double value) throws IOException, ModelPrinterException
-    {
+    public void printDoubleValue(final double value) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeNumber(value);
     }
 
     @Override
-    public void printIntegerValue(final int value) throws IOException, ModelPrinterException
-    {
+    public void printIntegerValue(final int value) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeNumber(value);
     }
 
     @Override
-    public void printListEnd(final List<?> list) throws IOException, ModelPrinterException
-    {
+    public void printListEnd(final List<?> list) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeEndArray();
     }
 
     @Override
-    public void printListStart(final List<?> list) throws IOException, ModelPrinterException
-    {
+    public void printListStart(final List<?> list) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeStartArray();
     }
 
     @Override
-    public void printLongValue(final long value) throws IOException, ModelPrinterException
-    {
+    public void printLongValue(final long value) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeNumber(value);
     }
 
     @Override
-    public void printModelEnd(final Model model) throws IOException, ModelPrinterException
-    {
+    public void printModelEnd(final Model model) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeEndObject();
     }
 
     @Override
-    public void printModelStart(final Model model) throws IOException, ModelPrinterException
-    {
+    public void printModelStart(final Model model) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeStartObject();
     }
 
     @Override
-    public void printNullValue() throws IOException, ModelPrinterException
-    {
+    public void printNullValue() throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeNull();
     }
 
     @Override
-    public void printSlotName(final String slotName) throws IOException, ModelPrinterException
-    {
+    public void printSlotName(final String slotName) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeFieldName(slotName);
     }
 
     @Override
-    public void printTextValue(final String textValue) throws IOException, ModelPrinterException
-    {
+    public void printTextValue(final String textValue) throws IOException, ModelPrinterException {
+
         _JsonGenerator.writeString(textValue);
     }
 

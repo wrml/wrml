@@ -35,7 +35,6 @@ import java.io.File;
  */
 @WRML(uniqueName = "org/wrml/model/rest/FiledApi")
 @Title("API")
-public interface FiledApi extends Filed, Api
-{
+public interface FiledApi extends Filed, Api {
 
 }

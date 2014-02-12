@@ -37,8 +37,7 @@ import java.util.List;
  * enum's possible values.
  */
 @WRML(keySlotNames = {"uniqueName"})
-public interface Choices extends Described, Versioned, UniquelyNamed, Document
-{
+public interface Choices extends Described, Versioned, UniquelyNamed, Document {
 
     /**
      * The list of {@link String} values/options associated with this {@link Choices}.

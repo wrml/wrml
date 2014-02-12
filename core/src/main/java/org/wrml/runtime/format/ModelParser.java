@@ -30,8 +30,7 @@ import java.io.IOException;
  * Interface to enable pluggable implementations of token-based (streamed),
  * serialized model parsers.
  */
-public interface ModelParser
-{
+public interface ModelParser {
 
     Double parseDoubleValue() throws IOException, ModelParserException;
 

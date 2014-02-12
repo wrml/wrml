@@ -15,14 +15,17 @@ import java.util.Properties;
 public abstract class IntegrationConfig {
 
     private Properties props;
+
     private static final String PROPERTIES_FILE = "/config.properties";
 
     public IntegrationConfig() throws IOException {
+
         props = new Properties();
         props.load(IntegrationConfig.class.getResourceAsStream(PROPERTIES_FILE));
     }
 
     public String getValue(String key) {
+
         return props.getProperty(key);
     }
 

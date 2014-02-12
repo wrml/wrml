@@ -32,8 +32,7 @@ import org.wrml.werminal.terminal.TerminalAppPanel;
 import java.io.File;
 import java.net.URI;
 
-public class PrintDialog extends WerminalDialog
-{
+public class PrintDialog extends WerminalDialog {
 
     private final WerminalTextBox _PrintToFilePathTextBox;
 
@@ -41,8 +40,7 @@ public class PrintDialog extends WerminalDialog
 
     private Model _Model;
 
-    public PrintDialog(final Werminal werminal, final String title)
-    {
+    public PrintDialog(final Werminal werminal, final String title) {
 
         super(werminal, title, werminal.getPrintConfirmationAction(), werminal.getCancelAction());
 
@@ -50,21 +48,18 @@ public class PrintDialog extends WerminalDialog
         render();
     }
 
-    public File getPrintToFile()
-    {
+    public File getPrintToFile() {
 
         return _PrintToFilePathTextBox.getValue();
     }
 
-    public void setPrintToFile(final File file)
-    {
+    public void setPrintToFile(final File file) {
 
         _PrintToFilePathTextBox.setValue(file);
     }
 
     @Override
-    public void render()
-    {
+    public void render() {
 
         removeAllComponents();
 
@@ -81,26 +76,22 @@ public class PrintDialog extends WerminalDialog
 
     }
 
-    public URI getFormatUri()
-    {
+    public URI getFormatUri() {
 
         return _FormatUri;
     }
 
-    public void setFormatUri(final URI formatUri)
-    {
+    public void setFormatUri(final URI formatUri) {
 
         _FormatUri = formatUri;
     }
 
-    public Model getModel()
-    {
+    public Model getModel() {
 
         return _Model;
     }
 
-    public void setModel(final Model model)
-    {
+    public void setModel(final Model model) {
 
         _Model = model;
     }

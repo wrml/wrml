@@ -46,8 +46,7 @@ import java.util.Set;
  * @see ServiceConfiguration
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9">HTTP/1.1 Method Definitions</a>
  */
-public interface Service
-{
+public interface Service {
 
     /**
      * <p>

@@ -29,8 +29,7 @@ import com.googlecode.lanterna.gui.component.EmptySpace;
 import com.googlecode.lanterna.gui.component.Panel;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
-public class TerminalAppPanel extends Panel
-{
+public class TerminalAppPanel extends Panel {
 
     private final TerminalApp _App;
 
@@ -40,34 +39,29 @@ public class TerminalAppPanel extends Panel
 
     private boolean _VerticallyMaximized;
 
-    public TerminalAppPanel(final TerminalApp app)
-    {
+    public TerminalAppPanel(final TerminalApp app) {
 
         this(app, "", new Border.Standard(), Orientation.VERTICAL, false, false);
     }
 
-    public TerminalAppPanel(final TerminalApp app, final Border border, final Orientation orientation)
-    {
+    public TerminalAppPanel(final TerminalApp app, final Border border, final Orientation orientation) {
 
         this(app, "", border, orientation, false, false);
     }
 
-    public TerminalAppPanel(final TerminalApp app, final String title)
-    {
+    public TerminalAppPanel(final TerminalApp app, final String title) {
 
         this(app, title, new Border.Standard(), Orientation.VERTICAL, false, false);
     }
 
     public TerminalAppPanel(final TerminalApp app, final String title, final Border border,
-                            final Orientation orientation)
-    {
+                            final Orientation orientation) {
 
         this(app, title, border, orientation, false, false);
     }
 
     public TerminalAppPanel(final TerminalApp app, final String title, final Border border,
-                            final Orientation orientation, final boolean horizontallyMaximized, final boolean verticallyMaximized)
-    {
+                            final Orientation orientation, final boolean horizontallyMaximized, final boolean verticallyMaximized) {
 
         super(title, border, orientation);
         _App = app;
@@ -77,72 +71,61 @@ public class TerminalAppPanel extends Panel
         _VerticallyMaximized = verticallyMaximized;
     }
 
-    public void addEmptySpace()
-    {
+    public void addEmptySpace() {
         // addComponent(new Label());
         addComponent(new EmptySpace(0, 1));
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }
 
     @Override
-    public final TerminalSize getPreferredSize()
-    {
+    public final TerminalSize getPreferredSize() {
 
-        if (_PreferredSize == null)
-        {
+        if (_PreferredSize == null) {
             return super.getPreferredSize();
         }
 
         return _PreferredSize;
     }
 
-    public boolean isHorizontallyMaximized()
-    {
+    public boolean isHorizontallyMaximized() {
 
         return _HorizontallyMaximized;
     }
 
-    public boolean isVerticallyMaximized()
-    {
+    public boolean isVerticallyMaximized() {
 
         return _VerticallyMaximized;
     }
 
     @Override
-    public final boolean maximisesHorisontally()
-    {
+    public final boolean maximisesHorisontally() {
 
         return _HorizontallyMaximized;
     }
 
     @Override
-    public final boolean maximisesVertically()
-    {
+    public final boolean maximisesVertically() {
 
         return _VerticallyMaximized;
     }
 
-    public void setHorizontallyMaximized(final boolean horizontallyMaximized)
-    {
+    public void setHorizontallyMaximized(final boolean horizontallyMaximized) {
 
         _HorizontallyMaximized = horizontallyMaximized;
     }
 
     @Override
-    public final void setPreferredSize(final TerminalSize preferredSize)
-    {
+    public final void setPreferredSize(final TerminalSize preferredSize) {
 
         _PreferredSize = preferredSize;
     }
 
-    public void setVerticallyMaximized(final boolean verticallyMaximized)
-    {
+    public void setVerticallyMaximized(final boolean verticallyMaximized) {
 
         _VerticallyMaximized = verticallyMaximized;
     }

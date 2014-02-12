@@ -23,24 +23,22 @@
  * limitations under the License.
  */
 
-#footer-region			
-{  
+#footer-region {
 
-	height: $footerHeight; 
+  height: $footerHeight;
 
-	margin-top: $footerMarginTop;
-	padding-top: $footerPaddingTop; 	
-	
-	text-align: center;
-	font-size: 75%;
+  margin-top: $footerMarginTop;
+  padding-top: $footerPaddingTop;
 
-	color: $red;		
-	background-color: $black; 	
+  text-align: center;
+  font-size: 75%;
 
-	border-top: $footerBorderTopWidth solid $red;  
+  color: $red;
+  background-color: $black;
 
-	a, a:hover, a:active
-	{
-		color: $white;
-	}
+  border-top: $footerBorderTopWidth solid $red;
+
+  a, a:hover, a:active {
+    color: $white;
+  }
 }

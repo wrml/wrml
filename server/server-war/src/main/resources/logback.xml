@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<!-- The logs directory can be set at startup using -Dlogging.dir=... If 
-		not specified the logging directory will be the value specified below. -->
-	<if condition='isNull("logging.dir")'>
-		<then>
-			<property name="logging.dir" value="./logs" />
-		</then>
-	</if>
+    <!-- The logs directory can be set at startup using -Dlogging.dir=... If
+        not specified the logging directory will be the value specified below. -->
+    <if condition='isNull("logging.dir")'>
+        <then>
+            <property name="logging.dir" value="./logs"/>
+        </then>
+    </if>
 
-	<!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
-			<pattern><![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
-		</encoder>
-	</appender>
+    <!-- http://logback.qos.ch/manual/appenders.html#ConsoleAppender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
+            <pattern>
+                <![CDATA[%-19(%date{HH:mm:ss.SSS} [%.8thread]) %-5level   %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
+        </encoder>
+    </appender>
 
-	<!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
-	<appender name="WRML_LOG"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<encoder>
-			<!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
-			<pattern><![CDATA[%-32(%date [%.8thread]) %-5level  %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
-		</encoder>
-		<File>${logging.dir}/wrml.log</File>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${logging.dir}/wrml.%d{yyyy-MM-dd}.log</FileNamePattern>
-			<MaxHistory>7</MaxHistory>
-		</rollingPolicy>
-	</appender>
+    <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+    <appender name="WRML_LOG"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <!-- %rEx... prints exception causes in REVERSE order: http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html -->
+            <pattern>
+                <![CDATA[%-32(%date [%.8thread]) %-5level  %-128(%-32(%replace(%logger{1}){'^org\.wrml.*\.',''}) - %msg) %n%rEx]]></pattern>
+        </encoder>
+        <File>${logging.dir}/wrml.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logging.dir}/wrml.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+    </appender>
 
-	<!-- org.wrml loggers first -->
-	<logger name="org.wrml" level="DEBUG" />
-	<logger name="org.wrml.server" level="DEBUG" />
-	<logger name="org.wrml.runtime" level="WARN" />
-	<logger name="org.wrml.runtime.service" level="DEBUG" />
+    <!-- org.wrml loggers first -->
+    <logger name="org.wrml" level="DEBUG"/>
+    <logger name="org.wrml.server" level="DEBUG"/>
+    <logger name="org.wrml.runtime" level="WARN"/>
+    <logger name="org.wrml.runtime.service" level="DEBUG"/>
 
-	<!-- third party loggers last, lexicographically -->
-	<logger name="org.apache" level="WARN" />
-	<logger name="org.apache.cxf" level="WARN" />
-	<logger name="org.apache.http" level="WARN" />
-	<logger name="org.eclipse.jetty" level="WARN" />
-	<logger name="org.springframework" level="WARN" />
+    <!-- third party loggers last, lexicographically -->
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.apache.cxf" level="WARN"/>
+    <logger name="org.apache.http" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
 
-	<root level="INFO">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="WRML_LOG" />
-	</root>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="WRML_LOG"/>
+    </root>
 </configuration>

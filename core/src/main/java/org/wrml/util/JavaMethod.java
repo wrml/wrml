@@ -24,83 +24,76 @@
  */
 package org.wrml.util;
 
+import com.google.common.collect.ComparisonChain;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
-import com.google.common.collect.ComparisonChain;
 
 /**
  * An runtime-optimized descriptor for a specific Java method.
  */
-public class JavaMethod implements Comparable<JavaMethod>
-{
+public class JavaMethod implements Comparable<JavaMethod> {
 
     private final Method _Method;
 
     private final Signature _Signature;
 
-    public JavaMethod(final Method method)
-    {
+    public JavaMethod(final Method method) {
+
         _Method = method;
         _Signature = new Signature(_Method);
     }
 
     @Override
-    public int compareTo(final JavaMethod other)
-    {
+    public int compareTo(final JavaMethod other) {
+
         return ComparisonChain.start()//
                 .compare(this.getSignature(), other.getSignature())//
                 .result();
     }
 
     @Override
-    public boolean equals(final Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(final Object obj) {
+
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final JavaMethod other = (JavaMethod) obj;
-        if (_Signature == null)
-        {
-            if (other._Signature != null)
-            {
+        if (_Signature == null) {
+            if (other._Signature != null) {
                 return false;
             }
         }
-        else if (!_Signature.equals(other._Signature))
-        {
+        else if (!_Signature.equals(other._Signature)) {
             return false;
         }
         return true;
     }
 
-    public Method getMethod()
-    {
+    public Method getMethod() {
+
         return _Method;
     }
 
-    public int getParameterCount()
-    {
+    public int getParameterCount() {
+
         return getSignature().getParameterTypes().length;
     }
 
-    public Signature getSignature()
-    {
+    public Signature getSignature() {
+
         return _Signature;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
+
         final int prime = 31;
         int result = 1;
         result = (prime * result) + ((_Signature == null) ? 0 : _Signature.hashCode());
@@ -108,13 +101,12 @@ public class JavaMethod implements Comparable<JavaMethod>
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
+
         return "JavaMethod [Method=" + _Method + ", Signature=" + _Signature + "]";
     }
 
-    public static class Signature extends UniqueComposition implements Comparable<Signature>
-    {
+    public static class Signature extends UniqueComposition implements Comparable<Signature> {
 
         private final String _Name;
 
@@ -124,13 +116,12 @@ public class JavaMethod implements Comparable<JavaMethod>
 
         private final Type _ReturnType;
 
-        public Signature(final Method method)
-        {
+        public Signature(final Method method) {
+
             this(method.getName(), method.getGenericParameterTypes(), method.getGenericReturnType());
         }
 
-        public Signature(final String name, final Type[] parameterTypes, final Type returnType)
-        {
+        public Signature(final String name, final Type[] parameterTypes, final Type returnType) {
 
             // A method's return type is not considered for uniqueness in a
             // signature's composition
@@ -143,45 +134,40 @@ public class JavaMethod implements Comparable<JavaMethod>
         }
 
         @Override
-        public int compareTo(final Signature other)
-        {
+        public int compareTo(final Signature other) {
+
             return ComparisonChain.start().compare(this.toString(), String.valueOf(other)).result();
         }
 
-        public String getName()
-        {
+        public String getName() {
+
             return _Name;
         }
 
-        public Type[] getParameterTypes()
-        {
+        public Type[] getParameterTypes() {
+
             return _ParameterTypes;
         }
 
-        public java.lang.reflect.Type getReturnType()
-        {
+        public java.lang.reflect.Type getReturnType() {
+
             return _ReturnType;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
-            if (_ToString == null)
-            {
+            if (_ToString == null) {
                 final StringBuilder signature = new StringBuilder();
                 final String name = getName();
                 signature.append(name);
                 signature.append('(');
                 final Type[] parameterTypes = getParameterTypes();
-                if (parameterTypes != null)
-                {
-                    for (int i = 0; i < parameterTypes.length; i++)
-                    {
+                if (parameterTypes != null) {
+                    for (int i = 0; i < parameterTypes.length; i++) {
                         final Type parameterType = parameterTypes[i];
                         signature.append(parameterType);
-                        if (i < (parameterTypes.length - 1))
-                        {
+                        if (i < (parameterTypes.length - 1)) {
                             signature.append(", ");
                         }
                     }

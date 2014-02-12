@@ -1,6 +1,5 @@
 package org.wrml.integration;
 
-import org.junit.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,11 +12,13 @@ public class TestTest extends WrmlRestIntegrationTest {
 
     @IntegrationTest
     public void fooTest() {
+
         LOGGER.error("Testing");
     }
 
     @IntegrationTest
     public void barTest() {
+
         LOGGER.info("" + WrmlIntegrationTest.getPort());
     }
 
@@ -30,6 +31,7 @@ public class TestTest extends WrmlRestIntegrationTest {
 
     @IntegrationTest
     public void quuxTest() {
+
         LOGGER.error(getContextStore().toString());
     }
 

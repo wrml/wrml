@@ -35,8 +35,7 @@ import org.wrml.runtime.schema.WRML;
  * The docroot for the REST API Designer (tool/app) REST API.
  */
 @WRML(uniqueName = "org/wrml/runtime/service/apiDesigner/ApiDesignerHome")
-public interface ApiDesignerHome extends Virtual, Document
-{
+public interface ApiDesignerHome extends Virtual, Document {
 
     // TODO: Move this link relation to a file and change the link relation URI to be based on the API designer REST API's root URI
     @LinkSlot(linkRelationUri = "http://relation.api.wrml.org/org/wrml/relation/autoLink", method = Method.Get)

@@ -33,8 +33,7 @@ import java.net.URI;
  * An {@link Embedded} model is *always* part of a {@link Document} (as a slot value).
  * </p>
  */
-public interface Embedded extends Abstract
-{
+public interface Embedded extends Abstract {
 
     /**
      * The WRML constant name for a Embedded's <i>documentUri</i> slot.

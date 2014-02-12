@@ -28,8 +28,7 @@ import com.googlecode.lanterna.gui.Action;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.input.Key.Kind;
 
-public class TerminalAppKeyboardInteraction
-{
+public class TerminalAppKeyboardInteraction {
 
     private final TerminalApp _App;
 
@@ -37,58 +36,48 @@ public class TerminalAppKeyboardInteraction
 
     private final boolean _CloseOnEscape;
 
-    public TerminalAppKeyboardInteraction(final TerminalApp app, final Action enterAction, final boolean closeOnEscape)
-    {
+    public TerminalAppKeyboardInteraction(final TerminalApp app, final Action enterAction, final boolean closeOnEscape) {
 
         _App = app;
         _EnterAction = enterAction;
         _CloseOnEscape = closeOnEscape;
     }
 
-    public TerminalApp getApp()
-    {
+    public TerminalApp getApp() {
 
         return _App;
     }
 
-    public Action getEnterAction()
-    {
+    public Action getEnterAction() {
 
         return _EnterAction;
     }
 
-    public boolean handleKeyboardInteraction(final Key key)
-    {
+    public boolean handleKeyboardInteraction(final Key key) {
 
         final Kind kind = key.getKind();
 
         boolean handled = false;
-        switch (kind)
-        {
+        switch (kind) {
 
-            case Enter:
-            {
+            case Enter: {
 
-                if (_EnterAction != null)
-                {
+                if (_EnterAction != null) {
                     _EnterAction.doAction();
                     handled = true;
                 }
 
                 break;
             }
-            case Escape:
-            {
-                if (_CloseOnEscape)
-                {
+            case Escape: {
+                if (_CloseOnEscape) {
                     _App.closeTopWindow();
                     handled = true;
                 }
 
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
         }

@@ -35,22 +35,19 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class HistoryCheckListBox extends WerminalCheckListBox
-{
+public class HistoryCheckListBox extends WerminalCheckListBox {
 
     private final WerminalTextBox _TextBox;
 
     private final SortedSet<Object> _HistorySet;
 
-    public HistoryCheckListBox(final WerminalTextBox forTextBox)
-    {
+    public HistoryCheckListBox(final WerminalTextBox forTextBox) {
 
         this(forTextBox, null, null);
     }
 
     public HistoryCheckListBox(final WerminalTextBox forTextBox, final WerminalAction enterAction,
-                               final WerminalAction enterOnSelectionAction)
-    {
+                               final WerminalAction enterOnSelectionAction) {
 
         super((Werminal) forTextBox.getApp(), enterAction, enterOnSelectionAction);
         _TextBox = forTextBox;
@@ -59,22 +56,18 @@ public class HistoryCheckListBox extends WerminalCheckListBox
     }
 
     @Override
-    public void addItem(final Object item)
-    {
+    public void addItem(final Object item) {
 
-        if (!addItemInternal(item))
-        {
+        if (!addItemInternal(item)) {
             return;
         }
 
         syncView();
     }
 
-    public void addItems(final Collection<?> items)
-    {
+    public void addItems(final Collection<?> items) {
 
-        for (final Object item : items)
-        {
+        for (final Object item : items) {
             addItemInternal(item);
         }
 
@@ -82,28 +75,24 @@ public class HistoryCheckListBox extends WerminalCheckListBox
     }
 
     @Override
-    public void clearItems()
-    {
+    public void clearItems() {
 
         super.clearItems();
         _HistorySet.clear();
     }
 
-    public WerminalTextBox getTextBox()
-    {
+    public WerminalTextBox getTextBox() {
 
         return _TextBox;
     }
 
-    public SortedSet<Object> getItems()
-    {
+    public SortedSet<Object> getItems() {
 
         return _HistorySet;
     }
 
     @Override
-    public void setCheckedItem(final Object newCheckedItem)
-    {
+    public void setCheckedItem(final Object newCheckedItem) {
 
         super.setCheckedItem(newCheckedItem);
         _TextBox.setValue(newCheckedItem);
@@ -111,22 +100,18 @@ public class HistoryCheckListBox extends WerminalCheckListBox
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
         final Key.Kind kind = key.getKind();
-        switch (kind)
-        {
+        switch (kind) {
             case NormalKey:
 
                 final char character = key.getCharacter();
-                if (setSelectedItemFromCharacter(character))
-                {
+                if (setSelectedItemFromCharacter(character)) {
                     return Result.EVENT_HANDLED;
                 }
 
@@ -136,44 +121,36 @@ public class HistoryCheckListBox extends WerminalCheckListBox
         return super.keyboardInteraction(key);
     }
 
-    private boolean setSelectedItemFromCharacter(final char character)
-    {
+    private boolean setSelectedItemFromCharacter(final char character) {
         // Support jumping to entry based on last path element in URI
         int indexOfBestMatch = -1;
         final int selectedIndex = getSelectedIndex();
 
         final String characterAsString = String.valueOf(character);
 
-        if (_HistorySet.isEmpty() || !(_HistorySet.first() instanceof URI))
-        {
+        if (_HistorySet.isEmpty() || !(_HistorySet.first() instanceof URI)) {
             return false;
         }
 
         final int size = _HistorySet.size();
 
-        for (int i = selectedIndex + 1; i < size; i++)
-        {
-            if (itemLastSegementStartsWith(i, characterAsString))
-            {
+        for (int i = selectedIndex + 1; i < size; i++) {
+            if (itemLastSegementStartsWith(i, characterAsString)) {
                 indexOfBestMatch = i;
                 break;
             }
         }
 
-        if (indexOfBestMatch < 0)
-        {
-            for (int i = 0; i < selectedIndex; i++)
-            {
-                if (itemLastSegementStartsWith(i, characterAsString))
-                {
+        if (indexOfBestMatch < 0) {
+            for (int i = 0; i < selectedIndex; i++) {
+                if (itemLastSegementStartsWith(i, characterAsString)) {
                     indexOfBestMatch = i;
                     break;
                 }
             }
         }
 
-        if (indexOfBestMatch >= 0)
-        {
+        if (indexOfBestMatch >= 0) {
             setSelectedItem(indexOfBestMatch);
             return true;
         }
@@ -181,13 +158,11 @@ public class HistoryCheckListBox extends WerminalCheckListBox
         return false;
     }
 
-    private boolean itemLastSegementStartsWith(int itemIndex, CharSequence charSequence)
-    {
+    private boolean itemLastSegementStartsWith(int itemIndex, CharSequence charSequence) {
 
         final Object historyItem = getItemAt(itemIndex);
 
-        if (!(historyItem instanceof URI))
-        {
+        if (!(historyItem instanceof URI)) {
             return false;
         }
 
@@ -196,24 +171,20 @@ public class HistoryCheckListBox extends WerminalCheckListBox
         return StringUtils.startsWithIgnoreCase(lastPathElement, charSequence);
     }
 
-    private boolean addItemInternal(final Object item)
-    {
+    private boolean addItemInternal(final Object item) {
 
-        if (!(item instanceof Comparable) || _HistorySet.contains(item))
-        {
+        if (!(item instanceof Comparable) || _HistorySet.contains(item)) {
             return false;
         }
 
         return _HistorySet.add(item);
     }
 
-    private void syncView()
-    {
+    private void syncView() {
 
         super.clearItems();
 
-        for (final Object historyItem : _HistorySet)
-        {
+        for (final Object historyItem : _HistorySet) {
             super.addItem(historyItem);
         }
 

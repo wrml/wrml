@@ -30,8 +30,7 @@ import org.wrml.util.UniqueName;
 /**
  * A <i>composable</i> {@link Abstract} with a <i>universally</i> unique name (a {@link UniqueName}).
  */
-public interface UniquelyNamed extends Abstract
-{
+public interface UniquelyNamed extends Abstract {
 
     /**
      * The WRML constant name for a UniquelyNamed's <i>uniqueName</i> slot.

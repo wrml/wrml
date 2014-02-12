@@ -40,8 +40,7 @@ import java.util.Map;
 /**
  * The WRML value types.
  */
-public enum ValueType
-{
+public enum ValueType {
 
     /**
      * In Java, maps to: java.lang.String or T, where T is determined by a
@@ -129,8 +128,7 @@ public enum ValueType
 
     private final static Map<Class<?>, ValueType> TYPE_MAP = new HashMap<Class<?>, ValueType>();
 
-    static
-    {
+    static {
         ValueType.TYPE_MAP.put(java.lang.Boolean.class, ValueType.Boolean);
         ValueType.TYPE_MAP.put(java.lang.Boolean.TYPE, ValueType.Boolean);
         ValueType.TYPE_MAP.put(java.util.Date.class, ValueType.Date);
@@ -149,8 +147,7 @@ public enum ValueType
 
     private Object _DefaultValue;
 
-    public final static Type getListElementType(final Type listType)
-    {
+    public final static Type getListElementType(final Type listType) {
         /*
          * Map<TypeVariable<?>, java.lang.reflect.Type> typeArgs = TypeUtils.getTypeArguments(listType,
          * ValueType.JAVA_TYPE_LIST_INTERFACE);
@@ -162,168 +159,135 @@ public enum ValueType
          * }
          */
 
-        if (listType instanceof ParameterizedType)
-        {
+        if (listType instanceof ParameterizedType) {
             final ParameterizedType parameterizedType = (ParameterizedType) listType;
             final Type[] actualTypeArgs = parameterizedType.getActualTypeArguments();
-            if (actualTypeArgs == null || actualTypeArgs.length == 0)
-            {
+            if (actualTypeArgs == null || actualTypeArgs.length == 0) {
                 return null;
             }
 
             return actualTypeArgs[0];
         }
-        else
-        {
+        else {
             return null;
         }
     }
 
-    public final static ValueType getStaticallyMappedType(final Class<?> rawJavaType)
-    {
+    public final static ValueType getStaticallyMappedType(final Class<?> rawJavaType) {
 
-        if (ValueType.isStaticallyMappedType(rawJavaType))
-        {
+        if (ValueType.isStaticallyMappedType(rawJavaType)) {
             return ValueType.TYPE_MAP.get(rawJavaType);
         }
 
         return null;
     }
 
-    public final static ValueType getValueType(final Type type)
-    {
+    public final static ValueType getValueType(final Type type) {
 
         final Class<?> rawType = ValueType.getRawType(type);
         final ValueType valueType;
 
-        if (ValueType.isStaticallyMappedType(rawType))
-        {
+        if (ValueType.isStaticallyMappedType(rawType)) {
             valueType = ValueType.getStaticallyMappedType(rawType);
         }
-        else if (TypeUtils.isAssignable(rawType, List.class))
-        {
+        else if (TypeUtils.isAssignable(rawType, List.class)) {
             valueType = ValueType.List;
         }
-        else if (TypeUtils.isAssignable(rawType, Enum.class))
-        {
+        else if (TypeUtils.isAssignable(rawType, Enum.class)) {
             valueType = ValueType.SingleSelect;
         }
-        else if (ValueType.isSchemaInterface(rawType))
-        {
+        else if (ValueType.isSchemaInterface(rawType)) {
             valueType = ValueType.Model;
         }
-        else
-        {
+        else {
             valueType = ValueType.Native;
         }
 
         return valueType;
     }
 
-    public final static ValueType getValueType(final Value value)
-    {
+    public final static ValueType getValueType(final Value value) {
 
         final ValueType valueType;
-        if (value instanceof TextValue)
-        {
+        if (value instanceof TextValue) {
             valueType = ValueType.Text;
         }
-        else if (value instanceof ListValue)
-        {
+        else if (value instanceof ListValue) {
             valueType = ValueType.List;
         }
-        else if (value instanceof LinkValue)
-        {
+        else if (value instanceof LinkValue) {
             valueType = ValueType.Link;
         }
-        else if (value instanceof ModelValue)
-        {
+        else if (value instanceof ModelValue) {
             valueType = ValueType.Model;
         }
-        else if (value instanceof IntegerValue)
-        {
+        else if (value instanceof IntegerValue) {
             valueType = ValueType.Integer;
         }
-        else if (value instanceof BooleanValue)
-        {
+        else if (value instanceof BooleanValue) {
             valueType = ValueType.Boolean;
         }
-        else if (value instanceof DoubleValue)
-        {
+        else if (value instanceof DoubleValue) {
             valueType = ValueType.Double;
         }
-        else if (value instanceof LongValue)
-        {
+        else if (value instanceof LongValue) {
             valueType = ValueType.Long;
         }
-        else if (value instanceof DateValue)
-        {
+        else if (value instanceof DateValue) {
             valueType = ValueType.Date;
         }
-        else if (value instanceof SingleSelectValue)
-        {
+        else if (value instanceof SingleSelectValue) {
             valueType = ValueType.SingleSelect;
         }
-        else
-        {
+        else {
             valueType = ValueType.Native;
         }
 
         return valueType;
     }
 
-    public static boolean isLinkType(final Type valueType)
-    {
+    public static boolean isLinkType(final Type valueType) {
 
         return TypeUtils.isAssignable(valueType, ValueType.JAVA_TYPE_LINK);
     }
 
-    public static boolean isListType(final Type valueType)
-    {
+    public static boolean isListType(final Type valueType) {
 
         return TypeUtils.isAssignable(valueType, ValueType.JAVA_TYPE_LIST_INTERFACE);
     }
 
-    public final static boolean isModel(final Object o)
-    {
+    public final static boolean isModel(final Object o) {
 
         return ValueType.isModelType(o.getClass());
     }
 
-    public final static boolean isModelType(final Type type)
-    {
+    public final static boolean isModelType(final Type type) {
 
         final Class<?> rawType = ValueType.getRawType(type);
         return ValueType.isSchemaInterface(rawType);
     }
 
-    public final static boolean isSchemaInterface(final Class<?> schemaInterface)
-    {
+    public final static boolean isSchemaInterface(final Class<?> schemaInterface) {
 
         return (ValueType.JAVA_TYPE_MODEL.isAssignableFrom(schemaInterface));
     }
 
-    public final static boolean isStaticallyMappedType(final Class<?> rawJavaType)
-    {
+    public final static boolean isStaticallyMappedType(final Class<?> rawJavaType) {
 
         return ValueType.TYPE_MAP.containsKey(rawJavaType);
     }
 
-    public final static Class<?> getRawType(final Type type)
-    {
+    public final static Class<?> getRawType(final Type type) {
 
         final Class<?> rawType;
 
-        if (type instanceof Class<?>)
-        {
+        if (type instanceof Class<?>) {
             rawType = (Class<?>) type;
         }
-        else if (type instanceof ParameterizedType)
-        {
+        else if (type instanceof ParameterizedType) {
             rawType = (Class<?>) ((ParameterizedType) type).getRawType();
         }
-        else
-        {
+        else {
             // Should not happen.
             throw new IllegalArgumentException("The raw type: " + type
                     + " is invalid. The heap value must be a class/interface or a parameterized class/interface.");
@@ -332,36 +296,28 @@ public enum ValueType
         return rawType;
     }
 
-    public final Object getDefaultValue()
-    {
+    public final Object getDefaultValue() {
 
-        if (_DefaultValue == null)
-        {
+        if (_DefaultValue == null) {
 
-            switch (this)
-            {
-                case Boolean:
-                {
+            switch (this) {
+                case Boolean: {
                     _DefaultValue = java.lang.Boolean.FALSE;
                     break;
                 }
-                case Double:
-                {
+                case Double: {
                     _DefaultValue = 0.0d;
                     break;
                 }
-                case Integer:
-                {
+                case Integer: {
                     _DefaultValue = 0;
                     break;
                 }
-                case Long:
-                {
+                case Long: {
                     _DefaultValue = 0L;
                     break;
                 }
-                default:
-                {
+                default: {
                     _DefaultValue = null;
                     break;
                 }

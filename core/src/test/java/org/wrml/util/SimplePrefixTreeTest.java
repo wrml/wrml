@@ -24,56 +24,56 @@
  */
 package org.wrml.util;
 
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 import org.wrml.runtime.rest.ApiNavigator;
 
-public class SimplePrefixTreeTest
-{
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class SimplePrefixTreeTest {
     private SimplePrefixTree<String> _Tree;
 
     private String PATH_1 = "moose/squirrel";
 
     private String PATH_1_PRE = PrefixTreeBase.DEFAULT_PATH_SEPARATOR + PATH_1;
-    
+
     private String PATH_1_POST = PATH_1 + PrefixTreeBase.DEFAULT_PATH_SEPARATOR;
-    
+
     private String PATH_1_PREPOST = PrefixTreeBase.DEFAULT_PATH_SEPARATOR + PATH_1 + PrefixTreeBase.DEFAULT_PATH_SEPARATOR;
-    
+
     private String PATH_1_VAL = "natasha";
-    
+
     private String PATH_2 = "*/russian";
-    
+
     private String PATH_2_VAL = "borris";
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
+
         _Tree = new SimplePrefixTree<>();
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
 
         _Tree = null;
     }
 
     @Test
-    public void blankDeepPrint()
-    {
+    public void blankDeepPrint() {
+
         String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
         assertTrue(rep.equals(""));
     }
-    
+
     @Test
-    public void simpleDeepPrint()
-    {
+    public void simpleDeepPrint() {
+
         _Tree.setPathValue(PATH_1, PATH_1_VAL);
         String rep = _Tree.toString();
         System.out.println("Current represenation is : \n" + rep);
@@ -81,32 +81,31 @@ public class SimplePrefixTreeTest
     }
 
     @Test
-    public void setPath()
-    {
+    public void setPath() {
+
         _Tree.setPathValue(PATH_1, PATH_1_VAL);
     }
-    
+
     @Test
-    public void setPathTwice()
-    {
+    public void setPathTwice() {
+
         _Tree.setPathValue(PATH_1, PATH_1_VAL);
         _Tree.setPathValue(PATH_1, PATH_2_VAL);
-        
-        String val =_Tree.getPathValue(PATH_1);
+
+        String val = _Tree.getPathValue(PATH_1);
         assertEquals(val, PATH_2_VAL);
     }
-    
+
     /*
      * SimplePrefixTree just interprets this as a segment.
      */
-    public void setPathNonTerminalWild()
-    {
+    public void setPathNonTerminalWild() {
+
         _Tree.setPathValue(PATH_2, PATH_2_VAL);
     }
 
     @Test
-    public void addAndMatch()
-    {
+    public void addAndMatch() {
 
         setPath();
 
@@ -117,8 +116,7 @@ public class SimplePrefixTreeTest
     }
 
     @Test
-    public void addAndMatchCapturesNull()
-    {
+    public void addAndMatchCapturesNull() {
 
         setPath();
 
@@ -127,21 +125,20 @@ public class SimplePrefixTreeTest
         assertTrue(match != null);
         assertTrue(match.equals(PATH_1_VAL));
     }
-    
+
     @Test
-    public void segmentPathEquality()
-    {
+    public void segmentPathEquality() {
+
         List<String> basic = _Tree.segmentPath(PATH_1);
         List<String> pre = _Tree.segmentPath(PATH_1_PRE);
         List<String> post = _Tree.segmentPath(PATH_1_POST);
         List<String> prepost = _Tree.segmentPath(PATH_1_PREPOST);
-        
+
         assertEquals(basic.size(), pre.size());
         assertEquals(basic.size(), post.size());
         assertEquals(basic.size(), prepost.size());
-        
-        for(int i = 0; i < basic.size(); i++)
-        {
+
+        for (int i = 0; i < basic.size(); i++) {
             String segment = basic.get(i);
             assertTrue(segment.equals(pre.get(i)));
             assertTrue(segment.equals(post.get(i)));

@@ -38,8 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class DefaultSyntaxLoader implements SyntaxLoader
-{
+public final class DefaultSyntaxLoader implements SyntaxLoader {
 
     private final Map<URI, Syntax> _SystemSyntaxes;
 
@@ -49,8 +48,7 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
 
     private Context _Context;
 
-    public DefaultSyntaxLoader()
-    {
+    public DefaultSyntaxLoader() {
 
         _SystemSyntaxes = new HashMap<>();
         _SyntaxHandlers = new ConcurrentHashMap<>();
@@ -59,23 +57,19 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public final String formatSyntaxValue(final Object syntaxValue)
-    {
+    public final String formatSyntaxValue(final Object syntaxValue) {
 
-        if (syntaxValue instanceof String)
-        {
+        if (syntaxValue instanceof String) {
             return (String) syntaxValue;
         }
 
-        if (syntaxValue == null)
-        {
+        if (syntaxValue == null) {
             return null;
         }
 
         final SyntaxHandler syntaxHandler = getSyntaxHandler(syntaxValue.getClass());
 
-        if (syntaxHandler != null)
-        {
+        if (syntaxHandler != null) {
             return syntaxHandler.formatSyntaxValue(syntaxValue);
         }
 
@@ -83,26 +77,22 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> SyntaxHandler<T> getSyntaxHandler(final Class<T> syntaxJavaClass)
-    {
+    public final <T> SyntaxHandler<T> getSyntaxHandler(final Class<T> syntaxJavaClass) {
 
         return (SyntaxHandler<T>) _SyntaxHandlers.get(syntaxJavaClass);
     }
 
     @Override
-    public final Class<?> getSyntaxJavaClass(final URI syntaxUri)
-    {
+    public final Class<?> getSyntaxJavaClass(final URI syntaxUri) {
 
-        if (!_SyntaxUriToJavaClassBiMap.containsKey(syntaxUri))
-        {
+        if (!_SyntaxUriToJavaClassBiMap.containsKey(syntaxUri)) {
             return null;
         }
 
@@ -110,12 +100,10 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public final URI getSyntaxUri(final Class<?> syntaxClass)
-    {
+    public final URI getSyntaxUri(final Class<?> syntaxClass) {
 
         final BiMap<Class<?>, URI> javaClassToSyntaxUriMap = _SyntaxUriToJavaClassBiMap.inverse();
-        if (!javaClassToSyntaxUriMap.containsKey(syntaxClass))
-        {
+        if (!javaClassToSyntaxUriMap.containsKey(syntaxClass)) {
             return null;
         }
 
@@ -123,59 +111,48 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
         loadConfiguredSyntaxes();
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public final <T> T parseSyntacticText(final String text, final java.lang.reflect.Type targetType)
-    {
+    public final <T> T parseSyntacticText(final String text, final java.lang.reflect.Type targetType) {
 
-        if (text == null)
-        {
+        if (text == null) {
             return null;
         }
 
-        if (targetType == null || targetType.equals(String.class))
-        {
+        if (targetType == null || targetType.equals(String.class)) {
             return (T) text;
         }
 
-        if (targetType.equals(Integer.TYPE) || targetType.equals(Integer.class))
-        {
+        if (targetType.equals(Integer.TYPE) || targetType.equals(Integer.class)) {
             return (T) new Integer(text);
         }
 
-        if (targetType.equals(Boolean.TYPE) || targetType.equals(Boolean.class))
-        {
+        if (targetType.equals(Boolean.TYPE) || targetType.equals(Boolean.class)) {
             return (T) (text.equals("true") ? Boolean.TRUE : Boolean.FALSE);
         }
 
-        if (targetType.equals(Long.TYPE) || targetType.equals(Long.class))
-        {
+        if (targetType.equals(Long.TYPE) || targetType.equals(Long.class)) {
             return (T) new Long(text);
         }
 
-        if (targetType.equals(Double.TYPE) || targetType.equals(Double.class))
-        {
+        if (targetType.equals(Double.TYPE) || targetType.equals(Double.class)) {
             return (T) new Double(text);
         }
 
-        if (TypeUtils.isAssignable(targetType, Enum.class))
-        {
+        if (TypeUtils.isAssignable(targetType, Enum.class)) {
             return (T) Enum.valueOf((Class<Enum>) targetType, text);
         }
 
-        if (targetType instanceof Class<?>)
-        {
+        if (targetType instanceof Class<?>) {
 
             final SyntaxHandler<?> syntaxHandler = getSyntaxHandler((Class<?>) targetType);
 
-            if (syntaxHandler != null)
-            {
+            if (syntaxHandler != null) {
                 return (T) syntaxHandler.parseSyntacticText(text);
             }
         }
@@ -186,8 +163,7 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
         _Context = context;
         loadSystemSyntaxes();
@@ -196,56 +172,46 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> T[] parseSyntacticTextArray(final String[] textArray, final T[] destArray)
-    {
+    public final <T> T[] parseSyntacticTextArray(final String[] textArray, final T[] destArray) {
 
         final Type arrayComponentType = TypeUtils.getArrayComponentType(destArray.getClass());
-        for (int i = 0; i < textArray.length; i++)
-        {
+        for (int i = 0; i < textArray.length; i++) {
             destArray[i] = (T) parseSyntacticText(textArray[i], arrayComponentType);
         }
         return destArray;
     }
 
     @Override
-    public final void loadConfiguredSyntax(final SyntaxConfiguration syntaxConfiguration)
-    {
+    public final void loadConfiguredSyntax(final SyntaxConfiguration syntaxConfiguration) {
 
-        if (syntaxConfiguration == null)
-        {
+        if (syntaxConfiguration == null) {
             return;
         }
 
         final URI syntaxUri = syntaxConfiguration.getSyntaxUri();
-        if (syntaxUri == null)
-        {
+        if (syntaxUri == null) {
             throw new SyntaxRegistryException("The Syntax id (URI) cannot be null", null, this);
         }
 
         final String syntaxHandlerClassName = syntaxConfiguration.getHandler();
-        if (syntaxHandlerClassName == null)
-        {
+        if (syntaxHandlerClassName == null) {
             throw new SyntaxRegistryException("The SyntaxHandler class name cannot be null", null, this);
         }
 
         Class<?> syntaxHandlerClass;
-        try
-        {
+        try {
             syntaxHandlerClass = Class.forName(syntaxHandlerClassName);
         }
-        catch (final ClassNotFoundException e)
-        {
+        catch (final ClassNotFoundException e) {
             throw new SyntaxRegistryException("Failed to load SyntaxHandler class (" + syntaxHandlerClassName + ")", e,
                     this);
         }
 
         SyntaxHandler<?> syntaxHandler = null;
-        try
-        {
+        try {
             syntaxHandler = (SyntaxHandler<?>) syntaxHandlerClass.newInstance();
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             throw new SyntaxRegistryException("Failed to create new instance of SyntaxHandler class ("
                     + syntaxHandlerClass + ")", e, this);
         }
@@ -256,19 +222,16 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public final void loadSyntax(final URI syntaxUri, final SyntaxHandler<?> syntaxHandler)
-    {
+    public final void loadSyntax(final URI syntaxUri, final SyntaxHandler<?> syntaxHandler) {
 
-        if (_SyntaxUriToJavaClassBiMap.containsKey(syntaxUri))
-        {
+        if (_SyntaxUriToJavaClassBiMap.containsKey(syntaxUri)) {
             throw new SyntaxRegistryException("The syntax  \"" + syntaxUri + "\" is already installed (using: "
                     + _SyntaxUriToJavaClassBiMap.get(syntaxUri) + ")", null, this);
 
         }
 
         final Class<?> syntaxJavaClass = syntaxHandler.getSyntaxType();
-        if (_SyntaxHandlers.containsKey(syntaxJavaClass))
-        {
+        if (_SyntaxHandlers.containsKey(syntaxJavaClass)) {
             throw new SyntaxRegistryException("The syntax  \"" + syntaxJavaClass.getCanonicalName()
                     + "\" is already installed (using: " + _SyntaxHandlers.get(syntaxJavaClass) + ")", null, this);
 
@@ -279,40 +242,33 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
     }
 
     @Override
-    public Syntax getLoadedSyntax(final Keys keys)
-    {
+    public Syntax getLoadedSyntax(final Keys keys) {
 
         final URI uri = keys.getValue(getContext().getSchemaLoader().getDocumentSchemaUri());
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
-        if (_SystemSyntaxes.containsKey(uri))
-        {
+        if (_SystemSyntaxes.containsKey(uri)) {
             return _SystemSyntaxes.get(uri);
         }
 
         return null;
     }
 
-    private final void loadSyntaxInternal(final URI syntaxUri, final SyntaxHandler<?> syntaxHandler)
-    {
+    private final void loadSyntaxInternal(final URI syntaxUri, final SyntaxHandler<?> syntaxHandler) {
 
         final Class<?> syntaxJavaClass = syntaxHandler.getSyntaxType();
         _SyntaxUriToJavaClassBiMap.put(syntaxUri, syntaxJavaClass);
         _SyntaxHandlers.put(syntaxJavaClass, syntaxHandler);
     }
 
-    private final void loadSystemSyntaxes()
-    {
+    private final void loadSystemSyntaxes() {
 
-        for (final SystemSyntax systemSyntax : SystemSyntax.values())
-        {
+        for (final SystemSyntax systemSyntax : SystemSyntax.values()) {
             final SyntaxHandler<?> syntaxHandler = systemSyntax.getSyntaxHandler();
 
-            switch (systemSyntax)
-            {
+            switch (systemSyntax) {
 
                 case Boolean:
                     _SyntaxHandlers.put(Boolean.TYPE, syntaxHandler);
@@ -343,8 +299,7 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
         final Context context = getContext();
 
         // Loop again to build the system Syntax models now that the
-        for (final SystemSyntax systemSyntax : SystemSyntax.values())
-        {
+        for (final SystemSyntax systemSyntax : SystemSyntax.values()) {
             final Syntax syntax = context.newModel(Syntax.class);
 
             final URI syntaxUri = systemSyntax.getSyntaxUri();
@@ -356,25 +311,21 @@ public final class DefaultSyntaxLoader implements SyntaxLoader
 
     }
 
-    protected void loadConfiguredSyntaxes()
-    {
+    protected void loadConfiguredSyntaxes() {
 
         final Context context = getContext();
         final ContextConfiguration contextConfig = context.getConfig();
         final SyntaxLoaderConfiguration config = contextConfig.getSyntaxLoader();
-        if (config == null)
-        {
+        if (config == null) {
             return;
         }
 
         final SyntaxConfiguration[] syntaxConfigs = config.getSyntaxes();
-        if ((syntaxConfigs == null) || (syntaxConfigs.length == 0))
-        {
+        if ((syntaxConfigs == null) || (syntaxConfigs.length == 0)) {
             return;
         }
 
-        for (final SyntaxConfiguration syntaxConfiguration : syntaxConfigs)
-        {
+        for (final SyntaxConfiguration syntaxConfiguration : syntaxConfigs) {
             loadConfiguredSyntax(syntaxConfiguration);
         }
 

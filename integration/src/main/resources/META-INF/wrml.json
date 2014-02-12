@@ -1,25 +1,20 @@
 {
-    "context" :
-    {
-        "serviceLoader" :
-        {
-            "services" :
-            [
+    "context": {
+        "serviceLoader": {
+            "services": [
                 {
-                    "name" : "JVM",
-                    "implementation" : "org.wrml.runtime.service.resource.JavaResourceService",
-                    "settings" :
-                    {
-                        "resourceOwnerClassName" : "org.wrml.runtime.Context",
-                        "resourceRootDirectoryPath" : "resources/test/models/"
+                    "name": "JVM",
+                    "implementation": "org.wrml.runtime.service.resource.JavaResourceService",
+                    "settings": {
+                        "resourceOwnerClassName": "org.wrml.runtime.Context",
+                        "resourceRootDirectoryPath": "resources/test/models/"
                     }
                 }
             ],
 
- 			"serviceMapping" :
-            {
-                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*" : "ApiDesigner",
-                "*" : "File"
+            "serviceMapping": {
+                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*": "ApiDesigner",
+                "*": "File"
             }
         }
     }

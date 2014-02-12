@@ -38,13 +38,11 @@ import org.wrml.werminal.terminal.TerminalAppTextArea;
 
 import java.util.Calendar;
 
-public class SplashWindow extends TerminalAppMenuWindow
-{
+public class SplashWindow extends TerminalAppMenuWindow {
 
     public final static String WERMINAL_SPLASH_SCREEN;
 
-    static
-    {
+    static {
 
         final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         final String attribution = "Mark Masse <mark@wrml.org> (WRML.org)";
@@ -93,8 +91,7 @@ public class SplashWindow extends TerminalAppMenuWindow
 
     private final static TerminalSize PREFERRED_TEXT_SIZE = new TerminalSize(70, 38);
 
-    public SplashWindow(final Werminal werminal)
-    {
+    public SplashWindow(final Werminal werminal) {
 
         super(werminal, "", new SplashPanel(werminal), null);
 
@@ -102,11 +99,9 @@ public class SplashWindow extends TerminalAppMenuWindow
         setSoloWindow(true);
     }
 
-    public static class SplashPanel extends TerminalAppPanel
-    {
+    public static class SplashPanel extends TerminalAppPanel {
 
-        public SplashPanel(final Werminal werminal)
-        {
+        public SplashPanel(final Werminal werminal) {
 
             super(werminal, "", new Border.Invisible(), Orientation.HORISONTAL, true, false);
 
@@ -124,32 +119,27 @@ public class SplashWindow extends TerminalAppMenuWindow
         }
 
         @Override
-        public boolean isScrollable()
-        {
+        public boolean isScrollable() {
 
             return false;
         }
     }
 
-    private static class AsciiTextArea extends TerminalAppTextArea
-    {
+    private static class AsciiTextArea extends TerminalAppTextArea {
 
-        public AsciiTextArea(final Werminal werminal, final TerminalSize preferredSize, final String text)
-        {
+        public AsciiTextArea(final Werminal werminal, final TerminalSize preferredSize, final String text) {
 
             super(werminal, preferredSize, text);
         }
 
         @Override
-        public boolean isScrollable()
-        {
+        public boolean isScrollable() {
 
             return false;
         }
 
         @Override
-        public Result keyboardInteraction(final Key key)
-        {
+        public Result keyboardInteraction(final Key key) {
 
             getApp().closeTopWindow();
             return Result.EVENT_HANDLED;

@@ -31,24 +31,20 @@ import java.net.URI;
 /**
  * Configuration for the ApiLoader component.
  */
-public final class ApiLoaderConfiguration extends DefaultFactoryConfiguration
-{
+public final class ApiLoaderConfiguration extends DefaultFactoryConfiguration {
 
     private URI[] _Apis;
 
-    public ApiLoaderConfiguration()
-    {
+    public ApiLoaderConfiguration() {
 
     }
 
-    public URI[] getApis()
-    {
+    public URI[] getApis() {
 
         return _Apis;
     }
 
-    public void setApis(final URI[] apis)
-    {
+    public void setApis(final URI[] apis) {
 
         _Apis = apis;
     }

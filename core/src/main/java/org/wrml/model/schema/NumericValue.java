@@ -31,8 +31,7 @@ import org.wrml.model.MaybeRequired;
 /**
  * The WRML representation of the abstract <code>number</code> (or {@link Number}) primitive base type.
  */
-public interface NumericValue extends MaybeReadOnly, MaybeRequired, Primitive, Abstract, Value
-{
+public interface NumericValue extends MaybeReadOnly, MaybeRequired, Primitive, Abstract, Value {
 
     /**
      * The WRML constant name for a NumericValue's <i>divisibleBy</i> slot.

@@ -20,11 +20,12 @@ public abstract class WrmlRestIntegrationTest extends WrmlIntegrationTest {
 
     @BeforeClass
     public static void beforeEachClass() throws IOException {
+
         basicRequest = new RequestSpecBuilder()
-                    .addFilter(new RequestLoggingFilter())
-                    .addFilter(ResponseLoggingFilter.responseLogger())
-                    .setPort(getPort())
-                    .build();
+                .addFilter(new RequestLoggingFilter())
+                .addFilter(ResponseLoggingFilter.responseLogger())
+                .setPort(getPort())
+                .build();
         RestAssured.port = getPort();
     }
 
@@ -32,6 +33,7 @@ public abstract class WrmlRestIntegrationTest extends WrmlIntegrationTest {
      * Returns a basic request
      */
     public static RequestSpecification getRequest() {
+
         return basicRequest;
     }
 

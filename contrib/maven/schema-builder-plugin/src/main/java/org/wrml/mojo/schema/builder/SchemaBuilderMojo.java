@@ -48,8 +48,7 @@ import java.util.List;
  * @goal model
  * @phase process-resources
  */
-public class SchemaBuilderMojo extends AbstractMojo
-{
+public class SchemaBuilderMojo extends AbstractMojo {
 
     public static final String MANIFEST_NAME = "manifest.txt";
 
@@ -77,15 +76,13 @@ public class SchemaBuilderMojo extends AbstractMojo
     @SuppressWarnings("unused")
     private URI _RootWrmlModelUri;
 
-    private enum SourceType
-    {
+    private enum SourceType {
         JSON_SCHEMA,
         WRML_MODEL
     }
 
 
-    public void execute() throws MojoExecutionException
-    {
+    public void execute() throws MojoExecutionException {
         /*
          * Recursive decent into the _ResourcesDirectory looking for files with
 		 * the extension .mdl These are JSON files that describe a model. Read
@@ -93,8 +90,7 @@ public class SchemaBuilderMojo extends AbstractMojo
 		 * implements the model.
 		 */
         File mainDir = _ResourcesDirectory.getParentFile();
-        if (!mainDir.isDirectory())
-        {
+        if (!mainDir.isDirectory()) {
             throw new MojoExecutionException(String.format(
                     "%s is not a directory.", _ResourcesDirectory.getPath()));
         }
@@ -111,79 +107,63 @@ public class SchemaBuilderMojo extends AbstractMojo
         _RootWrmlModelUri = rootWrmlModelPath.toUri();
         _RootJsonSchemaUri = rootJsonSchemaPath.toUri();
 
-        try
-        {
+        try {
             _Engine = createEngine();
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new MojoExecutionException("Error creating wrml engine.", e);
         }
 
-        try
-        {
-            if (rootJsonSchemaDir.isDirectory())
-            {
+        try {
+            if (rootJsonSchemaDir.isDirectory()) {
                 getLog().info("Processing: " + rootJsonSchemaDir.toString());
                 File manifest = new File(rootJsonSchemaDir + File.separator + MANIFEST_NAME);
-                if (manifest.exists() && manifest.isFile())
-                {
+                if (manifest.exists() && manifest.isFile()) {
                     getLog().info("Using file Manifest...");
                     decendManifest(manifest);
                 }
-                else
-                {
+                else {
                     getLog().info("No Manifest at " + manifest.getAbsolutePath() + ", decending per directories...");
                     decend(rootJsonSchemaDir, SourceType.JSON_SCHEMA);
                 }
             }
-            if (rootWrmlModelDir.isDirectory())
-            {
+            if (rootWrmlModelDir.isDirectory()) {
                 getLog().info("Processing: " + rootWrmlModelDir.toString());
                 decend(rootWrmlModelDir, SourceType.WRML_MODEL);
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new MojoExecutionException("Error generating models.", e);
         }
     }
 
     // Only do this for JsonSchemas....
-    private void decendManifest(File manifestFile) throws IOException, ClassNotFoundException
-    {
+    private void decendManifest(File manifestFile) throws IOException, ClassNotFoundException {
 
         List<String> files = IOUtils.readLines(new FileInputStream(manifestFile));
         String relPath = manifestFile.getParentFile().getAbsolutePath();
-        for (String file : files)
-        {
+        for (String file : files) {
             File rawSchema = new File(relPath + File.separator + file);
             generateJsonSchema(rawSchema);
         }
     }
 
-    private void decend(File parentDir, SourceType sourceType) throws IOException, ClassNotFoundException
-    {
+    private void decend(File parentDir, SourceType sourceType) throws IOException, ClassNotFoundException {
 
-        if (sourceType == SourceType.JSON_SCHEMA)
-        {
-            File models[] = parentDir.listFiles(new FilenameFilter()
-            {
-                public boolean accept(File dir, String name)
-                {
+        if (sourceType == SourceType.JSON_SCHEMA) {
+            File models[] = parentDir.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
 
                     return name.toLowerCase().endsWith(".json");
                 }
             });
-            for (File model : models)
-            {
+            for (File model : models) {
                 generateJsonSchema(model);
             }
         }
-        else if (sourceType == SourceType.WRML_MODEL)
-        {
+        else if (sourceType == SourceType.WRML_MODEL) {
             /* TODO: Uncomment the contents of this block when the
-			 *  generateWrmlModel method is fixed to work correctly.
+             *  generateWrmlModel method is fixed to work correctly.
 			 *  
 			File models[] = parentDir.listFiles(new FilenameFilter() {
 				public boolean accept(File dir, String name) {
@@ -197,22 +177,18 @@ public class SchemaBuilderMojo extends AbstractMojo
 			*/
         }
 
-        File subDirectories[] = parentDir.listFiles(new FileFilter()
-        {
-            public boolean accept(File pathname)
-            {
+        File subDirectories[] = parentDir.listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
 
                 return pathname.isDirectory();
             }
         });
-        for (File subDirectory : subDirectories)
-        {
+        for (File subDirectory : subDirectories) {
             decend(subDirectory, sourceType);
         }
     }
 
-    private URI createModelUri(File sourceFile, URI rootUri)
-    {
+    private URI createModelUri(File sourceFile, URI rootUri) {
 
         URI relativeUri = rootUri.relativize(sourceFile.toPath().toUri());
         String modelUriString = SystemApi.Schema.getUri().toString() + "/" + relativeUri.toString();
@@ -221,8 +197,7 @@ public class SchemaBuilderMojo extends AbstractMojo
         return URI.create(modelUriString);
     }
 
-    private void generateJsonSchema(File sourceFile) throws IOException, ClassNotFoundException
-    {
+    private void generateJsonSchema(File sourceFile) throws IOException, ClassNotFoundException {
 
         getLog().info("Working: " + sourceFile.getAbsolutePath());
         SchemaLoader loader = _Engine.getContext().getSchemaLoader();
@@ -243,8 +218,7 @@ public class SchemaBuilderMojo extends AbstractMojo
 	}
 	*/
 
-    private EngineConfiguration createEngineConfig() throws IOException
-    {
+    private EngineConfiguration createEngineConfig() throws IOException {
 
         EngineConfiguration config = EngineConfiguration.load(this.getClass(), "wrml.json");
         config.getContext().getSchemaLoader().setSchemaClassRootDirectory(_OutputDirectory);
@@ -253,8 +227,7 @@ public class SchemaBuilderMojo extends AbstractMojo
         return config;
     }
 
-    public final Engine createEngine() throws IOException
-    {
+    public final Engine createEngine() throws IOException {
 
         final Engine engine = new DefaultEngine();
         engine.init(createEngineConfig());

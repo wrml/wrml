@@ -38,8 +38,7 @@ import org.wrml.runtime.schema.DefaultValue;
  * This <i>same slot name</i> case is considered a <i>natural</i> link binding and is enabled by default.
  * </p>
  */
-public interface LinkValueBinding extends Model
-{
+public interface LinkValueBinding extends Model {
 
     /**
      * <p>

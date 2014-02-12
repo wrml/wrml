@@ -28,28 +28,28 @@ import com.rits.cloning.Cloner;
 import org.wrml.model.Model;
 import org.wrml.model.schema.ValueType;
 import org.wrml.runtime.DefaultModel.ModelState;
-import org.wrml.runtime.schema.*;
+import org.wrml.runtime.schema.PropertyProtoSlot;
+import org.wrml.runtime.schema.ProtoSlot;
+import org.wrml.runtime.schema.Prototype;
+import org.wrml.runtime.schema.SchemaLoader;
 
 import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultModelBuilder implements ModelBuilder
-{
+public class DefaultModelBuilder implements ModelBuilder {
 
     private static final Cloner CLONER = new Cloner();
 
     private Context _Context;
 
-    public DefaultModelBuilder()
-    {
+    public DefaultModelBuilder() {
 
     }
 
     @Override
-    public <M extends Model> M copyModel(final Model model)
-    {
+    public <M extends Model> M copyModel(final Model model) {
 
         final DefaultModel defaultModel = (DefaultModel) model;
         final Model clone = new DefaultModel(model.getContext(), defaultModel.getModelState().clone());
@@ -57,90 +57,77 @@ public class DefaultModelBuilder implements ModelBuilder
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
         _Context = context;
     }
 
     @Override
-    public final Dimensions newDimensions(final Class<?> schemaInterface) throws ContextException
-    {
+    public final Dimensions newDimensions(final Class<?> schemaInterface) throws ContextException {
 
         return newDimensions(getSchemaLoader().getTypeUri(schemaInterface));
     }
 
     @Override
-    public final Dimensions newDimensions(final String schemaInterfaceName) throws ContextException
-    {
+    public final Dimensions newDimensions(final String schemaInterfaceName) throws ContextException {
 
         return newDimensions(getSchemaLoader().getTypeUri(schemaInterfaceName));
     }
 
     @Override
-    public final Dimensions newDimensions(final URI schemaUri) throws ContextException
-    {
+    public final Dimensions newDimensions(final URI schemaUri) throws ContextException {
 
         final Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
         return dimensions;
     }
 
     @Override
-    public final Model newModel() throws ModelBuilderException
-    {
+    public final Model newModel() throws ModelBuilderException {
 
         return new DefaultModel(getSchemaLoader().getContext(), new DefaultModelState());
     }
 
     @Override
-    public final <M extends Model> M newModel(final Class<?> schemaInterface) throws ModelBuilderException
-    {
+    public final <M extends Model> M newModel(final Class<?> schemaInterface) throws ModelBuilderException {
 
         return newModel(newDimensions(schemaInterface));
     }
 
     @Override
-    public final <M extends Model> M newModel(final Dimensions dimensions) throws ModelBuilderException
-    {
+    public final <M extends Model> M newModel(final Dimensions dimensions) throws ModelBuilderException {
 
         return newModel(dimensions, (ModelState) null);
     }
 
     @Override
     public <M extends Model> M newModel(final Dimensions dimensions, final ConcurrentHashMap<String, Object> slots)
-            throws ModelBuilderException
-    {
+            throws ModelBuilderException {
 
         return newModel(dimensions, new DefaultModelState(UUID.randomUUID(), slots));
     }
 
     @Override
-    public final <M extends Model> M newModel(final String schemaInterfaceName) throws ModelBuilderException
-    {
+    public final <M extends Model> M newModel(final String schemaInterfaceName) throws ModelBuilderException {
 
         return newModel(newDimensions(schemaInterfaceName));
     }
 
     @Override
-    public final <M extends Model> M newModel(final URI schemaUri) throws ModelBuilderException
-    {
+    public final <M extends Model> M newModel(final URI schemaUri) throws ModelBuilderException {
 
         return newModel(newDimensions(schemaUri));
     }
 
     protected final <M extends Model> M newModel(final Dimensions dimensions, final ModelState existingState)
-            throws ModelBuilderException
-    {
+            throws ModelBuilderException {
 
-        if (dimensions == null)
-        {
+        if (dimensions == null) {
             throw new ModelBuilderException("The dimensions cannot be null.", null, this);
         }
 
@@ -152,57 +139,47 @@ public class DefaultModelBuilder implements ModelBuilder
         final ModelState modelState;
         final boolean setDefaults;
 
-        if (existingState != null)
-        {
+        if (existingState != null) {
             modelState = existingState;
             setDefaults = false;
         }
-        else
-        {
+        else {
             modelState = new DefaultModelState(UUID.randomUUID());
             setDefaults = true;
 
         }
 
         final DefaultModel model = new DefaultModel(context, modelState);
-        if (setDefaults)
-        {
+        if (setDefaults) {
             setDefaultValues(model, prototype);
         }
 
         Class<?>[] schemaInterfaceArray = null;
         Class<?> schemaInterface = null;
-        try
-        {
+        try {
             schemaInterface = schemaLoader.getSchemaInterface(schemaUri);
         }
-        catch (final ClassNotFoundException e)
-        {
+        catch (final ClassNotFoundException e) {
             throw new ModelBuilderException("Unable to load the Java class representation of: " + schemaUri, e, this);
         }
 
-        if (schemaInterface != null)
-        {
-            if (!schemaInterface.isInterface())
-            {
+        if (schemaInterface != null) {
+            if (!schemaInterface.isInterface()) {
                 throw new ModelBuilderException(
                         "The requested schema already exists as a Java class (it is an implementation, not an interface).",
                         null, this);
             }
 
-            if (prototype.isAbstract())
-            {
+            if (prototype.isAbstract()) {
                 throw new ModelBuilderException("The requested schema (" + schemaUri
                         + ") is *abstract* and may never exist as a model.", null, this);
             }
 
-            if (ValueType.JAVA_TYPE_MODEL.isAssignableFrom(schemaInterface))
-            {
+            if (ValueType.JAVA_TYPE_MODEL.isAssignableFrom(schemaInterface)) {
                 // The requested schema already extends Model (as expected)
                 schemaInterfaceArray = new Class<?>[]{schemaInterface};
             }
-            else
-            {
+            else {
                 // The requested shema interface does not extend Model, add it to the Proxy's list manually.
                 schemaInterfaceArray = new Class<?>[]{schemaInterface, ValueType.JAVA_TYPE_MODEL};
             }
@@ -217,13 +194,11 @@ public class DefaultModelBuilder implements ModelBuilder
 
         // Formally initialize the typed model by running the slot values through the constraints.
         final Map<String, Object> slotMap = typedModel.getSlotMap();
-        for (final String slotName : slotMap.keySet())
-        {
+        for (final String slotName : slotMap.keySet()) {
             final Object slotValue = slotMap.get(slotName);
             final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
 
-            if (protoSlot != null && protoSlot.getValueType() != ValueType.List)
-            {
+            if (protoSlot != null && protoSlot.getValueType() != ValueType.List) {
                 typedModel.setSlotValue(slotName, slotValue);
             }
         }
@@ -232,33 +207,27 @@ public class DefaultModelBuilder implements ModelBuilder
 
     }
 
-    protected void setDefaultValues(final Model model, final Prototype prototype)
-    {
+    protected void setDefaultValues(final Model model, final Prototype prototype) {
 
         final SortedSet<String> slotNames = prototype.getAllSlotNames();
-        for (final String slotName : slotNames)
-        {
+        for (final String slotName : slotNames) {
             final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-            if (protoSlot instanceof PropertyProtoSlot && !protoSlot.isAlias())
-            {
+            if (protoSlot instanceof PropertyProtoSlot && !protoSlot.isAlias()) {
                 final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
                 final Object defaultValue = propertyProtoSlot.getDefaultValue();
-                if (defaultValue != null)
-                {
+                if (defaultValue != null) {
                     model.setSlotValue(slotName, defaultValue);
                 }
             }
         }
     }
 
-    private SchemaLoader getSchemaLoader()
-    {
+    private SchemaLoader getSchemaLoader() {
 
         return getContext().getSchemaLoader();
     }
 
-    protected class DefaultModelState implements ModelState
-    {
+    protected class DefaultModelState implements ModelState {
 
         private final UUID _HeapId;
 
@@ -266,54 +235,45 @@ public class DefaultModelBuilder implements ModelBuilder
 
         private String _OriginServiceName;
 
-        public DefaultModelState()
-        {
+        public DefaultModelState() {
 
             this(UUID.randomUUID());
         }
 
-        protected DefaultModelState(final DefaultModelState source)
-        {
+        protected DefaultModelState(final DefaultModelState source) {
 
             //this(UUID.randomUUID(), CLONER.deepClone(source._Slots));
             this(UUID.randomUUID(), source._Slots);
             _OriginServiceName = source._OriginServiceName;
         }
 
-        protected DefaultModelState(final UUID heapId)
-        {
+        protected DefaultModelState(final UUID heapId) {
 
             this(heapId, new ConcurrentHashMap<String, Object>());
         }
 
-        protected DefaultModelState(final UUID heapId, final ConcurrentHashMap<String, Object> slots)
-        {
+        protected DefaultModelState(final UUID heapId, final ConcurrentHashMap<String, Object> slots) {
 
             _HeapId = heapId;
             _Slots = slots;
         }
 
         @Override
-        public Object clearSlotValue(final Model model, final String slotName, final URI schemaUri)
-        {
+        public Object clearSlotValue(final Model model, final String slotName, final URI schemaUri) {
 
             String realSlotName = slotName;
-            if (schemaUri != null)
-            {
+            if (schemaUri != null) {
                 final SchemaLoader schemaLoader = getSchemaLoader();
                 final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-                if (prototype != null)
-                {
+                if (prototype != null) {
                     final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-                    if (protoSlot != null && protoSlot.isAlias())
-                    {
+                    if (protoSlot != null && protoSlot.isAlias()) {
                         realSlotName = protoSlot.getRealName();
                     }
                 }
             }
 
-            if (_Slots.containsKey(realSlotName))
-            {
+            if (_Slots.containsKey(realSlotName)) {
                 final Object oldValue = _Slots.remove(realSlotName);
                 return oldValue;
 
@@ -322,26 +282,21 @@ public class DefaultModelBuilder implements ModelBuilder
         }
 
         @Override
-        public DefaultModelState clone()
-        {
+        public DefaultModelState clone() {
 
             return new DefaultModelState(this);
         }
 
         @Override
-        public boolean containsSlotValue(final Model model, final String slotName, final URI schemaUri)
-        {
+        public boolean containsSlotValue(final Model model, final String slotName, final URI schemaUri) {
 
             String realSlotName = slotName;
-            if (schemaUri != null)
-            {
+            if (schemaUri != null) {
                 final SchemaLoader schemaLoader = getSchemaLoader();
                 final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-                if (prototype != null)
-                {
+                if (prototype != null) {
                     final ProtoSlot protoSlot = prototype.getProtoSlot(slotName, false);
-                    if (protoSlot != null && protoSlot.isAlias())
-                    {
+                    if (protoSlot != null && protoSlot.isAlias()) {
                         realSlotName = protoSlot.getRealName();
                     }
                 }
@@ -351,76 +306,61 @@ public class DefaultModelBuilder implements ModelBuilder
         }
 
         @Override
-        public boolean equals(final Object obj)
-        {
+        public boolean equals(final Object obj) {
 
-            if (this == obj)
-            {
+            if (this == obj) {
                 return true;
             }
-            if (obj == null)
-            {
+            if (obj == null) {
                 return false;
             }
-            if (getClass() != obj.getClass())
-            {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
             final DefaultModelState other = (DefaultModelState) obj;
-            if (_HeapId == null)
-            {
-                if (other._HeapId != null)
-                {
+            if (_HeapId == null) {
+                if (other._HeapId != null) {
                     return false;
                 }
             }
-            else if (!_HeapId.equals(other._HeapId))
-            {
+            else if (!_HeapId.equals(other._HeapId)) {
                 return false;
             }
             return true;
         }
 
         @Override
-        public UUID getHeapId(final Model model)
-        {
+        public UUID getHeapId(final Model model) {
 
             return _HeapId;
         }
 
         @Override
-        public String getOriginServiceName(final Model model)
-        {
+        public String getOriginServiceName(final Model model) {
 
             return _OriginServiceName;
         }
 
         @Override
-        public Object getSlotValue(final Model model, final String slotName, final URI schemaUri, final boolean strict)
-        {
+        public Object getSlotValue(final Model model, final String slotName, final URI schemaUri, final boolean strict) {
 
             String realSlotName = slotName;
-            if (schemaUri != null)
-            {
+            if (schemaUri != null) {
                 final SchemaLoader schemaLoader = getSchemaLoader();
                 final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-                if (prototype != null)
-                {
+                if (prototype != null) {
                     final ProtoSlot protoSlot = prototype.getProtoSlot(slotName, strict);
-                    if (protoSlot != null && protoSlot.isAlias())
-                    {
+                    if (protoSlot != null && protoSlot.isAlias()) {
                         realSlotName = protoSlot.getRealName();
                     }
                 }
             }
 
-            if (_Slots.containsKey(realSlotName))
-            {
+            if (_Slots.containsKey(realSlotName)) {
                 return _Slots.get(realSlotName);
             }
 
-            if (schemaUri == null)
-            {
+            if (schemaUri == null) {
                 return null;
             }
 
@@ -429,8 +369,7 @@ public class DefaultModelBuilder implements ModelBuilder
             final Prototype prototype = schemaLoader.getPrototype(schemaUri);
             final ProtoSlot protoSlot = prototype.getProtoSlot(realSlotName, strict);
 
-            if (protoSlot == null)
-            {
+            if (protoSlot == null) {
                 return null;
             }
 
@@ -444,16 +383,14 @@ public class DefaultModelBuilder implements ModelBuilder
                 return link;
             }
             */
-            if (protoSlot.getValueType() == ValueType.List)
-            {
+            if (protoSlot.getValueType() == ValueType.List) {
                 // Lazily create the List slot value when requested
 
                 final List<?> emptyList = new LinkedList<>();
                 _Slots.put(realSlotName, emptyList);
                 return emptyList;
             }
-            else if (protoSlot instanceof PropertyProtoSlot)
-            {
+            else if (protoSlot instanceof PropertyProtoSlot) {
                 // return the prototype's default
 
                 return ((PropertyProtoSlot) protoSlot).getDefaultValue();
@@ -463,15 +400,13 @@ public class DefaultModelBuilder implements ModelBuilder
         }
 
         @Override
-        public Map<String, Object> getValuedSlots(final Model model)
-        {
+        public Map<String, Object> getValuedSlots(final Model model) {
 
             return _Slots;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
 
             final int prime = 31;
             int result = 1;
@@ -480,8 +415,7 @@ public class DefaultModelBuilder implements ModelBuilder
         }
 
         @Override
-        public String setOriginServiceName(final Model model, final String originServiceName)
-        {
+        public String setOriginServiceName(final Model model, final String originServiceName) {
 
             final String oldOriginServiceName = _OriginServiceName;
             _OriginServiceName = originServiceName;
@@ -490,26 +424,22 @@ public class DefaultModelBuilder implements ModelBuilder
 
         @SuppressWarnings({"rawtypes", "unchecked"})
         @Override
-        public Object setSlotValue(final Model model, final String slotName, final Object newValue, final URI schemaUri, final boolean strict)
-        {
+        public Object setSlotValue(final Model model, final String slotName, final Object newValue, final URI schemaUri, final boolean strict) {
 
             String realSlotName = slotName;
             Object oldValue = null;
             Prototype prototype = model.getPrototype();
             ProtoSlot protoSlot = null;
 
-            if (schemaUri != null)
-            {
+            if (schemaUri != null) {
 
                 final SchemaLoader schemaLoader = getSchemaLoader();
-                if (prototype == null)
-                {
+                if (prototype == null) {
                     prototype = schemaLoader.getPrototype(schemaUri);
                 }
 
                 protoSlot = prototype.getProtoSlot(slotName, strict);
-                if (protoSlot == null)
-                {
+                if (protoSlot == null) {
                     return null;
                 }
 
@@ -519,21 +449,17 @@ public class DefaultModelBuilder implements ModelBuilder
                 final PropertyProtoSlot propertyProtoSlot = (protoSlot instanceof PropertyProtoSlot) ? (PropertyProtoSlot) protoSlot
                         : null;
 
-                if (propertyProtoSlot != null)
-                {
+                if (propertyProtoSlot != null) {
 
-                    if (oldValue == null)
-                    {
+                    if (oldValue == null) {
                         oldValue = propertyProtoSlot.getDefaultValue();
                     }
 
                     propertyProtoSlot.validateNewValue(model, newValue);
 
-                    if (protoSlot.getValueType() == ValueType.List && newValue instanceof Collection)
-                    {
+                    if (protoSlot.getValueType() == ValueType.List && newValue instanceof Collection) {
                         final List list = (List) getSlotValue(model, realSlotName, schemaUri, strict);
-                        if (list != newValue)
-                        {
+                        if (list != newValue) {
                             list.clear();
                             list.addAll((Collection) newValue);
                             return list;
@@ -545,12 +471,10 @@ public class DefaultModelBuilder implements ModelBuilder
             }
 
 
-            if (newValue == null)
-            {
+            if (newValue == null) {
                 _Slots.remove(realSlotName);
             }
-            else
-            {
+            else {
                 _Slots.put(realSlotName, newValue);
             }
 
@@ -558,8 +482,7 @@ public class DefaultModelBuilder implements ModelBuilder
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
             return getClass().getSimpleName() + " { heapId : " + _HeapId + ", slots : " + _Slots + ", origin : " + _OriginServiceName + "}";
         }

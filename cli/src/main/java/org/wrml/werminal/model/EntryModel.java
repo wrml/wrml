@@ -27,8 +27,7 @@ package org.wrml.werminal.model;
 import org.wrml.model.Model;
 import org.wrml.model.Named;
 
-public interface EntryModel extends Named, Model
-{
+public interface EntryModel extends Named, Model {
 
     String getValue();
 

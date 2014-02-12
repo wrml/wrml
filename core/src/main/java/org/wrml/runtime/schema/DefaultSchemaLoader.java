@@ -66,8 +66,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The WRML runtime's default implementation of the SchemaLoader.
  * </p>
  */
-public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
-{
+public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSchemaLoader.class);
 
@@ -138,14 +137,12 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     private transient JsonSchemaLoader _JsonSchemaLoader;
 
 
-    public DefaultSchemaLoader()
-    {
+    public DefaultSchemaLoader() {
 
         this(DefaultSchemaLoader.class.getClassLoader());
     }
 
-    public DefaultSchemaLoader(final ClassLoader parent)
-    {
+    public DefaultSchemaLoader(final ClassLoader parent) {
 
         super(parent);
 
@@ -198,40 +195,34 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public URI getAggregateDocumentSchemaUri()
-    {
+    public URI getAggregateDocumentSchemaUri() {
 
         return _AggregateDocumentSchemaUri;
     }
 
     @Override
-    public final Dimensions getApiDimensions()
-    {
+    public final Dimensions getApiDimensions() {
 
         return _ApiDimensions;
     }
 
     @Override
-    public final URI getApiSchemaUri()
-    {
+    public final URI getApiSchemaUri() {
 
         return _ApiSchemaUri;
     }
 
     @Override
-    public Dimensions getChoicesDimensions()
-    {
+    public Dimensions getChoicesDimensions() {
 
         return _ChoicesDimensions;
     }
 
     @Override
-    public SortedSet<UniqueName> getChoicesNames(final UniqueName namespace)
-    {
+    public SortedSet<UniqueName> getChoicesNames(final UniqueName namespace) {
 
         // TODO: Refactor this method to be less of a copy paste of  getAllSubschemaNames
-        if (namespace == null)
-        {
+        if (namespace == null) {
             throw new IllegalArgumentException("The namespace cannot be null.");
         }
 
@@ -245,10 +236,8 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
         final Set subTypes = reflections.getSubTypesOf(Enum.class);
 
-        if (subTypes != null && !subTypes.isEmpty())
-        {
-            for (final Object subType : subTypes)
-            {
+        if (subTypes != null && !subTypes.isEmpty()) {
+            for (final Object subType : subTypes) {
                 final Class<?> subClass = (Class<?>) subType;
                 final UniqueName uniqueName = new UniqueName(subClass.getName().replace('.', UniqueName.NAME_SEPARATOR_CHAR));
                 typeNames.add(uniqueName);
@@ -256,12 +245,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
         }
 
         final Set<URI> uriSet = _Choices.keySet();
-        for (final URI uri : uriSet)
-        {
+        for (final URI uri : uriSet) {
             final UniqueName uniqueName = getTypeUniqueName(uri);
             final String uniqueNameString = uniqueName.toString();
-            if (uniqueNameString.startsWith(namespaceString))
-            {
+            if (uniqueNameString.startsWith(namespaceString)) {
                 typeNames.add(uniqueName);
             }
         }
@@ -271,101 +258,86 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public URI getChoicesSchemaUri()
-    {
+    public URI getChoicesSchemaUri() {
 
         return _ChoicesSchemaUri;
     }
 
     @Override
-    public final SchemaLoaderConfiguration getConfig()
-    {
+    public final SchemaLoaderConfiguration getConfig() {
 
         return getContext().getConfig().getSchemaLoader();
     }
 
     @Override
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public final URI getDocumentSchemaUri()
-    {
+    public final URI getDocumentSchemaUri() {
 
         return _DocumentSchemaUri;
     }
 
     @Override
-    public final URI getEmbeddedSchemaUri()
-    {
+    public final URI getEmbeddedSchemaUri() {
 
         return _EmbeddedSchemaUri;
     }
 
     @Override
-    public Dimensions getFormatDimensions()
-    {
+    public Dimensions getFormatDimensions() {
 
         return _FormatDimensions;
     }
 
     @Override
-    public URI getFormatSchemaUri()
-    {
+    public URI getFormatSchemaUri() {
 
         return _FormatSchemaUri;
     }
 
     @Override
-    public JsonSchemaLoader getJsonSchemaLoader()
-    {
+    public JsonSchemaLoader getJsonSchemaLoader() {
 
         return _JsonSchemaLoader;
     }
 
     @Override
-    public final Dimensions getLinkRelationDimensions()
-    {
+    public final Dimensions getLinkRelationDimensions() {
 
         return _LinkRelationDimensions;
     }
 
     @Override
-    public final URI getLinkRelationSchemaUri()
-    {
+    public final URI getLinkRelationSchemaUri() {
 
         return _LinkRelationSchemaUri;
     }
 
     @Override
-    public final URI getLinkSchemaUri()
-    {
+    public final URI getLinkSchemaUri() {
 
         return _LinkSchemaUri;
     }
 
     @Override
-    public Choices getLoadedChoices(final Keys keys)
-    {
+    public Choices getLoadedChoices(final Keys keys) {
 
         final URI uri = (URI) keys.getValue(getDocumentSchemaUri());
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
-        if (_NativeChoices.containsKey(uri))
-        {
+        if (_NativeChoices.containsKey(uri)) {
             return _NativeChoices.get(uri);
         }
 
 
-        if (_Choices.containsKey(uri))
-        {
+        if (_Choices.containsKey(uri)) {
             return _Choices.get(uri);
         }
 
@@ -374,23 +346,19 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public Schema getLoadedSchema(final Keys keys)
-    {
+    public Schema getLoadedSchema(final Keys keys) {
 
         final URI schemaUri = keys.getValue(getDocumentSchemaUri());
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return null;
         }
 
-        if (_NativeSchemas.containsKey(schemaUri))
-        {
+        if (_NativeSchemas.containsKey(schemaUri)) {
             return _NativeSchemas.get(schemaUri);
         }
 
-        if (_Schemas.containsKey(schemaUri))
-        {
+        if (_Schemas.containsKey(schemaUri)) {
             return _Schemas.get(schemaUri);
         }
 
@@ -398,8 +366,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final SortedSet<URI> getLoadedSchemaUris()
-    {
+    public final SortedSet<URI> getLoadedSchemaUris() {
 
         final SortedSet<URI> allLoadedSchemaUris = new TreeSet<>(_NativeSchemas.keySet());
         allLoadedSchemaUris.addAll(_Schemas.keySet());
@@ -407,35 +374,29 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public Choices getNativeChoices(final Keys keys)
-    {
+    public Choices getNativeChoices(final Keys keys) {
 
         URI uri = keys.getValue(getDocumentSchemaUri());
 
-        if (uri == null)
-        {
+        if (uri == null) {
             final UniqueName uniqueName = keys.getValue(getChoicesSchemaUri());
-            if (uniqueName != null)
-            {
+            if (uniqueName != null) {
                 final String enumInternalClassName = uniqueName.toString();
                 final String enumExternalClassName = SchemaGenerator.internalTypeNameToExternalTypeName(enumInternalClassName);
                 uri = getTypeUri(enumExternalClassName, true, true);
             }
         }
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return null;
         }
 
-        if (_NativeChoices.containsKey(uri))
-        {
+        if (_NativeChoices.containsKey(uri)) {
             return _NativeChoices.get(uri);
         }
 
         final Class<?> nativeChoicesEnumClass = getNativeChoicesEnumClass(uri);
-        if (nativeChoicesEnumClass == null)
-        {
+        if (nativeChoicesEnumClass == null) {
             return null;
         }
 
@@ -447,35 +408,29 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final Schema getNativeSchema(final Keys keys)
-    {
+    public final Schema getNativeSchema(final Keys keys) {
 
         URI schemaUri = keys.getValue(getDocumentSchemaUri());
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             final UniqueName schemaUniqueName = keys.getValue(getSchemaSchemaUri());
-            if (schemaUniqueName != null)
-            {
+            if (schemaUniqueName != null) {
                 final String internalClassName = schemaUniqueName.toString();
                 final String schemaInterfaceName = SchemaGenerator.internalTypeNameToExternalTypeName(internalClassName);
                 schemaUri = getTypeUri(schemaInterfaceName);
             }
         }
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             return null;
         }
 
-        if (_NativeSchemas.containsKey(schemaUri))
-        {
+        if (_NativeSchemas.containsKey(schemaUri)) {
             return _NativeSchemas.get(schemaUri);
         }
 
         final Class<?> nativeSchemaInterface = getNativeSchemaInterface(schemaUri);
-        if (nativeSchemaInterface == null)
-        {
+        if (nativeSchemaInterface == null) {
             return null;
         }
 
@@ -486,62 +441,50 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final String getNativeTypeName(final URI typeUri)
-    {
+    public final String getNativeTypeName(final URI typeUri) {
 
         final BiMap<URI, String> uriToNativeTypeNameBiMapView = _NativeTypeNameToUriBiMap.inverse();
-        if (!uriToNativeTypeNameBiMapView.containsKey(typeUri))
-        {
+        if (!uriToNativeTypeNameBiMapView.containsKey(typeUri)) {
 
             final UniqueName uniqueName = getTypeUniqueName(typeUri);
-            if (uniqueName == null)
-            {
+            if (uniqueName == null) {
                 throw new SchemaLoaderException("The type's uniqueName could not be determined from: " + typeUri,
                         null, this);
             }
 
             String localName = uniqueName.getLocalName();
-            if (localName != null)
-            {
+            if (localName != null) {
                 int indexOfLastDot = localName.lastIndexOf(".");
 
-                if (indexOfLastDot > 0)
-                {
+                if (indexOfLastDot > 0) {
                     localName = localName.substring(0, indexOfLastDot);
                 }
-                else if (indexOfLastDot == 0)
-                {
+                else if (indexOfLastDot == 0) {
                     localName = localName.substring(1);
                 }
             }
 
             String namespace = uniqueName.getNamespace();
-            if (namespace != null)
-            {
+            if (namespace != null) {
                 namespace = StringUtils.replaceChars(namespace, ".", "_");
             }
 
             String internalTypeName;
-            if (namespace != null && localName != null)
-            {
+            if (namespace != null && localName != null) {
                 String suffix = localName.trim();
-                if (!suffix.isEmpty())
-                {
+                if (!suffix.isEmpty()) {
                     suffix = UniqueName.NAME_SEPARATOR + suffix;
                 }
 
                 internalTypeName = namespace + suffix;
             }
-            else if (namespace == null && localName == null)
-            {
+            else if (namespace == null && localName == null) {
                 internalTypeName = "unnamed";
             }
-            else if (namespace == null && localName != null)
-            {
+            else if (namespace == null && localName != null) {
                 internalTypeName = localName;
             }
-            else
-            {
+            else {
                 internalTypeName = namespace;
             }
 
@@ -557,16 +500,13 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final Prototype getPrototype(final URI schemaUri)
-    {
+    public final Prototype getPrototype(final URI schemaUri) {
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             throw new SchemaLoaderException("The schema URI cannot be null", null, this);
         }
 
-        if (!_Prototypes.containsKey(schemaUri))
-        {
+        if (!_Prototypes.containsKey(schemaUri)) {
             final Prototype prototype = new Prototype(this, schemaUri);
             _Prototypes.put(schemaUri, prototype);
 
@@ -575,36 +515,30 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final SortedSet<URI> getPrototypedSchemaUris()
-    {
+    public final SortedSet<URI> getPrototypedSchemaUris() {
 
         return new TreeSet<>(_Prototypes.keySet());
     }
 
     @Override
-    public final URI getResourceTemplateSchemaUri()
-    {
+    public final URI getResourceTemplateSchemaUri() {
 
         return _ResourceTemplateSchemaUri;
     }
 
     @Override
-    public final Dimensions getSchemaDimensions()
-    {
+    public final Dimensions getSchemaDimensions() {
 
         return _SchemaDimensions;
     }
 
     @Override
-    public final Class<?> getSchemaInterface(final URI schemaUri) throws ClassNotFoundException
-    {
+    public final Class<?> getSchemaInterface(final URI schemaUri) throws ClassNotFoundException {
 
-        if (!_SchemaInterfaces.containsKey(schemaUri))
-        {
+        if (!_SchemaInterfaces.containsKey(schemaUri)) {
 
             Class<?> schemaInterface = getNativeSchemaInterface(schemaUri);
-            if (schemaInterface != null)
-            {
+            if (schemaInterface != null) {
                 return schemaInterface;
             }
 
@@ -615,17 +549,14 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
             final String schemaInterfaceName = getNativeTypeName(schemaUri);
 
-            try
-            {
+            try {
                 schemaInterface = parentClassLoader.loadClass(schemaInterfaceName);
             }
-            catch (final ClassNotFoundException e)
-            {
+            catch (final ClassNotFoundException e) {
                 // Swallow this exception and keep trying to load the schema ourselves
             }
 
-            if (schemaInterface == null)
-            {
+            if (schemaInterface == null) {
                 // Try to load the schema ourselves...
                 schemaInterface = loadClass(schemaInterfaceName, true);
             }
@@ -639,8 +570,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final byte[] getSchemaInterfaceBytecode(final Schema schema)
-    {
+    public final byte[] getSchemaInterfaceBytecode(final Schema schema) {
 
         final SchemaGenerator generator = getSchemaGenerator();
         JavaBytecodeClass javaBytecodeClass = generator.generateSchemaInterface(schema);
@@ -656,24 +586,20 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public SortedSet<UniqueName> getSchemaNames(final UniqueName namespace)
-    {
+    public SortedSet<UniqueName> getSchemaNames(final UniqueName namespace) {
 
         final SortedSet<UniqueName> allSubschemaNames = getAllSubschemaNames(namespace);
 
-        if (allSubschemaNames == null || allSubschemaNames.isEmpty())
-        {
+        if (allSubschemaNames == null || allSubschemaNames.isEmpty()) {
             return allSubschemaNames;
         }
 
         final String namespaceString = (namespace != null) ? namespace.toString() : "";
         final SortedSet<UniqueName> schemaNames = new TreeSet<>();
-        for (final UniqueName subschemaName : allSubschemaNames)
-        {
+        for (final UniqueName subschemaName : allSubschemaNames) {
             final String subschemaNameString = subschemaName.toString();
             final String remainderNameString = StringUtils.removeStart(subschemaNameString, namespaceString + UniqueName.NAME_SEPARATOR);
-            if (!remainderNameString.contains(UniqueName.NAME_SEPARATOR))
-            {
+            if (!remainderNameString.contains(UniqueName.NAME_SEPARATOR)) {
                 schemaNames.add(subschemaName);
             }
         }
@@ -682,30 +608,25 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public SortedSet<UniqueName> getSchemaSubnamespaces(final UniqueName namespace)
-    {
+    public SortedSet<UniqueName> getSchemaSubnamespaces(final UniqueName namespace) {
 
         final SortedSet<UniqueName> allSubschemaNames = getAllSubschemaNames(namespace);
 
-        if (allSubschemaNames == null || allSubschemaNames.isEmpty())
-        {
+        if (allSubschemaNames == null || allSubschemaNames.isEmpty()) {
             return allSubschemaNames;
         }
 
         String namespaceString = (namespace != null) ? namespace.toString() : "";
-        if (!namespaceString.endsWith(UniqueName.NAME_SEPARATOR))
-        {
+        if (!namespaceString.endsWith(UniqueName.NAME_SEPARATOR)) {
             namespaceString = namespaceString + UniqueName.NAME_SEPARATOR;
         }
         final SortedSet<UniqueName> subnamespaces = new TreeSet<>();
-        for (final UniqueName subschemaName : allSubschemaNames)
-        {
+        for (final UniqueName subschemaName : allSubschemaNames) {
             final String subschemaNameString = subschemaName.toString();
             final String remainderNameString = StringUtils.removeStart(subschemaNameString, namespaceString);
 
             final int endIndex = remainderNameString.indexOf(UniqueName.NAME_SEPARATOR);
-            if (endIndex > 0)
-            {
+            if (endIndex > 0) {
                 final String localName = remainderNameString.substring(0, endIndex);
                 subnamespaces.add(new UniqueName(namespace, localName));
             }
@@ -716,46 +637,39 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public Dimensions getSchemaNamespaceDimensions()
-    {
+    public Dimensions getSchemaNamespaceDimensions() {
 
         return _SchemaNamespaceDimensions;
     }
 
     @Override
-    public URI getSchemaNamespaceSchemaUri()
-    {
+    public URI getSchemaNamespaceSchemaUri() {
 
         return _SchemaNamespaceSchemaUri;
     }
 
     @Override
-    public final URI getSchemaSchemaUri()
-    {
+    public final URI getSchemaSchemaUri() {
 
         return _SchemaSchemaUri;
     }
 
     @Override
-    public final URI getSyntaxSchemaUri()
-    {
+    public final URI getSyntaxSchemaUri() {
 
         return _SyntaxSchemaUri;
     }
 
 
     @Override
-    public final URI getTypeUri(final String typeName)
-    {
+    public final URI getTypeUri(final String typeName) {
 
         return getTypeUri(typeName, false, false);
     }
 
-    private final URI getTypeUri(final String typeName, final boolean isChoices, final boolean cache)
-    {
+    private final URI getTypeUri(final String typeName, final boolean isChoices, final boolean cache) {
 
-        if (_NativeTypeNameToUriBiMap.containsKey(typeName))
-        {
+        if (_NativeTypeNameToUriBiMap.containsKey(typeName)) {
             return _NativeTypeNameToUriBiMap.get(typeName);
         }
 
@@ -766,8 +680,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
         final URI uri = baseSystemUri.resolve(path);
 
-        if (cache)
-        {
+        if (cache) {
             _NativeTypeNameToUriBiMap.put(typeName, uri);
         }
 
@@ -775,16 +688,13 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final URI getTypeUri(final Type type)
-    {
+    public final URI getTypeUri(final Type type) {
 
-        if (type instanceof Class<?>)
-        {
+        if (type instanceof Class<?>) {
             final Class<?> clazz = (Class<?>) type;
             return getTypeUri(clazz.getCanonicalName(), clazz.isEnum(), true);
         }
-        else
-        {
+        else {
             // Get this schema id associated with the *slotted* schema. A slotted schema has one or more "open"
             // {@link Slot}s. Other (programming) languages refer to this type system concept as "parameterized",
             // "generic", or "templated" types.
@@ -812,12 +722,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public UniqueName getTypeUniqueName(final URI uri)
-    {
+    public UniqueName getTypeUniqueName(final URI uri) {
 
         final JsonSchema jsonSchema = _JsonSchemaLoader.getLoadedJsonSchema(uri);
-        if (jsonSchema != null)
-        {
+        if (jsonSchema != null) {
             return JsonSchema.createJsonSchemaUniqueName(uri);
         }
 
@@ -829,17 +737,14 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
         URI keyedSchemaUri = getSchemaSchemaUri();
         Keys keys = apiLoader.buildDocumentKeys(uri, keyedSchemaUri);
         UniqueName uniqueName = null;
-        if (keys != null)
-        {
+        if (keys != null) {
             uniqueName = keys.getValue(keyedSchemaUri);
         }
 
-        if (uniqueName == null)
-        {
+        if (uniqueName == null) {
             keyedSchemaUri = getChoicesSchemaUri();
             keys = apiLoader.buildDocumentKeys(uri, keyedSchemaUri);
-            if (keys != null)
-            {
+            if (keys != null) {
                 uniqueName = keys.getValue(keyedSchemaUri);
             }
         }
@@ -848,19 +753,16 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final ValueType getValueType(final Type type)
-    {
+    public final ValueType getValueType(final Type type) {
 
         final SyntaxLoader syntaxLoader = getContext().getSyntaxLoader();
 
         ValueType valueType = ValueType.getValueType(type);
-        if (valueType == ValueType.Native)
-        {
+        if (valueType == ValueType.Native) {
             final Class<?> rawType = ValueType.getRawType(type);
             final SyntaxHandler<?> syntaxHandler = syntaxLoader.getSyntaxHandler(rawType);
 
-            if (syntaxHandler != null)
-            {
+            if (syntaxHandler != null) {
                 valueType = ValueType.Text;
             }
         }
@@ -869,18 +771,15 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public URI getVirtualSchemaUri()
-    {
+    public URI getVirtualSchemaUri() {
 
         return _VirtualSchemaUri;
     }
 
     @Override
-    public void init(final Context context)
-    {
+    public void init(final Context context) {
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new SchemaLoaderException("The WRML context cannot be null.", null, this);
         }
 
@@ -894,16 +793,12 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final boolean isAbstractSchema(final Class<?> schemaInterface)
-    {
+    public final boolean isAbstractSchema(final Class<?> schemaInterface) {
 
         final Class<?>[] declaredInterfaces = schemaInterface.getInterfaces();
-        if (declaredInterfaces != null)
-        {
-            for (final Class<?> declaredInterface : declaredInterfaces)
-            {
-                if (ValueType.JAVA_TYPE_ABSTRACT.equals(declaredInterface))
-                {
+        if (declaredInterfaces != null) {
+            for (final Class<?> declaredInterface : declaredInterfaces) {
+                if (ValueType.JAVA_TYPE_ABSTRACT.equals(declaredInterface)) {
                     return true;
                 }
             }
@@ -913,30 +808,25 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final boolean isPrototyped(final URI schemaUri)
-    {
+    public final boolean isPrototyped(final URI schemaUri) {
 
         return _Prototypes.containsKey(schemaUri);
     }
 
     @Override
-    public final boolean isSubschema(final Type base, final Type sub)
-    {
+    public final boolean isSubschema(final Type base, final Type sub) {
 
         // Neither may be null
-        if (base == null || sub == null)
-        {
+        if (base == null || sub == null) {
             return false;
         }
 
-        if (base.equals(sub))
-        {
+        if (base.equals(sub)) {
             return false;
         }
 
         // Both must be models
-        if (!TypeUtils.isAssignable(base, Model.class) || !TypeUtils.isAssignable(sub, Model.class))
-        {
+        if (!TypeUtils.isAssignable(base, Model.class) || !TypeUtils.isAssignable(sub, Model.class)) {
             return false;
         }
 
@@ -944,27 +834,23 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public boolean isSystemSchema(final URI schemaUri)
-    {
+    public boolean isSystemSchema(final URI schemaUri) {
 
         return _SystemSchemaUris.contains(schemaUri);
     }
 
     @Override
-    public void loadInitialState()
-    {
+    public void loadInitialState() {
 
         _JsonSchemaLoader.loadInitialState();
         loadJsonSchemas();
     }
 
     @Override
-    public final Schema load(final JsonSchema jsonSchema, final URI... baseSchemaIds)
-    {
+    public final Schema load(final JsonSchema jsonSchema, final URI... baseSchemaIds) {
 
         final URI schemaUri = jsonSchema.getId();
-        if (_Schemas.containsKey(schemaUri))
-        {
+        if (_Schemas.containsKey(schemaUri)) {
             return _Schemas.get(schemaUri);
         }
 
@@ -975,35 +861,29 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final Schema load(final Schema schema)
-    {
+    public final Schema load(final Schema schema) {
 
         final URI schemaUri = schema.getUri();
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             throw new IllegalArgumentException("The Schema URI cannot be null.");
         }
 
-        if (isPrototyped(schemaUri))
-        {
+        if (isPrototyped(schemaUri)) {
             throw new SchemaLoaderException(
                     "The Schema has been prototyped from a Java interface, which cannot be reloaded without reloading the Context.",
                     null, this);
         }
 
-        if (StringUtils.isEmpty(schema.getTitle()))
-        {
+        if (StringUtils.isEmpty(schema.getTitle())) {
 
             final String title = schema.getUniqueName().getLocalName();
             schema.setTitle(title);
         }
 
         final List<Slot> slots = schema.getSlots();
-        for (final Slot slot : slots)
-        {
+        for (final Slot slot : slots) {
 
-            if (StringUtils.isEmpty(slot.getTitle()))
-            {
+            if (StringUtils.isEmpty(slot.getTitle())) {
 
                 slot.setTitle(slot.getName());
             }
@@ -1014,11 +894,9 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public final Schema load(final URI schemaUri)
-    {
+    public final Schema load(final URI schemaUri) {
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             throw new IllegalArgumentException("The Schema URI cannot be null.");
         }
 
@@ -1029,12 +907,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
     @Override
-    public Choices loadChoices(final Choices choices)
-    {
+    public Choices loadChoices(final Choices choices) {
 
         final URI choicesUri = choices.getUri();
-        if (choicesUri == null)
-        {
+        if (choicesUri == null) {
             throw new IllegalArgumentException("The Choices URI cannot be null.");
         }
 
@@ -1049,8 +925,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    protected Class findClass(final String typeName) throws ClassNotFoundException
-    {
+    protected Class findClass(final String typeName) throws ClassNotFoundException {
 
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
@@ -1061,8 +936,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
         Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
         Model model = context.getModel(keys, dimensions);
 
-        if (model == null)
-        {
+        if (model == null) {
             uri = getTypeUri(typeName, true, false);
             schemaUri = getTypeSchemaUri(uri);
             keys = apiLoader.buildDocumentKeys(uri, schemaUri);
@@ -1074,12 +948,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
         JavaBytecodeClass javaBytecodeClass = null;
 
-        if (model instanceof Schema)
-        {
+        if (model instanceof Schema) {
             javaBytecodeClass = generator.generateSchemaInterface((Schema) model);
         }
-        else if (model instanceof Choices)
-        {
+        else if (model instanceof Choices) {
             javaBytecodeClass = generator.generateChoicesEnum((Choices) model);
         }
 
@@ -1089,8 +961,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
             final byte[] bytecode = javaBytecodeClass.getBytecode();
 
             final File schemaClassRootDirectory = getSchemaClassRootDirectory();
-            if (schemaClassRootDirectory != null)
-            {
+            if (schemaClassRootDirectory != null) {
 
                 // TODO: Can this be simplified? (just trying to construct a
                 // file path here and this code looks crazy...)
@@ -1101,12 +972,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
                 final File classFileDir = FileUtils.getFile(schemaClassRootDirectory, relativePath);
                 final File classFileOnDisk = FileUtils.getFile(classFileDir, classFileName);
 
-                try
-                {
+                try {
                     FileUtils.writeByteArrayToFile(classFileOnDisk, bytecode);
                 }
-                catch (final IOException e)
-                {
+                catch (final IOException e) {
 
                     throw new SchemaLoaderException("Failed to write class file (" + classFileOnDisk + ") for Model ("
                             + model + ")", e, this);
@@ -1121,8 +990,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
     }
 
-    private SortedSet<UniqueName> getAllSubschemaNames(final UniqueName namespace)
-    {
+    private SortedSet<UniqueName> getAllSubschemaNames(final UniqueName namespace) {
 
         final String namespaceString = (namespace != null) ? namespace.toString() : UniqueName.NAME_SEPARATOR;
 
@@ -1133,16 +1001,12 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
         final SortedSet<UniqueName> typeNames = new TreeSet<>();
 
-        for (Class<?> superType : JAVA_TYPE_WRML_BASES)
-        {
+        for (Class<?> superType : JAVA_TYPE_WRML_BASES) {
             final Set subTypes = reflections.getSubTypesOf(superType);
-            if (subTypes != null && !subTypes.isEmpty())
-            {
-                for (final Object subType : subTypes)
-                {
+            if (subTypes != null && !subTypes.isEmpty()) {
+                for (final Object subType : subTypes) {
                     final Class<?> subClass = (Class<?>) subType;
-                    if (subClass.isInterface())
-                    {
+                    if (subClass.isInterface()) {
                         final UniqueName uniqueName = new UniqueName(subClass.getName().replace('.', UniqueName.NAME_SEPARATOR_CHAR));
                         typeNames.add(uniqueName);
                     }
@@ -1182,12 +1046,10 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
     }
 
-    private final File getSchemaClassRootDirectory()
-    {
+    private final File getSchemaClassRootDirectory() {
 
         final SchemaLoaderConfiguration config = getConfig();
-        if (config != null)
-        {
+        if (config != null) {
             /*
              * Note that this directory value may be null, in which case the class
              * files will not be written to disk but will be loaded into the
@@ -1200,37 +1062,30 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
     }
 
-    private final SchemaGenerator getSchemaGenerator()
-    {
+    private final SchemaGenerator getSchemaGenerator() {
 
         return _SchemaGenerator;
     }
 
-    private Class<?> getNativeChoicesEnumClass(final URI uri)
-    {
+    private Class<?> getNativeChoicesEnumClass(final URI uri) {
 
-        if (!_ChoicesEnumClasses.containsKey(uri))
-        {
+        if (!_ChoicesEnumClasses.containsKey(uri)) {
 
             final ClassLoader parentClassLoader = getParent();
-            if (parentClassLoader == null)
-            {
+            if (parentClassLoader == null) {
                 return null;
 
             }
 
             final String choicesEnumName = getNativeTypeName(uri);
 
-            try
-            {
+            try {
                 final Class<?> choicesEnumClass = parentClassLoader.loadClass(choicesEnumName);
-                if (choicesEnumClass != null && choicesEnumClass.isEnum())
-                {
+                if (choicesEnumClass != null && choicesEnumClass.isEnum()) {
                     _ChoicesEnumClasses.put(uri, choicesEnumClass);
                 }
             }
-            catch (final ClassNotFoundException e)
-            {
+            catch (final ClassNotFoundException e) {
                 return null;
             }
 
@@ -1240,15 +1095,12 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
 
     }
 
-    private Class<?> getNativeSchemaInterface(final URI schemaUri)
-    {
+    private Class<?> getNativeSchemaInterface(final URI schemaUri) {
 
-        if (!_SchemaInterfaces.containsKey(schemaUri))
-        {
+        if (!_SchemaInterfaces.containsKey(schemaUri)) {
 
             final ClassLoader parentClassLoader = getParent();
-            if (parentClassLoader == null)
-            {
+            if (parentClassLoader == null) {
                 return null;
             }
 
@@ -1259,13 +1111,11 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
             // See if the schema interface is loadable by the parent. This is done primarily for
             // bootstrapping WRML; allowing us to treat "standard" Java interfaces as if they were WRML schema-based.
 
-            try
-            {
+            try {
                 schemaInterface = parentClassLoader.loadClass(schemaInterfaceName);
                 _SchemaInterfaces.put(schemaUri, schemaInterface);
             }
-            catch (final ClassNotFoundException e)
-            {
+            catch (final ClassNotFoundException e) {
                 return null;
             }
 
@@ -1274,20 +1124,17 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
         return _SchemaInterfaces.get(schemaUri);
     }
 
-    private URI getTypeSchemaUri(final URI uri)
-    {
+    private URI getTypeSchemaUri(final URI uri) {
 
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
         final ApiNavigator apiNavigator = apiLoader.getParentApiNavigator(uri);
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             return getSchemaSchemaUri();
         }
 
         final Resource resource = apiNavigator.getResource(uri);
-        if (resource == null)
-        {
+        if (resource == null) {
             return getSchemaSchemaUri();
         }
 
@@ -1295,56 +1142,43 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
     }
 
 
-    private void loadJsonSchemas()
-    {
+    private void loadJsonSchemas() {
 
         final SchemaLoaderConfiguration config = _Context.getConfig().getSchemaLoader();
-        if (config == null)
-        {
+        if (config == null) {
             return;
         }
 
         final Map<URI, JsonSchema> loadedJsonSchemas = new LinkedHashMap<>();
         final URI[] jsonSchemaIds = config.getJsonSchemaIds();
-        if (jsonSchemaIds != null)
-        {
-            for (final URI jsonSchemaUri : jsonSchemaIds)
-            {
-                try
-                {
+        if (jsonSchemaIds != null) {
+            for (final URI jsonSchemaUri : jsonSchemaIds) {
+                try {
                     final JsonSchema jsonSchema = _JsonSchemaLoader.load(jsonSchemaUri);
-                    if (jsonSchema != null)
-                    {
+                    if (jsonSchema != null) {
                         loadedJsonSchemas.put(jsonSchema.getId(), jsonSchema);
                     }
                 }
-                catch (final IOException e)
-                {
+                catch (final IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
             }
         }
 
         final File[] jsonSchemaDirectories = config.getJsonSchemaDirectories();
-        if (jsonSchemaDirectories != null)
-        {
-            for (final File jsonSchemaDirectory : jsonSchemaDirectories)
-            {
+        if (jsonSchemaDirectories != null) {
+            for (final File jsonSchemaDirectory : jsonSchemaDirectories) {
                 final Collection<File> jsonSchemaFiles = FileUtils.listFiles(jsonSchemaDirectory,
                         JSON_SCHEMA_FILE_EXTENSIONS, true);
 
-                for (final File jsonSchemaFile : jsonSchemaFiles)
-                {
-                    try
-                    {
+                for (final File jsonSchemaFile : jsonSchemaFiles) {
+                    try {
                         final JsonSchema jsonSchema = _JsonSchemaLoader.load(jsonSchemaFile);
-                        if (jsonSchema != null)
-                        {
+                        if (jsonSchema != null) {
                             loadedJsonSchemas.put(jsonSchema.getId(), jsonSchema);
                         }
                     }
-                    catch (final IOException e)
-                    {
+                    catch (final IOException e) {
                         LOG.error(e.getMessage(), e);
                     }
                 }
@@ -1352,27 +1186,21 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader
         }
 
         final File[] jsonSchemaFiles = config.getJsonSchemaFiles();
-        if (jsonSchemaFiles != null)
-        {
-            for (final File jsonSchemaFile : jsonSchemaFiles)
-            {
-                try
-                {
+        if (jsonSchemaFiles != null) {
+            for (final File jsonSchemaFile : jsonSchemaFiles) {
+                try {
                     final JsonSchema jsonSchema = _JsonSchemaLoader.load(jsonSchemaFile);
-                    if (jsonSchema != null)
-                    {
+                    if (jsonSchema != null) {
                         loadedJsonSchemas.put(jsonSchema.getId(), jsonSchema);
                     }
                 }
-                catch (final IOException e)
-                {
+                catch (final IOException e) {
                     LOG.error(e.getMessage(), e);
                 }
             }
         }
 
-        for (final JsonSchema loadedSchema : loadedJsonSchemas.values())
-        {
+        for (final JsonSchema loadedSchema : loadedJsonSchemas.values()) {
             load(loadedSchema, getDocumentSchemaUri());
         }
     }

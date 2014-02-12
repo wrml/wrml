@@ -64,8 +64,7 @@ import java.util.regex.Pattern;
  * @see <a href="http://www.10gen.com">10gen</a>
  * @see <a href="http://api.mongodb.org/java">Java API for mongoDB</a>
  */
-public class MongoService extends AbstractService
-{
+public class MongoService extends AbstractService {
 
     public static final String DEFAULT_HOST = "localhost";
 
@@ -86,8 +85,7 @@ public class MongoService extends AbstractService
     private String _CollectionPrefix;
 
     @Override
-    public Model save(final Model model)
-    {
+    public Model save(final Model model) {
 
         final URI schemaUri = model.getSchemaUri();
         final String collectionName = convertToCollectionName(schemaUri);
@@ -95,14 +93,12 @@ public class MongoService extends AbstractService
         final Keys keys = model.getKeys();
         DBObject mongoKeys = createMongoKeys(keys);
 
-        if (!_Mongo.collectionExists(collectionName))
-        {
+        if (!_Mongo.collectionExists(collectionName)) {
             final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
 
             final DBObject collectionIndex = new BasicDBObject();
             final Set<String> indexKeySet = mongoKeys.keySet();
-            for (final String indexKey : indexKeySet)
-            {
+            for (final String indexKey : indexKeySet) {
                 collectionIndex.put(indexKey, 1);
             }
 
@@ -113,18 +109,15 @@ public class MongoService extends AbstractService
         }
 
         final DBObject mongoObject;
-        try
-        {
+        try {
             mongoObject = convertToMongoObject(model);
         }
-        catch (ModelWritingException e)
-        {
+        catch (ModelWritingException e) {
             throw new ServiceException("Failed to convert WRML model instance to a mongoDB object.", e, this);
         }
 
         final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
-        if (mongoCollection == null)
-        {
+        if (mongoCollection == null) {
             // Should not happen
             final String logMessage = getConfiguration().getName() + " - Collection should exist. Name:\n" + collectionName;
 
@@ -134,26 +127,22 @@ public class MongoService extends AbstractService
 
 
         final DBObject existingMongoObject = mongoCollection.findOne(mongoKeys);
-        if (existingMongoObject != null)
-        {
+        if (existingMongoObject != null) {
             mongoObject.put("_id", existingMongoObject.get("_id"));
         }
 
         String errorMessage = null;
         Throwable throwable = null;
-        try
-        {
+        try {
             final WriteResult mongoWriteResult = mongoCollection.save(mongoObject);
             errorMessage = mongoWriteResult.getError();
         }
-        catch (Throwable t)
-        {
+        catch (Throwable t) {
             errorMessage = t.getMessage();
             throwable = t;
         }
 
-        if (errorMessage != null || throwable != null)
-        {
+        if (errorMessage != null || throwable != null) {
             final String logMessage = getConfiguration().getName() + " - Error saving model (" + errorMessage + ").";
 
             LOG.error(logMessage);
@@ -166,20 +155,17 @@ public class MongoService extends AbstractService
     }
 
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions)
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) {
 
         final URI schemaUri = dimensions.getSchemaUri();
         final String collectionName = convertToCollectionName(schemaUri);
-        if (!_Mongo.collectionExists(collectionName))
-        {
+        if (!_Mongo.collectionExists(collectionName)) {
             LOG.debug(getConfiguration().getName() + " - Collection does not exist. Name:\n" + collectionName);
             return null;
         }
 
         final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
-        if (mongoCollection == null)
-        {
+        if (mongoCollection == null) {
             // Should not happen
             LOG.error(getConfiguration().getName() + " - Collection should exist. Name:\n" + collectionName);
             return null;
@@ -187,20 +173,17 @@ public class MongoService extends AbstractService
 
         final DBObject mongoKeys = createMongoKeys(keys);
         final DBObject mongoObject = mongoCollection.findOne(mongoKeys);
-        if (mongoObject == null)
-        {
+        if (mongoObject == null) {
             LOG.debug(getConfiguration().getName() + " - Failed to find model. Keys:\n" + keys);
             return null;
         }
 
         Model model = null;
 
-        try
-        {
+        try {
             model = convertToModel(mongoObject, keys, dimensions);
         }
-        catch (ModelReadingException e)
-        {
+        catch (ModelReadingException e) {
             LOG.error(e.getMessage(), e);
         }
 
@@ -208,35 +191,29 @@ public class MongoService extends AbstractService
     }
 
     @Override
-    public void delete(final Keys keys, final Dimensions dimensions)
-    {
+    public void delete(final Keys keys, final Dimensions dimensions) {
 
         final DBObject mongoKeys = createMongoKeys(keys);
 
-        for (final URI schemaUri : keys.getKeyedSchemaUris())
-        {
+        for (final URI schemaUri : keys.getKeyedSchemaUris()) {
 
             final String collectionName = convertToCollectionName(schemaUri);
-            if (!_Mongo.collectionExists(collectionName))
-            {
+            if (!_Mongo.collectionExists(collectionName)) {
                 continue;
             }
 
             final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
-            if (mongoCollection == null)
-            {
+            if (mongoCollection == null) {
                 continue;
             }
 
             final DBObject mongoObject = mongoCollection.findOne(mongoKeys);
 
-            if (mongoObject != null)
-            {
+            if (mongoObject != null) {
                 final WriteResult mongoWriteResult = mongoCollection.remove(mongoObject);
 
                 final String errorMessage = mongoWriteResult.getError();
-                if (errorMessage != null)
-                {
+                if (errorMessage != null) {
                     LOG.error(getConfiguration().getName() + " - Error deleting model (" + errorMessage + "). Keys:\n" + keys);
                 }
             }
@@ -244,23 +221,20 @@ public class MongoService extends AbstractService
     }
 
     @Override
-    public Set<Model> search(final SearchCriteria searchCriteria) throws UnsupportedOperationException
-    {
+    public Set<Model> search(final SearchCriteria searchCriteria) throws UnsupportedOperationException {
 
         // Identify the mongo collection to query.
         final Dimensions resultDimensions = searchCriteria.getResultDimensions();
 
         final URI schemaUri = resultDimensions.getSchemaUri();
         final String collectionName = convertToCollectionName(schemaUri);
-        if (!_Mongo.collectionExists(collectionName))
-        {
+        if (!_Mongo.collectionExists(collectionName)) {
             LOG.debug(getConfiguration().getName() + " - Collection does not exist. Name:\n" + collectionName);
             return null;
         }
 
         final DBCollection mongoCollection = _Mongo.getCollection(collectionName);
-        if (mongoCollection == null)
-        {
+        if (mongoCollection == null) {
             // Should not happen
             LOG.error(getConfiguration().getName() + " - Collection should exist. Name:\n" + collectionName);
             return null;
@@ -268,8 +242,7 @@ public class MongoService extends AbstractService
 
         // Build the mongo query object.
         final DBObject mongoQuery = createMongoQuery(searchCriteria);
-        if (mongoQuery == null)
-        {
+        if (mongoQuery == null) {
             LOG.warn(getConfiguration().getName() + " - Query could not be created for: " + searchCriteria);
             return null;
         }
@@ -277,10 +250,8 @@ public class MongoService extends AbstractService
         // Build the mongo projection (fields to return).
         DBObject mongoKeys = null;
         final Set<String> projectionSlotNames = searchCriteria.getProjectionSlotNames();
-        if (projectionSlotNames != null && !projectionSlotNames.isEmpty())
-        {
-            for (final String projectionSlotName : projectionSlotNames)
-            {
+        if (projectionSlotNames != null && !projectionSlotNames.isEmpty()) {
+            for (final String projectionSlotName : projectionSlotNames) {
                 mongoKeys.put(projectionSlotName, 1);
             }
         }
@@ -289,8 +260,7 @@ public class MongoService extends AbstractService
         final DBCursor cursor = mongoCollection.find(mongoQuery, mongoKeys);
         final int resultLimit = searchCriteria.getResultLimit();
 
-        if (resultLimit > 0)
-        {
+        if (resultLimit > 0) {
             cursor.limit(resultLimit);
         }
 
@@ -300,20 +270,16 @@ public class MongoService extends AbstractService
         // Build model results
         final Set<Model> resultSet = new LinkedHashSet<>();
 
-        try
-        {
-            while (cursor.hasNext())
-            {
+        try {
+            while (cursor.hasNext()) {
                 final DBObject mongoObject = cursor.next();
                 final Model model;
 
-                try
-                {
+                try {
                     model = convertToModel(mongoObject, null, resultDimensions);
                     // Note: Context will set URI value in Document models.
                 }
-                catch (ModelReadingException e)
-                {
+                catch (ModelReadingException e) {
                     LOG.error(e.getMessage(), e);
                     continue;
                 }
@@ -321,8 +287,7 @@ public class MongoService extends AbstractService
                 resultSet.add(model);
             }
         }
-        finally
-        {
+        finally {
             cursor.close();
         }
 
@@ -330,13 +295,10 @@ public class MongoService extends AbstractService
     }
 
 
-
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
-        if (config == null)
-        {
+        if (config == null) {
             final ServiceException e = new ServiceException("The config cannot be null.", null, this);
             LOG.error(e.getMessage(), e);
             throw e;
@@ -346,41 +308,34 @@ public class MongoService extends AbstractService
         final Map<String, String> settings = config.getSettings();
         String mongoUriString = DEFAULT_URI_STRING;
 
-        if (settings != null)
-        {
-            if (settings.containsKey(MONGO_URI_SETTING_NAME))
-            {
+        if (settings != null) {
+            if (settings.containsKey(MONGO_URI_SETTING_NAME)) {
                 mongoUriString = settings.get(MONGO_URI_SETTING_NAME);
             }
 
-            if (settings.containsKey(MONGO_COLLECTION_PREFIX_SETTING_NAME))
-            {
+            if (settings.containsKey(MONGO_COLLECTION_PREFIX_SETTING_NAME)) {
                 _CollectionPrefix = settings.get(MONGO_COLLECTION_PREFIX_SETTING_NAME);
             }
         }
 
         // TODO: Look into MongoClientURI replacement
         final MongoURI mongoUri = new MongoURI(mongoUriString);
-        try
-        {
+        try {
             _Mongo = mongoUri.connectDB();
 
-            if (!_Mongo.isAuthenticated() && mongoUri.getPassword() != null)
-            {
+            if (!_Mongo.isAuthenticated() && mongoUri.getPassword() != null) {
                 _Mongo.authenticate(mongoUri.getUsername(), mongoUri.getPassword());
             }
 
         }
-        catch (MongoException | UnknownHostException ex)
-        {
+        catch (MongoException | UnknownHostException ex) {
             final String logMessage = "Error creating connection to Mongo: " + _Mongo;
             LOG.error(logMessage);
             throw new ServiceException(logMessage, ex, this);
         }
     }
 
-    private DBObject createMongoKeys(final Keys keys)
-    {
+    private DBObject createMongoKeys(final Keys keys) {
 
         // The mongoDB object that will hold the "serialized" keys structure.
         final DBObject mongoKeys = new BasicDBObject();
@@ -388,11 +343,9 @@ public class MongoService extends AbstractService
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
 
-        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris())
-        {
+        for (final URI keyedSchemaUri : keys.getKeyedSchemaUris()) {
 
-            if (keys.getCount() > 1 && keyedSchemaUri.equals(schemaLoader.getDocumentSchemaUri()))
-            {
+            if (keys.getCount() > 1 && keyedSchemaUri.equals(schemaLoader.getDocumentSchemaUri())) {
                 // To promote de-coupling of REST API Design from this back-end storage Service, skip Document's URI if we can.
                 continue;
             }
@@ -402,29 +355,25 @@ public class MongoService extends AbstractService
             final Object keyValue = keys.getValue(keyedSchemaUri);
             final Prototype prototype = schemaLoader.getPrototype(keyedSchemaUri);
             final SortedSet<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-            if (keySlotNames == null)
-            {
+            if (keySlotNames == null) {
                 // Should not happen
                 continue;
             }
 
-            if (keySlotNames.size() == 1)
-            {
+            if (keySlotNames.size() == 1) {
                 // This is a simple key with only one slot (not a compound key).
                 final String keySlotName = keySlotNames.first();
 
                 final Object mongoValue = convertToMongoValue(keyValue);
                 mongoKeys.put(keySlotName, mongoValue);
             }
-            else if (keyValue instanceof CompositeKey)
-            {
+            else if (keyValue instanceof CompositeKey) {
                 final CompositeKey compositeKey = (CompositeKey) keyValue;
 
                 // This compound key manages its own names to values mapping, which makes this simple.
                 final Map<String, Object> compositeKeySlots = compositeKey.getKeySlots();
                 final Set<String> compositeKeySlotNames = compositeKeySlots.keySet();
-                for (final String compositeKeySlotName : compositeKeySlotNames)
-                {
+                for (final String compositeKeySlotName : compositeKeySlotNames) {
 
                     final Object compositeKeySlotValue = compositeKeySlots.get(compositeKeySlotName);
                     final Object mongoValue = convertToMongoValue(compositeKeySlotValue);
@@ -436,21 +385,18 @@ public class MongoService extends AbstractService
         return mongoKeys;
     }
 
-    private DBObject createMongoQuery(final SearchCriteria searchCriteria)
-    {
+    private DBObject createMongoQuery(final SearchCriteria searchCriteria) {
 
         QueryBuilder queryBuilder = null;
 
         final List<SearchCriterion> and = searchCriteria.getAnd();
-        if (and != null && !and.isEmpty())
-        {
+        if (and != null && !and.isEmpty()) {
 
             queryBuilder = new QueryBuilder();
 
-            for (final SearchCriterion searchCriterion : and)
-            {
+            for (final SearchCriterion searchCriterion : and) {
 
-                final String referenceSlot =  searchCriterion.getReferenceSlot();
+                final String referenceSlot = searchCriterion.getReferenceSlot();
                 queryBuilder.and(referenceSlot);
                 addQueryCriterion(searchCriterion, queryBuilder);
 
@@ -459,14 +405,12 @@ public class MongoService extends AbstractService
         }
 
         final List<SearchCriterion> or = searchCriteria.getOr();
-        if (or != null && !or.isEmpty())
-        {
+        if (or != null && !or.isEmpty()) {
 
             final DBObject[] orQueryCriterionArray = new DBObject[or.size()];
-            for (int i = 0; i < or.size(); i++)
-            {
+            for (int i = 0; i < or.size(); i++) {
                 final SearchCriterion searchCriterion = or.get(i);
-                final String referenceSlot =  searchCriterion.getReferenceSlot();
+                final String referenceSlot = searchCriterion.getReferenceSlot();
                 final QueryBuilder orQueryCriterionBuilder = QueryBuilder.start(referenceSlot);
                 addQueryCriterion(searchCriterion, orQueryCriterionBuilder);
                 orQueryCriterionArray[i] = orQueryCriterionBuilder.get();
@@ -475,19 +419,16 @@ public class MongoService extends AbstractService
             final QueryBuilder orQueryBuilder = new QueryBuilder();
             orQueryBuilder.or(orQueryCriterionArray);
 
-            if (queryBuilder != null)
-            {
+            if (queryBuilder != null) {
                 // AND the OR clause together with the AND query
                 queryBuilder.and(orQueryBuilder.get());
             }
-            else
-            {
+            else {
                 queryBuilder = orQueryBuilder;
             }
         }
 
-        if (queryBuilder == null)
-        {
+        if (queryBuilder == null) {
             return null;
         }
 
@@ -495,85 +436,70 @@ public class MongoService extends AbstractService
         return mongoQuery;
     }
 
-    private void addQueryCriterion(final SearchCriterion searchCriterion, final QueryBuilder queryBuilder)
-    {
+    private void addQueryCriterion(final SearchCriterion searchCriterion, final QueryBuilder queryBuilder) {
 
         final ComparisonOperator comparisonOperator = searchCriterion.getComparisonOperator();
         final Object comparisonValue = searchCriterion.getComparisonValue();
-        switch (comparisonOperator)
-        {
+        switch (comparisonOperator) {
 
-            case containsAll:
-            {
+            case containsAll: {
                 queryBuilder.all(comparisonValue);
                 break;
             }
 
-            case equalTo:
-            {
+            case equalTo: {
                 queryBuilder.equals(comparisonValue);
                 break;
             }
 
-            case equalToAny:
-            {
+            case equalToAny: {
                 queryBuilder.in(comparisonValue);
                 break;
             }
 
-            case exists:
-            {
+            case exists: {
                 queryBuilder.exists(true);
                 break;
             }
 
-            case greaterThan:
-            {
+            case greaterThan: {
                 queryBuilder.greaterThan(comparisonValue);
                 break;
             }
 
-            case greaterThanOrEqualTo:
-            {
+            case greaterThanOrEqualTo: {
                 queryBuilder.greaterThanEquals(comparisonValue);
                 break;
             }
 
-            case lessThan:
-            {
+            case lessThan: {
                 queryBuilder.lessThan(comparisonValue);
                 break;
             }
 
-            case lessThanOrEqualTo:
-            {
+            case lessThanOrEqualTo: {
                 queryBuilder.lessThanEquals(comparisonValue);
                 break;
             }
 
-            case notEqualTo:
-            {
+            case notEqualTo: {
                 queryBuilder.notEquals(comparisonValue);
                 break;
             }
 
-            case notEqualToAny:
-            {
+            case notEqualToAny: {
                 queryBuilder.notIn(comparisonValue);
                 break;
             }
 
-            case notExists:
-            {
+            case notExists: {
                 queryBuilder.exists(false);
                 break;
             }
 
-            case regex:
-            {
+            case regex: {
                 final Pattern regexPattern = searchCriterion.getRegexPattern();
-                if (regexPattern != null)
-                {
+                if (regexPattern != null) {
                     queryBuilder.regex(regexPattern);
                 }
 
@@ -583,8 +509,7 @@ public class MongoService extends AbstractService
         }
     }
 
-    private String convertToCollectionName(final URI schemaUri)
-    {
+    private String convertToCollectionName(final URI schemaUri) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -596,16 +521,14 @@ public class MongoService extends AbstractService
         // TODO: Use namespace/package abbrevs e.g. org.wrml.model.rest.Api becomes: o_w_m_r_Api
         final String collectionName = uniqueName.getLocalName();
 
-        if (_CollectionPrefix == null)
-        {
+        if (_CollectionPrefix == null) {
             return collectionName;
         }
 
         return _CollectionPrefix + collectionName;
     }
 
-    private Model convertToModel(final DBObject mongoObject, final Keys keys, final Dimensions dimensions) throws ModelReadingException
-    {
+    private Model convertToModel(final DBObject mongoObject, final Keys keys, final Dimensions dimensions) throws ModelReadingException {
 
         mongoObject.removeField("_id");
 
@@ -619,8 +542,7 @@ public class MongoService extends AbstractService
         return model;
     }
 
-    private DBObject convertToMongoObject(final Model model) throws ModelWritingException
-    {
+    private DBObject convertToMongoObject(final Model model) throws ModelWritingException {
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final Context context = getContext();
@@ -640,8 +562,7 @@ public class MongoService extends AbstractService
     }
 
 
-    private Object convertToMongoValue(final Object value)
-    {
+    private Object convertToMongoValue(final Object value) {
 
         final Context context = getContext();
 
@@ -650,8 +571,7 @@ public class MongoService extends AbstractService
 
         final Object mongoValue;
 
-        switch (valueType)
-        {
+        switch (valueType) {
             case SingleSelect:
             case Text:
 

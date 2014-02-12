@@ -26,7 +26,6 @@ package org.wrml.model.rest.status;
 
 import org.wrml.model.Abstract;
 
-public interface NotFoundErrorReport extends ErrorReport, Abstract
-{
+public interface NotFoundErrorReport extends ErrorReport, Abstract {
 
 }

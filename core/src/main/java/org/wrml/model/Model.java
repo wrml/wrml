@@ -107,8 +107,7 @@ import java.util.UUID;
  * @see Service
  * @see Proxy
  */
-public interface Model
-{
+public interface Model {
 
     /**
      * The WRML constant name for a Model's <i>schemaUri</i> slot.
@@ -126,8 +125,8 @@ public interface Model
      * it from the heap.
      *
      * @return The slot's value prior to being cleared. A <code>null</code> value is returned in cases when the slot was
-     *         already clear or actually contained a <code>null</code> value. Call {@link #containsSlotValue(String)}
-     *         prior to calling this method when you need to know the difference.
+     * already clear or actually contained a <code>null</code> value. Call {@link #containsSlotValue(String)}
+     * prior to calling this method when you need to know the difference.
      * @see #containsSlotValue(String)
      * @see #setSlotValue(String, Object)
      */
@@ -178,7 +177,7 @@ public interface Model
      * the domain of its {@link Schema} (and base schemas).
      *
      * @return the {@link Keys} associated with this model. The keys will be <code>null</code> if this model isn't
-     *         "special"; meaning that there is nothing <i>unique</i> about this model.
+     * "special"; meaning that there is nothing <i>unique</i> about this model.
      */
     Keys getKeys();
 
@@ -202,7 +201,7 @@ public interface Model
      * model's type is undefined).
      *
      * @return The schema URI associated with this model instance (or null if
-     *         this model's type is undefined).
+     * this model's type is undefined).
      * @see Model#getDimensions()
      * @see Dimensions#getSchemaUri()
      * @see Model#getKeys()
@@ -242,7 +241,7 @@ public interface Model
      *
      * @param dimensions The dimensions to represent with the new {@link Proxy}.
      * @return A new {@link Proxy} instance that represents this model instance
-     *         using the specified dimensions.
+     * using the specified dimensions.
      * @throws ModelException Thrown if there are problems tunneling through the worm hole.
      */
     <M extends Model> M newAlternate(Dimensions dimensions) throws ModelException;
@@ -251,7 +250,7 @@ public interface Model
      * Makes a new, local copy of this model, copying all of the "valued slots" (including <code>null</code> values).
      *
      * @return The model's "clone" (different heap id and slot storage), which is not the same as an "alternate" (same
-     *         shared heap id and slot storage).
+     * shared heap id and slot storage).
      */
     <M extends Model> M newCopy() throws ModelException;
 

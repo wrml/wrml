@@ -30,8 +30,7 @@ import org.wrml.util.UniqueName;
 
 import java.net.URI;
 
-public enum SystemFormat
-{
+public enum SystemFormat {
 
     json(new UniqueName("application/json"),
             "The WRML System Format representing the \"application/json\" media type.",
@@ -90,8 +89,7 @@ public enum SystemFormat
 
     private final String _FileExtension;
 
-    private SystemFormat(final UniqueName uniqueName, final String description, final URI homePageUri, final URI rfcPageUri, final String fileExtension)
-    {
+    private SystemFormat(final UniqueName uniqueName, final String description, final URI homePageUri, final URI rfcPageUri, final String fileExtension) {
 
         _UniqueName = uniqueName;
 
@@ -106,13 +104,10 @@ public enum SystemFormat
 
     }
 
-    public static SystemFormat fromUniqueName(final UniqueName name)
-    {
+    public static SystemFormat fromUniqueName(final UniqueName name) {
 
-        for (final SystemFormat format : SystemFormat.values())
-        {
-            if (format._UniqueName.equals(name))
-            {
+        for (final SystemFormat format : SystemFormat.values()) {
+            if (format._UniqueName.equals(name)) {
                 return format;
             }
         }
@@ -120,44 +115,37 @@ public enum SystemFormat
         return null;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
 
         return _Description;
     }
 
-    public URI getFormatUri()
-    {
+    public URI getFormatUri() {
 
         return _FormatUri;
     }
 
-    public URI getHomePageUri()
-    {
+    public URI getHomePageUri() {
 
         return _HomePageUri;
     }
 
-    public MediaType getMediaType()
-    {
+    public MediaType getMediaType() {
 
         return _MediaType;
     }
 
-    public URI getRfcPageUri()
-    {
+    public URI getRfcPageUri() {
 
         return _RfcPageUri;
     }
 
-    public UniqueName getUniqueName()
-    {
+    public UniqueName getUniqueName() {
 
         return _UniqueName;
     }
 
-    public String getFileExtension()
-    {
+    public String getFileExtension() {
 
         return _FileExtension;
     }

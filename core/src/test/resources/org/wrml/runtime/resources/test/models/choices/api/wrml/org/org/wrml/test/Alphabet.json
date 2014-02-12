@@ -1,7 +1,6 @@
 {
-    "uniqueName" : "org/wrml/test/Alphabet",
-    "list" :
-    [
+    "uniqueName": "org/wrml/test/Alphabet",
+    "list": [
         "alf",
         "buckarooBanzai",
         "capricaSix",
@@ -29,5 +28,5 @@
         "y",
         "zippy"
     ],
-    "version" : 1
+    "version": 1
 }

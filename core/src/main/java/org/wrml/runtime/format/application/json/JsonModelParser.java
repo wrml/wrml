@@ -24,24 +24,21 @@
  */
 package org.wrml.runtime.format.application.json;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import org.wrml.runtime.format.ModelParser;
 import org.wrml.runtime.format.ModelParserException;
 import org.wrml.runtime.format.ModelToken;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class JsonModelParser implements ModelParser
-{
+public class JsonModelParser implements ModelParser {
 
     private final static Map<JsonToken, ModelToken> TOKEN_MAP = new HashMap<JsonToken, ModelToken>();
 
-    static
-    {
+    static {
         JsonModelParser.TOKEN_MAP.put(JsonToken.START_OBJECT, ModelToken.MODEL_START);
         JsonModelParser.TOKEN_MAP.put(JsonToken.END_OBJECT, ModelToken.MODEL_END);
         JsonModelParser.TOKEN_MAP.put(JsonToken.FIELD_NAME, ModelToken.SLOT_NAME);
@@ -57,44 +54,44 @@ public class JsonModelParser implements ModelParser
 
     private final JsonParser _JsonParser;
 
-    public JsonModelParser(final JsonParser jsonParser)
-    {
+    public JsonModelParser(final JsonParser jsonParser) {
+
         _JsonParser = jsonParser;
     }
 
-    public JsonParser getJsonParser()
-    {
+    public JsonParser getJsonParser() {
+
         return _JsonParser;
     }
 
     @Override
-    public Double parseDoubleValue() throws IOException, ModelParserException
-    {
+    public Double parseDoubleValue() throws IOException, ModelParserException {
+
         return getJsonParser().getDoubleValue();
     }
 
     @Override
-    public Integer parseIntegerValue() throws IOException, ModelParserException
-    {
+    public Integer parseIntegerValue() throws IOException, ModelParserException {
+
         return getJsonParser().getIntValue();
     }
 
     @Override
-    public ModelToken parseNextToken() throws IOException, ModelParserException
-    {
+    public ModelToken parseNextToken() throws IOException, ModelParserException {
+
         final JsonToken jsonToken = getJsonParser().nextToken();
         return JsonModelParser.TOKEN_MAP.get(jsonToken);
     }
 
     @Override
-    public String parseSlotName() throws IOException, ModelParserException
-    {
+    public String parseSlotName() throws IOException, ModelParserException {
+
         return getJsonParser().getCurrentName();
     }
 
     @Override
-    public String parseTextValue() throws IOException, ModelParserException
-    {
+    public String parseTextValue() throws IOException, ModelParserException {
+
         return getJsonParser().getText();
     }
 

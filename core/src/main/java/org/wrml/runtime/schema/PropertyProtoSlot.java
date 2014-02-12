@@ -47,7 +47,7 @@ import java.util.Set;
  * A {@link PropertyProtoSlot} is used by the runtime to hold the detailed knowledge about a particular {@link org.wrml.model.schema.Slot}. Unlike the {@link LinkProtoSlot}, this
  * type of {@link ProtoSlot} is to describe a slot that has<i>property</i> and is similar (in concept) to the {@link java.beans.PropertyDescriptor}.
  * </p>
- * 
+ *
  * @see Property
  * @see Prototype
  * @see ProtoSlot
@@ -55,8 +55,7 @@ import java.util.Set;
  * @see org.wrml.model.schema.Schema
  * @see org.wrml.model.schema.Slot
  */
-public class PropertyProtoSlot extends ProtoSlot
-{
+public class PropertyProtoSlot extends ProtoSlot {
 
     private final Property _Property;
 
@@ -92,13 +91,11 @@ public class PropertyProtoSlot extends ProtoSlot
 
     private boolean _Searchable;
 
-    PropertyProtoSlot(final Prototype prototype, final String slotName, final Property property)
-    {
+    PropertyProtoSlot(final Prototype prototype, final String slotName, final Property property) {
 
         super(prototype, slotName);
 
-        if (property == null)
-        {
+        if (property == null) {
             throw new NullPointerException("Prototype (" + prototype + ") Slot (" + slotName + ") property cannot be null.");
         }
 
@@ -109,70 +106,56 @@ public class PropertyProtoSlot extends ProtoSlot
         final SyntaxLoader syntaxLoader = getContext().getSyntaxLoader();
 
         final DefaultValue defaultValue = getAnnotation(DefaultValue.class);
-        if (defaultValue != null)
-        {
+        if (defaultValue != null) {
             final String defaultValueString = defaultValue.value();
 
-            try
-            {
+            try {
                 _DefaultValue = syntaxLoader.parseSyntacticText(defaultValueString, heapValueType);
             }
-            catch (final Exception e)
-            {
+            catch (final Exception e) {
 
                 throw new PrototypeException(prototype + " slot named \"" + slotName + "\" default value annotation's value could not be converted from text value \""
                         + defaultValueString + "\" to a Java " + heapValueType + ". Detail message: " + e.getMessage(), e, prototype, slotName);
             }
         }
 
-        if (Boolean.TYPE.equals(heapValueType))
-        {
-            if (_DefaultValue == null)
-            {
+        if (Boolean.TYPE.equals(heapValueType)) {
+            if (_DefaultValue == null) {
                 _DefaultValue = Boolean.FALSE;
             }
         }
-        else if (TypeUtils.isAssignable(heapValueType, Enum.class))
-        {
+        else if (TypeUtils.isAssignable(heapValueType, Enum.class)) {
 
-            if (_DefaultValue == null)
-            {
+            if (_DefaultValue == null) {
                 // Enum's default to their first constant
                 // Single selects default to the first choice
                 @SuppressWarnings("unchecked")
                 final Class<Enum<?>> enumValueType = (Class<Enum<?>>) heapValueType;
-                if (enumValueType != null)
-                {
+                if (enumValueType != null) {
                     final Enum<?>[] enumChoices = enumValueType.getEnumConstants();
-                    if (enumChoices != null && enumChoices.length > 0)
-                    {
+                    if (enumChoices != null && enumChoices.length > 0) {
                         _DefaultValue = enumChoices[0];
                     }
                 }
             }
 
         }
-        else if (TypeUtils.isAssignable(heapValueType, Number.class) || Integer.TYPE.equals(heapValueType) || Long.TYPE.equals(heapValueType) || Double.TYPE.equals(heapValueType))
-        {
+        else if (TypeUtils.isAssignable(heapValueType, Number.class) || Integer.TYPE.equals(heapValueType) || Long.TYPE.equals(heapValueType) || Double.TYPE.equals(heapValueType)) {
 
-            if (_DefaultValue == null && Integer.TYPE.equals(heapValueType) || Long.TYPE.equals(heapValueType) || Double.TYPE.equals(heapValueType))
-            {
+            if (_DefaultValue == null && Integer.TYPE.equals(heapValueType) || Long.TYPE.equals(heapValueType) || Double.TYPE.equals(heapValueType)) {
                 _DefaultValue = getValueType().getDefaultValue();
             }
 
             // isolate()
             {
                 final MinimumValue minimumValue = getAnnotation(MinimumValue.class);
-                if (minimumValue != null)
-                {
+                if (minimumValue != null) {
                     final String minimumValueString = minimumValue.value();
 
-                    try
-                    {
+                    try {
                         _MinimumValue = syntaxLoader.parseSyntacticText(minimumValueString, heapValueType);
                     }
-                    catch (final Exception e)
-                    {
+                    catch (final Exception e) {
 
                         throw new PrototypeException(prototype + " slot named \"" + slotName + "\" minimum value annotation's value could not be converted from text value \""
                                 + minimumValueString + "\" to a Java " + heapValueType + ". Detail message: " + e.getMessage(), e, prototype, slotName);
@@ -186,16 +169,13 @@ public class PropertyProtoSlot extends ProtoSlot
             // isolate()
             {
                 final MaximumValue maximumValue = getAnnotation(MaximumValue.class);
-                if (maximumValue != null)
-                {
+                if (maximumValue != null) {
                     final String maximumValueString = maximumValue.value();
 
-                    try
-                    {
+                    try {
                         _MaximumValue = syntaxLoader.parseSyntacticText(maximumValueString, heapValueType);
                     }
-                    catch (final Exception e)
-                    {
+                    catch (final Exception e) {
 
                         throw new PrototypeException(prototype + " slot named \"" + slotName + "\" maximum value annotation's value could not be converted from text value \""
                                 + maximumValueString + "\" to a Java " + heapValueType + ". Detail message: " + e.getMessage(), e, prototype, slotName);
@@ -209,24 +189,20 @@ public class PropertyProtoSlot extends ProtoSlot
             {
                 final DivisibleByValue divisibleByValue = getAnnotation(DivisibleByValue.class);
                 if (divisibleByValue != null &&
-                // The "divisible by" constraint does not apply to doubles
-                        !Double.TYPE.equals(heapValueType) && !TypeUtils.isAssignable(heapValueType, Double.class))
-                {
+                        // The "divisible by" constraint does not apply to doubles
+                        !Double.TYPE.equals(heapValueType) && !TypeUtils.isAssignable(heapValueType, Double.class)) {
                     final String divisibleByValueString = divisibleByValue.value();
 
-                    try
-                    {
+                    try {
                         _DivisibleByValue = syntaxLoader.parseSyntacticText(divisibleByValueString, heapValueType);
                     }
-                    catch (final Exception e)
-                    {
+                    catch (final Exception e) {
 
                         throw new PrototypeException(prototype + " slot named \"" + slotName + "\" divisibleBy value annotation's value could not be converted from text value \""
                                 + divisibleByValueString + "\" to a Java " + heapValueType + ". Detail message: " + e.getMessage(), e, prototype, slotName);
                     }
 
-                    if (_DivisibleByValue.equals(0))
-                    {
+                    if (_DivisibleByValue.equals(0)) {
                         throw new PrototypeException(prototype + " slot named \"" + slotName + "\" divisibleBy value annotation's value could not be converted from text value \""
                                 + divisibleByValueString + "\" to a Java " + heapValueType + ". Detail message: " + "zero value", null, prototype, slotName);
 
@@ -238,14 +214,11 @@ public class PropertyProtoSlot extends ProtoSlot
             // isolate()
             {
                 final DisallowedValues disallowedValues = getAnnotation(DisallowedValues.class);
-                if (disallowedValues != null)
-                {
+                if (disallowedValues != null) {
                     final String[] disallowedValuesArray = disallowedValues.value();
-                    if (disallowedValuesArray != null)
-                    {
+                    if (disallowedValuesArray != null) {
                         _DisallowedValues = new LinkedHashSet<>(disallowedValuesArray.length);
-                        for (final String disallowedValueString : disallowedValuesArray)
-                        {
+                        for (final String disallowedValueString : disallowedValuesArray) {
 
                             final Object disallowedValue = syntaxLoader.parseSyntacticText(disallowedValueString, heapValueType);
 
@@ -256,67 +229,56 @@ public class PropertyProtoSlot extends ProtoSlot
             }
 
         }
-        else if (String.class.equals(heapValueType))
-        {
+        else if (String.class.equals(heapValueType)) {
 
             final MinimumLength minimumLength = getAnnotation(MinimumLength.class);
-            if (minimumLength != null)
-            {
+            if (minimumLength != null) {
                 _MinimumLength = minimumLength.value();
             }
 
             final MaximumLength maximumLength = getAnnotation(MaximumLength.class);
-            if (maximumLength != null)
-            {
+            if (maximumLength != null) {
                 _MaximumLength = maximumLength.value();
             }
 
             final Multiline multiline = getAnnotation(Multiline.class);
-            if (multiline != null)
-            {
+            if (multiline != null) {
                 _IsMultiline = true;
             }
 
             final DisallowedValues disallowedValues = getAnnotation(DisallowedValues.class);
-            if (disallowedValues != null)
-            {
+            if (disallowedValues != null) {
                 final String[] disallowedValuesArray = disallowedValues.value();
-                if (disallowedValuesArray != null)
-                {
+                if (disallowedValuesArray != null) {
                     _DisallowedValues = new LinkedHashSet<>(disallowedValuesArray.length);
                     _DisallowedValues.addAll(Arrays.asList(disallowedValuesArray));
                 }
             }
 
         }
-        else if (TypeUtils.isAssignable(heapValueType, Collection.class))
-        {
+        else if (TypeUtils.isAssignable(heapValueType, Collection.class)) {
 
             final MinimumSize minimumSize = getAnnotation(MinimumSize.class);
-            if (minimumSize != null)
-            {
+            if (minimumSize != null) {
                 _MinimumSize = minimumSize.value();
             }
 
             final MaximumSize maximumSize = getAnnotation(MaximumSize.class);
-            if (maximumSize != null)
-            {
+            if (maximumSize != null) {
                 _MaximumSize = maximumSize.value();
             }
 
         }
 
         final Searchable searchable = getAnnotation(Searchable.class);
-        if (searchable != null)
-        {
+        if (searchable != null) {
             _Searchable = true;
         }
 
     }
 
     @Override
-    public URI getDeclaringSchemaUri()
-    {
+    public URI getDeclaringSchemaUri() {
 
         final Class<?> declaringSchemaInterface = getProperty().getDeclaringClass();
         final URI declaringSchemaUri = getSchemaLoader().getTypeUri(declaringSchemaInterface);
@@ -324,43 +286,36 @@ public class PropertyProtoSlot extends ProtoSlot
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getDefaultValue()
-    {
+    public <T> T getDefaultValue() {
 
         return (T) _DefaultValue;
     }
 
-    public Set<?> getDisallowedValues()
-    {
+    public Set<?> getDisallowedValues() {
 
         return _DisallowedValues;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getDivisibleByValue()
-    {
+    public <T> T getDivisibleByValue() {
 
         return (T) _DivisibleByValue;
     }
 
     @Override
-    public Type getHeapValueType()
-    {
+    public Type getHeapValueType() {
 
         return getProperty().getType();
     }
 
-    public URI getListElementSchemaUri()
-    {
+    public URI getListElementSchemaUri() {
 
-        if (_ListElementSchemaUri == null)
-        {
+        if (_ListElementSchemaUri == null) {
 
             final java.lang.reflect.Type listElementType = getListElementType();
 
             // Compare the List's element type to the Model type
-            if (TypeUtils.isAssignable(listElementType, ValueType.JAVA_TYPE_MODEL))
-            {
+            if (TypeUtils.isAssignable(listElementType, ValueType.JAVA_TYPE_MODEL)) {
                 final SchemaLoader schemaLoader = getSchemaLoader();
                 _ListElementSchemaUri = schemaLoader.getTypeUri(listElementType);
             }
@@ -369,14 +324,11 @@ public class PropertyProtoSlot extends ProtoSlot
         return _ListElementSchemaUri;
     }
 
-    public java.lang.reflect.Type getListElementType()
-    {
+    public java.lang.reflect.Type getListElementType() {
 
-        if (_ListElementType == null)
-        {
+        if (_ListElementType == null) {
 
-            if (getValueType() != ValueType.List)
-            {
+            if (getValueType() != ValueType.List) {
                 throw new PrototypeException("Prototype (" + getPrototype() + ") Slot (" + getName() + ") is not a List.", null, getPrototype(), getName());
             }
 
@@ -386,52 +338,43 @@ public class PropertyProtoSlot extends ProtoSlot
         return _ListElementType;
     }
 
-    public Integer getMaximumLength()
-    {
+    public Integer getMaximumLength() {
 
         return _MaximumLength;
     }
 
-    public Integer getMaximumSize()
-    {
+    public Integer getMaximumSize() {
 
         return _MaximumSize;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getMaximumValue()
-    {
+    public <T> T getMaximumValue() {
 
         return (T) _MaximumValue;
     }
 
-    public Integer getMinimumLength()
-    {
+    public Integer getMinimumLength() {
 
         return _MinimumLength;
     }
 
-    public Integer getMinimumSize()
-    {
+    public Integer getMinimumSize() {
 
         return _MinimumSize;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getMinimumValue()
-    {
+    public <T> T getMinimumValue() {
 
         return (T) _MinimumValue;
     }
 
-    public URI getModelSchemaUri()
-    {
+    public URI getModelSchemaUri() {
 
-        if (_ModelSchemaUri == null)
-        {
+        if (_ModelSchemaUri == null) {
 
-            if (getValueType() != ValueType.Model)
-            {
+            if (getValueType() != ValueType.Model) {
                 throw new PrototypeException("Prototype (" + getPrototype() + ") Slot (" + getName() + ") is not a model type.", null, getPrototype(), getName());
             }
 
@@ -442,114 +385,92 @@ public class PropertyProtoSlot extends ProtoSlot
         return _ModelSchemaUri;
     }
 
-    public Property getProperty()
-    {
+    public Property getProperty() {
 
         return _Property;
     }
 
-    public boolean isExclusiveMaximum()
-    {
+    public boolean isExclusiveMaximum() {
 
         return _IsExclusiveMaximum;
     }
 
-    public boolean isExclusiveMinimum()
-    {
+    public boolean isExclusiveMinimum() {
 
         return _IsExclusiveMinimum;
     }
 
 
-    public boolean isMultiline()
-    {
+    public boolean isMultiline() {
 
         return _IsMultiline;
     }
 
-    public boolean isSearchable()
-    {
+    public boolean isSearchable() {
 
         return _Searchable;
     }
 
-    public void validateNewValue(final Model model, final Object newValue) throws PrototypeException
-    {
+    public void validateNewValue(final Model model, final Object newValue) throws PrototypeException {
 
         final String name = getName();
 
-        if (_DisallowedValues != null && _DisallowedValues.contains(newValue))
-        {
+        if (_DisallowedValues != null && _DisallowedValues.contains(newValue)) {
             throw new PrototypeException("The " + name + " value: " + newValue + " is disallowed.", null, getPrototype(), name);
         }
 
         final ValueType valueType = getValueType();
 
-        switch (valueType)
-        {
-            case Boolean:
-            {
+        switch (valueType) {
+            case Boolean: {
                 break;
             }
 
-            case Date:
-            {
+            case Date: {
                 break;
             }
 
-            case Double:
-            {
-                if (newValue == null)
-                {
+            case Double: {
+                if (newValue == null) {
                     break;
                 }
 
-                if (_MaximumValue != null)
-                {
+                if (_MaximumValue != null) {
                     final boolean lessThanMax;
-                    if (isExclusiveMaximum())
-                    {
+                    if (isExclusiveMaximum()) {
                         lessThanMax = (double) newValue < (double) _MaximumValue;
                     }
-                    else
-                    {
+                    else {
                         lessThanMax = (double) newValue <= (double) _MaximumValue;
                     }
 
-                    if (!lessThanMax)
-                    {
+                    if (!lessThanMax) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is greater than the maximum allowed value: " + _MaximumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_MinimumValue != null)
-                {
+                if (_MinimumValue != null) {
                     final boolean greaterThanMin;
-                    if (isExclusiveMinimum())
-                    {
+                    if (isExclusiveMinimum()) {
                         greaterThanMin = (double) newValue > (double) _MinimumValue;
                     }
-                    else
-                    {
+                    else {
                         greaterThanMin = (double) newValue >= (double) _MinimumValue;
                     }
 
-                    if (!greaterThanMin)
-                    {
+                    if (!greaterThanMin) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is less than the minimum allowed value: " + _MinimumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_DivisibleByValue != null)
-                {
+                if (_DivisibleByValue != null) {
 
                     final double remainder = Math.IEEEremainder((double) newValue, (double) _DivisibleByValue);
                     final boolean divisbleBy = (remainder == 0.0);
 
-                    if (!divisbleBy)
-                    {
+                    if (!divisbleBy) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is not divisible by: " + _DivisibleByValue, null, getPrototype(), name);
                     }
                 }
@@ -557,56 +478,44 @@ public class PropertyProtoSlot extends ProtoSlot
                 break;
             }
 
-            case Integer:
-            {
-                if (newValue == null)
-                {
+            case Integer: {
+                if (newValue == null) {
                     break;
                 }
 
-                if (_MaximumValue != null)
-                {
+                if (_MaximumValue != null) {
                     final boolean lessThanMax;
-                    if (isExclusiveMaximum())
-                    {
+                    if (isExclusiveMaximum()) {
                         lessThanMax = (int) newValue < (int) _MaximumValue;
                     }
-                    else
-                    {
+                    else {
                         lessThanMax = (int) newValue <= (int) _MaximumValue;
                     }
 
-                    if (!lessThanMax)
-                    {
+                    if (!lessThanMax) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is greater than the maximum allowed value: " + _MaximumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_MinimumValue != null)
-                {
+                if (_MinimumValue != null) {
                     final boolean greaterThanMin;
-                    if (isExclusiveMinimum())
-                    {
+                    if (isExclusiveMinimum()) {
                         greaterThanMin = (int) newValue > (int) _MinimumValue;
                     }
-                    else
-                    {
+                    else {
                         greaterThanMin = (int) newValue >= (int) _MinimumValue;
                     }
 
-                    if (!greaterThanMin)
-                    {
+                    if (!greaterThanMin) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is less than the minimum allowed value: " + _MinimumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_DivisibleByValue != null)
-                {
+                if (_DivisibleByValue != null) {
                     final boolean divisbleBy = ((int) newValue % (int) _DivisibleByValue) == 0;
-                    if (!divisbleBy)
-                    {
+                    if (!divisbleBy) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is not divisible by: " + _DivisibleByValue, null, getPrototype(), name);
                     }
                 }
@@ -614,64 +523,50 @@ public class PropertyProtoSlot extends ProtoSlot
                 break;
             }
 
-            case Link:
-            {
+            case Link: {
                 break;
             }
-            case List:
-            {
+            case List: {
                 break;
             }
-            case Long:
-            {
-                if (newValue == null)
-                {
+            case Long: {
+                if (newValue == null) {
                     break;
                 }
 
-                if (_MaximumValue != null)
-                {
+                if (_MaximumValue != null) {
                     final boolean lessThanMax;
-                    if (isExclusiveMaximum())
-                    {
+                    if (isExclusiveMaximum()) {
                         lessThanMax = (long) newValue < (long) _MaximumValue;
                     }
-                    else
-                    {
+                    else {
                         lessThanMax = (long) newValue <= (long) _MaximumValue;
                     }
 
-                    if (!lessThanMax)
-                    {
+                    if (!lessThanMax) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is greater than the maximum allowed value: " + _MaximumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_MinimumValue != null)
-                {
+                if (_MinimumValue != null) {
                     final boolean greaterThanMin;
-                    if (isExclusiveMinimum())
-                    {
+                    if (isExclusiveMinimum()) {
                         greaterThanMin = (long) newValue > (long) _MinimumValue;
                     }
-                    else
-                    {
+                    else {
                         greaterThanMin = (long) newValue >= (long) _MinimumValue;
                     }
 
-                    if (!greaterThanMin)
-                    {
+                    if (!greaterThanMin) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is less than the minimum allowed value: " + _MinimumValue, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_DivisibleByValue != null)
-                {
+                if (_DivisibleByValue != null) {
                     final boolean divisbleBy = ((long) newValue % (long) _DivisibleByValue) == 0L;
-                    if (!divisbleBy)
-                    {
+                    if (!divisbleBy) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is not divisible by: " + _DivisibleByValue, null, getPrototype(), name);
                     }
                 }
@@ -679,42 +574,33 @@ public class PropertyProtoSlot extends ProtoSlot
                 break;
 
             }
-            case Model:
-            {
+            case Model: {
                 break;
             }
-            case Native:
-            {
+            case Native: {
                 break;
             }
-            case SingleSelect:
-            {
+            case SingleSelect: {
                 break;
             }
-            case Text:
-            {
-                if (newValue == null)
-                {
+            case Text: {
+                if (newValue == null) {
                     break;
                 }
 
-                if (_MaximumLength != null)
-                {
+                if (_MaximumLength != null) {
                     final boolean lessThanMax = ((String) newValue).length() < _MaximumLength;
 
-                    if (!lessThanMax)
-                    {
+                    if (!lessThanMax) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is longer than the maximum allowed length: " + _MaximumLength, null, getPrototype(),
                                 name);
                     }
                 }
 
-                if (_MinimumLength != null)
-                {
+                if (_MinimumLength != null) {
                     final boolean greaterThanMin = ((String) newValue).length() > _MinimumLength;
 
-                    if (!greaterThanMin)
-                    {
+                    if (!greaterThanMin) {
                         throw new PrototypeException("The " + name + " value: " + newValue + " is shorter than the minimum allowed length: " + _MinimumLength, null,
                                 getPrototype(), name);
                     }
@@ -722,8 +608,7 @@ public class PropertyProtoSlot extends ProtoSlot
 
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
         }
@@ -731,8 +616,7 @@ public class PropertyProtoSlot extends ProtoSlot
     }
 
     @Override
-    protected <T extends Annotation> T getAnnotationInternal(final Class<T> annotationClass)
-    {
+    protected <T extends Annotation> T getAnnotationInternal(final Class<T> annotationClass) {
 
         return getProperty().getAnnotation(annotationClass);
     }

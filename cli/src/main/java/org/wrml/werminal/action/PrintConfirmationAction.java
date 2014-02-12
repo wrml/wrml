@@ -39,24 +39,20 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PrintConfirmationAction extends CloseAfterAction
-{
-    public PrintConfirmationAction(final Werminal werminal)
-    {
+public class PrintConfirmationAction extends CloseAfterAction {
+    public PrintConfirmationAction(final Werminal werminal) {
 
         super(werminal, "Print");
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
 
         final Window topWindow = werminal.getTopWindow();
 
-        if (!(topWindow instanceof PrintDialog))
-        {
+        if (!(topWindow instanceof PrintDialog)) {
             werminal.showError("The " + getTitle() + " action requires a top level " + PrintDialog.class.getSimpleName());
             return false;
         }
@@ -78,12 +74,10 @@ public class PrintConfirmationAction extends CloseAfterAction
 
         writeOptions.setExcludedSchemaUris(excludedSchemaUris);
 
-        try
-        {
+        try {
             FileSystemService.writeModelFile(model, filePath, formatUri, writeOptions);
         }
-        catch (final Exception e)
-        {
+        catch (final Exception e) {
             werminal.showError("Print Failed.", e);
             return false;
         }

@@ -29,8 +29,7 @@ import com.googlecode.lanterna.gui.Theme;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TerminalAppTheme<E extends Enum<E>> extends Theme
-{
+public abstract class TerminalAppTheme<E extends Enum<E>> extends Theme {
 
     private final Map<E, Definition> _Definitions;
 
@@ -38,30 +37,26 @@ public abstract class TerminalAppTheme<E extends Enum<E>> extends Theme
 
     private final Class<E> _DefinitionEnumClass;
 
-    public TerminalAppTheme(final Class<E> definitionEnumClass)
-    {
+    public TerminalAppTheme(final Class<E> definitionEnumClass) {
 
         _DefinitionEnumClass = definitionEnumClass;
         _Definitions = new HashMap<>();
         _CategorizedDefinitions = new HashMap<>();
     }
 
-    protected Map<Category, Definition> getCategorizedDefinitions()
-    {
+    protected Map<Category, Definition> getCategorizedDefinitions() {
 
         return _CategorizedDefinitions;
     }
 
 
-    protected Map<E, Definition> getDefinitions()
-    {
+    protected Map<E, Definition> getDefinitions() {
 
         return _Definitions;
     }
 
     @Override
-    public Definition getDefinition(final Category category)
-    {
+    public Definition getDefinition(final Category category) {
 
         return _CategorizedDefinitions.get(category);
     }

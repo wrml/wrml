@@ -29,20 +29,17 @@ import org.wrml.model.rest.status.ErrorReport;
 
 import javax.servlet.ServletException;
 
-public class WrmlServletException extends ServletException
-{
+public class WrmlServletException extends ServletException {
 
     private final ErrorReport _ErrorReport;
 
-    public WrmlServletException(final ErrorReport errorReport)
-    {
+    public WrmlServletException(final ErrorReport errorReport) {
 
         super(errorReport.getDescription());
         _ErrorReport = errorReport;
     }
 
-    public ErrorReport getErrorReport()
-    {
+    public ErrorReport getErrorReport() {
 
         return _ErrorReport;
     }

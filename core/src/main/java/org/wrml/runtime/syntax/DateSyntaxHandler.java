@@ -24,32 +24,29 @@
  */
 package org.wrml.runtime.syntax;
 
-import java.util.Date;
-
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
+
+import java.util.Date;
 
 /**
  * TODO: Document the Date format and make it pluggable (config mapping of schema uri (w/ slot name) to date format?)
  */
-public class DateSyntaxHandler extends SyntaxHandler<Date>
-{
+public class DateSyntaxHandler extends SyntaxHandler<Date> {
 
     @Override
-    public String formatSyntaxValue(final Date date)
-    {
+    public String formatSyntaxValue(final Date date) {
+
         return DateUtils.formatDate(date);
     }
 
     @Override
-    public Date parseSyntacticText(final String dateString)
-    {
-        try
-        {
+    public Date parseSyntacticText(final String dateString) {
+
+        try {
             return DateUtils.parseDate(dateString);
         }
-        catch (final DateParseException e)
-        {
+        catch (final DateParseException e) {
             throw new SyntaxHandlerException("Failed to transform String value \"" + dateString + "\" to a Date", e,
                     this);
         }

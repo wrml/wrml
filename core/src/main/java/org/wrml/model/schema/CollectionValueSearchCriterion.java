@@ -40,8 +40,7 @@ import org.wrml.runtime.schema.DefaultValue;
  * @see org.wrml.runtime.schema.CollectionSlotCriterion
  * @see org.wrml.runtime.service.Service#search(org.wrml.runtime.search.SearchCriteria)
  */
-public interface CollectionValueSearchCriterion extends Model
-{
+public interface CollectionValueSearchCriterion extends Model {
 
     /**
      * <p>

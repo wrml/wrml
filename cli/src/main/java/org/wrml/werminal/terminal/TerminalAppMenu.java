@@ -27,17 +27,14 @@ package org.wrml.werminal.terminal;
 import com.googlecode.lanterna.gui.Border;
 import com.googlecode.lanterna.gui.component.Panel;
 
-public class TerminalAppMenu extends TerminalAppPanel
-{
+public class TerminalAppMenu extends TerminalAppPanel {
 
-    public TerminalAppMenu(final TerminalApp app)
-    {
+    public TerminalAppMenu(final TerminalApp app) {
 
         this(app, null);
     }
 
-    public TerminalAppMenu(final TerminalApp app, final String title)
-    {
+    public TerminalAppMenu(final TerminalApp app, final String title) {
 
         super(app, title, new Border.Bevel(true), Panel.Orientation.VERTICAL);
     }

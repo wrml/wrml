@@ -24,38 +24,32 @@
  */
 package org.wrml.runtime.format.application.json;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import org.wrml.runtime.format.ModelParser;
 import org.wrml.runtime.format.ModelParserException;
 import org.wrml.runtime.format.ModelParserFactory;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
+import java.io.IOException;
+import java.io.InputStream;
 
-public class JsonModelParserFactory implements ModelParserFactory
-{
+public class JsonModelParserFactory implements ModelParserFactory {
 
     @Override
-    public ModelParser createModelParser(final InputStream in) throws IOException, ModelParserException
-    {
+    public ModelParser createModelParser(final InputStream in) throws IOException, ModelParserException {
 
         final JsonFactory jsonFactory = new JsonFactory();
         final JsonParser jsonParser;
 
-        try
-        {
+        try {
             jsonParser = jsonFactory.createParser(in);
         }
-        catch (final JsonParseException e)
-        {
+        catch (final JsonParseException e) {
             throw new ModelParserException(
                     "An serious JSON related problem has occurred while attempting to parse a Model.", e, null);
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             throw new ModelParserException(
                     "An serious I/O related problem has occurred while attempting to parse a Model.", e, null);
         }

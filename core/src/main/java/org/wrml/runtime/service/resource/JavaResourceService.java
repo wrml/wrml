@@ -45,8 +45,7 @@ import java.util.TreeMap;
 /**
  * Java's resource loading capability as a WRML {@link org.wrml.runtime.service.Service}.
  */
-public class JavaResourceService extends AbstractService
-{
+public class JavaResourceService extends AbstractService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaResourceService.class);
 
@@ -58,8 +57,7 @@ public class JavaResourceService extends AbstractService
 
     private String _ResourceRootDirectoryPath;
 
-    public static final Keys buildModelResourceKeys(final Context context, final Class<?> resourceOwner, final String resourceName)
-    {
+    public static final Keys buildModelResourceKeys(final Context context, final Class<?> resourceOwner, final String resourceName) {
 
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI schemaUri = schemaLoader.getTypeUri(JavaResource.class);
@@ -71,16 +69,14 @@ public class JavaResourceService extends AbstractService
         return keys;
     }
 
-    public static final InputStream getModelResourceInputStream(final Context context, final Keys keys)
-    {
+    public static final InputStream getModelResourceInputStream(final Context context, final Keys keys) {
 
         final SchemaLoader schemaLoader = context.getSchemaLoader();
         final URI schemaUri = schemaLoader.getTypeUri(JavaResource.class);
 
         final CompositeKey compositeKey = keys.getValue(schemaUri);
 
-        if (compositeKey == null)
-        {
+        if (compositeKey == null) {
             return null;
         }
 
@@ -88,44 +84,35 @@ public class JavaResourceService extends AbstractService
         final String resourceOwnerClassName = (String) keySlots.get(JavaResource.RESOURCE_OWNER_CLASS_NAME_SLOT_NAME);
         final String resourceName = (String) keySlots.get(JavaResource.RESOURCE_NAME_SLOT_NAME);
 
-        try
-        {
+        try {
             final Class<?> resourceOwnerClass = Class.forName(resourceOwnerClassName);
             return resourceOwnerClass.getResourceAsStream(resourceName);
         }
-        catch (final Exception t)
-        {
+        catch (final Exception t) {
             return null;
         }
 
     }
 
     @Override
-    protected void initFromConfiguration(final ServiceConfiguration config)
-    {
+    protected void initFromConfiguration(final ServiceConfiguration config) {
 
         final Map<String, String> settings = config.getSettings();
-        if (settings != null)
-        {
+        if (settings != null) {
             final String resourceOwnerClassName = settings.get(RESOURCE_OWNER_CLASS_NAME_SETTING_NAME);
-            if (resourceOwnerClassName != null && !resourceOwnerClassName.isEmpty())
-            {
-                try
-                {
+            if (resourceOwnerClassName != null && !resourceOwnerClassName.isEmpty()) {
+                try {
                     _ResourceOwnerClass = Class.forName(resourceOwnerClassName);
                 }
-                catch (ClassNotFoundException e)
-                {
+                catch (ClassNotFoundException e) {
                     throw new ServiceException(e.getMessage(), e, this);
                 }
             }
 
             final String resourceRootDirectoryPath = settings.get(RESOURCE_ROOT_DIRECTORY_PATH_SETTING_NAME);
-            if (resourceRootDirectoryPath != null && !resourceRootDirectoryPath.isEmpty())
-            {
+            if (resourceRootDirectoryPath != null && !resourceRootDirectoryPath.isEmpty()) {
                 _ResourceRootDirectoryPath = resourceRootDirectoryPath;
-                if (!_ResourceRootDirectoryPath.endsWith("/"))
-                {
+                if (!_ResourceRootDirectoryPath.endsWith("/")) {
                     _ResourceRootDirectoryPath += "/";
                 }
             }
@@ -133,35 +120,29 @@ public class JavaResourceService extends AbstractService
     }
 
     @Override
-    public Model get(final Keys keys, final Dimensions dimensions)
-    {
+    public Model get(final Keys keys, final Dimensions dimensions) {
 
         final Context context = getContext();
         final URI uri = context.getKeyValue(keys, Document.class);
-        if (uri != null && _ResourceOwnerClass != null && _ResourceRootDirectoryPath != null)
-        {
+        if (uri != null && _ResourceOwnerClass != null && _ResourceRootDirectoryPath != null) {
 
             return getModelResource(uri, keys, dimensions);
         }
-        else
-        {
+        else {
 
             final InputStream in = getModelResourceInputStream(context, keys);
-            try
-            {
+            try {
                 final Model model = context.readModel(in, keys, dimensions);
                 return model;
             }
-            catch (Exception t)
-            {
+            catch (Exception t) {
                 throw new ServiceException(t.getMessage(), t, this);
             }
         }
 
     }
 
-    private Model getModelResource(final URI uri, final Keys keys, final Dimensions dimensions)
-    {
+    private Model getModelResource(final URI uri, final Keys keys, final Dimensions dimensions) {
 
         final Context context = getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -172,8 +153,7 @@ public class JavaResourceService extends AbstractService
         relativeResourcePath = StringUtils.replaceChars(relativeResourcePath, ".:", "/");
         String fullResourcePath = _ResourceRootDirectoryPath + relativeResourcePath;
 
-        if (schemaLoader.getApiSchemaUri().equals(dimensions.getSchemaUri()))
-        {
+        if (schemaLoader.getApiSchemaUri().equals(dimensions.getSchemaUri())) {
             fullResourcePath = fullResourcePath + "/_wrml/api";
         }
 
@@ -184,13 +164,11 @@ public class JavaResourceService extends AbstractService
 
         final InputStream in = _ResourceOwnerClass.getResourceAsStream(fullResourcePath);
 
-        try
-        {
+        try {
             final Model model = context.readModel(in, keys, dimensions, SystemFormat.json.getFormatUri());
             return model;
         }
-        catch (Throwable t)
-        {
+        catch (Throwable t) {
             throw new ServiceException(t.getMessage(), t, this);
         }
     }

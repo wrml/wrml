@@ -26,11 +26,9 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class ExitAction extends CloseBeforeAction
-{
+public class ExitAction extends CloseBeforeAction {
 
-    public ExitAction(final Werminal werminal)
-    {
+    public ExitAction(final Werminal werminal) {
 
         super(werminal, "Exit");
     }

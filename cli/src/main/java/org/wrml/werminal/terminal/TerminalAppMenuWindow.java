@@ -28,16 +28,14 @@ import com.googlecode.lanterna.gui.Border;
 import com.googlecode.lanterna.gui.Component;
 import com.googlecode.lanterna.gui.component.EmptySpace;
 
-public class TerminalAppMenuWindow extends TerminalAppWindow
-{
+public class TerminalAppMenuWindow extends TerminalAppWindow {
 
     private final TerminalAppPanel _MenuBar;
 
     private final Component _FooterComponent;
 
     public TerminalAppMenuWindow(final TerminalApp app, final String title, final TerminalAppPanel menuBar,
-                                 final Component footerComponent)
-    {
+                                 final Component footerComponent) {
 
         super(app, "  " + title + "  ");
 
@@ -56,14 +54,12 @@ public class TerminalAppMenuWindow extends TerminalAppWindow
         // closeButtonPanel.getButton().setPreferredSize(new TerminalSize(10,
         // 1));
 
-        if (_FooterComponent != null)
-        {
+        if (_FooterComponent != null) {
             addComponent(_FooterComponent);
         }
     }
 
-    public TerminalAppPanel getMenuBar()
-    {
+    public TerminalAppPanel getMenuBar() {
 
         return _MenuBar;
     }

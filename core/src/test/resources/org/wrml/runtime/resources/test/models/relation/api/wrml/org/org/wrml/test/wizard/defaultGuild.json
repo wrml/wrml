@@ -1,4 +1,4 @@
 {
-    "uniqueName" : "org/wrml/test/wizard/defaultGuild",
-    "responseSchemaUri" : "http://schema.api.wrml.org/org/wrml/test/wizard/Guild"
+    "uniqueName": "org/wrml/test/wizard/defaultGuild",
+    "responseSchemaUri": "http://schema.api.wrml.org/org/wrml/test/wizard/Guild"
 }

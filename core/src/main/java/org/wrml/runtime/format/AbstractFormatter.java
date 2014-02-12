@@ -27,10 +27,8 @@ package org.wrml.runtime.format;
 import org.wrml.runtime.Context;
 
 import java.net.URI;
-import java.util.Map;
 
-public abstract class AbstractFormatter implements Formatter
-{
+public abstract class AbstractFormatter implements Formatter {
 
 
     private Context _Context;
@@ -40,19 +38,16 @@ public abstract class AbstractFormatter implements Formatter
     private FormatterConfiguration _Config;
 
     @Override
-    public final void init(final Context context, FormatterConfiguration config)
-    {
+    public final void init(final Context context, FormatterConfiguration config) {
 
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new NullPointerException("The context cannot be null.");
         }
 
         _Context = context;
 
-        if (context == null)
-        {
+        if (context == null) {
             throw new NullPointerException("The config cannot be null.");
         }
 
@@ -62,42 +57,36 @@ public abstract class AbstractFormatter implements Formatter
     }
 
     @Override
-    public final Context getContext()
-    {
+    public final Context getContext() {
 
         return _Context;
     }
 
     @Override
-    public final FormatterConfiguration getConfig()
-    {
+    public final FormatterConfiguration getConfig() {
 
         return _Config;
     }
 
     @Override
-    public final URI getFormatUri()
-    {
+    public final URI getFormatUri() {
 
         return _FormatUri;
     }
 
     @Override
-    public boolean isApplicableTo(final URI schemaUri)
-    {
+    public boolean isApplicableTo(final URI schemaUri) {
 
         return true;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " [Format = " + _FormatUri + "]";
     }
 
-    protected void initFromConfiguration(final FormatterConfiguration config)
-    {
+    protected void initFromConfiguration(final FormatterConfiguration config) {
         // Do nothing by default
     }
 }

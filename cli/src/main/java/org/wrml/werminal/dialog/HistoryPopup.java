@@ -31,13 +31,11 @@ import org.wrml.werminal.component.HistoryCheckListBox;
 import org.wrml.werminal.component.WerminalTextBox;
 import org.wrml.werminal.window.WerminalWindow;
 
-public class HistoryPopup extends WerminalWindow
-{
+public class HistoryPopup extends WerminalWindow {
 
     private final HistoryCheckListBox _HistoryCheckListBox;
 
-    public HistoryPopup(final Werminal werminal, final String title, final WerminalTextBox keyTextBox)
-    {
+    public HistoryPopup(final Werminal werminal, final String title, final WerminalTextBox keyTextBox) {
 
         super(werminal, title);
         setBorder(new Border.Standard());
@@ -50,8 +48,7 @@ public class HistoryPopup extends WerminalWindow
 
     }
 
-    public HistoryCheckListBox getHistoryCheckListBox()
-    {
+    public HistoryCheckListBox getHistoryCheckListBox() {
 
         return _HistoryCheckListBox;
     }

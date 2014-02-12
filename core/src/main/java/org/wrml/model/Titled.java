@@ -33,8 +33,7 @@ import org.wrml.runtime.schema.WRML;
  */
 @WRML(comparableSlotNames = {"title"})
 @Description("Something with a title. A Titled model declares a \"title\" Text slot.")
-public interface Titled extends Abstract
-{
+public interface Titled extends Abstract {
 
     /**
      * The WRML constant name for a Titled's <i>title</i> slot.

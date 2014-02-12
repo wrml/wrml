@@ -29,14 +29,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileSyntaxHandler extends SyntaxHandler<File>
-{
+public class FileSyntaxHandler extends SyntaxHandler<File> {
 
     @Override
-    public String formatSyntaxValue(final File file)
-    {
-        if (file == null)
-        {
+    public String formatSyntaxValue(final File file) {
+
+        if (file == null) {
             return null;
         }
 
@@ -44,28 +42,23 @@ public class FileSyntaxHandler extends SyntaxHandler<File>
     }
 
     @Override
-    public File parseSyntacticText(final String filePath)
-    {
-        if (filePath == null || filePath.isEmpty())
-        {
+    public File parseSyntacticText(final String filePath) {
+
+        if (filePath == null || filePath.isEmpty()) {
             return null;
         }
 
-        try
-        {
+        try {
             final Path path = Paths.get(filePath);
             final File file = path.toFile();
-            if (file.exists())
-            {
+            if (file.exists()) {
                 return path.toRealPath().toFile();
             }
-            else
-            {
+            else {
                 return file;
             }
         }
-        catch (final IOException e)
-        {
+        catch (final IOException e) {
             throw new SyntaxHandlerException(e.getLocalizedMessage(), e, this);
         }
     }

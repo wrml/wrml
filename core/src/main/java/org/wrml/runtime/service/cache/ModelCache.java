@@ -31,8 +31,7 @@ import org.wrml.runtime.service.Service;
 /**
  * A cache for models.
  */
-public interface ModelCache extends Service
-{
+public interface ModelCache extends Service {
 
     void clear();
 

@@ -37,8 +37,7 @@ import java.util.Set;
  * @see Service
  * @see org.wrml.model.schema.Schema
  */
-public interface ServiceLoader extends Loader
-{
+public interface ServiceLoader extends Loader {
 
     /**
      * The names of the currently loaded {@link Service}s.

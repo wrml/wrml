@@ -27,21 +27,20 @@ package org.wrml.runtime.schema;
 /**
  * The {@link SchemaLoader}'s associated error type.
  */
-public class SchemaLoaderException extends RuntimeException
-{
+public class SchemaLoaderException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final SchemaLoader _SchemaLoader;
 
-    SchemaLoaderException(final String message, final Throwable cause, final SchemaLoader schemaLoader)
-    {
+    SchemaLoaderException(final String message, final Throwable cause, final SchemaLoader schemaLoader) {
+
         super(message, cause);
         _SchemaLoader = schemaLoader;
     }
 
-    public SchemaLoader getSchemaLoader()
-    {
+    public SchemaLoader getSchemaLoader() {
+
         return _SchemaLoader;
     }
 }

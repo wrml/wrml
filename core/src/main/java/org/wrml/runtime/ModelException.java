@@ -29,8 +29,7 @@ import org.wrml.model.Model;
 /**
  * The modeling framework's base exception class.
  */
-public class ModelException extends RuntimeException
-{
+public class ModelException extends RuntimeException {
 
     private final Model _Model;
 
@@ -38,29 +37,24 @@ public class ModelException extends RuntimeException
 
     /**
      * Create a new {@link ModelException}.
-     * 
-     * @param message
-     *            The message to convey.
-     * 
-     * @param cause
-     *            The (internal) cause of the issue.
-     * 
-     * @param model
-     *            The model with issues.
+     *
+     * @param message The message to convey.
+     * @param cause   The (internal) cause of the issue.
+     * @param model   The model with issues.
      */
-    public ModelException(final String message, final Throwable cause, final Model model)
-    {
+    public ModelException(final String message, final Throwable cause, final Model model) {
+
         super(message, cause);
         _Model = model;
     }
 
     /**
      * Get the troublemaker.
-     * 
+     *
      * @return The model that all this fuss is about.
      */
-    public Model getModel()
-    {
+    public Model getModel() {
+
         return _Model;
     }
 

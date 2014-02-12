@@ -32,8 +32,7 @@ import org.wrml.runtime.schema.WRML;
  */
 @WRML(comparableSlotNames = {"name"})
 @Description("Something with a name.")
-public interface Named extends Abstract
-{
+public interface Named extends Abstract {
 
     /**
      * The WRML constant name for a Named's <i>name</i> slot.

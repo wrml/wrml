@@ -24,11 +24,7 @@
  */
 package org.wrml.runtime.schema;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.format.Format;
@@ -47,102 +43,88 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.SortedSet;
 
-public class SchemaLoaderTest
-{
+public class SchemaLoaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SchemaLoaderTest.class);
 
     private SchemaLoader _SchemaLoader;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
+
         _SchemaLoader = ContextTest.createTestContext().getSchemaLoader();
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
         _SchemaLoader = null;
     }
 
     @Test(expected = SchemaLoaderException.class)
-    public void initParamContextNullFailure()
-    {
+    public void initParamContextNullFailure() {
 
         final SchemaLoader schemaLoader = new DefaultSchemaLoader();
         schemaLoader.init(null);
     }
 
     @Test
-    public void schemaLoaderNotNull()
-    {
+    public void schemaLoaderNotNull() {
 
         Assert.assertNotNull(_SchemaLoader);
     }
 
     @Test
-    public void contextNotNull()
-    {
+    public void contextNotNull() {
 
         Assert.assertNotNull(_SchemaLoader.getContext());
     }
 
     @Test
-    public void jsonSchemaLoaderNotNull()
-    {
+    public void jsonSchemaLoaderNotNull() {
 
         Assert.assertNotNull(_SchemaLoader.getJsonSchemaLoader());
     }
 
     @Test
-    public void getLoadedSchemaUrisNotNull()
-    {
+    public void getLoadedSchemaUrisNotNull() {
 
         Assert.assertNotNull(_SchemaLoader.getLoadedSchemaUris());
     }
 
     @Test
-    public void getLoadedSchemaUrisIsEmpty()
-    {
+    public void getLoadedSchemaUrisIsEmpty() {
 
         Assert.assertTrue(_SchemaLoader.getLoadedSchemaUris().isEmpty());
     }
 
     @Test
-    public void getPrototypedSchemaUrisNotNull()
-    {
+    public void getPrototypedSchemaUrisNotNull() {
 
         Assert.assertNotNull(_SchemaLoader.getPrototypedSchemaUris());
     }
 
     @Test
-    public void getPrototypedSchemaUrisNotEmpty()
-    {
+    public void getPrototypedSchemaUrisNotEmpty() {
 
         Assert.assertTrue(!_SchemaLoader.getPrototypedSchemaUris().isEmpty());
     }
 
     @Test
-    public void getPrototypedSchemaUrisNotLying()
-    {
+    public void getPrototypedSchemaUrisNotLying() {
 
         final SortedSet<URI> prototypedSchemaUris = _SchemaLoader.getPrototypedSchemaUris();
-        for (final URI schemaUri : prototypedSchemaUris)
-        {
+        for (final URI schemaUri : prototypedSchemaUris) {
             final Prototype prototype = _SchemaLoader.getPrototype(schemaUri);
             Assert.assertNotNull(prototype);
         }
     }
 
     @Test
-    public void loadPrototypedSchemas()
-    {
+    public void loadPrototypedSchemas() {
 
         final SortedSet<URI> prototypedSchemaUris = _SchemaLoader.getPrototypedSchemaUris();
-        for (final URI schemaUri : prototypedSchemaUris)
-        {
+        for (final URI schemaUri : prototypedSchemaUris) {
             final Schema schema = _SchemaLoader.load(schemaUri);
             Assert.assertNotNull(schema);
         }
@@ -151,24 +133,21 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void getDocumentSchemaUri()
-    {
+    public void getDocumentSchemaUri() {
 
         Assert.assertEquals(_SchemaLoader.getDocumentSchemaUri(), _SchemaLoader.getTypeUri(Document.class));
         Assert.assertTrue(_SchemaLoader.getDocumentSchemaUri() == _SchemaLoader.getDocumentSchemaUri());
     }
 
     @Test
-    public void getSchemaSchemaUri()
-    {
+    public void getSchemaSchemaUri() {
 
         Assert.assertEquals(_SchemaLoader.getSchemaSchemaUri(), _SchemaLoader.getTypeUri(Schema.class));
         Assert.assertTrue(_SchemaLoader.getSchemaSchemaUri() == _SchemaLoader.getSchemaSchemaUri());
     }
 
     @Test
-    public void getSchemaDimensions()
-    {
+    public void getSchemaDimensions() {
 
         Assert.assertEquals(_SchemaLoader.getSchemaDimensions(), new DimensionsBuilder(_SchemaLoader.getTypeUri(Schema.class)).toDimensions());
         Assert.assertTrue(_SchemaLoader.getSchemaDimensions().getSchemaUri() == _SchemaLoader.getSchemaSchemaUri());
@@ -176,32 +155,29 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void getLinkRelationSchemaUri()
-    {
+    public void getLinkRelationSchemaUri() {
 
         Assert.assertEquals(_SchemaLoader.getLinkRelationSchemaUri(), _SchemaLoader.getTypeUri(LinkRelation.class));
         Assert.assertTrue(_SchemaLoader.getLinkRelationSchemaUri() == _SchemaLoader.getLinkRelationSchemaUri());
     }
 
     @Test
-    public void getLinkRelationDimensions()
-    {
+    public void getLinkRelationDimensions() {
+
         Assert.assertEquals(_SchemaLoader.getLinkRelationDimensions(), new DimensionsBuilder(_SchemaLoader.getTypeUri(LinkRelation.class)).toDimensions());
         Assert.assertTrue(_SchemaLoader.getLinkRelationDimensions().getSchemaUri() == _SchemaLoader.getLinkRelationSchemaUri());
         Assert.assertTrue(_SchemaLoader.getLinkRelationDimensions() == _SchemaLoader.getLinkRelationDimensions());
     }
 
     @Test
-    public void getApiSchemaUri()
-    {
+    public void getApiSchemaUri() {
 
         Assert.assertEquals(_SchemaLoader.getApiSchemaUri(), _SchemaLoader.getTypeUri(Api.class));
         Assert.assertTrue(_SchemaLoader.getApiSchemaUri() == _SchemaLoader.getApiSchemaUri());
     }
 
     @Test
-    public void getApiDimensions()
-    {
+    public void getApiDimensions() {
 
         Assert.assertEquals(_SchemaLoader.getApiDimensions(), new DimensionsBuilder(_SchemaLoader.getTypeUri(Api.class)).toDimensions());
         Assert.assertTrue(_SchemaLoader.getApiDimensions().getSchemaUri() == _SchemaLoader.getApiSchemaUri());
@@ -209,16 +185,14 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void getFormatSchemaUri()
-    {
+    public void getFormatSchemaUri() {
 
         Assert.assertEquals(_SchemaLoader.getFormatSchemaUri(), _SchemaLoader.getTypeUri(Format.class));
         Assert.assertTrue(_SchemaLoader.getFormatSchemaUri() == _SchemaLoader.getFormatSchemaUri());
     }
 
     @Test
-    public void getFormatDimensions()
-    {
+    public void getFormatDimensions() {
 
         Assert.assertEquals(_SchemaLoader.getFormatDimensions(), new DimensionsBuilder(_SchemaLoader.getTypeUri(Format.class)).toDimensions());
         Assert.assertTrue(_SchemaLoader.getFormatDimensions().getSchemaUri() == _SchemaLoader.getFormatSchemaUri());
@@ -226,16 +200,14 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void loadWrmlSchemaA() throws IOException
-    {
+    public void loadWrmlSchemaA() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_A_URI, _SchemaLoader.getSchemaDimensions());
         Assert.assertNotNull(schema);
     }
 
     @Test
-    public void convertWrmlSchemaToJsonSchemaA() throws IOException
-    {
+    public void convertWrmlSchemaToJsonSchemaA() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_A_URI, _SchemaLoader.getSchemaDimensions());
         final JsonSchema jsonSchema = _SchemaLoader.getJsonSchemaLoader().load(schema);
@@ -244,16 +216,14 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void loadWrmlSchemaB() throws IOException
-    {
+    public void loadWrmlSchemaB() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_B_URI, _SchemaLoader.getSchemaDimensions());
         Assert.assertNotNull(schema);
     }
 
     @Test
-    public void convertWrmlSchemaToJsonSchemaB() throws IOException
-    {
+    public void convertWrmlSchemaToJsonSchemaB() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_B_URI, _SchemaLoader.getSchemaDimensions());
         final JsonSchema jsonSchema = _SchemaLoader.getJsonSchemaLoader().load(schema);
@@ -262,16 +232,14 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void loadWrmlSchemaC() throws IOException
-    {
+    public void loadWrmlSchemaC() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_C_URI, _SchemaLoader.getSchemaDimensions());
         Assert.assertNotNull(schema);
     }
 
     @Test
-    public void convertWrmlSchemaToJsonSchemaC() throws IOException
-    {
+    public void convertWrmlSchemaToJsonSchemaC() throws IOException {
 
         final Schema schema = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_SCHEMA_C_URI, _SchemaLoader.getSchemaDimensions());
         final JsonSchema jsonSchema = _SchemaLoader.getJsonSchemaLoader().load(schema);
@@ -280,16 +248,14 @@ public class SchemaLoaderTest
     }
 
     @Test
-    public void loadWrmlChoicesWrmlLetters() throws IOException
-    {
+    public void loadWrmlChoicesWrmlLetters() throws IOException {
 
         final Choices choices = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_CHOICES_WRML_LETTERS_URI, _SchemaLoader.getChoicesDimensions());
         Assert.assertNotNull(choices);
     }
 
     @Test
-    public void loadWrmlChoicesAlphabet() throws IOException
-    {
+    public void loadWrmlChoicesAlphabet() throws IOException {
 
         final Choices choices = ContextTest.getModelResource(_SchemaLoader.getContext(), ContextTest.WRML_CHOICES_ALPHABET_URI, _SchemaLoader.getChoicesDimensions());
         Assert.assertNotNull(choices);
@@ -297,8 +263,7 @@ public class SchemaLoaderTest
 
     @Ignore
     @Test
-    public void getSchemaSubsystemSchemaNames() throws IOException
-    {
+    public void getSchemaSubsystemSchemaNames() throws IOException {
 
         final String packageName = Schema.class.getPackage().getName();
         final UniqueName namespace = new UniqueName(packageName.replace('.', UniqueName.NAME_SEPARATOR_CHAR));
@@ -307,16 +272,14 @@ public class SchemaLoaderTest
 
         Assert.assertTrue(!schemaNames.isEmpty());
 
-        for (final UniqueName schemaName : schemaNames)
-        {
+        for (final UniqueName schemaName : schemaNames) {
             logger.debug("Schema subsystem model: {}", schemaName);
         }
     }
 
     @Ignore
     @Test
-    public void getRestSubsystemSchemaNames() throws IOException
-    {
+    public void getRestSubsystemSchemaNames() throws IOException {
 
         final String packageName = Api.class.getPackage().getName();
         final UniqueName namespace = new UniqueName(packageName.replace('.', UniqueName.NAME_SEPARATOR_CHAR));
@@ -327,16 +290,14 @@ public class SchemaLoaderTest
 
         // Assert.assertTrue(!schemaNames.isEmpty());
 
-        for (final UniqueName schemaName : schemaNames)
-        {
+        for (final UniqueName schemaName : schemaNames) {
             logger.debug("REST subsystem model: " + schemaName);
         }
     }
 
     @Ignore
     @Test
-    public void getNoSchemaNames() throws IOException
-    {
+    public void getNoSchemaNames() throws IOException {
 
         final UniqueName namespace = new UniqueName("org/wrml/noschemas");
         logger.debug("Listing schema names within: {}", namespace);
@@ -347,8 +308,7 @@ public class SchemaLoaderTest
 
     @Ignore
     @Test
-    public void getTestNamespaceSchemaNames() throws IOException, ClassNotFoundException
-    {
+    public void getTestNamespaceSchemaNames() throws IOException, ClassNotFoundException {
 
         final Context context = _SchemaLoader.getContext();
         final Schema schema = ContextTest.getModelResource(context, ContextTest.WRML_SCHEMA_SCREEN_URI, _SchemaLoader.getSchemaDimensions());
@@ -361,16 +321,14 @@ public class SchemaLoaderTest
 
         // Assert.assertTrue(!schemaNames.isEmpty());
 
-        for (final UniqueName schemaName : schemaNames)
-        {
+        for (final UniqueName schemaName : schemaNames) {
             logger.debug("Test models: {}", schemaName);
         }
     }
 
     @Ignore
     @Test
-    public void getWrmlNamespaceSchemaSubnamespaces() throws IOException, ClassNotFoundException
-    {
+    public void getWrmlNamespaceSchemaSubnamespaces() throws IOException, ClassNotFoundException {
 
         final Context context = _SchemaLoader.getContext();
         context.newModel(ContextTest.WRML_SCHEMA_SCREEN_URI);
@@ -381,8 +339,7 @@ public class SchemaLoaderTest
 
         Assert.assertTrue(!subnamespaces.isEmpty());
 
-        for (final UniqueName subnamespace : subnamespaces)
-        {
+        for (final UniqueName subnamespace : subnamespaces) {
             logger.debug("org/wrml subnamespace: {}", subnamespace);
         }
     }

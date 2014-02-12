@@ -29,22 +29,21 @@ import java.io.IOException;
 /**
  * The Format runtime's primary error type.
  */
-public class ModelFormattingException extends IOException
-{
+public class ModelFormattingException extends IOException {
 
     private static final long serialVersionUID = 1L;
 
     private final Object _Source;
 
-    public ModelFormattingException(final String message, final Throwable cause, final Object source)
-    {
+    public ModelFormattingException(final String message, final Throwable cause, final Object source) {
+
         super(message, cause);
         _Source = source;
     }
 
     @SuppressWarnings("unchecked")
-    public <S> S getSource()
-    {
+    public <S> S getSource() {
+
         return (S) _Source;
     }
 }

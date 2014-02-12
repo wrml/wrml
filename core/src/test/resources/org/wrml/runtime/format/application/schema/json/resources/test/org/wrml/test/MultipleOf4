@@ -1,12 +1,12 @@
 {
     "title": "Multiple of 4 value",
-    "description" : "Example using the multipleof JSON Schema",
-    "type" : "object",
-    "properties" : {
-        "value" : {
-            "type" : "integer",
-            "multipleOf" : 4,
-            "required" : true
+    "description": "Example using the multipleof JSON Schema",
+    "type": "object",
+    "properties": {
+        "value": {
+            "type": "integer",
+            "multipleOf": 4,
+            "required": true
         }
     }
 }

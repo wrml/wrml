@@ -26,7 +26,6 @@ package org.wrml.runtime;
 
 import java.util.Map;
 
-public interface Configuration
-{
+public interface Configuration {
     Map<String, String> getSettings();
 }

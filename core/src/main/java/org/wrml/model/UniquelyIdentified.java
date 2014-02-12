@@ -32,8 +32,7 @@ import java.util.UUID;
  * A <i>composable</i> {@link Abstract} with a <i>universally</i> unique ID (a {@link UUID}).
  */
 @WRML(keySlotNames = {"uniqueId"}, comparableSlotNames = {"uniqueId"})
-public interface UniquelyIdentified extends Abstract
-{
+public interface UniquelyIdentified extends Abstract {
 
     /**
      * The {@link UUID} associated with this {@link UniquelyIdentified} model.

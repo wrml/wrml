@@ -26,13 +26,12 @@ package org.wrml.runtime.service;
 
 import org.wrml.model.rest.status.Status;
 
-public class MethodNotAllowedException extends ServiceException
-{
+public class MethodNotAllowedException extends ServiceException {
 
     private static final long serialVersionUID = 1L;
 
-    public MethodNotAllowedException(final String message, final Throwable cause, final Service service)
-    {
+    public MethodNotAllowedException(final String message, final Throwable cause, final Service service) {
+
         super(message, cause, service, Status.METHOD_NOT_ALLOWED);
     }
 

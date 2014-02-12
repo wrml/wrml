@@ -42,8 +42,7 @@ import java.net.URI;
  * @see CollectionSlotCriterion
  * @see org.wrml.runtime.service.Service#search(org.wrml.runtime.search.SearchCriteria)
  */
-public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
-{
+public final class CollectionPropertyProtoSlot extends PropertyProtoSlot {
 
     private final URI _LinkRelationUri;
 
@@ -51,45 +50,38 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
 
     private ProtoSearchCriteria _ProtoSearchCriteria;
 
-    CollectionPropertyProtoSlot(final Prototype prototype, final String slotName, final JavaBean.Property property)
-    {
+    CollectionPropertyProtoSlot(final Prototype prototype, final String slotName, final JavaBean.Property property) {
 
         super(prototype, slotName, property);
 
 
         final CollectionSlot collectionSlot = getCollectionSlot();
-        if (collectionSlot == null)
-        {
+        if (collectionSlot == null) {
             throw new IllegalArgumentException("The prototype: " + prototype.getUniqueName() + " Collection slot: " + slotName + " is missing the " + CollectionSlot.class + " annotation.");
         }
 
-        if (getValueType() != ValueType.List)
-        {
+        if (getValueType() != ValueType.List) {
             throw new IllegalArgumentException("The prototype: " + prototype.getUniqueName() + " Collection slot: " + slotName + " is not a " + ValueType.List + " slot.");
         }
 
         final Type listElementType = getListElementType();
         final ValueType listElementValueType = ValueType.getValueType(listElementType);
-        if (listElementValueType != ValueType.Model)
-        {
+        if (listElementValueType != ValueType.Model) {
             throw new IllegalArgumentException("The prototype: " + prototype.getUniqueName() + " Collection slot: " + slotName + " is not a " + ValueType.List + " of " + ValueType.Model + " slot.");
         }
 
         final String linkRelationUriString = collectionSlot.linkRelationUri();
-        if (linkRelationUriString != null && !linkRelationUriString.isEmpty())
-        {
+        if (linkRelationUriString != null && !linkRelationUriString.isEmpty()) {
             _LinkRelationUri = URI.create(linkRelationUriString);
         }
-        else
-        {
+        else {
             _LinkRelationUri = null;
         }
 
         _Limit = collectionSlot.limit();
 
 
-        if (getAnnotationInternal(LinkSlotBinding.class) != null)
-        {
+        if (getAnnotationInternal(LinkSlotBinding.class) != null) {
             throw new PrototypeException("The " + CollectionSlotCriterion.class + " annotation is not allowed here. Alternatively, one or more of these annotations may be included in the " + CollectionSlot.class + " annotation.", null, prototype);
         }
 
@@ -106,8 +98,7 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
      *
      * @return The optional "search result" limit, which may be used to restrict the number of elements that will fill in this slot.
      */
-    public Integer getLimit()
-    {
+    public Integer getLimit() {
 
         return _Limit;
     }
@@ -128,10 +119,9 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
      * </p>
      *
      * @return The optional {@link org.wrml.model.rest.LinkRelation} {@link URI} that identifies the relationship between referrer and
-     *         the referenced elements within this slot.
+     * the referenced elements within this slot.
      */
-    public URI getLinkRelationUri()
-    {
+    public URI getLinkRelationUri() {
 
         return _LinkRelationUri;
     }
@@ -141,11 +131,9 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
      *
      * @return The runtime's prototype for the {@link org.wrml.runtime.search.SearchCriteria} associated with this {@link CollectionPropertyProtoSlot}.
      */
-    public ProtoSearchCriteria getProtoSearchCriteria()
-    {
+    public ProtoSearchCriteria getProtoSearchCriteria() {
 
-        if (_ProtoSearchCriteria == null)
-        {
+        if (_ProtoSearchCriteria == null) {
 
             final Prototype referrerPrototype = getPrototype();
             final SchemaLoader schemaLoader = referrerPrototype.getSchemaLoader();
@@ -153,12 +141,10 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
             final URI referenceSchemaUri = schemaLoader.getTypeUri(referenceType);
 
             final Prototype referencePrototype;
-            if (referenceSchemaUri.equals(referrerPrototype.getSchemaUri()))
-            {
+            if (referenceSchemaUri.equals(referrerPrototype.getSchemaUri())) {
                 referencePrototype = referrerPrototype;
             }
-            else
-            {
+            else {
                 referencePrototype = schemaLoader.getPrototype(referenceSchemaUri);
             }
 
@@ -174,8 +160,7 @@ public final class CollectionPropertyProtoSlot extends PropertyProtoSlot
      *
      * @return The {@link CollectionSlot} annotation associated with this {@link CollectionPropertyProtoSlot}.
      */
-    public CollectionSlot getCollectionSlot()
-    {
+    public CollectionSlot getCollectionSlot() {
 
         return getAnnotationInternal(CollectionSlot.class);
     }

@@ -24,8 +24,6 @@
  */
 package org.wrml.werminal.action;
 
-import com.googlecode.lanterna.gui.GUIScreen.Position;
-import org.wrml.model.Model;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.werminal.Werminal;
@@ -37,27 +35,23 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.SortedSet;
 
-public class NewModelAction extends CloseBeforeAction
-{
+public class NewModelAction extends CloseBeforeAction {
 
     private final FormField _FormField;
 
-    public NewModelAction(final Werminal werminal, final FormField formField)
-    {
+    public NewModelAction(final Werminal werminal, final FormField formField) {
 
         super(werminal, "New...");
         _FormField = formField;
     }
 
-    public FormField getFormField()
-    {
+    public FormField getFormField() {
 
         return _FormField;
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
         final FormField formField = getFormField();
@@ -83,33 +77,28 @@ public class NewModelAction extends CloseBeforeAction
         return true;
     }
 
-    private class ConfirmAction extends CloseBeforeAction
-    {
+    private class ConfirmAction extends CloseBeforeAction {
 
         private NewModelDialog _NewModelDialog;
 
-        public ConfirmAction(final Werminal werminal)
-        {
+        public ConfirmAction(final Werminal werminal) {
 
             super(werminal, "OK");
         }
 
-        public NewModelDialog getNewModelDialog()
-        {
+        public NewModelDialog getNewModelDialog() {
 
             return _NewModelDialog;
         }
 
-        public void setNewModelDialog(final NewModelDialog newModelDialog)
-        {
+        public void setNewModelDialog(final NewModelDialog newModelDialog) {
 
             _NewModelDialog = newModelDialog;
 
         }
 
         @Override
-        protected boolean doIt()
-        {
+        protected boolean doIt() {
 
             final Werminal werminal = getWerminal();
             final FormField formField = getFormField();
@@ -120,20 +109,17 @@ public class NewModelAction extends CloseBeforeAction
             final Context context = werminal.getContext();
 
             final Prototype prototype = context.getSchemaLoader().getPrototype(schemaUri);
-            if (prototype.isAbstract())
-            {
+            if (prototype.isAbstract()) {
                 werminal.showError("\""
                         + schemaUri
                         + "\" is *Abstract*, meaning that models cannot be created based on this type directly. Try a subschema?");
                 return false;
             }
 
-            try
-            {
+            try {
                 werminal.newModelWindow(schemaUri, formField);
             }
-            catch (final Exception t)
-            {
+            catch (final Exception t) {
                 final String errorMessage = "An unexpected error has occurred.";
                 werminal.showError(errorMessage, t);
                 Werminal.LOG.error(errorMessage + " (" + t.getMessage() + ")", t);

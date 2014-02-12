@@ -54,8 +54,7 @@ import java.util.Map;
  * @see org.wrml.model.schema.Schema
  * @see org.wrml.model.schema.Slot
  */
-public final class LinkProtoSlot extends ProtoSlot
-{
+public final class LinkProtoSlot extends ProtoSlot {
 
     private final JavaMethod _LinkMethod;
 
@@ -71,8 +70,7 @@ public final class LinkProtoSlot extends ProtoSlot
 
     private Map<String, ProtoValueSource> _LinkSlotBindings;
 
-    LinkProtoSlot(final Prototype prototype, final String slotName, final JavaMethod linkJavaMethod)
-    {
+    LinkProtoSlot(final Prototype prototype, final String slotName, final JavaMethod linkJavaMethod) {
 
         super(prototype, slotName);
         _LinkMethod = linkJavaMethod;
@@ -85,14 +83,12 @@ public final class LinkProtoSlot extends ProtoSlot
         _Method = linkSlot.method();
 
 
-        if (_Embedded && _Method != Method.Get)
-        {
+        if (_Embedded && _Method != Method.Get) {
             throw new PrototypeException("Embedded links are not compatible with the interaction method: "
                     + _Method, null, getPrototype(), slotName);
         }
 
-        if (getAnnotationInternal(LinkSlotBinding.class) != null)
-        {
+        if (getAnnotationInternal(LinkSlotBinding.class) != null) {
             throw new PrototypeException("The " + LinkSlotBinding.class + " annotation is not allowed here. Alternatively, one or more of these annotations may be included in the " + LinkSlot.class + " annotation.", null, prototype);
         }
 
@@ -101,32 +97,26 @@ public final class LinkProtoSlot extends ProtoSlot
         final JavaMethod.Signature linkMethodSignature = _LinkMethod.getSignature();
         final Type returnType = linkMethodSignature.getReturnType();
 
-        if (returnType != null && !Void.TYPE.equals(returnType))
-        {
+        if (returnType != null && !Void.TYPE.equals(returnType)) {
             _ResponseSchemaUri = schemaLoader.getTypeUri(returnType);
         }
-        else
-        {
+        else {
             _ResponseSchemaUri = null;
         }
 
         Type modelParameterType = null;
         final Type[] parameters = linkMethodSignature.getParameterTypes();
-        if (parameters != null && parameters.length == 1)
-        {
+        if (parameters != null && parameters.length == 1) {
             final Type parameterType = parameters[0];
-            if (ValueType.isModelType(parameterType))
-            {
+            if (ValueType.isModelType(parameterType)) {
                 modelParameterType = parameterType;
             }
         }
 
-        if (modelParameterType != null)
-        {
+        if (modelParameterType != null) {
             _RequestSchemaUri = schemaLoader.getTypeUri(modelParameterType);
         }
-        else
-        {
+        else {
             _RequestSchemaUri = null;
         }
 
@@ -134,8 +124,7 @@ public final class LinkProtoSlot extends ProtoSlot
     }
 
     @Override
-    public URI getDeclaringSchemaUri()
-    {
+    public URI getDeclaringSchemaUri() {
 
         final Class<?> declaringSchemaInterface = getJavaMethod().getMethod().getDeclaringClass();
         final URI declaringSchemaUri = getSchemaLoader().getTypeUri(declaringSchemaInterface);
@@ -143,8 +132,7 @@ public final class LinkProtoSlot extends ProtoSlot
     }
 
     @Override
-    public Type getHeapValueType()
-    {
+    public Type getHeapValueType() {
 
         return ValueType.JAVA_TYPE_LINK;
     }
@@ -154,8 +142,7 @@ public final class LinkProtoSlot extends ProtoSlot
      *
      * @return The {@link JavaMethod} associated with this link.
      */
-    public JavaMethod getJavaMethod()
-    {
+    public JavaMethod getJavaMethod() {
 
         return _LinkMethod;
     }
@@ -165,12 +152,10 @@ public final class LinkProtoSlot extends ProtoSlot
      *
      * @return A mapping of referenced slot name (slot name within this link's referenced/response schema) to the source of the value for the referenced slot name.
      */
-    public Map<String, ProtoValueSource> getLinkSlotBindings()
-    {
+    public Map<String, ProtoValueSource> getLinkSlotBindings() {
 
         // This is lazily initialized to avoid infinite cycles since this method calls schemaLoader.getPrototype(...)
-        if (_LinkSlotBindings == null)
-        {
+        if (_LinkSlotBindings == null) {
             // Initialize the optional link slot bindings
             _LinkSlotBindings = new LinkedHashMap<>();
 
@@ -178,34 +163,28 @@ public final class LinkProtoSlot extends ProtoSlot
             final LinkSlot linkSlot = getAnnotationInternal(LinkSlot.class);
 
             final LinkSlotBinding[] linkSlotBindings = linkSlot.bindings();
-            if (linkSlotBindings != null && linkSlotBindings.length > 0)
-            {
+            if (linkSlotBindings != null && linkSlotBindings.length > 0) {
                 final Prototype referencePrototype;
 
 
                 final Type referenceType = _LinkMethod.getMethod().getReturnType();
-                if (referenceType != null && referenceType != Void.TYPE)
-                {
+                if (referenceType != null && referenceType != Void.TYPE) {
 
                     final SchemaLoader schemaLoader = prototype.getSchemaLoader();
                     final URI referenceSchemaUri = schemaLoader.getTypeUri(referenceType);
-                    if (referenceSchemaUri.equals(prototype.getSchemaUri()))
-                    {
+                    if (referenceSchemaUri.equals(prototype.getSchemaUri())) {
                         referencePrototype = prototype;
                     }
-                    else
-                    {
+                    else {
                         referencePrototype = schemaLoader.getPrototype(referenceSchemaUri);
                     }
                 }
-                else
-                {
+                else {
                     referencePrototype = null;
                 }
 
 
-                for (final LinkSlotBinding linkSlotBinding : linkSlotBindings)
-                {
+                for (final LinkSlotBinding linkSlotBinding : linkSlotBindings) {
                     final String referenceSlot = linkSlotBinding.referenceSlot();
                     final String valueSource = linkSlotBinding.valueSource();
                     final ValueSourceType valueSourceType = linkSlotBinding.valueSourceType();
@@ -225,39 +204,33 @@ public final class LinkProtoSlot extends ProtoSlot
      *
      * @return The value of the <code>embedded</code> flag, which is set to <code>true</code> if this link's referenced/response document is embedded within the link by default.
      */
-    public boolean isEmbedded()
-    {
+    public boolean isEmbedded() {
 
         return _Embedded;
     }
 
-    public URI getLinkRelationUri()
-    {
+    public URI getLinkRelationUri() {
 
         return _LinkRelationUri;
     }
 
-    public URI getRequestSchemaUri()
-    {
+    public URI getRequestSchemaUri() {
 
         return _RequestSchemaUri;
     }
 
-    public URI getResponseSchemaUri()
-    {
+    public URI getResponseSchemaUri() {
 
         return _ResponseSchemaUri;
     }
 
-    public Method getMethod()
-    {
+    public Method getMethod() {
 
         return _Method;
     }
 
     @Override
-    protected <T extends Annotation> T getAnnotationInternal(final Class<T> annotationClass)
-    {
+    protected <T extends Annotation> T getAnnotationInternal(final Class<T> annotationClass) {
 
         return getJavaMethod().getMethod().getAnnotation(annotationClass);
     }

@@ -28,8 +28,7 @@ package org.wrml.model.rest;
  * JMX-like alternate dimension that contains stats and other meta information
  * associated with a Document.
  */
-public interface DocumentMetadata extends Document
-{
+public interface DocumentMetadata extends Document {
 
     // MSMTODO: Design this Model (a set of "standard" metadata slots that is
     // associated with some other Document).

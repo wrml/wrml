@@ -24,27 +24,22 @@
  */
 package org.wrml.runtime;
 
-public abstract class DefaultFactoryConfiguration extends DefaultConfiguration implements FactoryConfiguration
-{
+public abstract class DefaultFactoryConfiguration extends DefaultConfiguration implements FactoryConfiguration {
 
     private String _FactoryClassName;
 
 
-    public DefaultFactoryConfiguration()
-    {
+    public DefaultFactoryConfiguration() {
 
     }
 
-    public static <T> Factory<T> createFactory(final FactoryConfiguration factoryConfiguration, final Class<?> defaultFactoryClass)
-    {
+    public static <T> Factory<T> createFactory(final FactoryConfiguration factoryConfiguration, final Class<?> defaultFactoryClass) {
 
         String factoryClassName = defaultFactoryClass.getName();
 
-        if (factoryConfiguration != null)
-        {
+        if (factoryConfiguration != null) {
             final String configuredFactoryClassName = factoryConfiguration.getFactory();
-            if (configuredFactoryClassName != null && !configuredFactoryClassName.isEmpty())
-            {
+            if (configuredFactoryClassName != null && !configuredFactoryClassName.isEmpty()) {
                 factoryClassName = configuredFactoryClassName;
             }
         }
@@ -53,14 +48,12 @@ public abstract class DefaultFactoryConfiguration extends DefaultConfiguration i
     }
 
     @Override
-    public final String getFactory()
-    {
+    public final String getFactory() {
 
         return _FactoryClassName;
     }
 
-    public final void setFactory(final String factoryClassName)
-    {
+    public final void setFactory(final String factoryClassName) {
 
         _FactoryClassName = factoryClassName;
     }

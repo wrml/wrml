@@ -27,31 +27,16 @@ package org.wrml.runtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
-import org.wrml.model.rest.Document;
-import org.wrml.model.rest.Embedded;
-import org.wrml.model.rest.Link;
-import org.wrml.model.rest.LinkRelation;
-import org.wrml.model.rest.LinkTemplate;
-import org.wrml.model.rest.Method;
-import org.wrml.model.rest.ResourceOptions;
+import org.wrml.model.rest.*;
 import org.wrml.model.schema.Choices;
 import org.wrml.model.schema.Schema;
-import org.wrml.runtime.format.DefaultFormatLoaderFactory;
-import org.wrml.runtime.format.FormatLoader;
+import org.wrml.runtime.format.*;
 import org.wrml.runtime.format.Formatter;
-import org.wrml.runtime.format.ModelReadingException;
-import org.wrml.runtime.format.ModelWriteOptions;
-import org.wrml.runtime.format.ModelWritingException;
 import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.rest.ApiNavigator;
 import org.wrml.runtime.rest.DefaultApiLoaderFactory;
 import org.wrml.runtime.rest.Resource;
-import org.wrml.runtime.schema.CollectionPropertyProtoSlot;
-import org.wrml.runtime.schema.DefaultSchemaLoaderFactory;
-import org.wrml.runtime.schema.LinkProtoSlot;
-import org.wrml.runtime.schema.ProtoSearchCriteria;
-import org.wrml.runtime.schema.Prototype;
-import org.wrml.runtime.schema.SchemaLoader;
+import org.wrml.runtime.schema.*;
 import org.wrml.runtime.search.SearchCriteria;
 import org.wrml.runtime.service.DefaultServiceLoaderFactory;
 import org.wrml.runtime.service.Service;
@@ -64,16 +49,9 @@ import org.wrml.runtime.syntax.SyntaxLoader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 
-public class DefaultContext implements Context
-{
+public class DefaultContext implements Context {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultContext.class);
 
@@ -119,18 +97,15 @@ public class DefaultContext implements Context
 
     private Prototype _VirtualPrototype;
 
-    public DefaultContext()
-    {
+    public DefaultContext() {
 
         LOGGER.info("Creating new instance of: " + getClass().getCanonicalName());
     }
 
     @Override
-    public void init(final ContextConfiguration config) throws ContextException
-    {
+    public void init(final ContextConfiguration config) throws ContextException {
 
-        if (config == null)
-        {
+        if (config == null) {
             throw new ContextException("The WRML context configuration cannot be null.", null, this);
         }
 
@@ -180,33 +155,27 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public final void deleteModel(final Keys keys, final Dimensions dimensions)
-    {
+    public final void deleteModel(final Keys keys, final Dimensions dimensions) {
 
-        if (keys == null)
-        {
+        if (keys == null) {
             throw new ContextException("The keys cannot be null", null, this);
         }
 
         final ModelCache cache = getModelCache();
-        if (cache != null)
-        {
+        if (cache != null) {
             cache.delete(keys, dimensions);
         }
 
         final SchemaLoader schemaLoader = getSchemaLoader();
         final URI uri = keys.getValue(schemaLoader.getDocumentSchemaUri());
-        if (uri != null)
-        {
+        if (uri != null) {
             final URI schemaUri = _ApiLoader.getDefaultResponseSchemaUri(Method.Get, uri);
 
-            if (schemaUri != null)
-            {
+            if (schemaUri != null) {
 
                 final ServiceLoader serviceLoader = getServiceLoader();
                 final Service service = serviceLoader.getServiceForSchema(schemaUri);
-                if (service != null)
-                {
+                if (service != null) {
                     service.delete(keys, dimensions);
                 }
             }
@@ -214,41 +183,34 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public ApiLoader getApiLoader()
-    {
+    public ApiLoader getApiLoader() {
 
         return _ApiLoader;
     }
 
     @Override
-    public ContextConfiguration getConfig()
-    {
+    public ContextConfiguration getConfig() {
 
         return _Config;
     }
 
     @Override
-    public <V> V getKeyValue(final Keys keys, final Class<?> schemaInterface)
-    {
+    public <V> V getKeyValue(final Keys keys, final Class<?> schemaInterface) {
 
         return keys.getValue(getSchemaLoader().getTypeUri(schemaInterface));
     }
 
     @Override
-    public <V> V getKeyValue(final Keys keys, final String slotName)
-    {
+    public <V> V getKeyValue(final Keys keys, final String slotName) {
 
         final Set<URI> keyedSchemaUris = keys.getKeyedSchemaUris();
         final SchemaLoader schemaLoader = getSchemaLoader();
-        for (final URI schemaUri : keyedSchemaUris)
-        {
+        for (final URI schemaUri : keyedSchemaUris) {
             final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-            if (prototype.isKeySlot(slotName))
-            {
+            if (prototype.isKeySlot(slotName)) {
                 final Object value = keys.getValue(schemaUri);
 
-                if (value != null)
-                {
+                if (value != null) {
                     return (V) value;
                 }
             }
@@ -258,36 +220,30 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public FormatLoader getFormatLoader()
-    {
+    public FormatLoader getFormatLoader() {
 
         return _FormatLoader;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <M extends Model> M getModel(final Keys keys, final Dimensions dimensions) throws ContextException
-    {
+    public final <M extends Model> M getModel(final Keys keys, final Dimensions dimensions) throws ContextException {
 
-        if (keys == null)
-        {
+        if (keys == null) {
             throw new IllegalArgumentException("The keys cannot be null.");
         }
 
-        if (keys.getCount() == 0)
-        {
+        if (keys.getCount() == 0) {
             throw new IllegalArgumentException("The keys cannot be empty.");
         }
 
-        if (dimensions == null)
-        {
+        if (dimensions == null) {
             throw new IllegalArgumentException("The dimensions cannot be null.");
         }
 
         final URI schemaUri = dimensions.getSchemaUri();
 
-        if (schemaUri == null)
-        {
+        if (schemaUri == null) {
             throw new IllegalArgumentException("The schema URI cannot be null.");
         }
 
@@ -298,30 +254,25 @@ public class DefaultContext implements Context
 
         M model = null;
 
-        if (_VirtualPrototype.isAssignableFrom(schemaUri))
-        {
+        if (_VirtualPrototype.isAssignableFrom(schemaUri)) {
             // Virtual models are auto-initialized by the runtime
             model = newModel(dimensions);
             model.initKeySlots(keys);
         }
-        else if (schemaLoader.isSystemSchema(schemaUri))
-        {
+        else if (schemaLoader.isSystemSchema(schemaUri)) {
             model = getSystemModel(keys, dimensions);
         }
-        else if (cache != null && cache.contains(keys, dimensions))
-        {
+        else if (cache != null && cache.contains(keys, dimensions)) {
             model = (M) cache.get(keys, dimensions);
             model.initKeySlots(keys);
             model = (M) cache.save(model);
         }
 
-        if (null == model)
-        {
+        if (null == model) {
             model = getModelFromService(keys, dimensions);
         }
 
-        if (null == model)
-        {
+        if (null == model) {
             LOGGER.debug("Model *NOT FOUND*\n - Keys:\n{}\n - Dimensions:\n{}", keys, dimensions);
             return null;
         }
@@ -331,39 +282,32 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public ModelCache getModelCache()
-    {
+    public ModelCache getModelCache() {
 
         return _ModelCache;
     }
 
     @Override
-    public ModelBuilder getModelBuilder()
-    {
+    public ModelBuilder getModelBuilder() {
 
         return _ModelBuilder;
     }
 
     @Override
-    public final <M extends Model> List<M> getMultipleModels(final List<Keys> multipleKeys, final Dimensions sameDimensions)
-    {
+    public final <M extends Model> List<M> getMultipleModels(final List<Keys> multipleKeys, final Dimensions sameDimensions) {
 
-        if (multipleKeys == null)
-        {
+        if (multipleKeys == null) {
             throw new ContextException("The keys cannot be null", null, this);
         }
 
-        if (sameDimensions == null)
-        {
+        if (sameDimensions == null) {
             throw new ContextException("The dimensions cannot be null", null, this);
         }
 
         final List<M> models = new ArrayList<>(multipleKeys.size());
-        for (final Keys keys : multipleKeys)
-        {
+        for (final Keys keys : multipleKeys) {
             final M model = getModel(keys, sameDimensions);
-            if (model != null)
-            {
+            if (model != null) {
                 models.add(model);
             }
         }
@@ -372,58 +316,50 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public SchemaLoader getSchemaLoader()
-    {
+    public SchemaLoader getSchemaLoader() {
 
         return _SchemaLoader;
     }
 
     @Override
-    public ServiceLoader getServiceLoader()
-    {
+    public ServiceLoader getServiceLoader() {
 
         return _ServiceLoader;
     }
 
     @Override
-    public SyntaxLoader getSyntaxLoader()
-    {
+    public SyntaxLoader getSyntaxLoader() {
 
         return _SyntaxLoader;
     }
 
     @Override
-    public <M extends Model> M newModel(final Class<?> schemaInterface) throws ModelBuilderException
-    {
+    public <M extends Model> M newModel(final Class<?> schemaInterface) throws ModelBuilderException {
 
         return getModelBuilder().newModel(schemaInterface);
     }
 
     @Override
-    public <M extends Model> M newModel(final Dimensions dimensions)
-    {
+    public <M extends Model> M newModel(final Dimensions dimensions) {
 
         return getModelBuilder().newModel(dimensions);
     }
 
     @Override
-    public <M extends Model> M newModel(final URI schemaUri) throws ModelBuilderException
-    {
+    public <M extends Model> M newModel(final URI schemaUri) throws ModelBuilderException {
 
         return getModelBuilder().newModel(schemaUri);
     }
 
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException {
 
         return readModel(in, rootModelKeys, rootModelDimensions, getFormatLoader().getDefaultFormatUri());
     }
 
     @Override
     public final <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions, final URI formatUri)
-            throws ModelReadingException
-    {
+            throws ModelReadingException {
 
         final FormatLoader formatLoader = getFormatLoader();
 
@@ -431,8 +367,7 @@ public class DefaultContext implements Context
 
         final Formatter modelFormatter = formatLoader.getFormatter(formatId);
 
-        if (modelFormatter == null)
-        {
+        if (modelFormatter == null) {
             throw new ModelReadingException("Unable to locate a formatter for the format: " + formatUri, null, this);
         }
 
@@ -440,47 +375,38 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public <M extends Model> M readModel(final InputStream in, final URI uri, final URI schemaUri, final URI formatUri) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final URI uri, final URI schemaUri, final URI formatUri) throws ModelReadingException {
+
         final Keys keys = _ApiLoader.buildDocumentKeys(uri, schemaUri);
         final Dimensions dimensions = new DimensionsBuilder(schemaUri).toDimensions();
         return readModel(in, keys, dimensions, formatUri);
     }
 
     @Override
-    public final <M extends Model> M request(final Method requestMethod, final Keys keys, final Dimensions dimensions, final Model parameter)
-    {
+    public final <M extends Model> M request(final Method requestMethod, final Keys keys, final Dimensions dimensions, final Model parameter) {
 
-        switch (requestMethod)
-        {
-            case Get:
-            {
+        switch (requestMethod) {
+            case Get: {
                 final M model = getModel(keys, dimensions);
                 return model;
             }
-            case Save:
-            {
-                if (parameter == null)
-                {
+            case Save: {
+                if (parameter == null) {
                     throw new ContextException("The " + Method.Save + " method requires a model parameter.", this);
                 }
                 return saveModel((M) parameter);
             }
-            case Invoke:
-            {
+            case Invoke: {
                 return invoke(keys, dimensions, parameter);
             }
-            case Delete:
-            {
+            case Delete: {
                 deleteModel(keys, dimensions);
                 return null;
             }
-            case Options:
-            {
+            case Options: {
                 return optionsModel(parameter);
             }
-            default:
-            {
+            default: {
                 throw new ContextException("Failed to resolve the " + requestMethod + " request from: \"" + dimensions.getReferrerUri() + "\" with keys: \"" + keys
                         + "\" and dimensions (" + dimensions + ").", null, this);
             }
@@ -489,15 +415,13 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public final <M extends Model> M saveModel(final M model)
-    {
+    public final <M extends Model> M saveModel(final M model) {
 
-        if (model == null)
-        {
+        if (model == null) {
             throw new ContextException("Cannot save; the model is null.", this);
         }
 
-        LOGGER.trace("Attempting to save model \n{}\n with schemaUri:\n {}", new Object[] {model, model.getDimensions().getSchemaUri()});
+        LOGGER.trace("Attempting to save model \n{}\n with schemaUri:\n {}", new Object[]{model, model.getDimensions().getSchemaUri()});
 
         M savedModel = null;
 
@@ -507,22 +431,18 @@ public class DefaultContext implements Context
         String originServiceName = model.getOriginServiceName();
         final ServiceLoader serviceLoader = getServiceLoader();
 
-        if (originServiceName != null)
-        {
+        if (originServiceName != null) {
             final Service originService = serviceLoader.getService(originServiceName);
-            if (originService == null)
-            {
+            if (originService == null) {
                 throw new ContextException("Cannot save; the origin service does not exist: " + originServiceName, this);
             }
 
             savedModel = (M) originService.save(model);
         }
-        else
-        {
+        else {
 
             final Service service = serviceLoader.getServiceForSchema(schemaUri);
-            if (service == null)
-            {
+            if (service == null) {
                 throw new ContextException("Cannot save; no service applies to model: " + model, this);
             }
 
@@ -531,18 +451,15 @@ public class DefaultContext implements Context
             savedModel = (M) service.save(model);
         }
 
-        if (savedModel != null)
-        {
+        if (savedModel != null) {
             LOGGER.debug("Saved Model:\n{}", savedModel);
         }
-        else
-        {
+        else {
             throw new ContextException("Error saving model; no service return a saved model successfully.", this);
         }
 
         final ModelCache cache = getModelCache();
-        if (cache != null)
-        {
+        if (cache != null) {
             savedModel = (M) cache.save(savedModel);
         }
 
@@ -554,55 +471,46 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " { config : " + _Config + ", syntax registry : " + _SyntaxLoader + ", schemaLoader : " + _SchemaLoader + ", modelFactory : "
                 + _ModelBuilder + ", apiLoader : " + _ApiLoader + "}";
     }
 
     @Override
-    public final <M extends Model> M visitLink(final Model model, final String linkSlotName)
-    {
+    public final <M extends Model> M visitLink(final Model model, final String linkSlotName) {
 
         return visitLink(model, linkSlotName, null, null);
     }
 
     @Override
-    public <M extends Model> M visitLink(final Model model, final String linkSlotName, final DimensionsBuilder dimensionsBuilder, final Model parameter) throws ContextException
-    {
+    public <M extends Model> M visitLink(final Model model, final String linkSlotName, final DimensionsBuilder dimensionsBuilder, final Model parameter) throws ContextException {
 
         final Link link = (Link) model.getSlotValue(linkSlotName);
-        if (link == null)
-        {
+        if (link == null) {
             throw new ModelException("Link \"" + linkSlotName + "\" not found in model, " + model + ".", null, model);
         }
 
         URI uri = null;
 
-        if (model instanceof Document)
-        {
+        if (model instanceof Document) {
             uri = ((Document) model).getUri();
         }
-        else if (model instanceof Embedded)
-        {
+        else if (model instanceof Embedded) {
             uri = ((Embedded) model).getDocumentUri();
         }
-        else
-        {
+        else {
             throw new ModelException("The model is not (REST) Document-related, thus it may not link to Documents.", null, model);
         }
 
-        if (uri == null)
-        {
+        if (uri == null) {
             throw new ModelException("The model is missing a (REST) Document id.", null, model);
         }
 
         dimensionsBuilder.setReferrerUri(uri);
 
         final ApiNavigator apiNavigator = _ApiLoader.getParentApiNavigator(uri);
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             throw new ModelException("The URI is not parented by any known REST API.", null, model);
         }
 
@@ -610,22 +518,19 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public final void writeModel(final OutputStream out, final Model model) throws ModelWritingException
-    {
+    public final void writeModel(final OutputStream out, final Model model) throws ModelWritingException {
 
         writeModel(out, model, getFormatLoader().getDefaultFormatUri());
     }
 
     @Override
-    public final void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public final void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
         writeModel(out, model, writeOptions, getFormatLoader().getDefaultFormatUri());
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions, final URI formatUri) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions, final URI formatUri) throws ModelWritingException {
 
         final FormatLoader formatLoader = getFormatLoader();
 
@@ -633,8 +538,7 @@ public class DefaultContext implements Context
 
         final Formatter modelFormatter = formatLoader.getFormatter(formatId);
 
-        if (modelFormatter == null)
-        {
+        if (modelFormatter == null) {
             throw new ModelWritingException("Unable to locate a formatter for the format: " + formatUri, null, this);
         }
 
@@ -642,55 +546,46 @@ public class DefaultContext implements Context
     }
 
     @Override
-    public final void writeModel(final OutputStream out, final Model model, final URI formatUri) throws ModelWritingException
-    {
+    public final void writeModel(final OutputStream out, final Model model, final URI formatUri) throws ModelWritingException {
 
         writeModel(out, model, null, formatUri);
     }
 
-    protected Factory<ApiLoader> createApiLoaderFactory()
-    {
+    protected Factory<ApiLoader> createApiLoaderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getApiLoader(), DefaultApiLoaderFactory.class);
     }
 
-    protected Factory<FormatLoader> createFormatLoaderFactory()
-    {
+    protected Factory<FormatLoader> createFormatLoaderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getFormatLoader(), DefaultFormatLoaderFactory.class);
     }
 
-    protected Factory<ModelBuilder> createModelBuilderFactory()
-    {
+    protected Factory<ModelBuilder> createModelBuilderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getModelBuilder(), DefaultModelBuilderFactory.class);
     }
 
-    protected Factory<SchemaLoader> createSchemaLoaderFactory()
-    {
+    protected Factory<SchemaLoader> createSchemaLoaderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getSchemaLoader(), DefaultSchemaLoaderFactory.class);
     }
 
-    protected Factory<ServiceLoader> createServiceLoaderFactory()
-    {
+    protected Factory<ServiceLoader> createServiceLoaderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getServiceLoader(), DefaultServiceLoaderFactory.class);
     }
 
-    protected Factory<SyntaxLoader> createSyntaxLoaderFactory()
-    {
+    protected Factory<SyntaxLoader> createSyntaxLoaderFactory() {
 
         return DefaultFactoryConfiguration.createFactory(getConfig().getSyntaxLoader(), DefaultSyntaxLoaderFactory.class);
     }
 
-    protected ModelCache createModelCache()
-    {
+    protected ModelCache createModelCache() {
 
         final ContextConfiguration config = getConfig();
         final ModelCacheConfiguration cacheConfig = config.getModelCache();
-        if (cacheConfig == null)
-        {
+        if (cacheConfig == null) {
             return null;
         }
 
@@ -702,19 +597,14 @@ public class DefaultContext implements Context
 
     /**
      * Gets and invokes a functional Model, passing it the (optional) Model parameter and (optionally) returns a Model value that conforms to the specified Dimensions.
-     * 
-     * @param keys
-     *            the keys of the function model
-     * @param responseDimensions
-     *            the dimensions of the function's Model return value.
-     * @param parameter
-     *            the (optional) parameter Model to pass to the function.
-     * @param <M>
-     *            the function's Model return value's type (schema).
+     *
+     * @param keys               the keys of the function model
+     * @param responseDimensions the dimensions of the function's Model return value.
+     * @param parameter          the (optional) parameter Model to pass to the function.
+     * @param <M>                the function's Model return value's type (schema).
      * @return the Model return value (or null if the function returns <code>void</code>).
      */
-    protected <M extends Model> M invoke(final Keys keys, final Dimensions responseDimensions, final Model parameter)
-    {
+    protected <M extends Model> M invoke(final Keys keys, final Dimensions responseDimensions, final Model parameter) {
 
         final URI uri = getKeyValue(keys, Document.class);
 
@@ -726,33 +616,28 @@ public class DefaultContext implements Context
 
         Model function = getModel(keys, functionDimensions);
 
-        if (function == null)
-        {
+        if (function == null) {
             throw new ContextException("Cannot invoke; the function model is null.", null, this);
         }
 
         Service service = null;
         String originServiceName = function.getOriginServiceName();
-        if (originServiceName != null)
-        {
+        if (originServiceName != null) {
             service = _ServiceLoader.getService(originServiceName);
         }
 
-        if (service == null)
-        {
+        if (service == null) {
 
             final URI functionSchemaUri = function.getSchemaUri();
 
             service = _ServiceLoader.getServiceForSchema(functionSchemaUri);
-            if (service == null && parameter != null)
-            {
+            if (service == null && parameter != null) {
                 final URI parameterSchemaUri = parameter.getSchemaUri();
                 service = _ServiceLoader.getServiceForSchema(parameterSchemaUri);
             }
         }
 
-        if (service != null)
-        {
+        if (service != null) {
             final M responseModel = (M) service.invoke(function, responseDimensions, parameter);
 
             originServiceName = service.getConfiguration().getName();
@@ -761,16 +646,14 @@ public class DefaultContext implements Context
             initManagedSlots(responseModel);
             return responseModel;
         }
-        else
-        {
+        else {
             LOGGER.debug("Service *NOT FOUND* for function invocation:\n - Function:\n{}\n - Parameter:\n{}", function, parameter);
         }
 
         return null;
     }
 
-    private <M extends Model> M getModelFromService(final Keys keys, final Dimensions dimensions)
-    {
+    private <M extends Model> M getModelFromService(final Keys keys, final Dimensions dimensions) {
 
         final ModelCache cache = getModelCache();
         final SchemaLoader schemaLoader = getSchemaLoader();
@@ -778,40 +661,33 @@ public class DefaultContext implements Context
 
         final URI schemaUri = dimensions.getSchemaUri();
         final Service service = serviceLoader.getServiceForSchema(schemaUri);
-        if (service == null)
-        {
+        if (service == null) {
             throw new ContextException("Cannot get model; no service applies to schema: " + schemaUri, null, this);
         }
 
-        LOGGER.debug("Service for schemaUri {} is {}", new Object[] {schemaUri, service});
+        LOGGER.debug("Service for schemaUri {} is {}", new Object[]{schemaUri, service});
 
         M model = (M) service.get(keys, dimensions);
 
-        if (model != null)
-        {
+        if (model != null) {
             model.initKeySlots(keys);
 
             final String originServiceName = service.getConfiguration().getName();
             model.setOriginServiceName(originServiceName);
 
             // TODO: Make this "auto-loading" of these system types configurable?
-            if (schemaLoader.isSystemSchema(schemaUri))
-            {
-                if (model instanceof Schema)
-                {
+            if (schemaLoader.isSystemSchema(schemaUri)) {
+                if (model instanceof Schema) {
                     schemaLoader.load((Schema) model);
                 }
-                else if (model instanceof LinkRelation)
-                {
+                else if (model instanceof LinkRelation) {
                     _ApiLoader.loadLinkRelation((LinkRelation) model);
                 }
-                else if (model instanceof Choices)
-                {
+                else if (model instanceof Choices) {
                     schemaLoader.loadChoices((Choices) model);
                 }
             }
-            else if (cache != null)
-            {
+            else if (cache != null) {
                 model = (M) cache.save(model);
             }
 
@@ -822,49 +698,40 @@ public class DefaultContext implements Context
         return model;
     }
 
-    private <M extends Model> M getSystemModel(final Keys keys, final Dimensions dimensions)
-    {
+    private <M extends Model> M getSystemModel(final Keys keys, final Dimensions dimensions) {
 
         final SchemaLoader schemaLoader = getSchemaLoader();
         URI schemaUri = dimensions.getSchemaUri();
 
         M model = null;
 
-        if (_SchemaPrototype.isAssignableFrom(schemaUri))
-        {
+        if (_SchemaPrototype.isAssignableFrom(schemaUri)) {
             model = (M) schemaLoader.getLoadedSchema(keys);
 
-            if (model == null)
-            {
+            if (model == null) {
                 model = (M) schemaLoader.getNativeSchema(keys);
             }
 
         }
-        else if (_LinkRelationPrototype.isAssignableFrom(schemaUri))
-        {
+        else if (_LinkRelationPrototype.isAssignableFrom(schemaUri)) {
             model = (M) _ApiLoader.getLoadedLinkRelation(keys);
         }
-        else if (_ApiPrototype.isAssignableFrom(schemaUri))
-        {
+        else if (_ApiPrototype.isAssignableFrom(schemaUri)) {
             model = (M) _ApiLoader.getLoadedApi(keys);
         }
-        else if (_FormatPrototype.isAssignableFrom(schemaUri))
-        {
+        else if (_FormatPrototype.isAssignableFrom(schemaUri)) {
             final FormatLoader formatLoader = getFormatLoader();
             model = (M) formatLoader.getLoadedFormat(keys);
         }
-        else if (_ChoicesPrototype.isAssignableFrom(schemaUri))
-        {
+        else if (_ChoicesPrototype.isAssignableFrom(schemaUri)) {
             model = (M) schemaLoader.getLoadedChoices(keys);
 
-            if (model == null)
-            {
+            if (model == null) {
                 model = (M) schemaLoader.getNativeChoices(keys);
             }
 
         }
-        else if (_SyntaxPrototype.isAssignableFrom(schemaUri))
-        {
+        else if (_SyntaxPrototype.isAssignableFrom(schemaUri)) {
             final SyntaxLoader syntaxLoader = getSyntaxLoader();
             model = (M) syntaxLoader.getLoadedSyntax(keys);
         }
@@ -874,16 +741,13 @@ public class DefaultContext implements Context
 
     /**
      * Manage the model's link and collection slots.
-     * 
-     * @param model
-     *            The model to manage.
+     *
+     * @param model The model to manage.
      * @see <a href="http://en.wikipedia.org/wiki/HATEOAS">Wikipedia on HATEOAS</a>
      */
-    private void initManagedSlots(final Model model)
-    {
+    private void initManagedSlots(final Model model) {
 
-        if (model instanceof Document)
-        {
+        if (model instanceof Document) {
             final Document document = (Document) model;
             updateLinkSlots(document);
 
@@ -899,58 +763,49 @@ public class DefaultContext implements Context
      * Part of the HATEOAS automation. Uses the runtime's available REST API metadata to update the Links and Link href values in response to a change/initialization of the URI
      * slot value.
      */
-    private void updateLinkSlots(final Document document)
-    {
+    private void updateLinkSlots(final Document document) {
 
         final URI uri = document.getUri();
-        if (uri == null)
-        {
+        if (uri == null) {
             return;
         }
 
         final ApiNavigator apiNavigator = _ApiLoader.getParentApiNavigator(uri);
 
-        if (apiNavigator == null)
-        {
+        if (apiNavigator == null) {
             return;
         }
 
         final Resource resource = apiNavigator.getResource(uri);
         final Map<URI, LinkTemplate> linkTemplates = resource.getLinkTemplates();
-        if (linkTemplates == null || linkTemplates.isEmpty())
-        {
+        if (linkTemplates == null || linkTemplates.isEmpty()) {
             return;
         }
 
         final SortedMap<String, URI> prototypeLinkRelUris = document.getPrototype().getLinkRelationUris();
         final Set<String> linkSlotNames = prototypeLinkRelUris.keySet();
-        for (final String linkSlotName : linkSlotNames)
-        {
+        for (final String linkSlotName : linkSlotNames) {
 
             Link link = (Link) document.getSlotValue(linkSlotName);
 
             final URI linkRelationUri = prototypeLinkRelUris.get(linkSlotName);
             final Resource endpointResource = apiNavigator.getEndpointResource(linkRelationUri, uri);
-            if (endpointResource == null)
-            {
+            if (endpointResource == null) {
                 continue;
             }
 
             final URI href = endpointResource.getHrefUri(document, linkRelationUri);
-            if (href == null)
-            {
+            if (href == null) {
                 // Exclude Links that have null href values.
 
-                if (link != null)
-                {
+                if (link != null) {
                     document.setSlotValue(linkSlotName, null);
                 }
 
                 continue;
             }
 
-            if (link == null)
-            {
+            if (link == null) {
 
                 link = newModel(_SchemaLoader.getLinkSchemaUri());
                 link.setRel(linkRelationUri);
@@ -964,14 +819,12 @@ public class DefaultContext implements Context
     /**
      * Part of the HATEOAS automation. For Documents that have a one or more embedded Link slots, this method embeds each of the referenced Documents within the Links.
      */
-    private void embedLinkedDocuments(final Document document)
-    {
+    private void embedLinkedDocuments(final Document document) {
 
         final Prototype prototype = document.getPrototype();
         final Set<String> embeddedLinkSlotNameSet = new LinkedHashSet<>(document.getDimensions().getEmbeddedLinkSlotNames());
 
-        if (embeddedLinkSlotNameSet.isEmpty() && !prototype.containsEmbeddedLink())
-        {
+        if (embeddedLinkSlotNameSet.isEmpty() && !prototype.containsEmbeddedLink()) {
             return;
         }
 
@@ -979,34 +832,28 @@ public class DefaultContext implements Context
 
         // TODO: Asynchronous Document aggregation
         // https://wrmlorg.jira.com/browse/WRML-289
-        for (final LinkProtoSlot linkProtoSlot : linkProtoSlots)
-        {
+        for (final LinkProtoSlot linkProtoSlot : linkProtoSlots) {
             final String linkSlotName = linkProtoSlot.getName();
 
-            if (linkProtoSlot.isEmbedded() || (embeddedLinkSlotNameSet != null && embeddedLinkSlotNameSet.contains(linkSlotName)))
-            {
+            if (linkProtoSlot.isEmbedded() || (embeddedLinkSlotNameSet != null && embeddedLinkSlotNameSet.contains(linkSlotName))) {
 
                 final Object slotValue = document.getSlotValue(linkSlotName);
 
                 final Link link;
-                if (slotValue == null)
-                {
+                if (slotValue == null) {
                     link = newModel(getSchemaLoader().getLinkSchemaUri());
                     link.setRel(linkProtoSlot.getLinkRelationUri());
                     document.setSlotValue(linkSlotName, link);
                 }
-                else
-                {
+                else {
                     link = (Link) slotValue;
                 }
 
-                if (link.getDoc() == null)
-                {
+                if (link.getDoc() == null) {
                     final Model embedded = document.reference(linkSlotName);
                     link.setDoc(embedded);
                     URI href = link.getHref();
-                    if (embedded instanceof Document)
-                    {
+                    if (embedded instanceof Document) {
                         href = ((Document) embedded).getUri();
                     }
 
@@ -1020,24 +867,20 @@ public class DefaultContext implements Context
     /**
      * For Models that have a one or more collection slots, this method performs a search for the elements.
      */
-    protected final void searchForCollectionElements(final Model referrer)
-    {
+    protected final void searchForCollectionElements(final Model referrer) {
 
         final Prototype prototype = referrer.getPrototype();
 
         final Map<String, CollectionPropertyProtoSlot> collectionPropertyProtoSlots = prototype.getCollectionPropertyProtoSlots();
-        if (collectionPropertyProtoSlots.isEmpty())
-        {
+        if (collectionPropertyProtoSlots.isEmpty()) {
             return;
         }
 
         URI referrerUri = null;
-        if (referrer instanceof Document)
-        {
+        if (referrer instanceof Document) {
             referrerUri = ((Document) referrer).getUri();
         }
-        else if (referrer instanceof Embedded)
-        {
+        else if (referrer instanceof Embedded) {
             referrerUri = ((Embedded) referrer).getDocumentUri();
         }
 
@@ -1047,8 +890,7 @@ public class DefaultContext implements Context
 
         // TODO: Asynchronous
         // https://wrmlorg.jira.com/browse/WRML-289
-        for (final String collectionSlotName : collectionSlotNames)
-        {
+        for (final String collectionSlotName : collectionSlotNames) {
 
             final CollectionPropertyProtoSlot collectionPropertyProtoSlot = collectionPropertyProtoSlots.get(collectionSlotName);
             final ProtoSearchCriteria protoSearchCriteria = collectionPropertyProtoSlot.getProtoSearchCriteria();
@@ -1056,8 +898,7 @@ public class DefaultContext implements Context
             final URI referenceSchemaUri = referencePrototype.getSchemaUri();
 
             final Service service = _ServiceLoader.getServiceForSchema(referenceSchemaUri);
-            if (service == null)
-            {
+            if (service == null) {
                 throw new ContextException("Cannot search; no service applies to schema: " + referenceSchemaUri, null, this);
             }
 
@@ -1065,28 +906,23 @@ public class DefaultContext implements Context
 
             Set<Model> resultSet = null;
 
-            try
-            {
+            try {
                 resultSet = service.search(searchCriteria);
             }
-            catch (UnsupportedOperationException uoe)
-            {
+            catch (UnsupportedOperationException uoe) {
                 // Swallow this.
             }
 
-            if (resultSet != null && resultSet.size() > 0)
-            {
+            if (resultSet != null && resultSet.size() > 0) {
 
                 final URI linkRelationUri = collectionPropertyProtoSlot.getLinkRelationUri();
                 final Resource endpointResource = apiNavigator.getEndpointResource(linkRelationUri, referrerUri);
 
-                for (final Model model : resultSet)
-                {
+                for (final Model model : resultSet) {
                     final String originServiceName = service.getConfiguration().getName();
                     model.setOriginServiceName(originServiceName);
 
-                    if (model instanceof Document)
-                    {
+                    if (model instanceof Document) {
                         final Document document = (Document) model;
                         final URI uri = endpointResource.getDocumentUri(document);
                         document.setUri(uri);
@@ -1105,10 +941,9 @@ public class DefaultContext implements Context
 
 
     @Override
-    public final <M extends Model> M optionsModel(final Model model)
-    {
-        if (model == null)
-        {
+    public final <M extends Model> M optionsModel(final Model model) {
+
+        if (model == null) {
             throw new ContextException("Cannot retrieve options for a null model.", this);
         }
 

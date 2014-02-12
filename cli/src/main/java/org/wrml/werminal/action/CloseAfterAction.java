@@ -26,36 +26,30 @@ package org.wrml.werminal.action;
 
 import org.wrml.werminal.Werminal;
 
-public class CloseAfterAction extends DelegatingPhasedWerminalAction
-{
+public class CloseAfterAction extends DelegatingPhasedWerminalAction {
 
-    public CloseAfterAction(final Werminal werminal)
-    {
+    public CloseAfterAction(final Werminal werminal) {
 
         super(werminal, "Close");
     }
 
-    public CloseAfterAction(final Werminal werminal, final String title)
-    {
+    public CloseAfterAction(final Werminal werminal, final String title) {
 
         super(werminal, title);
     }
 
-    public CloseAfterAction(final Werminal werminal, final String title, final WerminalAction delegate)
-    {
+    public CloseAfterAction(final Werminal werminal, final String title, final WerminalAction delegate) {
 
         super(werminal, title, delegate);
     }
 
-    public CloseAfterAction(final Werminal werminal, final WerminalAction delegate)
-    {
+    public CloseAfterAction(final Werminal werminal, final WerminalAction delegate) {
 
         super(werminal, delegate);
     }
 
     @Override
-    protected void postDoIt()
-    {
+    protected void postDoIt() {
 
         getWerminal().closeTopWindow();
     }

@@ -26,16 +26,16 @@
 # CoffeeScript
 
 @Wrmldoc.module "ApiApp", (ApiApp, App, Backbone, Marionette, $, _) ->
-	@startWithParent = false
+  @startWithParent = false
 
-	class ApiApp.Router extends Marionette.AppRouter
+  class ApiApp.Router extends Marionette.AppRouter
 
-	API =
-		show: (wrmlData) ->
-			new ApiApp.Show.Controller(wrmlData)
-	
-	ApiApp.on "start", (wrmlData) ->
-		API.show(wrmlData)
+  API =
+    show: (wrmlData) ->
+      new ApiApp.Show.Controller(wrmlData)
+
+  ApiApp.on "start", (wrmlData) ->
+    API.show(wrmlData)
 
 
 	

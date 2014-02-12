@@ -31,38 +31,32 @@ import java.util.Map;
 /**
  * Configuration for the {@link ServiceLoader} component.
  */
-public final class ServiceLoaderConfiguration extends DefaultFactoryConfiguration
-{
+public final class ServiceLoaderConfiguration extends DefaultFactoryConfiguration {
 
     private DefaultServiceConfiguration[] _ServiceConfigurations;
 
     private Map<String, String> _ServiceMapping;
 
-    public ServiceLoaderConfiguration()
-    {
+    public ServiceLoaderConfiguration() {
 
     }
 
-    public Map<String, String> getServiceMapping()
-    {
+    public Map<String, String> getServiceMapping() {
 
         return _ServiceMapping;
     }
 
-    public void setServiceMapping(final Map<String, String> serviceMapping)
-    {
+    public void setServiceMapping(final Map<String, String> serviceMapping) {
 
         _ServiceMapping = serviceMapping;
     }
 
-    public DefaultServiceConfiguration[] getServices()
-    {
+    public DefaultServiceConfiguration[] getServices() {
 
         return _ServiceConfigurations;
     }
 
-    public void setServices(final DefaultServiceConfiguration[] serviceConfigurations)
-    {
+    public void setServices(final DefaultServiceConfiguration[] serviceConfigurations) {
 
         _ServiceConfigurations = serviceConfigurations;
     }

@@ -24,34 +24,22 @@
  */
 package org.wrml.runtime.rest;
 
-import java.io.IOException;
-import java.net.URI;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wrml.model.rest.AggregateDocument;
-import org.wrml.model.rest.Api;
-import org.wrml.model.rest.Document;
-import org.wrml.model.rest.Link;
-import org.wrml.model.rest.LinkRelation;
-import org.wrml.model.rest.Method;
+import org.wrml.model.rest.*;
 import org.wrml.model.schema.Schema;
-import org.wrml.runtime.Context;
-import org.wrml.runtime.ContextTest;
-import org.wrml.runtime.Dimensions;
-import org.wrml.runtime.DimensionsBuilder;
-import org.wrml.runtime.Engine;
-import org.wrml.runtime.EngineTest;
-import org.wrml.runtime.Keys;
+import org.wrml.runtime.*;
 import org.wrml.runtime.format.application.schema.json.JsonSchema;
 import org.wrml.runtime.schema.SchemaLoader;
 
-public class ApiLoaderTest
-{
+import java.io.IOException;
+import java.net.URI;
+
+public class ApiLoaderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiLoaderTest.class);
 
@@ -66,8 +54,7 @@ public class ApiLoaderTest
     private ApiLoader _ApiLoader;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         final Engine engine = EngineTest.createTestEngine();
         _ApiLoader = engine.getContext().getApiLoader();
@@ -75,37 +62,32 @@ public class ApiLoaderTest
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
         _ApiLoader = null;
     }
 
     @Test(expected = ApiLoaderException.class)
-    public void initParamContextNullFailure()
-    {
+    public void initParamContextNullFailure() {
 
         final ApiLoader apiLoader = new DefaultApiLoader();
         apiLoader.init(null);
     }
 
     @Test
-    public void apiLoaderNotNull()
-    {
+    public void apiLoaderNotNull() {
 
         Assert.assertNotNull(_ApiLoader);
     }
 
     @Test
-    public void contextNotNull()
-    {
+    public void contextNotNull() {
 
         Assert.assertNotNull(_ApiLoader.getContext());
     }
 
     @Test
-    public void loadWrmlSchemaScreen() throws IOException
-    {
+    public void loadWrmlSchemaScreen() throws IOException {
 
         final Context context = _ApiLoader.getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
@@ -114,8 +96,7 @@ public class ApiLoaderTest
     }
 
     @Test
-    public void loadScreenApiAndGetAggregate() throws IOException
-    {
+    public void loadScreenApiAndGetAggregate() throws IOException {
 
         // TODO: Break this up into several tests
 
@@ -164,8 +145,7 @@ public class ApiLoaderTest
     }
 
     @Test
-    public void loadWizardApiAndGetMerlin() throws IOException
-    {
+    public void loadWizardApiAndGetMerlin() throws IOException {
 
         final Context context = _ApiLoader.getContext();
         final SchemaLoader schemaLoader = context.getSchemaLoader();

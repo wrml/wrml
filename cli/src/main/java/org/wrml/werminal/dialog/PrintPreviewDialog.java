@@ -54,8 +54,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.SortedSet;
 
-public class PrintPreviewDialog extends WerminalWindow
-{
+public class PrintPreviewDialog extends WerminalWindow {
 
     private static final int COMPONENT_COLUMNS = 80;
 
@@ -69,8 +68,7 @@ public class PrintPreviewDialog extends WerminalWindow
 
     private Model _Model;
 
-    public PrintPreviewDialog(final Werminal werminal, final String title, final WerminalAction dismissAction)
-    {
+    public PrintPreviewDialog(final Werminal werminal, final String title, final WerminalAction dismissAction) {
 
         super(werminal, title);
 
@@ -85,12 +83,10 @@ public class PrintPreviewDialog extends WerminalWindow
         addEmptySpace();
         addComponent(schemaPanel);
 
-        final WerminalAction formatConfirmAction = new WerminalAction(werminal, "Preview Format")
-        {
+        final WerminalAction formatConfirmAction = new WerminalAction(werminal, "Preview Format") {
 
             @Override
-            public void doAction()
-            {
+            public void doAction() {
 
                 updatePreview();
 
@@ -131,20 +127,17 @@ public class PrintPreviewDialog extends WerminalWindow
 
     }
 
-    public URI getFormatUri()
-    {
+    public URI getFormatUri() {
 
         return (URI) _FormatUriTextBox.getValue();
     }
 
-    public Model getModel()
-    {
+    public Model getModel() {
 
         return _Model;
     }
 
-    public void setModel(final Model model)
-    {
+    public void setModel(final Model model) {
 
         _Model = model;
         final URI schemaUri = _Model.getSchemaUri();
@@ -157,15 +150,12 @@ public class PrintPreviewDialog extends WerminalWindow
         final SortedSet<URI> formatUris = formatLoader.getLoadedFormatUris();
         final URI defaultFormatUri = formatLoader.getDefaultFormatUri();
 
-        for (final URI formatUri : formatUris)
-        {
+        for (final URI formatUri : formatUris) {
             final Formatter formatter = formatLoader.getFormatter(formatUri);
-            if (formatter.isApplicableTo(model.getSchemaUri()))
-            {
+            if (formatter.isApplicableTo(model.getSchemaUri())) {
                 _FormatUriHistoryCheckListBox.addItem(formatUri);
 
-                if (formatUri.equals(defaultFormatUri))
-                {
+                if (formatUri.equals(defaultFormatUri)) {
                     _FormatUriHistoryCheckListBox.setCheckedItem(formatUri);
                 }
 
@@ -175,8 +165,7 @@ public class PrintPreviewDialog extends WerminalWindow
         updatePreview();
     }
 
-    private void updatePreview()
-    {
+    private void updatePreview() {
 
         final Werminal werminal = getWerminal();
         final Model model = getModel();
@@ -185,8 +174,7 @@ public class PrintPreviewDialog extends WerminalWindow
         final FormatLoader formatLoader = context.getFormatLoader();
 
         URI formatUri = getFormatUri();
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
 
             formatUri = formatLoader.getDefaultFormatUri();
         }
@@ -194,24 +182,20 @@ public class PrintPreviewDialog extends WerminalWindow
         _FormatUriHistoryCheckListBox.setCheckedItem(formatUri);
 
         final String printOut;
-        if (model instanceof Schema && formatUri.equals(SystemFormat.json_schema.getFormatUri()))
-        {
+        if (model instanceof Schema && formatUri.equals(SystemFormat.json_schema.getFormatUri())) {
             final Schema wrmlSchema = (Schema) model;
             final SchemaLoader schemaLoader = context.getSchemaLoader();
             final JsonSchema jsonSchema = schemaLoader.getJsonSchemaLoader().load(wrmlSchema);
             printOut = AsciiArt.express(jsonSchema.getRootNode());
         }
-        else
-        {
+        else {
 
             final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
-            try
-            {
+            try {
                 context.writeModel(byteOut, model, formatUri);
             }
-            catch (final ModelWritingException e)
-            {
+            catch (final ModelWritingException e) {
                 werminal.showError("Unable to express the model " + model.getHeapId() + ", returning null.", e);
                 return;
             }
@@ -224,39 +208,33 @@ public class PrintPreviewDialog extends WerminalWindow
 
         _PrintedModelLineListBox.clearItems();
 
-        for (final String line : unwrappedLines)
-        {
+        for (final String line : unwrappedLines) {
             _PrintedModelLineListBox.addAction(new PrintedLineAction(werminal, line));
         }
 
     }
 
-    private class PrintedLineAction extends WerminalAction
-    {
+    private class PrintedLineAction extends WerminalAction {
 
         private final String _Line;
 
-        public PrintedLineAction(final Werminal werminal, final String line)
-        {
+        public PrintedLineAction(final Werminal werminal, final String line) {
 
             super(werminal, "");
             _Line = line;
         }
 
         @Override
-        public void doAction()
-        {
+        public void doAction() {
 
             String line = getLine();
-            if (line == null)
-            {
+            if (line == null) {
                 return;
             }
 
             line = line.trim();
 
-            if (line.isEmpty())
-            {
+            if (line.isEmpty()) {
                 return;
             }
 
@@ -265,15 +243,13 @@ public class PrintPreviewDialog extends WerminalWindow
             werminal.showMessageBox("Selected Line", "\n\n" + _Line.trim() + "\n\n");
         }
 
-        public String getLine()
-        {
+        public String getLine() {
 
             return _Line;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
             return getLine();
         }

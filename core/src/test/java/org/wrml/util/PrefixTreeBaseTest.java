@@ -24,7 +24,6 @@
  */
 package org.wrml.util;
 
-public class PrefixTreeBaseTest 
-{
-    
+public class PrefixTreeBaseTest {
+
 }

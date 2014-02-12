@@ -36,8 +36,7 @@ import java.util.regex.Pattern;
 /**
  * @see <a href="http://www.ietf.org/rfc/rfc6570.txt">RFC 6570 - URI Template</a>
  */
-public class UriTemplate
-{
+public class UriTemplate {
 
     public static final char PATH_SEPARATOR_CHAR = '/';
 
@@ -55,8 +54,7 @@ public class UriTemplate
 
     private URI _StaticUri;
 
-    public UriTemplate(final SyntaxLoader syntaxLoader, final String uriTemplateString)
-    {
+    public UriTemplate(final SyntaxLoader syntaxLoader, final String uriTemplateString) {
 
         _SyntaxLoader = syntaxLoader;
         _UriTemplateString = uriTemplateString;
@@ -67,12 +65,10 @@ public class UriTemplate
         final List<String> paramNames = new ArrayList<String>();
         int end = 0;
 
-        while (matcher.find())
-        {
+        while (matcher.find()) {
             final int start = matcher.start();
 
-            if (start != end)
-            {
+            if (start != end) {
                 // Copy the none-match to the pattern
                 pattern.append(uriTemplateString.substring(end, start));
 
@@ -86,15 +82,13 @@ public class UriTemplate
             end = matcher.end();
         }
 
-        if (end != length)
-        {
+        if (end != length) {
             pattern.append(uriTemplateString.substring(end, length));
         }
 
         String patternString = pattern.toString();
         final int lastIndex = patternString.length() - 1;
-        if ((lastIndex >= 0) && (patternString.charAt(lastIndex) == PATH_SEPARATOR_CHAR))
-        {
+        if ((lastIndex >= 0) && (patternString.charAt(lastIndex) == PATH_SEPARATOR_CHAR)) {
             patternString = patternString.substring(0, lastIndex);
         }
 
@@ -105,23 +99,19 @@ public class UriTemplate
 
     }
 
-    public URI evaluate(final Map<String, Object> parameterMap)
-    {
+    public URI evaluate(final Map<String, Object> parameterMap) {
+
         return evaluate(parameterMap, false);
     }
 
-    public URI evaluate(final Map<String, Object> parameterMap, final boolean allowNulls)
-    {
+    public URI evaluate(final Map<String, Object> parameterMap, final boolean allowNulls) {
 
         final URI staticUri = getStaticUri();
-        if (staticUri != null)
-        {
-            if (parameterMap == null || parameterMap.size() == 0)
-            {
+        if (staticUri != null) {
+            if (parameterMap == null || parameterMap.size() == 0) {
                 return staticUri;
             }
-            else
-            {
+            else {
                 throw new UriTemplateException("The URI Template accepts no parameters", null, this);
             }
 
@@ -131,23 +121,18 @@ public class UriTemplate
 
         String matchResult = _MatchPattern.toString();
 
-        for (final String templateParamName : _ParamNames)
-        {
+        for (final String templateParamName : _ParamNames) {
             final Object templateParamValue = parameterMap.get(templateParamName);
             final String templateParamStringValue;
-            if (templateParamValue == null)
-            {
-                if (allowNulls)
-                {
+            if (templateParamValue == null) {
+                if (allowNulls) {
                     templateParamStringValue = "null";
                 }
-                else
-                {
+                else {
                     return null;
                 }
             }
-            else
-            {
+            else {
                 templateParamStringValue = syntaxLoader.formatSyntaxValue(templateParamValue);
             }
 
@@ -163,17 +148,14 @@ public class UriTemplate
         return uri;
     }
 
-    public String[] getParameterNames()
-    {
+    public String[] getParameterNames() {
 
         return _ParamNames;
     }
 
-    public SortedSet<Parameter> getParameters(final URI uri)
-    {
+    public SortedSet<Parameter> getParameters(final URI uri) {
 
-        if (uri == null)
-        {
+        if (uri == null) {
             throw new UriTemplateException("Null URI", null, this);
         }
 
@@ -183,14 +165,12 @@ public class UriTemplate
 
         final Matcher matcher = _MatchPattern.matcher(uriString);
 
-        if (!matcher.matches())
-        {
+        if (!matcher.matches()) {
             return null;
         }
 
         final SortedSet<Parameter> parameterSet = new TreeSet<>();
-        for (final String paramName : _ParamNames)
-        {
+        for (final String paramName : _ParamNames) {
             final String paramValue = matcher.group(paramName);
             final Parameter parameter = new Parameter(paramName, paramValue);
             parameterSet.add(parameter);
@@ -199,29 +179,24 @@ public class UriTemplate
         return parameterSet;
     }
 
-    public SyntaxLoader getSyntaxLoader()
-    {
+    public SyntaxLoader getSyntaxLoader() {
 
         return _SyntaxLoader;
     }
 
-    public String getUriTemplateString()
-    {
+    public String getUriTemplateString() {
 
         return _UriTemplateString;
     }
 
-    public boolean matches(final URI uri)
-    {
+    public boolean matches(final URI uri) {
 
-        if (uri == null)
-        {
+        if (uri == null) {
             return false;
         }
 
         final URI staticUri = getStaticUri();
-        if (staticUri != null && uri.equals(staticUri))
-        {
+        if (staticUri != null && uri.equals(staticUri)) {
             return true;
         }
 
@@ -232,8 +207,7 @@ public class UriTemplate
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         String retval = "";
 
@@ -242,17 +216,14 @@ public class UriTemplate
         return retval;
     }
 
-    private Pattern getMatchPattern()
-    {
+    private Pattern getMatchPattern() {
 
         return _MatchPattern;
     }
 
-    private URI getStaticUri()
-    {
+    private URI getStaticUri() {
 
-        if (_StaticUri == null && _ParamNames.length == 0)
-        {
+        if (_StaticUri == null && _ParamNames.length == 0) {
             _StaticUri = URI.create(_UriTemplateString);
         }
         return _StaticUri;

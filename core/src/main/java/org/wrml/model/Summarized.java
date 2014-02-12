@@ -27,8 +27,7 @@ package org.wrml.model;
 /**
  * Something with a summary. A <i>composable</i> Summarized model manages the state of a "summary" text slot.
  */
-public interface Summarized extends Abstract
-{
+public interface Summarized extends Abstract {
 
     /**
      * The summary associated with this {@link Summarized} model.

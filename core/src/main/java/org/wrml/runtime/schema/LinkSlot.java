@@ -25,9 +25,9 @@
 package org.wrml.runtime.schema;
 
 import org.wrml.model.rest.Api;
+import org.wrml.model.rest.Method;
 import org.wrml.model.schema.LinkValue;
 import org.wrml.model.schema.Slot;
-import org.wrml.model.rest.Method;
 
 import java.lang.annotation.*;
 
@@ -69,15 +69,14 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface LinkSlot
-{
+public @interface LinkSlot {
 
     /**
      * The (String representation) of the {@link java.net.URI} that identifies the {@link org.wrml.model.rest.LinkRelation}
      * associated with this {@link LinkSlot}.
      *
      * @return The (String representation) of the {@link java.net.URI} that identifies the {@link org.wrml.model.rest.LinkRelation}
-     *         associated with this {@link LinkSlot}.
+     * associated with this {@link LinkSlot}.
      */
     String linkRelationUri();
 

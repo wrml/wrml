@@ -24,7 +24,6 @@
  */
 package org.wrml.runtime.rest;
 
-public interface AcceptHeader
-{
+public interface AcceptHeader {
     // TODO Define AcceptHeader and other special header models
 }

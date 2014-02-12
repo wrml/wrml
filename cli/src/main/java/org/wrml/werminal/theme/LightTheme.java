@@ -32,11 +32,9 @@ import org.wrml.werminal.theme.LightTheme.LightThemeDefinition;
 import java.util.Map;
 
 //TODO: Redesign this class to enable greater reuse
-public class LightTheme extends TerminalAppTheme<LightThemeDefinition>
-{
+public class LightTheme extends TerminalAppTheme<LightThemeDefinition> {
 
-    public LightTheme()
-    {
+    public LightTheme() {
 
         super(LightThemeDefinition.class);
 
@@ -45,8 +43,7 @@ public class LightTheme extends TerminalAppTheme<LightThemeDefinition>
 
         final LightThemeDefinition[] wrmlThemeDefinitions = LightThemeDefinition.values();
 
-        for (final LightThemeDefinition wrmlThemeDefinition : wrmlThemeDefinitions)
-        {
+        for (final LightThemeDefinition wrmlThemeDefinition : wrmlThemeDefinitions) {
 
             final Definition definition = new Theme.Definition(wrmlThemeDefinition.getForegroundColor(),
                     wrmlThemeDefinition.getBackgroundColor(), wrmlThemeDefinition.isHighlighted(),
@@ -57,8 +54,7 @@ public class LightTheme extends TerminalAppTheme<LightThemeDefinition>
         }
     }
 
-    static enum LightThemeDefinition
-    {
+    static enum LightThemeDefinition {
 
         BORDER(Terminal.Color.WHITE, Terminal.Color.BLACK, false, false),
         BUTTON_ACTIVE(Terminal.Color.WHITE, Terminal.Color.RED, false, true),
@@ -85,8 +81,7 @@ public class LightTheme extends TerminalAppTheme<LightThemeDefinition>
         private final boolean _Underlined;
 
         private LightThemeDefinition(final Terminal.Color backgroundColor, final Terminal.Color foregroundColor,
-                                     final boolean highlighted, final boolean underlined)
-        {
+                                     final boolean highlighted, final boolean underlined) {
 
             _BackgroundColor = backgroundColor;
             _ForegroundColor = foregroundColor;
@@ -94,32 +89,27 @@ public class LightTheme extends TerminalAppTheme<LightThemeDefinition>
             _Underlined = underlined;
         }
 
-        public Terminal.Color getBackgroundColor()
-        {
+        public Terminal.Color getBackgroundColor() {
 
             return _BackgroundColor;
         }
 
-        public Terminal.Color getForegroundColor()
-        {
+        public Terminal.Color getForegroundColor() {
 
             return _ForegroundColor;
         }
 
-        public boolean isHighlighted()
-        {
+        public boolean isHighlighted() {
 
             return _Highlighted;
         }
 
-        public boolean isUnderlined()
-        {
+        public boolean isUnderlined() {
 
             return _Underlined;
         }
 
-        public Category toCategory()
-        {
+        public Category toCategory() {
 
             return Category.valueOf(String.valueOf(this));
         }

@@ -35,16 +35,14 @@ import java.util.Set;
 /**
  * A simple builder for immutable {@link Keys}.
  */
-public final class KeysBuilder
-{
+public final class KeysBuilder {
 
     private final MutableKeys _Keys;
 
     /**
      * Default constructor creates initially "empty" Keys.
      */
-    public KeysBuilder()
-    {
+    public KeysBuilder() {
 
         _Keys = new MutableKeys();
     }
@@ -52,29 +50,25 @@ public final class KeysBuilder
     /**
      * Creates the {@link KeysBuilder} with the initial keyed schema.
      */
-    public KeysBuilder(final URI schemaUri, final Object keyValue)
-    {
+    public KeysBuilder(final URI schemaUri, final Object keyValue) {
 
         this();
         addKey(schemaUri, keyValue);
     }
 
-    public KeysBuilder addKey(final URI schemaUri, final Object keyValue)
-    {
+    public KeysBuilder addKey(final URI schemaUri, final Object keyValue) {
 
         _Keys.addKey(schemaUri, keyValue);
         return this;
     }
 
-    public Keys toKeys()
-    {
+    public Keys toKeys() {
 
         return _Keys;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " { keys : " + _Keys + "}";
     }
@@ -84,18 +78,14 @@ public final class KeysBuilder
      *
      * @param otherKeys some other Keys to include in the Keys being built.
      */
-    public void addAll(final Keys otherKeys)
-    {
+    public void addAll(final Keys otherKeys) {
 
-        if (otherKeys instanceof MutableKeys)
-        {
+        if (otherKeys instanceof MutableKeys) {
             _Keys._KeyedSchemaUriToKeyValue.putAll(((MutableKeys) otherKeys).getInternalMap());
         }
-        else if (otherKeys != null)
-        {
+        else if (otherKeys != null) {
             final Set<URI> keyedSchemaUris = otherKeys.getKeyedSchemaUris();
-            for (URI keyedSchemaUri : keyedSchemaUris)
-            {
+            for (URI keyedSchemaUri : keyedSchemaUris) {
                 _Keys.addKey(keyedSchemaUri, otherKeys.getValue(keyedSchemaUri));
             }
         }
@@ -104,8 +94,7 @@ public final class KeysBuilder
     /**
      * Internal, mutable implementation of {@link Keys}.
      */
-    private static final class MutableKeys implements Keys
-    {
+    private static final class MutableKeys implements Keys {
 
         private static final long serialVersionUID = 1L;
 
@@ -114,29 +103,24 @@ public final class KeysBuilder
         /**
          * Create a set of keys with the specified pair as the first/primary identity.
          */
-        MutableKeys()
-        {
+        MutableKeys() {
 
             _KeyedSchemaUriToKeyValue = new LinkedHashMap<URI, Object>();
         }
 
         @Override
-        public boolean equals(final Object o)
-        {
+        public boolean equals(final Object o) {
 
-            if (this == o)
-            {
+            if (this == o) {
                 return true;
             }
-            if (!(o instanceof MutableKeys))
-            {
+            if (!(o instanceof MutableKeys)) {
                 return false;
             }
 
             final MutableKeys that = (MutableKeys) o;
 
-            if (_KeyedSchemaUriToKeyValue != null ? !_KeyedSchemaUriToKeyValue.equals(that._KeyedSchemaUriToKeyValue) : that._KeyedSchemaUriToKeyValue != null)
-            {
+            if (_KeyedSchemaUriToKeyValue != null ? !_KeyedSchemaUriToKeyValue.equals(that._KeyedSchemaUriToKeyValue) : that._KeyedSchemaUriToKeyValue != null) {
                 return false;
             }
 
@@ -144,15 +128,13 @@ public final class KeysBuilder
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
 
             return _KeyedSchemaUriToKeyValue != null ? _KeyedSchemaUriToKeyValue.hashCode() : 0;
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
 
             return _KeyedSchemaUriToKeyValue.size();
         }
@@ -163,8 +145,7 @@ public final class KeysBuilder
          * @return an unordered Set of key URI's
          */
         @Override
-        public Set<URI> getKeyedSchemaUris()
-        {
+        public Set<URI> getKeyedSchemaUris() {
 
             return _KeyedSchemaUriToKeyValue.keySet();
         }
@@ -178,11 +159,9 @@ public final class KeysBuilder
          */
         @Override
         @SuppressWarnings("unchecked")
-        public <V> V getValue(final URI keyedSchemaUri)
-        {
+        public <V> V getValue(final URI keyedSchemaUri) {
 
-            if (!_KeyedSchemaUriToKeyValue.containsKey(keyedSchemaUri))
-            {
+            if (!_KeyedSchemaUriToKeyValue.containsKey(keyedSchemaUri)) {
                 return null;
             }
 
@@ -190,8 +169,7 @@ public final class KeysBuilder
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
             return AsciiArt.express(_KeyedSchemaUriToKeyValue);
         }
@@ -202,16 +180,13 @@ public final class KeysBuilder
          * @param schemaUri - the schema to associate the key with
          * @param keyValue
          */
-        void addKey(final URI schemaUri, final Object keyValue)
-        {
+        void addKey(final URI schemaUri, final Object keyValue) {
 
-            if (schemaUri == null)
-            {
+            if (schemaUri == null) {
                 throw new NullPointerException("The schema uri is required.");
             }
 
-            if (keyValue == null)
-            {
+            if (keyValue == null) {
                 throw new NullPointerException("The key value is required.");
             }
 
@@ -219,8 +194,7 @@ public final class KeysBuilder
 
         }
 
-        Map<URI, Object> getInternalMap()
-        {
+        Map<URI, Object> getInternalMap() {
 
             return _KeyedSchemaUriToKeyValue;
         }

@@ -26,43 +26,42 @@
 # CoffeeScript
 
 @Wrmldoc.module "ModelApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	#class List.Layout extends App.Views.Layout
-	#	template: "model/show/model_show"
-		
-	#	regions:
-			#titleRegion: 	"#title-region"
-			#panelRegion:	"#panel-region"
-			#newRegion:		"#new-region"
-	#		modelRegion:		"#model-region"
-	
-	#class List.Title extends App.Views.ItemView
-	#	template: "model/list/model_title"
-	
-	#class List.Panel extends App.Views.ItemView
-	#	template: "model/list/model_panel"
-		
-	#	triggers:
-	#		"click #new-model" : "new:model:button:clicked"
-	
-	#class List.ModelMember extends App.Views.ItemView
-	#	template: "model/list/model_list_item"
-	#	tagName: "li"
-	#	className: "model-member"
-			
-	#	triggers:
-	#		"click .model-delete button" : "model:delete:clicked"
-	#		"click" : "model:member:clicked"
-	
-	#class List.Empty extends App.Views.ItemView
-	#	template: "model/list/model_empty"
-	#	tagName: "li"
-	
-	class Show.Model extends App.Views.ItemView
-		template: "model/show/model_show"
 
-	#class Show.Model extends App.Views.CompositeView
-	#	template: "model/list/model_list"
-	#	itemView: List.ModelMember
-	#	emptyView: List.Empty
-	#	itemViewContainer: "ul"
+  #class List.Layout extends App.Views.Layout
+  #	template: "model/show/model_show"
+
+  #	regions:
+  #titleRegion: 	"#title-region"
+  #panelRegion:	"#panel-region"
+  #newRegion:		"#new-region"
+  #		modelRegion:		"#model-region"
+
+  #class List.Title extends App.Views.ItemView
+  #	template: "model/list/model_title"
+
+  #class List.Panel extends App.Views.ItemView
+  #	template: "model/list/model_panel"
+
+  #	triggers:
+  #		"click #new-model" : "new:model:button:clicked"
+
+  #class List.ModelMember extends App.Views.ItemView
+  #	template: "model/list/model_list_item"
+  #	tagName: "li"
+  #	className: "model-member"
+
+  #	triggers:
+  #		"click .model-delete button" : "model:delete:clicked"
+  #		"click" : "model:member:clicked"
+
+  #class List.Empty extends App.Views.ItemView
+  #	template: "model/list/model_empty"
+  #	tagName: "li"
+  class Show.Model extends App.Views.ItemView
+    template: "model/show/model_show"
+
+#class Show.Model extends App.Views.CompositeView
+#	template: "model/list/model_list"
+#	itemView: List.ModelMember
+#	emptyView: List.Empty
+#	itemViewContainer: "ul"

@@ -52,8 +52,7 @@ import java.util.SortedSet;
  * The SchemaLoader is also responsible for loading org.wrml.model.schema.Choices as java.lang.Enum classes.
  * </p>
  */
-public interface SchemaLoader extends Loader
-{
+public interface SchemaLoader extends Loader {
     /**
      * Get the {@link URI} of {@link org.wrml.model.rest.AggregateDocument}.
      */

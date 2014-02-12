@@ -39,8 +39,7 @@ import org.wrml.runtime.schema.WRML;
  * </p>
  */
 @WRML(uniqueName = "org/wrml/runtime/service/apiDesigner/AutoLinkFunction")
-public interface AutoLinkFunction extends Virtual, Document
-{
+public interface AutoLinkFunction extends Virtual, Document {
 
     @LinkSlot(linkRelationUri = "http://relation.api.wrml.org/org/wrml/relation/invoke", method = Method.Invoke)
     Api autoLink(Api parameter);

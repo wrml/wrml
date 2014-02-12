@@ -24,14 +24,12 @@
  */
 package org.wrml.runtime.syntax;
 
-public class IntegerSyntaxHandler extends SyntaxHandler<Integer>
-{
+public class IntegerSyntaxHandler extends SyntaxHandler<Integer> {
 
     @Override
-    public String formatSyntaxValue(final Integer syntaxValue) throws SyntaxHandlerException
-    {
-        if (syntaxValue == null)
-        {
+    public String formatSyntaxValue(final Integer syntaxValue) throws SyntaxHandlerException {
+
+        if (syntaxValue == null) {
             return "";
         }
 
@@ -39,10 +37,9 @@ public class IntegerSyntaxHandler extends SyntaxHandler<Integer>
     }
 
     @Override
-    public Integer parseSyntacticText(final String bValue) throws SyntaxHandlerException
-    {
-        if (bValue == null || bValue.isEmpty())
-        {
+    public Integer parseSyntacticText(final String bValue) throws SyntaxHandlerException {
+
+        if (bValue == null || bValue.isEmpty()) {
             return null;
         }
 

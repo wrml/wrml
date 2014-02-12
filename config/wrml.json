@@ -1,42 +1,35 @@
 {
 
-    "context" :
-    {
+    "context": {
 
-        "schemaLoader" :
-        {
+        "schemaLoader": {
 
-            "factory" : "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
-            "schemaClassRootDirectory":"/etc/wrml/schemas"
+            "factory": "org.wrml.runtime.schema.DefaultSchemaLoaderFactory",
+            "schemaClassRootDirectory": "/etc/wrml/schemas"
         },
 
-        "serviceLoader" :
-        {
-            "services" :
-            [
+        "serviceLoader": {
+            "services": [
                 {
-                    "name" : "File",
-                    "implementation" : "org.wrml.runtime.service.file.FileSystemService",
-                    "settings" :
-                    {
-                        "rootDirectory" : "/etc/wrml/models"
+                    "name": "File",
+                    "implementation": "org.wrml.runtime.service.file.FileSystemService",
+                    "settings": {
+                        "rootDirectory": "/etc/wrml/models"
                     }
                 },
                 {
-                    "name" : "ApiDesigner",
-                    "implementation" : "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
-                    "settings" :
-                    {
-                        "apiUri" : "http://design.api.wrml.org"
+                    "name": "ApiDesigner",
+                    "implementation": "org.wrml.runtime.service.apiDesigner.ApiDesignerService",
+                    "settings": {
+                        "apiUri": "http://design.api.wrml.org"
                     }
                 }
 
             ],
 
-            "serviceMapping" :
-            {
-                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*" : "ApiDesigner",
-                "*" : "File"
+            "serviceMapping": {
+                "http://schema.api.wrml.org/org/wrml/runtime/service/apiDesigner/*": "ApiDesigner",
+                "*": "File"
             }
         }
     }

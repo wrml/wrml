@@ -26,25 +26,25 @@ package org.wrml.runtime.format;
 
 import org.wrml.runtime.Context;
 
-public abstract class ModelGraph
-{
+public abstract class ModelGraph {
 
-    /** The context to operate within. */
+    /**
+     * The context to operate within.
+     */
     private final Context _Context;
 
     /**
      * Create a new model graph.
-     * 
-     * @param context
-     *            The context to operate within.
+     *
+     * @param context The context to operate within.
      */
-    public ModelGraph(final Context context)
-    {
+    public ModelGraph(final Context context) {
+
         _Context = context;
     }
 
-    public Context getContext()
-    {
+    public Context getContext() {
+
         return _Context;
     }
 

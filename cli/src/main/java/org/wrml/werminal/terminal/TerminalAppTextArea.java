@@ -28,15 +28,13 @@ import com.googlecode.lanterna.gui.component.TextArea;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.TerminalSize;
 
-public class TerminalAppTextArea extends TextArea
-{
+public class TerminalAppTextArea extends TextArea {
 
     private final TerminalApp _App;
 
     private final TerminalAppKeyboardInteraction _KeyboardInteraction;
 
-    public TerminalAppTextArea(final TerminalApp app, final TerminalSize preferredSize, final String text)
-    {
+    public TerminalAppTextArea(final TerminalApp app, final TerminalSize preferredSize, final String text) {
 
         super(preferredSize, text);
         _App = app;
@@ -44,31 +42,26 @@ public class TerminalAppTextArea extends TextArea
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TerminalApp> T getApp()
-    {
+    public <T extends TerminalApp> T getApp() {
 
         return (T) _App;
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
-        if (_KeyboardInteraction.handleKeyboardInteraction(key))
-        {
+        if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
             return Result.EVENT_HANDLED;
         }
 
         return super.keyboardInteraction(key);
     }
 
-    protected TerminalAppKeyboardInteraction createTerminalAppKeyboardInteraction()
-    {
+    protected TerminalAppKeyboardInteraction createTerminalAppKeyboardInteraction() {
 
         return new TerminalAppKeyboardInteraction(getApp(), null, true);
     }

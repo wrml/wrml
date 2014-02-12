@@ -1,11 +1,9 @@
 package org.wrml.contrib.runtime.service.groovy.groovyTemplates
 
-class Deeper
-{
+class Deeper {
     long count = 0L
 
-    long getAndIncCount()
-    {
+    long getAndIncCount() {
         return count++
     }
 }

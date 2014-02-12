@@ -40,8 +40,7 @@ import java.io.OutputStream;
 /**
  * Implementation of {@link Formatter} to marshal and unmarshal XML using {@link XStream}.
  */
-public class XmlFormatter extends AbstractFormatter
-{
+public class XmlFormatter extends AbstractFormatter {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlFormatter.class);
 
@@ -50,52 +49,44 @@ public class XmlFormatter extends AbstractFormatter
     @XStreamOmitField
     private XStream _XStream;
 
-    public XmlFormatter()
-    {
+    public XmlFormatter() {
 
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException
-    {
+    public <M extends Model> M readModel(final InputStream in, final Keys rootModelKeys, final Dimensions rootModelDimensions) throws ModelReadingException {
 
         // TODO: Implement this
 
         M result;
-        try
-        {
+        try {
             Object obj = _XStream.fromXML(in);
             result = (M) obj;
             LOG.debug("unmarshalled input xml to Model={}", result);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new ModelReadingException("Unable to marshall input xml to Model", e, this);
         }
         return result;
     }
 
     @Override
-    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException
-    {
+    public void writeModel(final OutputStream out, final Model model, final ModelWriteOptions writeOptions) throws ModelWritingException {
 
         // TODO: Implement this
 
-        try
-        {
+        try {
             _XStream.toXML(model, out);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new ModelWritingException(getClass().getSimpleName() + " had an Exception (" + e.getMessage() + ") processing model:\n" + model, e, this);
         }
 
     }
 
     @Override
-    protected void initFromConfiguration(final FormatterConfiguration configu)
-    {
+    protected void initFromConfiguration(final FormatterConfiguration configu) {
 
         _XStream = new XStream();
         _XStream.autodetectAnnotations(true);

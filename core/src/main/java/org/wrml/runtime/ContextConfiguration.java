@@ -34,8 +34,7 @@ import org.wrml.runtime.syntax.SyntaxLoaderConfiguration;
 /**
  * The WRML runtime context configuration.
  */
-public class ContextConfiguration extends DefaultFactoryConfiguration
-{
+public class ContextConfiguration extends DefaultFactoryConfiguration {
 
     private ApiLoaderConfiguration _ApiLoaderConfiguration;
 
@@ -52,91 +51,76 @@ public class ContextConfiguration extends DefaultFactoryConfiguration
     private SyntaxLoaderConfiguration _SyntaxLoaderConfiguration;
 
 
-    public ContextConfiguration()
-    {
+    public ContextConfiguration() {
 
     }
 
-    public ApiLoaderConfiguration getApiLoader()
-    {
+    public ApiLoaderConfiguration getApiLoader() {
 
         return _ApiLoaderConfiguration;
     }
 
-    public void setApiLoader(final ApiLoaderConfiguration apiLoaderConfiguration)
-    {
+    public void setApiLoader(final ApiLoaderConfiguration apiLoaderConfiguration) {
 
         _ApiLoaderConfiguration = apiLoaderConfiguration;
     }
 
-    public FormatLoaderConfiguration getFormatLoader()
-    {
+    public FormatLoaderConfiguration getFormatLoader() {
 
         return _FormatLoaderConfiguration;
     }
 
-    public void setFormatLoader(final FormatLoaderConfiguration formatLoaderConfiguration)
-    {
+    public void setFormatLoader(final FormatLoaderConfiguration formatLoaderConfiguration) {
 
         _FormatLoaderConfiguration = formatLoaderConfiguration;
     }
 
-    public ModelBuilderConfiguration getModelBuilder()
-    {
+    public ModelBuilderConfiguration getModelBuilder() {
 
         return _ModelBuilderConfiguration;
     }
 
-    public void setModelBuilder(final ModelBuilderConfiguration modelBuilderConfiguration)
-    {
+    public void setModelBuilder(final ModelBuilderConfiguration modelBuilderConfiguration) {
 
         _ModelBuilderConfiguration = modelBuilderConfiguration;
     }
 
-    public ModelCacheConfiguration getModelCache()
-    {
+    public ModelCacheConfiguration getModelCache() {
 
         return _ModelCacheConfiguration;
     }
 
-    public void setModelCache(final ModelCacheConfiguration modelCacheConfiguration)
-    {
+    public void setModelCache(final ModelCacheConfiguration modelCacheConfiguration) {
 
         _ModelCacheConfiguration = modelCacheConfiguration;
     }
 
-    public SchemaLoaderConfiguration getSchemaLoader()
-    {
+    public SchemaLoaderConfiguration getSchemaLoader() {
 
         return _SchemaLoaderConfiguration;
     }
 
-    public void setSchemaLoader(final SchemaLoaderConfiguration schemaLoaderConfiguration)
-    {
+    public void setSchemaLoader(final SchemaLoaderConfiguration schemaLoaderConfiguration) {
 
         _SchemaLoaderConfiguration = schemaLoaderConfiguration;
     }
 
-    public ServiceLoaderConfiguration getServiceLoader()
-    {
+    public ServiceLoaderConfiguration getServiceLoader() {
 
         return _ServiceLoaderConfiguration;
     }
 
-    public void setServiceLoader(final ServiceLoaderConfiguration serviceLoaderConfiguration)
-    {
+    public void setServiceLoader(final ServiceLoaderConfiguration serviceLoaderConfiguration) {
 
         _ServiceLoaderConfiguration = serviceLoaderConfiguration;
     }
 
-    public SyntaxLoaderConfiguration getSyntaxLoader()
-    {
+    public SyntaxLoaderConfiguration getSyntaxLoader() {
 
         return _SyntaxLoaderConfiguration;
     }
 
-    public void setSyntaxLoader(final SyntaxLoaderConfiguration syntaxLoaderConfiguration)
-    {
+    public void setSyntaxLoader(final SyntaxLoaderConfiguration syntaxLoaderConfiguration) {
 
         _SyntaxLoaderConfiguration = syntaxLoaderConfiguration;
     }

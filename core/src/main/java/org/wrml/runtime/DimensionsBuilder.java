@@ -36,16 +36,14 @@ import java.util.*;
 /**
  * A simple builder for immutable {@link Dimensions}.
  */
-public final class DimensionsBuilder
-{
+public final class DimensionsBuilder {
 
     private final MutableDimensions _Dimensions;
 
     /**
      * Default constructor creates initially "empty" Dimensions.
      */
-    public DimensionsBuilder()
-    {
+    public DimensionsBuilder() {
 
         _Dimensions = new MutableDimensions();
     }
@@ -53,8 +51,7 @@ public final class DimensionsBuilder
     /**
      * Creates the {@link DimensionsBuilder} based upon the initial {@link Dimensions}.
      */
-    public DimensionsBuilder(final Dimensions dimensions)
-    {
+    public DimensionsBuilder(final Dimensions dimensions) {
 
         _Dimensions = ((MutableDimensions) dimensions).clone();
     }
@@ -62,46 +59,39 @@ public final class DimensionsBuilder
     /**
      * Creates the {@link DimensionsBuilder} with the initial dimensioned schema.
      */
-    public DimensionsBuilder(final URI schemaUri)
-    {
+    public DimensionsBuilder(final URI schemaUri) {
 
         this();
         _Dimensions.setSchemaUri(schemaUri);
 
     }
 
-    public SortedMap<String, String> getMetadata()
-    {
+    public SortedMap<String, String> getMetadata() {
 
         return _Dimensions.getMetadata();
     }
 
-    public SortedMap<String, String> getQueryParameters()
-    {
+    public SortedMap<String, String> getQueryParameters() {
 
         return _Dimensions.getQueryParameters();
     }
 
-    public List<String> getEmbeddedLinkSlotNames()
-    {
+    public List<String> getEmbeddedLinkSlotNames() {
 
         return _Dimensions.getEmbeddedLinkSlotNames();
     }
 
-    public List<String> getExcludedSlotNames()
-    {
+    public List<String> getExcludedSlotNames() {
 
         return _Dimensions.getExcludedSlotNames();
     }
 
-    public List<String> getIncludedSlotNames()
-    {
+    public List<String> getIncludedSlotNames() {
 
         return _Dimensions.getIncludedSlotNames();
     }
 
-    public Locale getLocale()
-    {
+    public Locale getLocale() {
 
         return _Dimensions.getLocale();
     }
@@ -109,15 +99,13 @@ public final class DimensionsBuilder
     /**
      * @see Dimensions#getLocale()
      */
-    public DimensionsBuilder setLocale(final Locale locale)
-    {
+    public DimensionsBuilder setLocale(final Locale locale) {
 
         _Dimensions.setLocale(locale);
         return this;
     }
 
-    public URI getReferrerUri()
-    {
+    public URI getReferrerUri() {
 
         return _Dimensions.getReferrerUri();
     }
@@ -125,15 +113,13 @@ public final class DimensionsBuilder
     /**
      * @see Dimensions#getReferrerUri()
      */
-    public DimensionsBuilder setReferrerUri(final URI referrerUri)
-    {
+    public DimensionsBuilder setReferrerUri(final URI referrerUri) {
 
         _Dimensions.setReferrerUri(referrerUri);
         return this;
     }
 
-    public URI getSchemaUri()
-    {
+    public URI getSchemaUri() {
 
         return _Dimensions.getSchemaUri();
     }
@@ -146,8 +132,7 @@ public final class DimensionsBuilder
      *
      * @see Dimensions#getSchemaUri()
      */
-    public DimensionsBuilder setSchemaUri(final URI schemaUri)
-    {
+    public DimensionsBuilder setSchemaUri(final URI schemaUri) {
 
         _Dimensions.setSchemaUri(schemaUri);
         return this;
@@ -156,36 +141,30 @@ public final class DimensionsBuilder
     /**
      * Return the build {@link Dimensions}.
      */
-    public Dimensions toDimensions()
-    {
+    public Dimensions toDimensions() {
 
         return _Dimensions;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return getClass().getSimpleName() + " { dimensions : " + _Dimensions + "}";
     }
 
     @Override
-    public boolean equals(final Object o)
-    {
+    public boolean equals(final Object o) {
 
-        if (this == o)
-        {
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final DimensionsBuilder that = (DimensionsBuilder) o;
 
-        if (!_Dimensions.equals(that._Dimensions))
-        {
+        if (!_Dimensions.equals(that._Dimensions)) {
             return false;
         }
 
@@ -193,8 +172,7 @@ public final class DimensionsBuilder
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
         return _Dimensions.hashCode();
     }
@@ -202,8 +180,7 @@ public final class DimensionsBuilder
     /**
      * Internal, mutable implementation of {@link Dimensions}.
      */
-    private static final class MutableDimensions implements Cloneable, Dimensions
-    {
+    private static final class MutableDimensions implements Cloneable, Dimensions {
 
         private static final Cloner CLONER = new Cloner();
 
@@ -225,8 +202,7 @@ public final class DimensionsBuilder
 
         private Locale _Locale;
 
-        MutableDimensions()
-        {
+        MutableDimensions() {
 
             _Metadata = new TreeMap<>();
             _QueryParameters = new TreeMap<>();
@@ -237,44 +213,38 @@ public final class DimensionsBuilder
         }
 
         @Override
-        public MutableDimensions clone()
-        {
+        public MutableDimensions clone() {
 
             return CLONER.deepClone(this);
         }
 
         @Override
-        public SortedMap<String, String> getMetadata()
-        {
+        public SortedMap<String, String> getMetadata() {
 
             return _Metadata;
         }
 
         @Override
-        public List<String> getEmbeddedLinkSlotNames()
-        {
+        public List<String> getEmbeddedLinkSlotNames() {
 
             return _EmbeddedLinkSlotNames;
 
         }
 
         @Override
-        public List<String> getExcludedSlotNames()
-        {
+        public List<String> getExcludedSlotNames() {
 
             return _ExcludedSlotNames;
         }
 
         @Override
-        public List<String> getIncludedSlotNames()
-        {
+        public List<String> getIncludedSlotNames() {
 
             return _IncludedSlotNames;
         }
 
         @Override
-        public Locale getLocale()
-        {
+        public Locale getLocale() {
 
             return _Locale;
         }
@@ -282,22 +252,19 @@ public final class DimensionsBuilder
         /**
          * @see #getLocale()
          */
-        void setLocale(final Locale locale)
-        {
+        void setLocale(final Locale locale) {
 
             _Locale = locale;
         }
 
         @Override
-        public SortedMap<String, String> getQueryParameters()
-        {
+        public SortedMap<String, String> getQueryParameters() {
 
             return _QueryParameters;
         }
 
         @Override
-        public URI getReferrerUri()
-        {
+        public URI getReferrerUri() {
 
             return _ReferrerUri;
         }
@@ -305,15 +272,13 @@ public final class DimensionsBuilder
         /**
          * @see #getReferrerUri()
          */
-        void setReferrerUri(final URI referrerDocumentUri)
-        {
+        void setReferrerUri(final URI referrerDocumentUri) {
 
             _ReferrerUri = referrerDocumentUri;
         }
 
         @Override
-        public URI getSchemaUri()
-        {
+        public URI getSchemaUri() {
 
             return _SchemaUri;
         }
@@ -326,57 +291,45 @@ public final class DimensionsBuilder
          *
          * @see #getSchemaUri()
          */
-        void setSchemaUri(final URI schemaUri)
-        {
+        void setSchemaUri(final URI schemaUri) {
 
             _SchemaUri = schemaUri;
         }
 
         @Override
-        public boolean equals(final Object o)
-        {
+        public boolean equals(final Object o) {
 
-            if (this == o)
-            {
+            if (this == o) {
                 return true;
             }
-            if (!(o instanceof MutableDimensions))
-            {
+            if (!(o instanceof MutableDimensions)) {
                 return false;
             }
 
             final MutableDimensions that = (MutableDimensions) o;
 
-            if (_Metadata != null ? !_Metadata.equals(that._Metadata) : that._Metadata != null)
-            {
+            if (_Metadata != null ? !_Metadata.equals(that._Metadata) : that._Metadata != null) {
                 return false;
             }
-            if (_EmbeddedLinkSlotNames != null ? !_EmbeddedLinkSlotNames.equals(that._EmbeddedLinkSlotNames) : that._EmbeddedLinkSlotNames != null)
-            {
+            if (_EmbeddedLinkSlotNames != null ? !_EmbeddedLinkSlotNames.equals(that._EmbeddedLinkSlotNames) : that._EmbeddedLinkSlotNames != null) {
                 return false;
             }
-            if (_ExcludedSlotNames != null ? !_ExcludedSlotNames.equals(that._ExcludedSlotNames) : that._ExcludedSlotNames != null)
-            {
+            if (_ExcludedSlotNames != null ? !_ExcludedSlotNames.equals(that._ExcludedSlotNames) : that._ExcludedSlotNames != null) {
                 return false;
             }
-            if (_IncludedSlotNames != null ? !_IncludedSlotNames.equals(that._IncludedSlotNames) : that._IncludedSlotNames != null)
-            {
+            if (_IncludedSlotNames != null ? !_IncludedSlotNames.equals(that._IncludedSlotNames) : that._IncludedSlotNames != null) {
                 return false;
             }
-            if (_Locale != null ? !_Locale.equals(that._Locale) : that._Locale != null)
-            {
+            if (_Locale != null ? !_Locale.equals(that._Locale) : that._Locale != null) {
                 return false;
             }
-            if (_QueryParameters != null ? !_QueryParameters.equals(that._QueryParameters) : that._QueryParameters != null)
-            {
+            if (_QueryParameters != null ? !_QueryParameters.equals(that._QueryParameters) : that._QueryParameters != null) {
                 return false;
             }
-            if (_ReferrerUri != null ? !_ReferrerUri.equals(that._ReferrerUri) : that._ReferrerUri != null)
-            {
+            if (_ReferrerUri != null ? !_ReferrerUri.equals(that._ReferrerUri) : that._ReferrerUri != null) {
                 return false;
             }
-            if (_SchemaUri != null ? !_SchemaUri.equals(that._SchemaUri) : that._SchemaUri != null)
-            {
+            if (_SchemaUri != null ? !_SchemaUri.equals(that._SchemaUri) : that._SchemaUri != null) {
                 return false;
             }
 
@@ -384,8 +337,7 @@ public final class DimensionsBuilder
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
 
             int result = _SchemaUri != null ? _SchemaUri.hashCode() : 0;
             result = 31 * result + (_ReferrerUri != null ? _ReferrerUri.hashCode() : 0);
@@ -399,8 +351,7 @@ public final class DimensionsBuilder
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
 
             return AsciiArt.express(this);
         }

@@ -28,38 +28,32 @@ import org.wrml.runtime.DefaultConfiguration;
 
 import java.net.URI;
 
-public class FormatterConfiguration extends DefaultConfiguration
-{
+public class FormatterConfiguration extends DefaultConfiguration {
 
     private URI _FormatUri;
 
     private String _FormatterClassName;
 
-    public FormatterConfiguration()
-    {
+    public FormatterConfiguration() {
 
     }
 
-    public URI getFormatUri()
-    {
+    public URI getFormatUri() {
 
         return _FormatUri;
     }
 
-    public void setFormatUri(final URI formatUri)
-    {
+    public void setFormatUri(final URI formatUri) {
 
         _FormatUri = formatUri;
     }
 
-    public String getFormatter()
-    {
+    public String getFormatter() {
 
         return _FormatterClassName;
     }
 
-    public void setFormatter(final String formatterClassName)
-    {
+    public void setFormatter(final String formatterClassName) {
 
         _FormatterClassName = formatterClassName;
     }

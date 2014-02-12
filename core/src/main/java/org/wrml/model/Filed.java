@@ -34,8 +34,7 @@ import java.io.File;
  * @see File
  */
 @WRML(keySlotNames = {"file"}, comparableSlotNames = {"file"})
-public interface Filed extends Model
-{
+public interface Filed extends Model {
 
     /**
      * The {@link File} associated with this {@link Filed} model.

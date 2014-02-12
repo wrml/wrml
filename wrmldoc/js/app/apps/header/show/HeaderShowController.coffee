@@ -27,12 +27,11 @@
 
 
 @Wrmldoc.module "HeaderApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-	
-	class Show.Controller extends App.Controllers.Base
-		
-		initialize: ->
-			showView = @createShowView()
-			@show showView
-		
-		createShowView: ->
-			new Show.Header
+  class Show.Controller extends App.Controllers.Base
+
+    initialize: ->
+      showView = @createShowView()
+      @show showView
+
+    createShowView: ->
+      new Show.Header

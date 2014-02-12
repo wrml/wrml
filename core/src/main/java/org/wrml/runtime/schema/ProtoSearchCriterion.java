@@ -39,8 +39,7 @@ import java.util.regex.Pattern;
  * @see ProtoSearchCriteria
  * @see org.wrml.runtime.search.SearchCriterion
  */
-public final class ProtoSearchCriterion
-{
+public final class ProtoSearchCriterion {
 
     private final ProtoSearchCriteria _ProtoSearchCriteria;
 
@@ -52,8 +51,7 @@ public final class ProtoSearchCriterion
 
     private final Pattern _RegexPattern;
 
-    ProtoSearchCriterion(final ProtoSearchCriteria protoSearchCriteria, final CollectionSlotCriterion criterion)
-    {
+    ProtoSearchCriterion(final ProtoSearchCriteria protoSearchCriteria, final CollectionSlotCriterion criterion) {
 
         _ProtoSearchCriteria = protoSearchCriteria;
 
@@ -71,43 +69,36 @@ public final class ProtoSearchCriterion
         _ComparisonOperator = criterion.operator();
         _Regex = criterion.regex();
 
-        if (_Regex == null || _Regex.isEmpty())
-        {
+        if (_Regex == null || _Regex.isEmpty()) {
             _RegexPattern = null;
         }
-        else
-        {
+        else {
             _RegexPattern = Pattern.compile(_Regex);
         }
     }
 
-    public ProtoSearchCriteria getProtoSearchCriteria()
-    {
+    public ProtoSearchCriteria getProtoSearchCriteria() {
 
         return _ProtoSearchCriteria;
     }
 
-    public ProtoValueSource getProtoValueSource()
-    {
+    public ProtoValueSource getProtoValueSource() {
 
         return _ProtoValueSource;
     }
 
-    public ComparisonOperator getComparisonOperator()
-    {
+    public ComparisonOperator getComparisonOperator() {
 
         return _ComparisonOperator;
     }
 
-    public String getRegex()
-    {
+    public String getRegex() {
 
         return _Regex;
     }
 
 
-    public Pattern getRegexPattern()
-    {
+    public Pattern getRegexPattern() {
 
         return _RegexPattern;
     }

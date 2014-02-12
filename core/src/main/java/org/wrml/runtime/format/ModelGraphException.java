@@ -27,41 +27,37 @@ package org.wrml.runtime.format;
 /**
  * The {@link ModelGraph}'s associated error type.
  */
-public class ModelGraphException extends RuntimeException
-{
+public class ModelGraphException extends RuntimeException {
 
     private final ModelGraph _ModelGraph;
 
     private static final long serialVersionUID = 1L;
 
-    public ModelGraphException(final String message, final Throwable cause, final ModelGraph modelGraph)
-    {
+    public ModelGraphException(final String message, final Throwable cause, final ModelGraph modelGraph) {
+
         super(message, cause);
         _ModelGraph = modelGraph;
     }
 
     /**
      * Create a new exception to communicate a problem about the specified {@link ModelGraph}.
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param modelGraph
-     *            The impacted graph.
+     *
+     * @param message    The message to explain what is going on.
+     * @param modelGraph The impacted graph.
      */
-    ModelGraphException(final String message, final ModelGraph modelGraph)
-    {
+    ModelGraphException(final String message, final ModelGraph modelGraph) {
+
         super(message);
         _ModelGraph = modelGraph;
     }
 
     /**
      * Get the graph associated with this error.
-     * 
+     *
      * @return The graph that raised this exception.
      */
-    public ModelGraph getModelGraph()
-    {
+    public ModelGraph getModelGraph() {
+
         return _ModelGraph;
     }
 

@@ -29,8 +29,7 @@ import org.wrml.runtime.Configuration;
 /**
  * The {@link Configuration} for a {@link Service}.
  */
-public interface ServiceConfiguration extends Configuration
-{
+public interface ServiceConfiguration extends Configuration {
 
     /**
      * The fully qualified class name of the {@link Service} implementation.

@@ -27,8 +27,7 @@ package org.wrml.runtime.rest;
 /**
  * The {@link ApiLoader}'s associated error type.
  */
-public class ApiLoaderException extends RuntimeException
-{
+public class ApiLoaderException extends RuntimeException {
 
     private final ApiLoader _ApiLoader;
 
@@ -36,27 +35,23 @@ public class ApiLoaderException extends RuntimeException
 
     /**
      * Create a new exception to communicate a problem about the specified {@link ApiLoader}.
-     * 
-     * @param message
-     *            The message to explain what is going on.
-     * 
-     * @param apiLoader
-     *            The impacted {@link ApiLoader}.
-     * 
+     *
+     * @param message   The message to explain what is going on.
+     * @param apiLoader The impacted {@link ApiLoader}.
      */
-    ApiLoaderException(final String message, final Throwable cause, final ApiLoader apiLoader)
-    {
+    ApiLoaderException(final String message, final Throwable cause, final ApiLoader apiLoader) {
+
         super(message, cause);
         _ApiLoader = apiLoader;
     }
 
     /**
      * Get the {@link ApiLoader} associated with this error.
-     * 
+     *
      * @return The {@link ApiLoader} that raised this exception.
      */
-    public ApiLoader getApiLoader()
-    {
+    public ApiLoader getApiLoader() {
+
         return _ApiLoader;
     }
 

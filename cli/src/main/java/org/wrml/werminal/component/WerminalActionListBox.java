@@ -31,8 +31,7 @@ import org.wrml.werminal.Werminal;
 import org.wrml.werminal.action.WerminalAction;
 import org.wrml.werminal.terminal.TerminalAppKeyboardInteraction;
 
-public class WerminalActionListBox extends ActionListBox
-{
+public class WerminalActionListBox extends ActionListBox {
 
     private final TerminalAppKeyboardInteraction _KeyboardInteraction;
 
@@ -40,15 +39,13 @@ public class WerminalActionListBox extends ActionListBox
 
     private final Werminal _Werminal;
 
-    public WerminalActionListBox(final Werminal werminal)
-    {
+    public WerminalActionListBox(final Werminal werminal) {
 
         this(werminal, null, null);
     }
 
     public WerminalActionListBox(final Werminal werminal, final WerminalAction enterAction,
-                                 final WerminalAction enterOnSelectionAction)
-    {
+                                 final WerminalAction enterOnSelectionAction) {
 
         _Werminal = werminal;
         _KeyboardInteraction = new TerminalAppKeyboardInteraction(_Werminal, enterAction, true);
@@ -56,20 +53,16 @@ public class WerminalActionListBox extends ActionListBox
     }
 
     @Override
-    public Result keyboardInteraction(final Key key)
-    {
+    public Result keyboardInteraction(final Key key) {
 
-        if (!isVisible())
-        {
+        if (!isVisible()) {
             return Result.EVENT_HANDLED;
         }
 
         final Kind kind = key.getKind();
-        switch (kind)
-        {
+        switch (kind) {
 
-            case Enter:
-            {
+            case Enter: {
 
                 final Object oldSelectedItem = getSelectedItem();
 
@@ -77,24 +70,20 @@ public class WerminalActionListBox extends ActionListBox
 
                 final Object newSelectedItem = getSelectedItem();
 
-                if (_KeyboardInteraction.handleKeyboardInteraction(key))
-                {
+                if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                     result = Result.EVENT_HANDLED;
                 }
 
-                if (_EnterOnSelectionAction != null && oldSelectedItem != null && newSelectedItem == oldSelectedItem)
-                {
+                if (_EnterOnSelectionAction != null && oldSelectedItem != null && newSelectedItem == oldSelectedItem) {
                     _EnterOnSelectionAction.doAction();
                 }
 
                 return result;
             }
 
-            default:
-            {
+            default: {
 
-                if (_KeyboardInteraction.handleKeyboardInteraction(key))
-                {
+                if (_KeyboardInteraction.handleKeyboardInteraction(key)) {
                     return Result.EVENT_HANDLED;
                 }
 

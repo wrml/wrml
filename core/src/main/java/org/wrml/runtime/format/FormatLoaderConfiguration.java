@@ -32,40 +32,34 @@ import java.net.URI;
 /**
  * Configuration for the {@link FormatLoader} component.
  */
-public final class FormatLoaderConfiguration extends DefaultFactoryConfiguration
-{
+public final class FormatLoaderConfiguration extends DefaultFactoryConfiguration {
 
     private FormatterConfiguration[] _FormatterConfigurations;
 
     private URI _DefaultFormatUri;
 
 
-    public FormatLoaderConfiguration()
-    {
+    public FormatLoaderConfiguration() {
 
     }
 
-    public URI getDefaultFormatUri()
-    {
+    public URI getDefaultFormatUri() {
 
         return _DefaultFormatUri;
     }
 
-    public void setDefaultFormatUri(final URI defaultFormatUri)
-    {
+    public void setDefaultFormatUri(final URI defaultFormatUri) {
 
         _DefaultFormatUri = defaultFormatUri;
     }
 
 
-    public FormatterConfiguration[] getFormatters()
-    {
+    public FormatterConfiguration[] getFormatters() {
 
         return _FormatterConfigurations;
     }
 
-    public void setFormatters(final FormatterConfiguration[] formatterConfigurations)
-    {
+    public void setFormatters(final FormatterConfiguration[] formatterConfigurations) {
 
         _FormatterConfigurations = formatterConfigurations;
     }

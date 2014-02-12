@@ -41,23 +41,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-public class PrintAction extends CloseAfterAction
-{
-    public PrintAction(final Werminal werminal)
-    {
+public class PrintAction extends CloseAfterAction {
+    public PrintAction(final Werminal werminal) {
 
         super(werminal, "Print...");
     }
 
     @Override
-    protected boolean doIt()
-    {
+    protected boolean doIt() {
 
         final Werminal werminal = getWerminal();
 
         final Window topWindow = werminal.getTopWindow();
-        if (!(topWindow instanceof PrintPreviewDialog))
-        {
+        if (!(topWindow instanceof PrintPreviewDialog)) {
             werminal.showError("The " + getTitle() + " action requires a top level " + PrintPreviewDialog.class.getSimpleName());
             return false;
         }
@@ -65,8 +61,7 @@ public class PrintAction extends CloseAfterAction
         final PrintPreviewDialog printPreviewDialog = (PrintPreviewDialog) topWindow;
 
         final URI formatUri = printPreviewDialog.getFormatUri();
-        if (formatUri == null)
-        {
+        if (formatUri == null) {
             werminal.showError("The " + getTitle() + " action requires a Format URI.");
             return false;
         }
@@ -75,48 +70,39 @@ public class PrintAction extends CloseAfterAction
 
         File baseDir = new File(".");
         final File previousFile = printDialog.getPrintToFile();
-        if (previousFile != null)
-        {
+        if (previousFile != null) {
             baseDir = (previousFile.isDirectory()) ? previousFile : previousFile.getParentFile();
         }
 
-        try
-        {
+        try {
             baseDir = baseDir.getCanonicalFile();
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
         }
 
         final Model modelToPrint = printPreviewDialog.getModel();
         String fileName = null;
 
-        if (modelToPrint instanceof Titled)
-        {
+        if (modelToPrint instanceof Titled) {
             fileName = ((Titled) modelToPrint).getTitle();
         }
-        else if (modelToPrint instanceof Named)
-        {
+        else if (modelToPrint instanceof Named) {
             fileName = ((Named) modelToPrint).getName();
         }
-        else if (modelToPrint instanceof UniquelyNamed)
-        {
+        else if (modelToPrint instanceof UniquelyNamed) {
             final UniqueName uniqueName = ((UniquelyNamed) modelToPrint).getUniqueName();
             fileName = uniqueName.getLocalName();
         }
-        else if (modelToPrint instanceof Document)
-        {
+        else if (modelToPrint instanceof Document) {
             final URI uri = ((Document) modelToPrint).getUri();
             final String uriPath = uri.getPath();
             final int lastSlashIndex = uriPath.lastIndexOf('/');
-            if (lastSlashIndex < uriPath.length() - 1)
-            {
+            if (lastSlashIndex < uriPath.length() - 1) {
                 fileName = uriPath.substring(lastSlashIndex + 1);
             }
         }
 
-        if (fileName == null)
-        {
+        if (fileName == null) {
 
             fileName = String.valueOf(modelToPrint.getHeapId());
         }
@@ -125,8 +111,7 @@ public class PrintAction extends CloseAfterAction
         String fileExtension = "txt";
 
         final Format format = getContext().getFormatLoader().loadFormat(formatUri);
-        if (format != null)
-        {
+        if (format != null) {
             final String formatFileExtension = format.getFileExtension();
             fileExtension = formatFileExtension;
         }

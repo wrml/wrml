@@ -27,21 +27,20 @@ package org.wrml.runtime.format;
 /**
  * The {@link ModelPrinter}'s associated error type.
  */
-public class ModelPrinterException extends Exception
-{
+public class ModelPrinterException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private final ModelPrinter _ModelPrinter;
 
-    public ModelPrinterException(final String message, final Throwable cause, final ModelPrinter modelPrinter)
-    {
+    public ModelPrinterException(final String message, final Throwable cause, final ModelPrinter modelPrinter) {
+
         super(message, cause);
         _ModelPrinter = modelPrinter;
     }
 
-    public ModelPrinter getModelPrinter()
-    {
+    public ModelPrinter getModelPrinter() {
+
         return _ModelPrinter;
     }
 }

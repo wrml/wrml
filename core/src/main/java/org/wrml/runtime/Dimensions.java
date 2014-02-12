@@ -64,8 +64,7 @@ import java.util.SortedMap;
  * @see Model#getDimensions()
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1 Header Field Definitions</a>
  */
-public interface Dimensions extends Serializable
-{
+public interface Dimensions extends Serializable {
 
     /**
      * An <i>optional</i> map of metadata "headers" associated with these {@link Dimensions}.
@@ -151,7 +150,7 @@ public interface Dimensions extends Serializable
      * @see org.wrml.model.rest.Document#getUri()
      * @see <a href="http://www.wrml.org/schema">http://www.wrml.org/schema</a>
      * @see <a href="http://blog.programmableweb.com/2011/11/18/rest-api-design-putting-the-type-in-content-type/">REST
-     *      API Design: Put the "Type" in "Content-Type"</a>
+     * API Design: Put the "Type" in "Content-Type"</a>
      */
     URI getSchemaUri();
 
