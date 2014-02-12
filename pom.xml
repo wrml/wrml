@@ -634,7 +634,7 @@
 		<jacoco-maven-plugin.excludes></jacoco-maven-plugin.excludes>
 		<maven-compiler-plugin.source.version>1.7</maven-compiler-plugin.source.version>
 		<maven-compiler-plugin.target.version>1.7</maven-compiler-plugin.target.version>
-		<maven.version.range>[2.2.1,3.1.0)</maven.version.range>
+		<maven.version.range>[2.2.1,3.1.9)</maven.version.range>
 		<maven-license-plugin.valid-header.wrml.core.path>NEED-TO-SET-PER-POM-EXAMPLE-[src/main/resources/headers]</maven-license-plugin.valid-header.wrml.core.path>
 	</properties>
 
