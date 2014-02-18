@@ -102,7 +102,7 @@ In lieu of an installer, please adjust config and script files according to matc
 
 See <a href="./cli/README.md">the Werminal /cli project README.</a>
 
-For more about the Werminal app, please consult the "Werminal Masters Handbook": http://www.wrml.org/werminal/WerminalMastersHandbook.pdf
+For more about the Werminal app, please consult the "Werminal Masters Handbook": https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf
 
 ##wrmldoc##
 
