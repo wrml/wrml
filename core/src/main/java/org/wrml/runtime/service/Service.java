@@ -35,7 +35,7 @@ import java.util.Set;
 /**
  * <p>
  * WRML's generic back-end connection interface. Implementations of this interface provide access to data and controls
- * add/or add some custom "application logic" to support an app (client) or API (server).
+ * and/or add some custom "application logic" to support an app (client) or API (server).
  * </p>
  * <p>
  * The set of methods declared in the {@link Service} interface is intended to mirror the "uniform interface" of REST, with an interface method corollary for each of the HTTP/1.1 document-centric interaction methods.
