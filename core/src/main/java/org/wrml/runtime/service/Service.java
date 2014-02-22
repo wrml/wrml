@@ -59,7 +59,7 @@ public interface Service {
      * Implementations that cannot support this operation may throw {@link UnsupportedOperationException} upon invocation.
      * </p>
      *
-     * @param keys       The {@link Keys} of the {@link Model} that is about to be derezzed/404'ed.
+     * @param keys       The {@link Keys} of the {@link Model} that is to be deleted.
      * @param dimensions The {@link Dimensions} that may be used to inform/scope the requested operation.
      * @throws UnsupportedOperationException Thrown if the delete operation is not supported by this service.
      * @see Context#deleteModel(org.wrml.runtime.Keys, org.wrml.runtime.Dimensions)
