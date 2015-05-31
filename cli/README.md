@@ -63,4 +63,4 @@ or to specify the UNIX terminal mode:
 References
 ===============
 
-For more about the Werminal app, please consult the "Werminal Masters Handbook": http://www.wrml.org/werminal/WerminalMastersHandbook.pdf
+For more about the Werminal app, please consult the "Werminal Masters Handbook": https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf

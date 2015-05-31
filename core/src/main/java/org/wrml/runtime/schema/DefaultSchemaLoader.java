@@ -874,6 +874,12 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader {
                     null, this);
         }
 
+        UniqueName uniqueName = schema.getUniqueName();
+        if (uniqueName == null) {
+            uniqueName = new UniqueName(schemaUri);
+            schema.setUniqueName(uniqueName);
+        }
+
         if (StringUtils.isEmpty(schema.getTitle())) {
 
             final String title = schema.getUniqueName().getLocalName();

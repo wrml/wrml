@@ -1,0 +1,26 @@
+{
+    "context": {
+
+        "schemaLoader": {
+
+            "schemaClassRootDirectory": "/etc/wrml/schemas"
+        },
+
+        "serviceLoader": {
+            "services": [
+                {
+                    "name": "File",
+                    "implementation": "org.wrml.runtime.service.file.FileSystemService",
+                    "settings": {
+                        "rootDirectory": "/etc/wrml/models"
+                    }
+                }
+            ],
+
+            "serviceMapping": {
+
+                "*": "File"
+            }
+        }
+    }
+}

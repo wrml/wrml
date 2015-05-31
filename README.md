@@ -11,13 +11,13 @@ The initial implementation of the WRML runtime is Java-based, with the WrmlServl
 
 #Key Benefits
 
-* Loads and initializes REST API models (design metadata) to be routed and invoked
+* Loads and initializes REST API models (API design metadata) to be routed and invoked
 
-* Routes requests to a configured “back-end” Service based upon the target API endpoint’s response document’s Schema
+* Routes requests to a configured “back-end” **Service** implementation class based upon the target API endpoint’s response document’s **Schema**
 
 * Generates hyperlinks in responses based upon the designs of the API and the response document’s Schema
 
-* Represents response documents using a configured Format (e.g. JSON)
+* Represents response documents using any configured Format (e.g. JSON)
 
 * To reduce the number of requests per screen, supports embedding linked document(s) within the requested document
 
@@ -30,12 +30,9 @@ The initial implementation of the WRML runtime is Java-based, with the WrmlServl
 
 *Getting started* with WRML means something a little bit different to each role involved in the creation of REST APIs.
 
-To those wanting to get started with the tools and find a link to download an installer (from an app store) or use a JS web app for REST API design - that documentation is still a work in progress.
+The remainder of this README is intended for developers or other folks wanting to download, build, install, and run the WRML server and/or client tools.
 
-The remainder of this README is intended for developers or other folks wanting to download, build, install, and run WRML.
-
-Before you install WRML
------------------------
+##Before you install WRML##
 
 From a console/terminal window, verify that *Java 7* is installed:
 
@@ -43,9 +40,7 @@ From a console/terminal window, verify that *Java 7* is installed:
 
 Which should display something like this (with a "1.7.0" or higher version number):
 
-	java version "1.7.0"
-	Java(TM) SE Runtime Environment (build 1.7.0-b147)
-	Java HotSpot(TM) 64-Bit Server VM (build 21.0-b17, mixed mode)
+	java version "1.7.0_25"
 
 If not, it can be downloaded from: http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
 
@@ -55,54 +50,230 @@ Also verify that *Maven 3* is installed:
 
 Which should display something like this:
 
-	Apache Maven 3.0.5 (r01de14724cdef164cd33c7c8c2fe155faf9602da; 2013-02-19 05:51:28-0800)
+    Apache Maven 3.3.3 (7994120775791599e205a5524ec3e0dfe41d4a06; 2015-04-22T04:57:37-07:00)
 
 If not, it can be downloaded from: http://maven.apache.org/download.cgi
 
-Download WRML
--------------
+##Download WRML##
 
 	$> git clone git@github.com:wrml/wrml.git
 
+##Install WRML##
 
-Install WRML
-------------
+Change to the root directory of the WRML project.
 
-From the root directory (WRML_HOME) run maven's install command.
+	$> cd wrml
 
+From the root directory run maven's install command.
+	
 	$> mvn install
 
 Please note that the first time you run this command, it may download several of WRML's dependencies and install them into your system's local maven repository.
 
-Configure WRML
---------------
 
-Edit the WRML configuration file (wrml.json) to match your local environment. In the example below, these two lines are the important ones to match to your system:
+##Configure WRML##
 
-File Service Root Directory
----------------------------
+Edit the WRML configuration file at **wrml/config/filesystem-wrml.json** to match your local environment. The default contents of the configuration file are shown below:
+    
+	{
+	    "context": {
+	
+	        "schemaLoader": {
+	
+	            "schemaClassRootDirectory": "/etc/wrml/schemas"
+	        },
+	
+	        "serviceLoader": {
+	            "services": [
+	                {
+	                    "name": "File",
+	                    "implementation": "org.wrml.runtime.service.file.FileSystemService",
+	                    "settings": {
+	                        "rootDirectory": "/etc/wrml/models"
+	                    }
+	                }
+	            ],
+	
+	            "serviceMapping": {
+	
+	                "*": "File"
+	            }
+	        }
+	    }
+	}
+
+##File Service Root Directory##
+
 This setting specifies the root directory for WRML Models (stored as JSON files on disk).
 
-	"rootDirectory" : "E:/wrml/models/"
+	"rootDirectory" : "/etc/wrml/schemas"
+	
+You may edit this line to refer to a different directory or keep it as is to accept the default. In either case, ensure that this directory **exists** and it and its subdirectories are **readable & writable** by you.
 
-Schema Loader Schema Directory
-------------------------------
+<p align="center">
+  <img src="doc/README/Permissions-01.png" width="50%"/>
+</p>
+	
+
+##Schema Loader Schema Directory##
 
 This setting specifies the root directory for WRML Schemas (compiled as Java interfaces).
 
-	"schemaClassRootDirectory" : "E:/wrml/schemas"
+	"schemaClassRootDirectory" : "/etc/wrml/models"
 
-For those having problems starting WRML, please confirm that the "slash" leaning direction of the folder/directory paths match the conventions of your OS. In java config files, the "/" forward slash should work cross-platform, but the java commands listed below contain path's like "..\core\target\core-1.0-SNAPSHOT.jar;" which are both Windows-centric (backslashes) and relative to the WRML_HOME/bin folder.
+You may edit this line to refer to a different directory or keep it as is to accept the default. In either case, ensure that this directory **exists** and it and its subdirectories are **readable & writable** by you.
 
-In lieu of an installer, please adjust config and script files according to match your environment.
+#Werminal - WRML Terminal#
 
-#WRML Tools#
+Werminal is a terminal (command line) application for WRML model browsing and editing.
 
-##Werminal - WRML Model Editor##
+Werminal can be used to create new models of any type such as: Schemas, Teams, Players, Aliens, HomeScreens, Movies; whatever your application calls for.
 
-See <a href="./cli/README.md">the Werminal /cli project README.</a>
+Werminal also enables you to open, edit, and save data (of any data type).
 
-For more about the Werminal app, please consult the "Werminal Masters Handbook": https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf
+<p align="center">
+  <img src="doc/wormle.png" width="80%"/>
+</p>
+
+
+##Running Werminal##
+
+From the project root directory of the WRML project, change to the *cli* subdirectory.
+
+    $> cd cli
+    $> ./werminal
+
+The **werminal** command runs Werminal with the following command: 
+
+    java -DwrmlConfiguration=../config/filesystem-wrml.json -classpath "target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
+
+<p align="center">
+  <img src="doc/README/Werminal-001.png" width="90%"/>
+</p>
+
+For more information about running Werminal, see <a href="./cli/README.md">the Werminal /cli project README.</a>
+
+For those having problems starting WRML, please confirm that the WRML configuration file is using the correct "slash" leaning direction for the folder/directory paths match the conventions of your OS. In WRML config files, the "/" forward slash should work cross-platform.
+
+
+##A Quick Tour of Werminal##
+This section will walk through a simple example of using Werminal to demonstrate WRML's modeling features. Specifically, in this tour we will:
+
+1. Design a new schema
+   a. Create a new schema, named **Demo**
+   a. Save our new schema to disk, using the "File" service 
+   a. Load our new schema as a java class
+
+2. Create model instances of new schema type
+   a. Create a new instance of **Demo**
+   b. Save the demo instance to disk
+   c. Exit Werminal, then re-launch and re-open the saved demo instance 
+
+For more about the Werminal app, please consult the "[Werminal Masters Handbook](https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf)"
+
+###Designing a new Schema###
+
+<p align="center">
+  <img src="doc/README/Werminal-002.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-003.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-004.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-005.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-006.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-007.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-008.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-009.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-010.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-011.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-012.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-013.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-014.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-015.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-016.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-024.png" width="90%"/>
+</p>
+
+
+###Creating a Model Instance###
+
+<p align="center">
+  <img src="doc/README/Werminal-017.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-018.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-019.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-020.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-021.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-022.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-023.png" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="doc/README/Werminal-025.png" width="90%"/>
+</p>
+
+
+
 
 ##wrmldoc##
 
@@ -110,8 +281,5 @@ See the /wrmldoc project.
 
 
 #License#
-WRML is copyright (C) 2012-2013 Mark Masse <mark@wrml.org> (OSS project WRML.org). WRML is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+WRML is copyright (C) 2012-2015 Mark Masse <mark@wrml.org> (OSS project WRML.org). WRML is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
 
-<p align="center">
-  <img src="doc/wormle.png"/>
-</p>

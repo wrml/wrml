@@ -31,7 +31,7 @@ import java.net.URI;
 
 public class HelpGuideAction extends WerminalAction {
 
-    private final URI GUIDE_URI = URI.create("http://www.wrml.org/werminal/WerminalMastersHandbook.pdf");
+    private final URI GUIDE_URI = URI.create("https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf");
 
     public HelpGuideAction(final Werminal werminal) {
 

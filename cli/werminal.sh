@@ -28,5 +28,5 @@
 ##########################################################################################
 
 
-java -DwrmlConfiguration=../config/dev-wrml.json -classpath "target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
+java -DwrmlConfiguration=../config/filesystem-wrml.json -classpath "target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
 

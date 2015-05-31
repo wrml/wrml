@@ -1,10 +1,5 @@
 {
     "context": {
-        "apiLoader": {
-            "apis": [
-                "http://demo.api.wrml.org/wizardapi"
-            ]
-        },
 
         "schemaLoader": {
 
@@ -12,19 +7,11 @@
         },
         "formatLoader": {
 
-            "defaultFormatUri": "http://format.api.wrml.org/text/html"
+            "defaultFormatUri": "http://format.api.wrml.org/application/json"
         },
 
         "serviceLoader": {
             "services": [
-                {
-                    "name": "JVM",
-                    "implementation": "org.wrml.runtime.service.resource.JavaResourceService",
-                    "settings": {
-                        "resourceOwnerClassName": "org.wrml.runtime.Context",
-                        "resourceRootDirectoryPath": "resources/test/models"
-                    }
-                },
                 {
                     "name": "File",
                     "implementation": "org.wrml.runtime.service.file.FileSystemService",
@@ -37,6 +24,14 @@
                     "implementation": "org.wrml.contrib.runtime.service.mongo.MongoService",
                     "settings": {
 
+                    }
+                },
+                {
+                    "name": "JVM",
+                    "implementation": "org.wrml.runtime.service.resource.JavaResourceService",
+                    "settings": {
+                        "resourceOwnerClassName": "org.wrml.runtime.Context",
+                        "resourceRootDirectoryPath": "resources/test/models"
                     }
                 },
                 {
