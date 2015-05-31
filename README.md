@@ -160,14 +160,13 @@ For those having problems starting WRML, please confirm that the WRML configurat
 This section will walk through a simple example of using Werminal to demonstrate WRML's modeling features. Specifically, in this tour we will:
 
 1. Design a new schema
-   a. Create a new schema, named **Demo**
-   a. Save our new schema to disk, using the "File" service 
-   a. Load our new schema as a java class
-
+  * Create a new schema, named **Demo**
+  * Save our new schema to disk, using the "File" service 
+  * Load our new schema as a java class
 2. Create model instances of new schema type
-   a. Create a new instance of **Demo**
-   b. Save the demo instance to disk
-   c. Exit Werminal, then re-launch and re-open the saved demo instance 
+  * Create a new instance of **Demo**
+  * Save the demo instance to disk
+  * Exit Werminal, then re-launch and re-open the saved demo instance 
 
 For more about the Werminal app, please consult the "[Werminal Masters Handbook](https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf)"
 
