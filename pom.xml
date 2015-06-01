@@ -17,22 +17,7 @@
     <dependencies>
         <!-- Root POM should have no dependencies. See <dependencyManagement> instead. -->
     </dependencies>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://wrmlorg.jira.com/browse/WRML</url>
-    </issueManagement>
-    <scm>
-        <connection>scm:git:https://github.com/espn/WRML.git</connection>
-        <developerConnection>scm:git:https://github.com/espn/WRML.git</developerConnection>
-        <url>https://github.com/espn/WRML.git</url>
-        <tag>HEAD</tag>
-    </scm>
-    <ciManagement>
-        <system>TeamCity</system>
-        <url>http://teamcity.corp.espn3.com/</url>
-    </ciManagement>
-
+    
     <build>
         <plugins>
             <plugin>

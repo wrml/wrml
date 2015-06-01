@@ -100,7 +100,6 @@
                 <configuration>
                     <source>${maven-compiler-plugin.source.version}</source>
                     <target>${maven-compiler-plugin.target.version}</target>
-                    <forceCreation>true</forceCreation>
                 </configuration>
             </plugin>
 
@@ -129,18 +128,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Commenting out until there are other sources here -->
-            <!-- <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> <version>0.6.1.201212231917</version> 
-                <executions> <execution> <goals> <goal>prepare-agent</goal> </goals> </execution> <execution> <id>report</id> <phase>prepare-package</phase> 
-                <goals> <goal>report</goal> </goals> <configuration> <excludes> <exclude>org/wrml/*.class</exclude> </excludes> </configuration> 
-                </execution> <execution> <id>check</id> <goals> <goal>check</goal> </goals> <configuration> <check> <classRatio>100</classRatio> 
-                <instructionRatio>45</instructionRatio> <methodRatio>65</methodRatio> <branchRatio>35</branchRatio> <complexityRatio>35</complexityRatio> 
-                <lineRatio>50</lineRatio> </check> <excludes> <exclude>org/wrml/*.class</exclude> </excludes> <haltOnFailure>true</haltOnFailure> 
-                </configuration> </execution> </executions> </plugin> -->
-
-
-            <!-- Temporarily skipping artifact deployment to fix CI build job -->
-            <!-- see: http://teamcity.corp.espn3.com/viewLog.html?buildId=82794&buildTypeId=bt2702&tab=buildLog -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
