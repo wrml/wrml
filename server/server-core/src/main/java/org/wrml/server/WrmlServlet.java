@@ -84,6 +84,12 @@ public class WrmlServlet extends HttpServlet {
 
     public static final String WRML_CONFIGURATION_RESOURCE_PATH_INIT_PARAM_NAME = "wrml-config-resource-path";
 
+    public static final String WRML_METADATA_ROOT_PATH = "/_wrml";
+
+    public static final String WRML_METADATA_API_PATH = WRML_METADATA_ROOT_PATH + "/api";
+
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WrmlServlet.class);
 
     private static final long serialVersionUID = 1L;
@@ -213,6 +219,32 @@ public class WrmlServlet extends HttpServlet {
             final Api api = apiNavigator.getApi();
 
             LOGGER.debug("Request is associated with REST API: {}.", api.getTitle());
+
+            final String path = requestUri.getPath();
+            LOGGER.debug("PATH: {}", path);
+            if (WRML_METADATA_API_PATH.equals(path)) {
+                acceptableMediaTypes.clear();
+
+                final URI defaultFormatUri = context.getFormatLoader().getDefaultFormatUri();
+                final Map<String, String> mediaTypeParameters = new LinkedHashMap<>(6);
+
+                mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_SCHEMA, api.getSchemaUri().toString());
+                mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_FORMAT, defaultFormatUri.toString());
+
+                final MediaType mediaType = new MediaType(SystemMediaType.TYPE_APPLICATION, SystemMediaType.SUBTYPE_WRML,
+                        mediaTypeParameters);
+
+                acceptableMediaTypes.add(mediaType);
+
+                try {
+                    writeModelAsResponseEntity(response, api, acceptableMediaTypes, method);
+                }
+                catch (final ModelWriterException | MediaTypeException e) {
+                    throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + api + "]).", e);
+                }
+
+                return;
+            }
 
             final Resource endpointResource = apiNavigator.getResource(requestUri);
             if (endpointResource == null) {
@@ -691,7 +723,7 @@ public class WrmlServlet extends HttpServlet {
         }
         else {
             final Context context = getContext();
-            // TODO This isn't great
+
             final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
             // Set the format for output
@@ -706,7 +738,6 @@ public class WrmlServlet extends HttpServlet {
                 formatUri = getLoadedFormatUri(responseEntityMediaType);
             }
 
-            // TODO Unfunkify this
             context.writeModel(byteOut, responseModel, formatUri);
 
             final byte[] modelBytes = byteOut.toByteArray();

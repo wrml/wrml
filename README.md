@@ -147,24 +147,26 @@ The **werminal** command runs Werminal with the following command:
 
     java -DwrmlConfiguration=../config/filesystem-wrml.json -classpath "target/wrml-cli.jar" org.wrml.werminal.Werminal -unix
 
+Werminal starts by dispaying the splash screen (shown below). From here you may press any key to start interacting with WRML. 
+
 <p align="center">
   <img src="doc/README/Werminal-001.png" width="90%"/>
 </p>
 
 For more information about running Werminal, see <a href="./cli/README.md">the Werminal /cli project README.</a>
 
-For those having problems starting WRML, please confirm that the WRML configuration file is using the correct "slash" leaning direction for the folder/directory paths match the conventions of your OS. In WRML config files, the "/" forward slash should work cross-platform.
+If you have problems starting Werminal, please confirm that the WRML configuration file is using the correct "slash" leaning direction for the folder/directory paths match the conventions of your OS. In WRML config files, the "/" forward slash should work cross-platform.
 
 
 ##A Quick Tour of Werminal##
 This section will walk through a simple example of using Werminal to demonstrate WRML's modeling features. Specifically, in this tour we will:
 
 1. Design a new schema
-  * Create a new schema, named **Test**
+  * Create a new schema, named **Demo**
   * Save our new schema to disk, using the "File" service 
   * Load our new schema as a java class
 2. Create model instances of new schema type
-  * Create a new instance of **Test**
+  * Create a new instance of **Demo**
   * Save the model instance to disk
   * Exit Werminal, then re-launch and re-open the saved demo instance 
 
@@ -172,25 +174,49 @@ For more about the Werminal app, please consult the "[Werminal Masters Handbook]
 
 ###Designing a new Schema###
 
+As you might expect, a WRML schema is a structured data type. For the first part of the Werminal tour, you will create a new schema named **Demo**.
+
+Following the splash screen (after pressing any key), Werminal displays its main menu (shown below).
+
 <p align="center">
   <img src="doc/README/Werminal-002.png" width="90%"/>
 </p>
+
+The **New** button has input focus (indicated by bold red text) so you can press the enter key to activate it.
+
+The **New Model** dialog will prompt you to enter the URI that identifies the schema of the model that you wish to create. To create a new schema, the URI is [http://schema.api.wrml.org/org/wrml/model/schema/Schema](http://schema.api.wrml.org/org/wrml/model/schema/Schema).
+
+By default, this URI is already entered so you can simply press the tab key until the **OK** button has input focus and then press the enter key to activate it.
 
 <p align="center">
   <img src="doc/README/Werminal-003.png" width="90%"/>
 </p>
 
+Now you should see Werminal's model editor window with the title **"Werminal - Model - Schema"**, which indicates that you are editing a model of type schema. 
+
+The top portion of the model editor window displays a toolbar, which we will make use of in a moment. For now, we will start by editing a few of the **slots** of our new schema model. A WRML model slot is analagous to a property, field, or column in other modeling systems. 
+
 <p align="center">
   <img src="doc/README/Werminal-004.png" width="90%"/>
 </p>
+
+The first slot to edit is named **uri**. Press the tab key until you see the uri slot's value gain input focus, which is indicated by red highlight and cursor location. 
+
+With the uri slot focused, edit the value to **http://schema.api.wrml.org/Demo**.
 
 <p align="center">
   <img src="doc/README/Werminal-005.png" width="90%"/>
 </p>
 
+Next, press the tab key (or down arrow key) to give focus to the **baseSchemaURis** slot. This slot allows schema models to declare that they extend other schemas. The value in this slot is a list of URIs that identify the *base* schemas for this schema. 
+
+With the **baseSchemaURis** slot focused, press the enter key to open the list editor window.
+
 <p align="center">
   <img src="doc/README/Werminal-006.png" width="90%"/>
 </p>
+
+
 
 <p align="center">
   <img src="doc/README/Werminal-007.png" width="90%"/>

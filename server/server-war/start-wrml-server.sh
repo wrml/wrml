@@ -1,0 +1,1 @@
+java -DwrmlConfiguration=target/classes/wrml.json -jar target/dependency/jetty-runner.jar target/ROOT.war

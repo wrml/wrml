@@ -77,16 +77,8 @@ import java.util.UUID;
  * </p>
  * <p/>
  * <p>
- * WRML, like other model-driven architectures before it, says that data structures are "{@link Model}s", which don't
- * need be "coded". To promote reuse, abstraction, and separation of concerns; WRML says that data structures are
- * *modeled* and algorithms are *coded* (in {@link Service}s).
+ * In WRML data structures are *modeled* and algorithms are *coded* (in {@link Service}s).
  * </p>
- * <p/>
- * <p>
- * WRML suggests that there are two unique disciplines within computer science *modelers* and *coders*. WRML modelers
- * can use intuitive design tools. WRML coders can implement services any way they want (Java not required).
- * </p>
- * <p/>
  * <p>
  * A {@link Model} is the base concept for all WRML "data structures". {@link Model} is the base interface of all Web
  * resource {@link Schema} {@link Proxy} instances. In addition to the {@link Map}-like (or JSON-like) get/set slot

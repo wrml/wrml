@@ -2,6 +2,13 @@
   <img src="http://www.wrml.org/images/site-logo-2.png"/>
 </p>
 
+
+Getting Started
+================================
+
+After building the WRML project, by running "mvn clean install" at the project root level, you can run the server using the start-wrml-server.sh script. To test the server locally, run the client-request-examples.sh script and see basic WRML client-server interaction.
+
+
 Server-WAR 
 ================================
 
