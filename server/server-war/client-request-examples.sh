@@ -42,7 +42,7 @@ echo "# of all models. You will notice that it has the standard model slots and 
 echo "# schematically defines these same slots for all models."
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/schema/Schema
+curl http://localhost:8080/org/wrml/model/schema/Schema?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -52,7 +52,7 @@ echo "# Requesting http://schema.api.wrml.org/org/wrml/model/Model"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/Model
+curl http://localhost:8080/org/wrml/model/Model?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -62,7 +62,18 @@ echo "# Requesting http://schema.api.wrml.org/_wrml/api"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/_wrml/api
+curl http://localhost:8080/_wrml/api?wrml-api=http://schema.api.wrml.org
+
+echo " "
+echo " "
+echo "#"
+echo "#"
+echo "# Requesting http://schema.api.wrml.org/_wrml/api/swagger"
+echo "#"
+echo "#"
+echo " "
+curl http://localhost:8080/_wrml/api/swagger?wrml-api=http://schema.api.wrml.org
+
 
 echo " "
 echo " "
@@ -72,7 +83,7 @@ echo "# Requesting http://schema.api.wrml.org/org/wrml/model/format/Format"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/format/Format
+curl http://localhost:8080/org/wrml/model/format/Format?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -82,7 +93,7 @@ echo "# Requesting http://format.api.wrml.org/application/json"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:format.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/application/json
+curl http://localhost:8080/application/json?wrml-api=http://format.api.wrml.org
 
 echo " "
 echo " "
@@ -92,7 +103,7 @@ echo "# Requesting http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/rest/LinkRelation
+curl http://localhost:8080/org/wrml/model/rest/LinkRelation?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -102,7 +113,7 @@ echo "# Requesting http://relation.api.wrml.org/org/wrml/relation/self"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:relation.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/relation/self
+curl http://localhost:8080/org/wrml/relation/self?wrml-api=http://relation.api.wrml.org
 
 
 
@@ -114,7 +125,7 @@ echo "# Requesting http://schema.api.wrml.org/org/wrml/model/schema/Syntax"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/schema/Syntax
+curl http://localhost:8080/org/wrml/model/schema/Syntax?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -124,7 +135,7 @@ echo "# Requesting http://syntax.api.wrml.org/org/wrml/syntax/URI"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:syntax.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/syntax/URI
+curl http://localhost:8080/org/wrml/syntax/URI?wrml-api=http://syntax.api.wrml.org
 
 echo " "
 echo " "
@@ -134,7 +145,7 @@ echo "# Requesting http://schema.api.wrml.org/org/wrml/model/schema/Choices"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:schema.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/schema/Choices
+curl http://localhost:8080/org/wrml/model/schema/Choices?wrml-api=http://schema.api.wrml.org
 
 echo " "
 echo " "
@@ -144,6 +155,6 @@ echo "# Requesting http://choices.api.wrml.org/org/wrml/model/schema/ValueType"
 echo "#"
 echo "#"
 echo " "
-curl -H "WRML-Host:choices.api.wrml.org" -H "WRML-Port:80" http://localhost:8080/org/wrml/model/schema/ValueType
+curl http://localhost:8080/org/wrml/model/schema/ValueType?wrml-api=http://choices.api.wrml.org
 
 

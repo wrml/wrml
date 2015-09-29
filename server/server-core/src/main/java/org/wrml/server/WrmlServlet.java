@@ -40,6 +40,7 @@ import org.wrml.runtime.*;
 import org.wrml.runtime.format.FormatLoader;
 import org.wrml.runtime.format.ModelReadingException;
 import org.wrml.runtime.format.ModelWriterException;
+import org.wrml.runtime.format.SystemFormat;
 import org.wrml.runtime.rest.*;
 import org.wrml.runtime.rest.MediaType.MediaTypeException;
 import org.wrml.runtime.schema.PropertyProtoSlot;
@@ -51,6 +52,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.WebServiceException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,12 +69,12 @@ public class WrmlServlet extends HttpServlet {
     /**
      * TODO: Javadoc this.
      */
-    public static final String WRML_HOST_HEADER_NAME = "WRML-Host";
+    public static final String HOST_HEADER_NAME = "HOST";
 
     /**
      * TODO: Javadoc this.
      */
-    public static final String WRML_PORT_HEADER_NAME = "WRML-Port";
+    public static final String WRML_HOST_HEADER_NAME = "WRML-HOST";
 
     /**
      * TODO: Javadoc this.
@@ -80,14 +82,23 @@ public class WrmlServlet extends HttpServlet {
      */
     public static final String WRML_SCHEME_HEADER_NAME = "WRML-Scheme";
 
+    public static final String WRML_API_PARAMETER_NAME = "wrml-api";
+
     public static final String WRML_CONFIGURATION_FILE_PATH_INIT_PARAM_NAME = "wrml-config-file-path";
 
     public static final String WRML_CONFIGURATION_RESOURCE_PATH_INIT_PARAM_NAME = "wrml-config-resource-path";
 
     public static final String WRML_METADATA_ROOT_PATH = "/_wrml";
 
+    public static final String WRML_METADATA_PING_PATH = WRML_METADATA_ROOT_PATH + "/ping";
+
     public static final String WRML_METADATA_API_PATH = WRML_METADATA_ROOT_PATH + "/api";
 
+    public static final String WRML_METADATA_API_SWAGGER_PATH = WRML_METADATA_API_PATH + "/swagger";
+
+    public static final String WRML_METADATA_API_LOAD_PATH = WRML_METADATA_API_PATH + "/load";
+
+    public static final MediaType APPLICATION_JSON_MEDIA_TYPE = new MediaType("application", "json");
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WrmlServlet.class);
@@ -95,6 +106,8 @@ public class WrmlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private Engine _Engine;
+
+    private StatusReport _PingStatusReport;
 
     /**
      * Creates a new instance of the {@link WrmlServlet}.
@@ -139,11 +152,11 @@ public class WrmlServlet extends HttpServlet {
             final EngineConfiguration engineConfig;
 
             if (configFileLocation != null) {
-                LOGGER.info("Extracted configuration file location: {}", configFileLocation);
+                LOGGER.info("Determined configuration file location: {}", configFileLocation);
                 engineConfig = EngineConfiguration.load(configFileLocation);
             }
             else if (configResourceLocation != null) {
-                LOGGER.info("Extracted configuration resource location: {}", configResourceLocation);
+                LOGGER.info("Determined configuration resource location: {}", configResourceLocation);
                 engineConfig = EngineConfiguration.load(getClass(), configResourceLocation);
             }
             else {
@@ -154,6 +167,13 @@ public class WrmlServlet extends HttpServlet {
             engine.init(engineConfig);
             setEngine(engine);
             LOGGER.debug("Initialized WRML with: {}", engineConfig);
+
+            final Context context = getContext();
+            _PingStatusReport = context.newModel(StatusReport.class);
+            _PingStatusReport.setDescription("Greetings Program!");
+            _PingStatusReport.setTitle("Ping Success");
+            _PingStatusReport.setStatus(Status.OK);
+
         }
         catch (IOException ex) {
             throw new ServletException("Unable to initialize servlet.", ex);
@@ -211,40 +231,64 @@ public class WrmlServlet extends HttpServlet {
             final URI requestUri = getRequestUri(request);
 
             final ApiNavigator apiNavigator = apiLoader.getParentApiNavigator(requestUri);
+            final Api api = (apiNavigator != null) ? apiNavigator.getApi() : null;
+            final String path = requestUri.getPath();
+
+            // TODO: This is ugly here. Move this handling to an "admin" construct.
+            if (method == Method.Get && path.startsWith(WRML_METADATA_ROOT_PATH)) {
+
+                final Model responseModel;
+                MediaType responseEntityMediaType = null;
+                URI responseEntityFormatUri = null;
+
+                switch (path) {
+
+                    case WRML_METADATA_PING_PATH:
+                        responseModel = _PingStatusReport;
+                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                        break;
+
+                    case WRML_METADATA_API_PATH:
+                        responseModel = api;
+                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                        break;
+
+                    case WRML_METADATA_API_SWAGGER_PATH:
+                        responseModel = api;
+                        responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
+                        responseEntityFormatUri = SystemFormat.vnd_wrml_swagger_api.getFormatUri();
+                        break;
+
+                    case WRML_METADATA_API_LOAD_PATH:
+                        responseModel = loadApi(requestUri);
+                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                        break;
+
+                    default:
+                        responseModel = null;
+                        break;
+
+                }
+
+                if (responseModel != null) {
+
+                    try {
+                        writeModelAsResponseEntity(method, response, responseModel, responseEntityMediaType, responseEntityFormatUri);
+                    } catch (final ModelWriterException | MediaTypeException e) {
+                        throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + api + "]).", e);
+                    }
+
+                    return;
+                }
+
+            }
+
             if (apiNavigator == null) {
                 final ApiNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(ApiNotFoundErrorReport.class, requestUri, null);
                 throw new WrmlServletException(notFoundErrorReport);
             }
 
-            final Api api = apiNavigator.getApi();
-
             LOGGER.debug("Request is associated with REST API: {}.", api.getTitle());
-
-            final String path = requestUri.getPath();
-            LOGGER.debug("PATH: {}", path);
-            if (WRML_METADATA_API_PATH.equals(path)) {
-                acceptableMediaTypes.clear();
-
-                final URI defaultFormatUri = context.getFormatLoader().getDefaultFormatUri();
-                final Map<String, String> mediaTypeParameters = new LinkedHashMap<>(6);
-
-                mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_SCHEMA, api.getSchemaUri().toString());
-                mediaTypeParameters.put(SystemMediaType.PARAMETER_NAME_FORMAT, defaultFormatUri.toString());
-
-                final MediaType mediaType = new MediaType(SystemMediaType.TYPE_APPLICATION, SystemMediaType.SUBTYPE_WRML,
-                        mediaTypeParameters);
-
-                acceptableMediaTypes.add(mediaType);
-
-                try {
-                    writeModelAsResponseEntity(response, api, acceptableMediaTypes, method);
-                }
-                catch (final ModelWriterException | MediaTypeException e) {
-                    throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + api + "]).", e);
-                }
-
-                return;
-            }
 
             final Resource endpointResource = apiNavigator.getResource(requestUri);
             if (endpointResource == null) {
@@ -319,7 +363,8 @@ public class WrmlServlet extends HttpServlet {
                 LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] returning response Model: \n" + responseModel);
 
                 try {
-                    writeModelAsResponseEntity(response, responseModel, acceptableMediaTypes, method);
+                    MediaType responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                    writeModelAsResponseEntity(method, response, responseModel, responseEntityMediaType, null);
                 }
                 catch (final ModelWriterException | MediaTypeException e) {
                     throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + responseModel + "]).", e);
@@ -330,7 +375,9 @@ public class WrmlServlet extends HttpServlet {
         }
         catch (final WrmlServletException wse) {
             try {
-                writeModelAsResponseEntity(response, wse.getErrorReport(), acceptableMediaTypes, method);
+                ErrorReport errorReport = wse.getErrorReport();
+                MediaType responseEntityMediaType = getMostAcceptableMediaType(errorReport.getSchemaUri(), acceptableMediaTypes);
+                writeModelAsResponseEntity(method, response, wse.getErrorReport(), responseEntityMediaType, null);
             }
             catch (Exception e) {
                 throw new IOException("Failed to write error report to HTTP response output stream.", e);
@@ -345,6 +392,9 @@ public class WrmlServlet extends HttpServlet {
             writeException(e, response, !method.isEntityAllowedInResponseMessage());
         }
     }
+
+
+
 
     private <T extends NotFoundErrorReport> T createNotFoundErrorReport(final Class<T> notFoundErrorType, final URI requestUri, final Api api) {
 
@@ -403,15 +453,35 @@ public class WrmlServlet extends HttpServlet {
             path = path.substring(0, path.length() - 1);
         }
 
-        final String host = StringUtils.defaultIfEmpty(request.getHeader(WRML_HOST_HEADER_NAME), request.getRemoteHost());
-        final String portString = StringUtils.defaultIfEmpty(request.getHeader(WRML_PORT_HEADER_NAME), Integer.toString(request.getRemotePort()));
-        final String scheme = StringUtils.defaultIfEmpty(request.getHeader(WRML_SCHEME_HEADER_NAME), request.getScheme());
-        int port = -1;
+        LOGGER.debug("WRML-HOST Header: {}", request.getHeader(WRML_HOST_HEADER_NAME));
+        LOGGER.debug("HOST Header: {}", request.getHeader("HOST"));
+        LOGGER.debug("request.getRemoteHost: {}", request.getRemoteHost());
 
-        port = Integer.parseInt(portString);
+        String scheme = StringUtils.defaultIfEmpty(request.getHeader(WRML_SCHEME_HEADER_NAME), request.getScheme());
+        String host = StringUtils.defaultIfEmpty(request.getHeader(WRML_HOST_HEADER_NAME), request.getHeader(HOST_HEADER_NAME));
+
+        String portString = "80";
+        int portSeparatorIndex = host.indexOf(':');
+        if (portSeparatorIndex > 0 && portSeparatorIndex < host.length() - 1) {
+            portString = host.substring(portSeparatorIndex + 1);
+            host = host.substring(0, portSeparatorIndex);
+        }
+
+        int port = Integer.parseInt(portString);
+
+        final String[] parameterValues = request.getParameterValues(WRML_API_PARAMETER_NAME);
+        if (parameterValues != null) {
+            final String apiUriString = parameterValues[0];
+            final URI apiUri = URI.create(apiUriString);
+            scheme = apiUri.getScheme();
+            host = apiUri.getHost();
+            port = apiUri.getPort();
+        }
+
         if (port == 80) {
             port = -1;
         }
+
         final URI requestUri = new URI(scheme, null, host, port, path, null, null);
 
         LOGGER.debug("Determined request URI: {}", requestUri);
@@ -695,10 +765,10 @@ public class WrmlServlet extends HttpServlet {
         response.flushBuffer();
     }
 
-    void writeModelAsResponseEntity(final HttpServletResponse response, final Model responseModel, final List<MediaType> acceptableMediaTypes, final Method method) throws MediaTypeException, ServletException, IOException {
+    void writeModelAsResponseEntity(final Method requestMethod, final HttpServletResponse response, final Model responseModel, MediaType responseEntityMediaType, URI responseFormatUri) throws MediaTypeException, ServletException, IOException {
 
         // Set the content type
-        MediaType responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+        //MediaType responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
         if (responseEntityMediaType == null) {
             responseEntityMediaType = getDefaultMediaType();
         }
@@ -717,7 +787,7 @@ public class WrmlServlet extends HttpServlet {
         // Set the status
         response.setStatus(HttpServletResponse.SC_OK);
 
-        final boolean noBody = !method.isEntityAllowedInResponseMessage();
+        final boolean noBody = !requestMethod.isEntityAllowedInResponseMessage();
         if (noBody) {
             response.setContentLength(0);
         }
@@ -727,15 +797,16 @@ public class WrmlServlet extends HttpServlet {
             final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
             // Set the format for output
-            URI formatUri = null;
-            if (responseEntityMediaType.getFullType().equals(SystemMediaType.MEDIA_TYPE_STRING_WRML)) {
-                final String format = responseEntityMediaType.getParameter(SystemMediaType.PARAMETER_NAME_FORMAT);
-                if (format != null) {
-                    formatUri = URI.create(format);
+            URI formatUri = responseFormatUri;
+            if (formatUri == null) {
+                if (responseEntityMediaType.getFullType().equals(SystemMediaType.MEDIA_TYPE_STRING_WRML)) {
+                    final String format = responseEntityMediaType.getParameter(SystemMediaType.PARAMETER_NAME_FORMAT);
+                    if (format != null) {
+                        formatUri = URI.create(format);
+                    }
+                } else {
+                    formatUri = getLoadedFormatUri(responseEntityMediaType);
                 }
-            }
-            else {
-                formatUri = getLoadedFormatUri(responseEntityMediaType);
             }
 
             context.writeModel(byteOut, responseModel, formatUri);
@@ -890,6 +961,51 @@ public class WrmlServlet extends HttpServlet {
         final Context context = getContext();
         final FormatLoader formatLoader = context.getFormatLoader();
         return formatLoader.getDefaultFormat().getMediaType();
+    }
+
+    /**
+     * Load the API specified by the request URI
+     *
+     * @param requestUri identifies the URI of the API to load
+     * @return the loaded {@Link Api}.
+     */
+    private Api loadApi(URI requestUri) throws WrmlServletException {
+
+        final Context context = getContext();
+
+        final URI apiUri = URI.create("http://" + requestUri.getHost());
+
+        for (final SystemApi systemApi : SystemApi.values()) {
+            if (systemApi.getUri().equals(apiUri)) {
+
+                final ErrorReport errorReport = context.newModel(ErrorReport.class);
+                errorReport.setStatus(Status.BAD_REQUEST);
+                errorReport.setRequestUri(requestUri);
+                errorReport.setDescription("System APIs cannot be reloaded.");
+                errorReport.setTitle("API Load Failed");
+
+                throw new WrmlServletException(errorReport);
+            }
+        }
+
+        final ApiNavigator apiNavigator;
+
+        try {
+            apiNavigator = context.getApiLoader().loadApi(apiUri);
+        }
+        catch (ApiLoaderException e) {
+
+            final ErrorReport errorReport = context.newModel(ErrorReport.class);
+            errorReport.setStatus(Status.INTERNAL_SERVER_ERROR);
+            errorReport.setRequestUri(requestUri);
+            errorReport.setDescription(e.getLocalizedMessage());
+            errorReport.setTitle("API Load Failed");
+
+            throw new WrmlServletException(errorReport);
+        }
+
+        final Api api = apiNavigator.getApi();
+        return api;
     }
 
 }

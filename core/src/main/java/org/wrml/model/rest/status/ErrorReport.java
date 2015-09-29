@@ -30,14 +30,6 @@ import org.wrml.model.Titled;
 
 import java.net.URI;
 
-public interface ErrorReport extends Titled, Described, Abstract {
-
-    URI getRequestUri();
-
-    URI setRequestUri(final URI requestUri);
-
-    Status getStatus();
-
-    Status setStatus(final Status status);
+public interface ErrorReport extends StatusReport {
 
 }

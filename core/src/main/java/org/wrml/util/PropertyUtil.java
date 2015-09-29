@@ -43,6 +43,10 @@ public class PropertyUtil {
             result = System.getProperty(systemPropertyName);
         }
 
+        if (StringUtils.isEmpty(result)) {
+            result = System.getenv(systemPropertyName);
+        }
+
         return result;
     }
 

@@ -474,8 +474,7 @@ public class WrmlServletTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
         request.setMethod(Method.Get.getProtocolGivenName());
-        request.addHeader(WrmlServlet.WRML_HOST_HEADER_NAME, LOCALHOST);
-        request.addHeader(WrmlServlet.WRML_PORT_HEADER_NAME, PORT_1);
+        request.addHeader(WrmlServlet.WRML_HOST_HEADER_NAME, LOCALHOST + ":" + PORT_1);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -556,7 +555,6 @@ public class WrmlServletTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
         request.setMethod(Method.Get.getProtocolGivenName());
-        request.addHeader(WrmlServlet.WRML_PORT_HEADER_NAME, PORT_1);
 
         URI resourceUri = _Servlet.getRequestUri(request);
         Assert.assertEquals(resourceUri, CAPRICA_SIX_SPOOF_2_ENDPOINT);
@@ -568,7 +566,6 @@ public class WrmlServletTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         initMockHttpRequest(request, CAPRICA_SIX_SPOOF_1_ENDPOINT);
         request.setMethod(Method.Get.getProtocolGivenName());
-        request.addHeader(WrmlServlet.WRML_PORT_HEADER_NAME, PORT_2);
 
         URI resourceUri = _Servlet.getRequestUri(request);
         Assert.assertEquals(resourceUri, CAPRICA_SIX_SPOOF_1_ENDPOINT);
@@ -582,7 +579,6 @@ public class WrmlServletTest {
         initMockHttpRequest(request, CAPRICA_SIX_ENDPOINT);
         request.setMethod(Method.Get.getProtocolGivenName());
         request.addHeader(WrmlServlet.WRML_HOST_HEADER_NAME, LOCALHOST);
-        request.addHeader(WrmlServlet.WRML_PORT_HEADER_NAME, PORT_1);
 
         URI resourceUri = _Servlet.getRequestUri(request);
         Assert.assertEquals(resourceUri, CAPRICA_SIX_SPOOF_2_ENDPOINT);

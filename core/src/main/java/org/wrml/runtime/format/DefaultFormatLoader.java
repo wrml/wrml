@@ -34,6 +34,7 @@ import org.wrml.runtime.format.application.json.JsonModelPrinterFactory;
 import org.wrml.runtime.format.application.schema.json.JsonSchemaFormatter;
 import org.wrml.runtime.format.application.vnd.wrml.ascii.api.ApiAsciiFormatter;
 import org.wrml.runtime.format.application.vnd.wrml.design.schema.SchemaDesignFormatter;
+import org.wrml.runtime.format.application.vnd.wrml.swagger.api.SwaggerApiFormatter;
 import org.wrml.runtime.format.application.xml.XmlFormatter;
 import org.wrml.runtime.format.text.html.WrmldocFormatter;
 import org.wrml.runtime.format.text.java.JavaFormatter;
@@ -304,6 +305,10 @@ public class DefaultFormatLoader implements FormatLoader {
             }
             case vnd_wrml_ascii_api: {
                 formatter = new ApiAsciiFormatter();
+                break;
+            }
+            case vnd_wrml_swagger_api: {
+                formatter = new SwaggerApiFormatter();
                 break;
             }
             default: {
