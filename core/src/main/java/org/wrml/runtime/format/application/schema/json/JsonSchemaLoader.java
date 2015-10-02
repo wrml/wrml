@@ -37,6 +37,9 @@ import org.wrml.runtime.*;
 import org.wrml.runtime.format.application.schema.json.JsonSchema.Definitions.JsonType;
 import org.wrml.runtime.format.application.schema.json.JsonSchema.Definitions.PropertyType;
 import org.wrml.runtime.format.application.schema.json.JsonSchema.JsonStringFormat;
+import org.wrml.runtime.schema.PropertyProtoSlot;
+import org.wrml.runtime.schema.ProtoSlot;
+import org.wrml.runtime.schema.Prototype;
 import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.runtime.syntax.SyntaxLoader;
 
@@ -147,6 +150,10 @@ public class JsonSchemaLoader implements Loader {
     }
 
     public JsonSchema load(final Schema wrmlSchema) {
+        return load(wrmlSchema, false);
+    }
+
+    public JsonSchema load(final Schema wrmlSchema, boolean swaggerMode) {
 
         if (wrmlSchema == null) {
             return null;
@@ -162,52 +169,49 @@ public class JsonSchemaLoader implements Loader {
 
         final ObjectNode schemaNode = JsonNodeFactory.instance.objectNode();
 
-        PropertyType.Id.setValue(schemaNode, schemaUri, getSyntaxLoader());
         PropertyType.Title.setValue(schemaNode, schemaTitle, getSyntaxLoader());
         PropertyType.Description.setValue(schemaNode, schemaDescription, getSyntaxLoader());
         PropertyType.Type.setValue(schemaNode, JsonType.Object.getKeyword(), getSyntaxLoader());
-
-        initStringArrayNode(schemaNode, PropertyType.Extends.getName(), wrmlSchema.getBaseSchemaUris());
-
-        initStringArrayNode(schemaNode, Schema.SLOT_NAME_KEY_SLOT_NAMES, wrmlSchema.getKeySlotNames());
 
         // TODO
         // wrmlSchema.getVersion();
 
         final ObjectNode propertiesNode = schemaNode.putObject(PropertyType.Properties.getName());
-        final List<Slot> slots = wrmlSchema.getSlots();
-        for (final Slot slot : slots) {
 
-            final Value value = slot.getValue();
-            if (value instanceof LinkValue) {
-                initLinkSlotNode(schemaNode, slot);
+        final SchemaLoader schemaLoader = getContext().getSchemaLoader();
+        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
+        final SortedSet<String> allSlotNames = prototype.getAllSlotNames();
+        for (String slotName : allSlotNames) {
+            final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
+
+            if (!protoSlot.getClass().equals(PropertyProtoSlot.class)) {
+                continue;
             }
-            else {
-                final String slotName = slot.getName();
+
+            final URI declaringSchemaUri = protoSlot.getDeclaringSchemaUri();
+            final Schema declaringSchema = schemaLoader.load(declaringSchemaUri);
+            final List<Slot> declaringSchemaSlots = declaringSchema.getSlots();
+
+            Slot propertySlot = null;
+            for (Slot slot : declaringSchemaSlots) {
+                if (slotName.equals(slot.getName()))  {
+                    propertySlot = slot;
+                    break;
+                }
+            }
+
+            if (propertySlot != null) {
                 final ObjectNode slotNode = propertiesNode.putObject(slotName);
-
-                initPropertySlotNode(slotNode, slot);
+                initPropertySlotNode(slotNode, propertySlot, swaggerMode);
             }
-
         }
 
-        return load(schemaNode, schemaUri);
-    }
-
-    private void initStringArrayNode(final ObjectNode node, final String arrayNodeName, Collection<?> arrayNodeElements) {
-
-        if (arrayNodeElements == null || arrayNodeElements.isEmpty() || arrayNodeName == null) {
-            return;
+        if (swaggerMode) {
+            return new JsonSchema(this, schemaNode);
         }
-
-        final ArrayNode arrayNode = node.putArray(arrayNodeName);
-
-        final SyntaxLoader syntaxLoader = getSyntaxLoader();
-        for (Object element : arrayNodeElements) {
-            final String stringValue = syntaxLoader.formatSyntaxValue(element);
-            arrayNode.add(stringValue);
+        else {
+            return load(schemaNode, schemaUri);
         }
-
     }
 
     public JsonSchema load(final URI jsonSchemaUri) throws IOException {
@@ -266,6 +270,7 @@ public class JsonSchemaLoader implements Loader {
         return jsonType;
     }
 
+    /*
     private void initLinkSlotNode(final ObjectNode schemaNode, final Slot slot) {
 
         ArrayNode linksArrayNode = PropertyType.Links.getValueNode(schemaNode);
@@ -302,77 +307,95 @@ public class JsonSchemaLoader implements Loader {
         }
 
     }
+    */
 
-    private void initPropertySlotNode(final ObjectNode slotNode, final Slot slot) {
+    private void initPropertySlotNode(final ObjectNode slotNode, final Slot slot, final boolean swaggerMode) {
+
+        final SyntaxLoader syntaxLoader = getSyntaxLoader();
 
         final Value value = slot.getValue();
 
-        PropertyType.Title.setValue(slotNode, slot.getTitle(), getSyntaxLoader());
-        PropertyType.Description.setValue(slotNode, slot.getDescription(), getSyntaxLoader());
+        PropertyType.Title.setValue(slotNode, slot.getTitle(), syntaxLoader);
+        PropertyType.Description.setValue(slotNode, slot.getDescription(), syntaxLoader);
         final JsonType valueJsonType = getJsonType(value);
 
         if (valueJsonType != null) {
-            PropertyType.Type.setValue(slotNode, valueJsonType.getKeyword(), getSyntaxLoader());
+            PropertyType.Type.setValue(slotNode, valueJsonType.getKeyword(), syntaxLoader);
         }
 
         if (value instanceof TextValue) {
             final TextValue textValue = (TextValue) value;
             final URI syntaxUri = textValue.getSyntaxUri();
             if (syntaxUri != null) {
-                final Context context = slot.getContext();
-                final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
+
+
                 final Class<?> syntaxJavaClass = syntaxLoader.getSyntaxJavaClass(syntaxUri);
                 if (syntaxJavaClass != null) {
                     final JsonStringFormat jsonStringFormat = JsonStringFormat.forJavaType(syntaxJavaClass);
                     if (jsonStringFormat != null) {
-                        PropertyType.Format.setValue(slotNode, jsonStringFormat.getKeyword(), getSyntaxLoader());
+                        PropertyType.Format.setValue(slotNode, jsonStringFormat.getKeyword(), syntaxLoader);
                     }
                 }
             }
 
             PropertyType.MaxLength.setValue(slotNode, value.getSlotValue(TextValue.SLOT_NAME_MAXIMUM_LENGTH),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
             PropertyType.MinLength.setValue(slotNode, value.getSlotValue(TextValue.SLOT_NAME_MINIMUM_LENGTH),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
         }
         else if (value instanceof ListValue) {
             final ListValue listValue = (ListValue) value;
             final ArrayNode arrayNode = slotNode.putArray(PropertyType.Items.getName());
             final ObjectNode itemSlotNode = arrayNode.addObject();
-            initPropertySlotNode(itemSlotNode, listValue.getElementSlot());
+            initPropertySlotNode(itemSlotNode, listValue.getElementSlot(), swaggerMode);
 
             PropertyType.MaxItems.setValue(slotNode, value.getSlotValue(ListValue.SLOT_NAME_MAXIMUM_SIZE),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
             PropertyType.MinItems.setValue(slotNode, value.getSlotValue(ListValue.SLOT_NAME_MINIMUM_SIZE),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
             PropertyType.UniqueItems.setValue(slotNode,
-                    value.getSlotValue(ListValue.SLOT_NAME_ELEMENT_UNIQUENESS_CONSTRAINED), getSyntaxLoader());
+                    value.getSlotValue(ListValue.SLOT_NAME_ELEMENT_UNIQUENESS_CONSTRAINED), syntaxLoader);
 
         }
         else if (value instanceof ModelValue) {
             final ModelValue modelValue = (ModelValue) value;
-            PropertyType.$Ref.setValue(slotNode, modelValue.getModelSchemaUri(), getSyntaxLoader());
+            final URI modelSchemaUri = modelValue.getModelSchemaUri();
+            if (modelSchemaUri != null) {
+                String refSlotValue = modelSchemaUri.toString();
+                if (swaggerMode) {
+                    int lastSlashIndex = refSlotValue.lastIndexOf('/');
+                    if (lastSlashIndex > 0 && lastSlashIndex < refSlotValue.length() - 1) {
+                        refSlotValue = refSlotValue.substring(lastSlashIndex + 1);
+                        refSlotValue = "#/definitions/" + refSlotValue;
+                    }
+                }
+                else {
+                    refSlotValue = refSlotValue + "?accept=application/schema%2Bjson";
+                }
+
+                PropertyType.$Ref.setValue(slotNode, refSlotValue, syntaxLoader);
+            }
         }
         else if (value instanceof NumericValue) {
             PropertyType.Maximum.setValue(slotNode, value.getSlotValue(NumericValue.SLOT_NAME_MAXIMUM),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
             PropertyType.Minimum.setValue(slotNode, value.getSlotValue(NumericValue.SLOT_NAME_MINIMUM),
-                    getSyntaxLoader());
+                    syntaxLoader);
 
         }
 
         if (value instanceof MaybeRequired) {
             PropertyType.Required.setValue(slotNode, value.getSlotValue(MaybeRequired.SLOT_NAME_REQUIRED),
-                    getSyntaxLoader());
+                    syntaxLoader);
         }
 
         if (value.containsSlotValue(Value.SLOT_NAME_DEFAULT)) {
-            PropertyType.Default.setValue(slotNode, value.getSlotValue(Value.SLOT_NAME_DEFAULT), getSyntaxLoader());
+            PropertyType.Default.setValue(slotNode, value.getSlotValue(Value.SLOT_NAME_DEFAULT), syntaxLoader);
         }
 
     }

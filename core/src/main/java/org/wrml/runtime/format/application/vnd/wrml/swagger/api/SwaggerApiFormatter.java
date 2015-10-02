@@ -43,10 +43,11 @@ import org.wrml.runtime.format.AbstractFormatter;
 import org.wrml.runtime.format.ModelReadingException;
 import org.wrml.runtime.format.ModelWriteOptions;
 import org.wrml.runtime.format.ModelWritingException;
-import org.wrml.runtime.rest.ApiLoader;
-import org.wrml.runtime.rest.ApiNavigator;
-import org.wrml.runtime.rest.Resource;
-import org.wrml.runtime.rest.SystemLinkRelation;
+import org.wrml.runtime.format.application.schema.json.JsonSchema;
+import org.wrml.runtime.format.application.schema.json.JsonSchemaFormatter;
+import org.wrml.runtime.format.application.schema.json.JsonSchemaLoader;
+import org.wrml.runtime.format.application.vnd.wrml.design.schema.SchemaDesignFormatter;
+import org.wrml.runtime.rest.*;
 import org.wrml.runtime.schema.*;
 import org.wrml.runtime.syntax.SyntaxLoader;
 import org.wrml.util.UniqueName;
@@ -56,6 +57,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Format for WRML schemas for use in design tools/apps.
@@ -66,7 +68,6 @@ public class SwaggerApiFormatter extends AbstractFormatter {
     public SwaggerApiFormatter() {
 
     }
-
 
     @Override
     public boolean isApplicableTo(final URI schemaUri) {
@@ -101,7 +102,7 @@ public class SwaggerApiFormatter extends AbstractFormatter {
         }
         catch (final Exception e) {
             throw new ModelWritingException(getClass().getSimpleName()
-                    + " encounter an error while attempting to write a SchemaDesign.  Message: " + e.getMessage(), null, this);
+                    + " encounter an error while attempting to write Swagger.  Message: " + e.getMessage(), null, this);
 
         }
 
@@ -110,13 +111,10 @@ public class SwaggerApiFormatter extends AbstractFormatter {
     public static ObjectNode createApiSwaggerObjectNode(final ObjectMapper objectMapper, final Api api) {
         final Context context = api.getContext();
         final ApiLoader apiLoader = context.getApiLoader();
-        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
-        final SchemaLoader schemaLoader = context.getSchemaLoader();
         final ObjectNode rootNode = objectMapper.createObjectNode();
 
-        final ApiNavigator apiNavigator = apiLoader.getLoadedApiNavigator(api.getUri());
-
         final URI apiUri = api.getUri();
+        final ApiNavigator apiNavigator = apiLoader.getLoadedApiNavigator(apiUri);
 
         rootNode.put("swagger", "2.0");
 
@@ -127,681 +125,423 @@ public class SwaggerApiFormatter extends AbstractFormatter {
         infoNode.put("version", String.valueOf(api.getVersion()));
         infoNode.put("title", api.getTitle());
 
-        rootNode.put("host", api.getUri().getHost());
-        rootNode.put("basePath", "");
+        // TODO Add this to WRML API?
+        //infoNode.put("termsOfService", "");
+
+        // TODO Add this to WRML API?
+        //final ObjectNode contactNode = objectMapper.createObjectNode();
+        //infoNode.put("contact", contactNode);
+        //contactNode.put("email", "");
+
+        // TODO Add this to WRML API?
+        //final ObjectNode licenseNode = objectMapper.createObjectNode();
+        //infoNode.put("license", licenseNode);
+        //licenseNode.put("name", "");
+        //licenseNode.put("url", "");
+
+        rootNode.put("host", apiUri.getHost());
+
+        // TODO Research/remember: Can WRML APIs have base paths?
+        //rootNode.put("basePath", "");
+
+        final ArrayNode tagDefinitionsNode = objectMapper.createArrayNode();
 
         final ArrayNode schemesNode = objectMapper.createArrayNode();
-        schemesNode.add("http");
         rootNode.put("schemes", schemesNode);
+        schemesNode.add("http");
 
-        ResourceTemplate docroot = api.getDocroot();
-        if (docroot != null) {
-            final ObjectNode pathsNode = createPathsObjectNode(objectMapper, apiNavigator);
-            rootNode.put("paths", pathsNode);
+        final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
+        final Map<URI, LinkRelation> allLinkRelations = new HashMap<>();
+
+        if (allResources.size() > 0) {
+            final SortedMap<String, Resource> displayOrderResources = new TreeMap<>();
+
+            for (final Resource resource : allResources.values()) {
+                displayOrderResources.put(resource.getPathText(), resource);
+            }
+
+            final ObjectNode pathsNode = objectMapper.createObjectNode();
+
+
+            for (final Resource resource : displayOrderResources.values()) {
+                if (resource.getReferenceMethods().size() > 0) {
+                    addPathObjectNode(context, objectMapper, pathsNode, resource, allLinkRelations, tagDefinitionsNode);
+                }
+            }
+
+            if (pathsNode.size() > 0) {
+                rootNode.put("paths", pathsNode);
+            }
+
         }
 
+        final Set<Schema> allSchemas = apiNavigator.getApiSchemas();
+        if (allSchemas.size() > 0) {
+            final ObjectNode definitionsNode = objectMapper.createObjectNode();
+            rootNode.put("definitions", definitionsNode);
 
-/*
+            for (final Schema schema : allSchemas) {
+                addSchemaDefinitionObjectNode(objectMapper, definitionsNode, schema);
+                addSchemaTagDefinitionObjectNode(objectMapper, tagDefinitionsNode, schema);
+            }
 
-{
-   "swagger":"2.0",
-   "info":{
-      "description":"This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
-      "version":"1.0.0",
-      "title":"Swagger WRML",
-      "termsOfService":"http://swagger.io/terms/",
-      "contact":{
-         "email":"apiteam@swagger.io"
-      },
-      "license":{
-         "name":"Apache 2.0",
-         "url":"http://www.apache.org/licenses/LICENSE-2.0.html"
-      }
-   },
-   "host":"petstore.swagger.io",
-   "basePath":"/v2",
-   "tags":[
-      {
-         "name":"pet",
-         "description":"Everything about your Pets",
-         "externalDocs":{
-            "description":"Find out more",
-            "url":"http://swagger.io"
-         }
-      },
-      {
-         "name":"store",
-         "description":"Access to Petstore orders"
-      },
-      {
-         "name":"user",
-         "description":"Operations about user",
-         "externalDocs":{
-            "description":"Find out more about our store",
-            "url":"http://swagger.io"
-         }
-      }
-   ],
-   "schemes":[
-      "http
-   ],
+        }
 
+        // TODO Add this to WRML API?
+        //final ObjectNode externalDocsNode = objectMapper.createObjectNode();
+        //rootNode.put("externalDocs", externalDocsNode);
+        //externalDocsNode.put("description", "");
+        //externalDocsNode.put("url", "");
 
-     "/pet/{petId}":{
-         "get":{
-            "tags":[
-               "pet"
-            ],
-            "summary":"Find pet by ID",
-            "description":"Returns a single pet",
-            "operationId":"getPetById",
-            "produces":[
-               "application/xml",
-               "application/json"
-            ],
-            "parameters":[
-               {
-                  "name":"petId",
-                  "in":"path",
-                  "description":"ID of pet to return",
-                  "required":true,
-                  "type":"integer",
-                  "format":"int64"
-               }
-            ],
-            "responses":{
-               "200":{
-                  "description":"successful operation",
-                  "schema":{
-                     "$ref":"#/definitions/Pet"
-                  }
-               },
-               "400":{
-                  "description":"Invalid ID supplied"
-               },
-               "404":{
-                  "description":"Pet not found"
-               }
-            },
-            "security":[
-               {
-                  "api_key":[
-
-                  ]
-               }
-            ]
-         },
-
-
-
-
-
-
-   */
-
+        if (tagDefinitionsNode.size() > 0) {
+            rootNode.put("tags", tagDefinitionsNode);
+        }
 
         return rootNode;
     }
 
-    private static ObjectNode createPathsObjectNode(final ObjectMapper objectMapper, final ApiNavigator apiNavigator) {
 
-        final ObjectNode pathsNode = objectMapper.createObjectNode();
+    private static void addPathObjectNode(
+            final Context context,
+            final ObjectMapper objectMapper,
+            final ObjectNode pathsNode,
+            final Resource resource,
+            final Map<URI, LinkRelation> allLinkRelations,
+            final ArrayNode tagDefinitionsNode
+    ) {
 
-        Resource docroot = apiNavigator.getDocroot();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
 
-        addPathObjectNode(objectMapper, pathsNode, docroot);
-
-        return pathsNode;
-    }
-
-    private static void addPathObjectNode(final ObjectMapper objectMapper, final ObjectNode pathsNode, final Resource resource) {
-
-        final String pathSegment = resource.getPathSegment();
-        final ObjectNode pathNode = objectMapper.createObjectNode();
-        pathsNode.put("/" + pathSegment, pathNode);
-
-        final ObjectNode methodNode = objectMapper.createObjectNode();
-        pathNode.put("get", methodNode);
-
-        List<Resource> children = resource.getAllChildResources();
-        if (children != null) {
-            for (Resource child : children) {
-                addPathObjectNode(objectMapper, pathsNode, child);
-            }
+        final URI defaultSchemaUri = resource.getDefaultSchemaUri();
+        Prototype defaultPrototype = null;
+        if (defaultSchemaUri != null) {
+            defaultPrototype = schemaLoader.getPrototype(defaultSchemaUri);
         }
 
+        final String defaultSchemaName = (defaultPrototype != null) ? defaultPrototype.getUniqueName().getLocalName() : null;
+
+        final String path = resource.getPathText();
+        final ObjectNode pathNode = objectMapper.createObjectNode();
+        pathsNode.put(path, pathNode);
+
+        final Set<Method> referenceMethods = resource.getReferenceMethods();
+
+        final ConcurrentHashMap<URI, LinkTemplate> referenceTemplates = resource.getReferenceTemplates();
+
+        final Set<URI> referenceRelationUris = referenceTemplates.keySet();
+        String selfResponseSchemaName = null;
+
+        final List<Method> displayOrderMethods = Arrays.asList(Method.Get, Method.Save, Method.Invoke, Method.Delete);
+        for (Method method : displayOrderMethods) {
+            if (referenceMethods.contains(method)) {
+
+                for (final URI linkRelationUri : referenceRelationUris) {
+
+                    final LinkTemplate referenceTemplate = referenceTemplates.get(linkRelationUri);
+
+                    final LinkRelation linkRelation = getLinkRelation(context, allLinkRelations, linkRelationUri);
+
+                    if (method != linkRelation.getMethod()) {
+                        continue;
+                    }
+
+                    final ObjectNode methodNode = objectMapper.createObjectNode();
+                    final String methodName = method.getProtocolGivenName().toLowerCase();
+                    pathNode.put(methodName, methodNode);
+
+                    final ResourceTemplate resourceTemplate = resource.getResourceTemplate();
+                    final String description = resourceTemplate.getDescription();
+
+                    final String relationTitle = linkRelation.getTitle();
+                    String operationId = relationTitle;
+
+                    final URI requestSchemaUri = referenceTemplate.getRequestSchemaUri();
+                    Prototype requestPrototype = null;
+                    if (requestSchemaUri != null) {
+                        requestPrototype = schemaLoader.getPrototype(requestSchemaUri);
+                    }
+
+                    final URI responseSchemaUri = referenceTemplate.getResponseSchemaUri();
+                    Prototype responsePrototype = null;
+                    if (responseSchemaUri != null) {
+                        responsePrototype = schemaLoader.getPrototype(responseSchemaUri);
+                    }
+
+                    final String responseSchemaName = (responsePrototype != null) ? responsePrototype.getUniqueName().getLocalName() : null;
+
+                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri)) {
+                        selfResponseSchemaName = responseSchemaName;
+                        operationId = "get";
+                        if (responseSchemaName != null) {
+                            operationId += responseSchemaName;
+                        }
+                        else if (defaultSchemaName != null) {
+                            operationId += defaultSchemaName;
+                        }
+
+                    }
+                    else if (SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
+                        operationId = "save";
+                        if (responseSchemaName != null) {
+                            operationId += responseSchemaName;
+                        }
+                        else if (defaultSchemaName != null) {
+                            operationId += defaultSchemaName;
+                        }
+
+                    }
+                    else if (SystemLinkRelation.delete.getUri().equals(linkRelationUri)) {
+                        operationId = "delete";
+                        if (defaultSchemaName != null) {
+                            operationId += defaultSchemaName;
+                        }
+                        else if (selfResponseSchemaName != null) {
+                            operationId += selfResponseSchemaName;
+                        }
+                    }
+
+                    if (description != null) {
+                        methodNode.put("summary", description);
+                    }
+
+                    //methodNode.put("description", description);
+                    methodNode.put("operationId", operationId);
+
+                    final ArrayNode consumesNode = objectMapper.createArrayNode();
+                    methodNode.put("consumes", consumesNode);
+                    consumesNode.add("application/json");
+
+                    final ArrayNode producesNode = objectMapper.createArrayNode();
+                    methodNode.put("produces", producesNode);
+                    producesNode.add("application/json");
+
+                    final ArrayNode parametersNode = objectMapper.createArrayNode();
+
+                    final UriTemplate uriTemplate = resource.getUriTemplate();
+                    final String[] parameterNames = uriTemplate.getParameterNames();
+                    if (parameterNames != null && parameterNames.length > 0) {
+
+                        for (int i = 0; i < parameterNames.length; i++) {
+                            final String parameterName = parameterNames[i];
+
+                            final ObjectNode parameterNode = objectMapper.createObjectNode();
+                            parametersNode.add(parameterNode);
+
+                            parameterNode.put("in", "path");
+                            parameterNode.put("name", parameterName);
+                            parameterNode.put("required", true);
+
+                            URI keyedSchemaUri = null;
+
+                            if (defaultPrototype != null) {
+                                final Set<String> allKeySlotNames = defaultPrototype.getAllKeySlotNames();
+                                if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
+                                    keyedSchemaUri = defaultSchemaUri;
+                                }
+                            }
+
+                            if (keyedSchemaUri == null && responsePrototype != null) {
+                                final Set<String> allKeySlotNames = responsePrototype.getAllKeySlotNames();
+                                if (allKeySlotNames != null && allKeySlotNames.contains(parameterName)) {
+                                    keyedSchemaUri = responseSchemaUri;
+                                }
+                            }
+
+                            if (keyedSchemaUri != null) {
+
+                                final Prototype keyedPrototype = schemaLoader.getPrototype(keyedSchemaUri);
+                                final ProtoSlot keyProtoSlot = keyedPrototype.getProtoSlot(parameterName);
+                                if (keyProtoSlot instanceof PropertyProtoSlot) {
+                                    final PropertyProtoSlot keyPropertyProtoSlot = (PropertyProtoSlot) keyProtoSlot;
+                                    final ValueType parameterValueType = keyPropertyProtoSlot.getValueType();
+
+                                    final String parameterTypeString;
+
+                                    String parameterFormat = null;
+
+                                    switch (parameterValueType) {
+                                        case Integer:
+                                            parameterTypeString = "integer";
+                                            parameterFormat = "int32";
+                                            break;
+                                        case Boolean:
+                                            parameterTypeString = "boolean";
+                                            break;
+                                        case Long:
+                                            parameterTypeString = "integer";
+                                            parameterFormat = "int64";
+                                            break;
+                                        case Double:
+                                            parameterTypeString = "number";
+                                            parameterFormat = "double";
+                                            break;
+                                        default: {
+                                            parameterTypeString = "string";
+                                            break;
+                                        }
+                                    }
+
+                                    // TODO Add parameter description
+                                    //parameterNode.put("description", );
+
+                                    parameterNode.put("type", parameterTypeString);
+
+                                    if (parameterFormat != null) {
+                                        parameterNode.put("format", parameterFormat);
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
+                    }
+
+                    if (requestPrototype != null) {
+
+                        final ObjectNode parameterNode = objectMapper.createObjectNode();
+                        parametersNode.add(parameterNode);
+
+                        parameterNode.put("in", "body");
+                        parameterNode.put("name", "body");
+                        parameterNode.put("required", true);
+
+                        final ObjectNode schemaNode = objectMapper.createObjectNode();
+                        parameterNode.put("schema", schemaNode);
+                        schemaNode.put("$ref", "#/definitions/" + requestPrototype.getUniqueName().getLocalName());
+                    }
+
+
+                    if (parametersNode.size() > 0) {
+                        methodNode.put("parameters", parametersNode);
+                    }
+
+                    final ObjectNode responsesNode = objectMapper.createObjectNode();
+                    methodNode.put("responses", responsesNode);
+
+                    final ObjectNode successNode = objectMapper.createObjectNode();
+                    responsesNode.put("200", successNode);
+                    successNode.put("description", "OK");
+
+                    if (responsePrototype != null) {
+                        final ObjectNode schemaNode = objectMapper.createObjectNode();
+                        successNode.put("schema", schemaNode);
+                        schemaNode.put("$ref", "#/definitions/" + responsePrototype.getUniqueName().getLocalName());
+                    }
+
+                    final ArrayNode tagsNode = objectMapper.createArrayNode();
+
+                    final Prototype tagPrototype;
+                    if (defaultPrototype != null) {
+                        tagPrototype = defaultPrototype;
+                    }
+                    else if (responsePrototype != null) {
+                        tagPrototype = responsePrototype;
+                    }
+                    else if (requestPrototype != null) {
+                        tagPrototype = requestPrototype;
+                    }
+                    else {
+                        tagPrototype = null;
+                    }
+
+                    String tagSchemaName = null;
+                    if (tagPrototype != null) {
+                        tagSchemaName = tagPrototype.getUniqueName().getLocalName().toLowerCase();
+                    }
+                    else if (selfResponseSchemaName != null) {
+                        tagSchemaName = selfResponseSchemaName.toLowerCase();
+                    }
+
+                    if (tagSchemaName != null) {
+                        tagsNode.add(tagSchemaName);
+                    }
+
+                    if (tagsNode.size() > 0) {
+                        methodNode.put("tags", tagsNode);
+                    }
+
+                }
+            }
+        }
     }
 
-
-
-
-
-
-
-    /*
-    public static ObjectNode createSchemaDesignObjectNode(final ObjectMapper objectMapper, final Schema schema) {
-
+    private static void addSchemaDefinitionObjectNode(final ObjectMapper objectMapper, final ObjectNode definitionsNode, final Schema schema) {
         final Context context = schema.getContext();
-        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
-        final ObjectNode rootNode = objectMapper.createObjectNode();
-
         final URI schemaUri = schema.getUri();
         final Prototype prototype = schemaLoader.getPrototype(schemaUri);
+        final String schemaName = prototype.getUniqueName().getLocalName();
 
-        rootNode.put(PropertyName.uri.name(), syntaxLoader.formatSyntaxValue(schemaUri));
-        rootNode.put(PropertyName.title.name(), schema.getTitle());
-        rootNode.put(PropertyName.description.name(), schema.getDescription());
-        rootNode.put(PropertyName.version.name(), schema.getVersion());
-
-        final String titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
-        if (titleSlotName != null) {
-            rootNode.put(PropertyName.titleSlotName.name(), titleSlotName);
+        if (definitionsNode.has(schemaName)) {
+            return;
         }
 
+        // TODO Modify JsonSchema code to allow for relative reference by Schema local name
+        final JsonSchemaLoader jsonSchemaLoader = schemaLoader.getJsonSchemaLoader();
+        final JsonSchema jsonSchema = jsonSchemaLoader.load(schema, true);
+        final ObjectNode jsonSchemaRootNode = jsonSchema.getRootNode();
 
-        final UniqueName uniqueName = schema.getUniqueName();
-        final ObjectNode uniqueNameNode = objectMapper.createObjectNode();
-        uniqueNameNode.put(PropertyName.fullName.name(), uniqueName.getFullName());
-        uniqueNameNode.put(PropertyName.namespace.name(), uniqueName.getNamespace());
-        uniqueNameNode.put(PropertyName.localName.name(), uniqueName.getLocalName());
-        rootNode.put(PropertyName.uniqueName.name(), uniqueNameNode);
+        definitionsNode.put(schemaName, jsonSchemaRootNode);
 
-        final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty()) {
-            final Set<URI> addedBaseSchemaUris = new LinkedHashSet<>();
-            final ArrayNode baseSchemasNode = objectMapper.createArrayNode();
-            rootNode.put(PropertyName.baseSchemas.name(), baseSchemasNode);
-
-            for (final URI baseSchemaUri : declaredBaseSchemaUris) {
-                if (!addedBaseSchemaUris.contains(baseSchemaUri)) {
-                    final ObjectNode baseSchemaNode = buildSchemaNode(objectMapper, baseSchemaUri, schemaLoader, addedBaseSchemaUris);
-                    baseSchemasNode.add(baseSchemaNode);
-                    addedBaseSchemaUris.add(baseSchemaUri);
-                }
+        SortedSet<String> allSlotNames = prototype.getAllSlotNames();
+        for (String slotName : allSlotNames) {
+            final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
+            if (!(protoSlot instanceof PropertyProtoSlot)) {
+                continue;
             }
-        }
-
-        final Set<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-        if (keySlotNames != null && !keySlotNames.isEmpty()) {
-            final ArrayNode keyPropertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String keySlotName : keySlotNames) {
-                keyPropertyNamesNode.add(keySlotName);
-            }
-
-            if (keyPropertyNamesNode.size() > 0) {
-                rootNode.put(PropertyName.keyPropertyNames.name(), keyPropertyNamesNode);
-            }
-        }
-
-        final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
-        final ArrayNode allKeySlotNamesNode = objectMapper.createArrayNode();
-        rootNode.put(PropertyName.allKeySlotNames.name(), allKeySlotNamesNode);
-
-        final ObjectNode keySlotMap = objectMapper.createObjectNode();
-        rootNode.put(PropertyName.keys.name(), keySlotMap);
-
-        final String uriSlotName = PropertyName.uri.name();
-        if (allKeySlotNames.contains(uriSlotName)) {
-            allKeySlotNamesNode.add(uriSlotName);
-
-            final ObjectNode slot = createSlot(objectMapper, prototype, uriSlotName);
-            keySlotMap.put(uriSlotName, slot);
-        }
-
-        for (final String keySlotName : allKeySlotNames) {
-            if (!Document.SLOT_NAME_URI.equals(keySlotName)) {
-                allKeySlotNamesNode.add(keySlotName);
-
-                final ObjectNode slot = createSlot(objectMapper, prototype, keySlotName);
-                keySlotMap.put(keySlotName, slot);
-            }
-        }
-
-        rootNode.put(PropertyName.keyCount.name(), keySlotMap.size());
-
-        final SortedSet<String> allSlotNames = prototype.getAllSlotNames();
-
-        if (allSlotNames != null && !allSlotNames.isEmpty()) {
-
-            final ObjectNode slotMapNode = objectMapper.createObjectNode();
-            rootNode.put(PropertyName.slots.name(), slotMapNode);
-
-            final ArrayNode propertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String slotName : allSlotNames) {
-                final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-                if (protoSlot instanceof LinkProtoSlot) {
-                    continue;
-                }
-
-                if (allKeySlotNames.contains(slotName)) {
-                    // Skip key slots (handled separately)
-                    continue;
-                }
-
-                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
-                    propertyNamesNode.add(slotName);
-                }
-
-                final ObjectNode slotNode = createSlot(objectMapper, prototype, slotName);
-
-                if (slotNode != null) {
-                    slotMapNode.put(slotName, slotNode);
-                }
-
-            }
-            if (propertyNamesNode.size() > 0) {
-                rootNode.put(PropertyName.propertyNames.name(), propertyNamesNode);
-            }
-
-            rootNode.put(PropertyName.slotCount.name(), slotMapNode.size());
-        }
-
-
-        final Set<String> comparablePropertyNames = prototype.getComparableSlotNames();
-        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty()) {
-            final ArrayNode comparablePropertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String comparablePropertyName : comparablePropertyNames) {
-                comparablePropertyNamesNode.add(comparablePropertyName);
-            }
-
-            if (comparablePropertyNamesNode.size() > 0) {
-                rootNode.put(PropertyName.comparablePropertyNames.name(), comparablePropertyNamesNode);
-            }
-        }
-
-        final Collection<LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots().values();
-        if (linkProtoSlots != null && !linkProtoSlots.isEmpty()) {
-            final ArrayNode linkNamesNode = objectMapper.createArrayNode();
-            final ObjectNode linksMapNode = objectMapper.createObjectNode();
-            rootNode.put(PropertyName.links.name(), linksMapNode);
-
-            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots) {
-
-                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
-                    linkNamesNode.add(linkProtoSlot.getName());
-                }
-
-                final ObjectNode linkNode = objectMapper.createObjectNode();
-
-                String linkTitle = linkProtoSlot.getTitle();
-                if (linkTitle == null) {
-                    linkTitle = linkProtoSlot.getName();
-                }
-
-                linkNode.put(PropertyName.name.name(), linkProtoSlot.getName());
-                linkNode.put(PropertyName.title.name(), linkTitle);
-
-                final Method method = linkProtoSlot.getMethod();
-                final URI linkRelationUri = linkProtoSlot.getLinkRelationUri();
-                final URI declaringSchemaUri = linkProtoSlot.getDeclaringSchemaUri();
-
-                linkNode.put(PropertyName.rel.name(), syntaxLoader.formatSyntaxValue(linkRelationUri));
-
-                final Keys linkRelationKeys = context.getApiLoader().buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
-                final LinkRelation linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
-
-                linkNode.put(PropertyName.relationTitle.name(), linkRelation.getTitle());
-                linkNode.put(PropertyName.description.name(), linkProtoSlot.getDescription());
-                linkNode.put(PropertyName.method.name(), method.getProtocolGivenName());
-                linkNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
-
-                URI requestSchemaUri = linkProtoSlot.getRequestSchemaUri();
-                if (schemaLoader.getDocumentSchemaUri().equals(requestSchemaUri)) {
-                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
-                        requestSchemaUri = schemaUri;
-                    }
-                }
-
-                if (requestSchemaUri == null && method == Method.Save) {
-                    requestSchemaUri = schemaUri;
-                }
-
-                if (requestSchemaUri != null) {
-                    linkNode.put(PropertyName.requestSchemaUri.name(), syntaxLoader.formatSyntaxValue(requestSchemaUri));
-
-                    final Schema requestSchema = schemaLoader.load(requestSchemaUri);
-                    if (requestSchema != null) {
-                        linkNode.put(PropertyName.requestSchemaTitle.name(), requestSchema.getTitle());
-                    }
-                }
-
-                URI responseSchemaUri = linkProtoSlot.getResponseSchemaUri();
-                if (schemaLoader.getDocumentSchemaUri().equals(responseSchemaUri)) {
-                    if (SystemLinkRelation.self.getUri().equals(linkRelationUri) || SystemLinkRelation.save.getUri().equals(linkRelationUri)) {
-                        responseSchemaUri = schemaUri;
-                    }
-                }
-
-                if (responseSchemaUri != null) {
-                    linkNode.put(PropertyName.responseSchemaUri.name(), syntaxLoader.formatSyntaxValue(responseSchemaUri));
-
-                    final Schema responseSchema = schemaLoader.load(responseSchemaUri);
-                    if (responseSchema != null) {
-                        linkNode.put(PropertyName.responseSchemaTitle.name(), responseSchema.getTitle());
-                    }
-                }
-
-                linksMapNode.put(linkTitle, linkNode);
-
-            }
-
-            if (linkNamesNode.size() > 0) {
-                rootNode.put(PropertyName.linkNames.name(), linkNamesNode);
-            }
-
-            rootNode.put(PropertyName.linkCount.name(), linksMapNode.size());
-
-        }
-
-
-        return rootNode;
-    }
-
-
-    public static String getTitleSlotName(final URI schemaUri, final SchemaLoader schemaLoader) {
-        //
-        // Attempt to (heuristically) determine the "title" slot for the model
-        //
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null) {
-            return null;
-        }
-
-
-        String titleSlotName = prototype.getTitleSlotName();
-        if (StringUtils.isNotBlank(titleSlotName)) {
-            return titleSlotName;
-        }
-
-        final Class<?> schemaInterface = prototype.getSchemaBean().getIntrospectedClass();
-        if (Titled.class.isAssignableFrom(schemaInterface)) {
-            return Titled.SLOT_NAME_TITLE;
-        }
-        else if (Named.class.isAssignableFrom(schemaInterface)) {
-            return Named.SLOT_NAME_NAME;
-        }
-        else {
-
-            final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
-            for (final String keySlotName : allKeySlotNames) {
-                if (keySlotName.equals(Document.SLOT_NAME_URI)) {
-                    continue;
-                }
-
-                // TODO: Change this logic to account for composite keys
-                titleSlotName = keySlotName;
-                break;
-            }
-
-        }
-
-        return titleSlotName;
-    }
-
-
-    private static ObjectNode createSlot(final ObjectMapper objectMapper, final Prototype prototype, final String slotName) {
-
-        final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-        final SchemaLoader schemaLoader = prototype.getSchemaLoader();
-        final Context context = schemaLoader.getContext();
-        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
-
-        final ValueType valueType = protoSlot.getValueType();
-        if (valueType == ValueType.Link) {
-            return null;
-        }
-
-        final Type heapValueType = protoSlot.getHeapValueType();
-
-        final URI declaringSchemaUri = protoSlot.getDeclaringSchemaUri();
-
-        final ObjectNode slotNode = objectMapper.createObjectNode();
-        slotNode.put(PropertyName.name.name(), slotName);
-        slotNode.put(PropertyName.title.name(), protoSlot.getTitle());
-        slotNode.put(PropertyName.type.name(), valueType.name());
-        slotNode.put(PropertyName.description.name(), protoSlot.getDescription());
-        slotNode.put(PropertyName.declaringSchemaUri.name(), syntaxLoader.formatSyntaxValue(declaringSchemaUri));
-
-        if (protoSlot instanceof PropertyProtoSlot) {
             final PropertyProtoSlot propertyProtoSlot = (PropertyProtoSlot) protoSlot;
-            final Object defaultValue = propertyProtoSlot.getDefaultValue();
-            if (defaultValue != null) {
-                slotNode.put(PropertyName.defaultValue.name(), syntaxLoader.formatSyntaxValue(defaultValue));
+            final ValueType propertyValueType = propertyProtoSlot.getValueType();
+            URI relatedSchemaUri = null;
+            if (propertyValueType == ValueType.Model) {
+                final URI modelSchemaUri = propertyProtoSlot.getModelSchemaUri();
+                relatedSchemaUri = modelSchemaUri;
+            }
+            else if (propertyValueType == ValueType.List) {
+                final URI listElementSchemaUri = propertyProtoSlot.getListElementSchemaUri();
+                relatedSchemaUri = listElementSchemaUri;
+            }
+
+            if (relatedSchemaUri != null) {
+                final Schema relatedSchema = schemaLoader.load(relatedSchemaUri);
+                addSchemaDefinitionObjectNode(objectMapper, definitionsNode, relatedSchema);
             }
         }
 
-        switch (valueType) {
-            case Text: {
-
-                final ObjectNode syntaxNode = buildSyntaxNode(objectMapper, heapValueType, syntaxLoader);
-                slotNode.put(PropertyName.syntax.name(), syntaxNode);
-
-                final PropertyProtoSlot textPropertyProtoSlot = (PropertyProtoSlot) protoSlot;
-                final boolean isMultiline = textPropertyProtoSlot.isMultiline();
-                if (isMultiline) {
-                    slotNode.put(PropertyName.multiline.name(), isMultiline);
-                }
-
-                break;
-            }
-            case List: {
-                final PropertyProtoSlot listPropertyProtoSlot = (PropertyProtoSlot) protoSlot;
-
-                final ObjectNode elementNode = objectMapper.createObjectNode();
-                slotNode.put(PropertyName.element.name(), elementNode);
-
-
-                final Type elementType = listPropertyProtoSlot.getListElementType();
-                final ValueType elementValueType = schemaLoader.getValueType(elementType);
-                elementNode.put(PropertyName.type.name(), elementValueType.name());
-
-                if (elementValueType == ValueType.Model) {
-                    final URI elementSchemaUri = listPropertyProtoSlot.getListElementSchemaUri();
-                    if (elementSchemaUri != null) {
-                        final ObjectNode schemaNode = buildSchemaNode(objectMapper, elementSchemaUri, schemaLoader, null);
-                        elementNode.put(PropertyName.schema.name(), schemaNode);
-                    }
-                }
-                else if (elementValueType == ValueType.Text) {
-                    final ObjectNode syntaxNode = buildSyntaxNode(objectMapper, elementType, syntaxLoader);
-                    elementNode.put(PropertyName.syntax.name(), syntaxNode);
-
-                }
-
-                break;
-            }
-            case Model: {
-                final ObjectNode schemaNode = buildSchemaNode(objectMapper, ((PropertyProtoSlot) protoSlot).getModelSchemaUri(), schemaLoader, null);
-                slotNode.put(PropertyName.schema.name(), schemaNode);
-                break;
-            }
-            case SingleSelect: {
-                final ObjectNode choicesNode = buildChoicesNode(objectMapper, heapValueType, schemaLoader);
-                slotNode.put(PropertyName.choices.name(), choicesNode);
-                break;
-            }
-        }
-
-
-        return slotNode;
     }
 
-
-    public static ObjectNode buildSchemaNode(final ObjectMapper objectMapper, final URI schemaUri, final SchemaLoader schemaLoader, final Set<URI> addedBaseSchemaUris) {
-
+    private static void addSchemaTagDefinitionObjectNode(final ObjectMapper objectMapper, final ArrayNode tagDefinitionsNode, final Schema schema) {
+        final Context context = schema.getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final URI schemaUri = schema.getUri();
         final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null) {
-            return null;
-        }
+        final UniqueName schemaUniqueName = prototype.getUniqueName();
+        final String schemaTagName = schemaUniqueName.getLocalName().toLowerCase();
+        final ObjectNode schemaTagNode = objectMapper.createObjectNode();
 
-        final ObjectNode schemaNode = objectMapper.createObjectNode();
-        schemaNode.put(PropertyName.localName.name(), prototype.getUniqueName().getLocalName());
-        schemaNode.put(PropertyName.title.name(), prototype.getTitle());
-        schemaNode.put(PropertyName.uri.name(), schemaUri.toString());
-        schemaNode.put(PropertyName.version.name(), prototype.getVersion());
+        schemaTagNode.put("name", schemaTagName);
+        tagDefinitionsNode.add(schemaTagNode);
+    }
 
-        String titleSlotName = prototype.getTitleSlotName();
-        if (StringUtils.isNotBlank(titleSlotName)) {
-            schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
+    private static LinkRelation getLinkRelation(final Context context, final Map<URI, LinkRelation> allLinkRelations, final URI linkRelationUri) {
+
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+
+        final LinkRelation linkRelation;
+        if (allLinkRelations.containsKey(linkRelationUri)) {
+            linkRelation = allLinkRelations.get(linkRelationUri);
         }
         else {
-            titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
-            if (StringUtils.isNotBlank(titleSlotName)) {
-                schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
-            }
+            final Keys linkRelationKeys = context.getApiLoader().buildDocumentKeys(linkRelationUri, schemaLoader.getLinkRelationSchemaUri());
+            linkRelation = context.getModel(linkRelationKeys, schemaLoader.getLinkRelationDimensions());
+            allLinkRelations.put(linkRelationUri, linkRelation);
         }
 
-        final Set<String> allSlotNames = prototype.getAllSlotNames();
-        if (allSlotNames != null && !allSlotNames.isEmpty()) {
-            final ArrayNode propertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String slotName : allSlotNames) {
-                final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-                if (protoSlot instanceof LinkProtoSlot) {
-                    continue;
-                }
-
-                if (protoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
-                    propertyNamesNode.add(slotName);
-                }
-            }
-            if (propertyNamesNode.size() > 0) {
-                schemaNode.put(PropertyName.propertyNames.name(), propertyNamesNode);
-            }
-        }
-
-
-        final Set<String> keySlotNames = prototype.getDeclaredKeySlotNames();
-        if (keySlotNames != null && !keySlotNames.isEmpty()) {
-            final ArrayNode keyPropertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String keySlotName : keySlotNames) {
-                keyPropertyNamesNode.add(keySlotName);
-            }
-
-            if (keyPropertyNamesNode.size() > 0) {
-                schemaNode.put(PropertyName.keyPropertyNames.name(), keyPropertyNamesNode);
-            }
-        }
-
-        final Set<String> allKeySlotNames = prototype.getAllKeySlotNames();
-        final ArrayNode allKeySlotNamesNode = objectMapper.createArrayNode();
-        schemaNode.put(PropertyName.allKeySlotNames.name(), allKeySlotNamesNode);
-
-        for (final String keySlotName : allKeySlotNames) {
-            allKeySlotNamesNode.add(keySlotName);
-        }
-
-
-        final Set<String> comparablePropertyNames = prototype.getComparableSlotNames();
-        if (comparablePropertyNames != null && !comparablePropertyNames.isEmpty()) {
-            final ArrayNode comparablePropertyNamesNode = objectMapper.createArrayNode();
-
-            for (final String comparablePropertyName : comparablePropertyNames) {
-                comparablePropertyNamesNode.add(comparablePropertyName);
-            }
-
-            if (comparablePropertyNamesNode.size() > 0) {
-                schemaNode.put(PropertyName.comparablePropertyNames.name(), comparablePropertyNamesNode);
-            }
-        }
-
-        final Map<URI, LinkProtoSlot> linkProtoSlots = prototype.getLinkProtoSlots();
-        if (linkProtoSlots != null && !linkProtoSlots.isEmpty()) {
-            final ArrayNode linkNamesNode = objectMapper.createArrayNode();
-
-            for (final LinkProtoSlot linkProtoSlot : linkProtoSlots.values()) {
-                if (linkProtoSlot.getDeclaringSchemaUri().equals(schemaUri)) {
-                    linkNamesNode.add(linkProtoSlot.getName());
-                }
-            }
-
-            if (linkNamesNode.size() > 0) {
-                schemaNode.put(PropertyName.linkNames.name(), linkNamesNode);
-            }
-        }
-
-        final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
-        if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty() && addedBaseSchemaUris != null) {
-
-            final ArrayNode baseSchemasNode = objectMapper.createArrayNode();
-            for (final URI baseSchemaUri : declaredBaseSchemaUris) {
-                if (!addedBaseSchemaUris.contains(baseSchemaUri)) {
-                    final ObjectNode baseSchemaNode = buildSchemaNode(objectMapper, baseSchemaUri, schemaLoader, addedBaseSchemaUris);
-                    baseSchemasNode.add(baseSchemaNode);
-                    addedBaseSchemaUris.add(baseSchemaUri);
-                }
-            }
-
-            if (baseSchemasNode.size() > 0) {
-                schemaNode.put(PropertyName.baseSchemas.name(), baseSchemasNode);
-            }
-        }
-
-        return schemaNode;
+        return linkRelation;
     }
 
-
-    private static ObjectNode buildSyntaxNode(final ObjectMapper objectMapper, final Type heapValueType, final SyntaxLoader syntaxLoader) {
-
-        if (!String.class.equals(heapValueType) && heapValueType instanceof Class<?>) {
-
-
-            // TODO: Make it easy/possible to get the Syntax Document's title and uri
-
-            final Class<?> heapValueClass = (Class<?>) heapValueType;
-            final URI syntaxUri = syntaxLoader.getSyntaxUri(heapValueClass);
-            final String syntaxName = heapValueClass.getSimpleName();
-            final ObjectNode syntaxNode = objectMapper.createObjectNode();
-
-            syntaxNode.put(PropertyName.title.name(), syntaxName);
-            syntaxNode.put(PropertyName.uri.name(), syntaxUri.toString());
-            return syntaxNode;
-        }
-        return null;
-    }
-
-    private static ObjectNode buildChoicesNode(final ObjectMapper objectMapper, final Type heapValueType, final SchemaLoader schemaLoader) {
-
-        if (heapValueType == null || !(heapValueType instanceof Class<?>)) {
-            return null;
-        }
-
-        final Class<?> choicesEnumClass = (Class<?>) heapValueType;
-
-        if (!choicesEnumClass.isEnum()) {
-            return null;
-        }
-
-        final URI choicesUri = schemaLoader.getTypeUri(choicesEnumClass);
-        final String choicesName = choicesEnumClass.getSimpleName();
-        final ObjectNode choicesNode = objectMapper.createObjectNode();
-
-        choicesNode.put(PropertyName.title.name(), choicesName);
-        choicesNode.put(PropertyName.uri.name(), choicesUri.toString());
-
-
-        // TODO: Only embed the choices once per schema to lighten the download?
-        final Object[] enumConstants = choicesEnumClass.getEnumConstants();
-        if (enumConstants != null && enumConstants.length > 0) {
-            final ArrayNode valuesNode = objectMapper.createArrayNode();
-
-            choicesNode.put(PropertyName.values.name(), valuesNode);
-
-            for (final Object enumConstant : enumConstants) {
-                final String choice = String.valueOf(enumConstant);
-                valuesNode.add(choice);
-            }
-        }
-
-
-        return choicesNode;
-    }
-
+/*
 
     public enum PropertyName {
 
@@ -848,3 +588,6 @@ public class SwaggerApiFormatter extends AbstractFormatter {
 
     */
 }
+
+
+

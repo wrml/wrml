@@ -908,7 +908,12 @@ public class JsonSchema {
             final boolean isReference = isReference(propertyNode);
             if (isReference) {
                 final JsonSchema referencedJsonSchema = resolveReference(propertyNode);
-                _PropertyNode = referencedJsonSchema.getRootNode();
+                if (referencedJsonSchema != null) {
+                    _PropertyNode = referencedJsonSchema.getRootNode();
+                }
+                else {
+                    _PropertyNode = propertyNode;
+                }
             }
             else {
                 _PropertyNode = propertyNode;
@@ -997,22 +1002,18 @@ public class JsonSchema {
             final JsonSchema jsonSchema = getJsonSchema();
             final JsonSchemaLoader jsonSchemaLoader = jsonSchema.getLoader();
             final SyntaxLoader syntaxLoader = jsonSchemaLoader.getContext().getSyntaxLoader();
+
             final URI refUri = PropertyType.$Ref.getValue(node, syntaxLoader);
             if (refUri == null) {
                 return null;
             }
 
-            final URI resolvedUri;
             if (refUri.isAbsolute()) {
-                resolvedUri = refUri;
+                return jsonSchemaLoader.load(refUri);
             }
             else {
-                resolvedUri = jsonSchema.getId().resolve(refUri);
+                return null;
             }
-
-            final JsonSchema referencedSchema = jsonSchemaLoader.load(resolvedUri);
-
-            return referencedSchema;
         }
 
     }

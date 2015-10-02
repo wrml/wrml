@@ -39,6 +39,7 @@ import org.wrml.runtime.syntax.SyntaxLoader;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * A runtime manifestation of a specific {@link Api}'s specific {@link ResourceTemplate} (REST API URI tree node).
@@ -72,6 +73,8 @@ public class Resource implements Comparable<Resource> {
      * The ways in which resources may reference us.
      */
     private final ConcurrentHashMap<URI, LinkTemplate> _ReferenceTemplates;
+
+    private final Set<Method> _ReferenceMethods;
 
     private final ConcurrentHashMap<Method, Set<URI>> _ReferenceTemplateMethodToLinkRelationUrisMap;
 
@@ -138,6 +141,8 @@ public class Resource implements Comparable<Resource> {
         // resource as an endpoint.
         _ReferenceTemplates = new ConcurrentHashMap<URI, LinkTemplate>();
 
+        _ReferenceMethods = Collections.newSetFromMap(new ConcurrentHashMap<Method, Boolean>());
+
         _ReferenceTemplateMethodToLinkRelationUrisMap = new ConcurrentHashMap<Method, Set<URI>>();
         _ReferenceTemplateMethodToRequestSchemaUrisMap = new ConcurrentHashMap<Method, Set<URI>>();
         _ReferenceTemplateMethodToResponseSchemaUriMap = new ConcurrentHashMap<Method, Set<URI>>();
@@ -175,6 +180,7 @@ public class Resource implements Comparable<Resource> {
                 // The interaction method associated with the link relation matches the parameter.
 
                 final Method requestMethod = rel.getMethod();
+                _ReferenceMethods.add(requestMethod);
 
                 if (!_ReferenceTemplateMethodToLinkRelationUrisMap.containsKey(requestMethod)) {
                     _ReferenceTemplateMethodToLinkRelationUrisMap.put(requestMethod, new LinkedHashSet<URI>());
@@ -477,6 +483,10 @@ public class Resource implements Comparable<Resource> {
         return _ReferenceTemplates;
     }
 
+    public Set<Method> getReferenceMethods() {
+        return _ReferenceMethods;
+    }
+
     public Set<URI> getRequestSchemaUris(final Method requestMethod) {
 
         return _ReferenceTemplateMethodToRequestSchemaUrisMap.get(requestMethod);
@@ -665,4 +675,5 @@ public class Resource implements Comparable<Resource> {
         return uriTemplate.getParameters(uri);
 
     }
+
 }

@@ -118,7 +118,7 @@ public class WrmldocFormatter extends AbstractFormatter {
         try {
 
             final String modelValue;
-            final String schemaValue;
+            String schemaValue = null;
 
             String linkRelationValue = EMPTY_OBJECT;
 
@@ -159,16 +159,19 @@ public class WrmldocFormatter extends AbstractFormatter {
                 else if (model instanceof DocumentNotFoundErrorReport) {
                     documentIcon = _Docroot + "img/documentNotFound.png";
                 }
+                else {
+                    schemaValue = null;
+                }
             }
             else {
                 modelValue = model.toString();
+            }
 
+            if (schemaValue == null) {
                 final Keys schemaKeys = context.getApiLoader().buildDocumentKeys(schemaUri, schemaLoader.getSchemaSchemaUri());
                 final Schema schema = context.getModel(schemaKeys, schemaLoader.getSchemaDimensions());
                 final ObjectNode schemaNode = SchemaDesignFormatter.createSchemaDesignObjectNode(objectMapper, schema);
                 schemaValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(schemaNode);
-
-
             }
 
             final ObjectNode apiNode = buildApiNode(objectMapper, model);

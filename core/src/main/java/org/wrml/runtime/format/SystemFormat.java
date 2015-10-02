@@ -62,18 +62,18 @@ public enum SystemFormat {
             URI.create(""),
             "java"),
 
-    vnd_wrml_ascii_api(new UniqueName("application/vnd.wrml.ascii.api"),
+    vnd_wrml_ascii_api(new UniqueName("text/vnd.wrml.ascii.api"),
             "The WRML System Format representing the \"application/vnd.wrml.ascii.api\" media type.",
             URI.create("http://wrml.org"),
             URI.create(""), "txt"),
 
-    vnd_wrml_design_schema(new UniqueName("application/vnd.wrml.design.schema"),
+    vnd_wrml_design_schema(new UniqueName("application/vnd.wrml.design.schema+json"),
             "The WRML System Format representing the \"application/vnd.wrml.design.schema\" media type.",
             URI.create("http://www.w3.org/xml"),
             URI.create("http://www.ietf.org/rfc/rfc3023.txt"),
             "json"),
 
-    vnd_wrml_swagger_api(new UniqueName("application/vnd.wrml.swagger.api"),
+    vnd_wrml_swagger_api(new UniqueName("application/vnd.wrml.swagger.api+json"),
     "The WRML System Format representing the \"application/vnd.wrml.swagger.api\" media type.",
             URI.create("http://wrml.org"),
             URI.create(""), "txt");

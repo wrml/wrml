@@ -52,7 +52,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.WebServiceException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +80,8 @@ public class WrmlServlet extends HttpServlet {
      * <p/>
      */
     public static final String WRML_SCHEME_HEADER_NAME = "WRML-Scheme";
+
+    public static final String ACCEPT_PARAMETER_NAME = "accept";
 
     public static final String WRML_API_PARAMETER_NAME = "wrml-api";
 
@@ -170,7 +171,6 @@ public class WrmlServlet extends HttpServlet {
 
             final Context context = getContext();
             _PingStatusReport = context.newModel(StatusReport.class);
-            _PingStatusReport.setDescription("Greetings Program!");
             _PingStatusReport.setTitle("Ping Success");
             _PingStatusReport.setStatus(Status.OK);
 
@@ -223,8 +223,21 @@ public class WrmlServlet extends HttpServlet {
         // Determine the HTTP interaction method.
         final Method method = Method.fromProtocolGivenName(request.getMethod().toUpperCase());
 
-        final String acceptHeaderStringValue = request.getHeader(HttpHeaders.ACCEPT);
-        final List<MediaType> acceptableMediaTypes = new AcceptableMediaTypeList(acceptHeaderStringValue);
+        final List<MediaType> acceptableMediaTypes;
+
+
+        LOGGER.debug("Parameter Values: {}", request.getParameterMap());
+        final String acceptParameterStringValue = request.getParameter(ACCEPT_PARAMETER_NAME);
+        LOGGER.debug(ACCEPT_PARAMETER_NAME + " Parameter Value: {}", acceptParameterStringValue);
+        if (!StringUtils.isEmpty(acceptParameterStringValue)) {
+            acceptableMediaTypes = new AcceptableMediaTypeList(acceptParameterStringValue);
+        }
+        else {
+            final String acceptHeaderStringValue = request.getHeader(HttpHeaders.ACCEPT);
+            acceptableMediaTypes = new AcceptableMediaTypeList(acceptHeaderStringValue);
+        }
+
+        LOGGER.debug("Acceptable Media Types: {}", acceptableMediaTypes);
 
         try {
             // Determine the identity of the request's resource "endpoint".
@@ -245,7 +258,7 @@ public class WrmlServlet extends HttpServlet {
 
                     case WRML_METADATA_PING_PATH:
                         responseModel = _PingStatusReport;
-                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                        responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
                         break;
 
                     case WRML_METADATA_API_PATH:
@@ -294,6 +307,19 @@ public class WrmlServlet extends HttpServlet {
             if (endpointResource == null) {
                 final ResourceNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(ResourceNotFoundErrorReport.class, requestUri, api);
                 throw new WrmlServletException(notFoundErrorReport);
+            }
+
+            if (!endpointResource.getReferenceMethods().contains(method)) {
+
+                final String methodProtocolGivenName = method.getProtocolGivenName();
+                MethodNotAllowedErrorReport methodNotAllowedErrorReport = context.newModel(MethodNotAllowedErrorReport.class);
+                methodNotAllowedErrorReport.setTitle("METHOD NOT ALLOWED");
+                methodNotAllowedErrorReport.setStatus(Status.METHOD_NOT_ALLOWED);
+                methodNotAllowedErrorReport.setRequestUri(requestUri);
+                methodNotAllowedErrorReport.setMethodName(methodProtocolGivenName);
+                methodNotAllowedErrorReport.setDescription("This resource does not allow references using " + methodProtocolGivenName);
+
+                throw new WrmlServletException(methodNotAllowedErrorReport);
             }
 
             // Build the Model query objects; the Keys (URI and other identities) and Dimensions ("header" metadata).
@@ -394,8 +420,15 @@ public class WrmlServlet extends HttpServlet {
     }
 
 
-
-
+    /**
+     *
+     *
+     * @param notFoundErrorType
+     * @param requestUri
+     * @param api
+     * @param <T>
+     * @return
+     */
     private <T extends NotFoundErrorReport> T createNotFoundErrorReport(final Class<T> notFoundErrorType, final URI requestUri, final Api api) {
 
         final Context context = getContext();
@@ -453,10 +486,6 @@ public class WrmlServlet extends HttpServlet {
             path = path.substring(0, path.length() - 1);
         }
 
-        LOGGER.debug("WRML-HOST Header: {}", request.getHeader(WRML_HOST_HEADER_NAME));
-        LOGGER.debug("HOST Header: {}", request.getHeader("HOST"));
-        LOGGER.debug("request.getRemoteHost: {}", request.getRemoteHost());
-
         String scheme = StringUtils.defaultIfEmpty(request.getHeader(WRML_SCHEME_HEADER_NAME), request.getScheme());
         String host = StringUtils.defaultIfEmpty(request.getHeader(WRML_HOST_HEADER_NAME), request.getHeader(HOST_HEADER_NAME));
 
@@ -469,9 +498,8 @@ public class WrmlServlet extends HttpServlet {
 
         int port = Integer.parseInt(portString);
 
-        final String[] parameterValues = request.getParameterValues(WRML_API_PARAMETER_NAME);
-        if (parameterValues != null) {
-            final String apiUriString = parameterValues[0];
+        final String apiUriString = request.getParameter(WRML_API_PARAMETER_NAME);
+        if (apiUriString != null) {
             final URI apiUri = URI.create(apiUriString);
             scheme = apiUri.getScheme();
             host = apiUri.getHost();
@@ -488,6 +516,14 @@ public class WrmlServlet extends HttpServlet {
         return requestUri;
     }
 
+    /**
+     *
+     * @param method
+     * @param requestUri
+     * @param acceptableMediaTypes
+     * @return
+     * @throws ServletException
+     */
     List<URI> getAcceptableResponseEntitySchemaUris(final Method method, final URI requestUri, final List<MediaType> acceptableMediaTypes) throws ServletException {
 
         final List<URI> acceptableSchemaUriList = new ArrayList<>();
@@ -627,7 +663,11 @@ public class WrmlServlet extends HttpServlet {
         return dimensions;
     }
 
-
+    /**
+     *
+     * @param listString
+     * @return
+     */
     List<String> parseMediaTypeParameterList(final String listString) {
 
         if (StringUtils.isEmpty(listString)) {
@@ -639,6 +679,14 @@ public class WrmlServlet extends HttpServlet {
     }
 
 
+    /**
+     *
+     * @param request
+     * @param requestMethod
+     * @param uri
+     * @return
+     * @throws ServletException
+     */
     Model readModelFromRequestEntity(final HttpServletRequest request, final Method requestMethod, final URI uri) throws ServletException {
 
         if (!requestMethod.isEntityAllowedInRequestMessage()) {
@@ -740,6 +788,13 @@ public class WrmlServlet extends HttpServlet {
         return requestSchemaUri;
     }
 
+    /**
+     *
+     * @param e
+     * @param response
+     * @param noBody
+     * @throws IOException
+     */
     private void writeException(final Exception e, final HttpServletResponse response, final boolean noBody) throws IOException {
 
         LOGGER.error("An exception was thrown during request processing.", e);
@@ -765,6 +820,17 @@ public class WrmlServlet extends HttpServlet {
         response.flushBuffer();
     }
 
+    /**
+     *
+     * @param requestMethod
+     * @param response
+     * @param responseModel
+     * @param responseEntityMediaType
+     * @param responseFormatUri
+     * @throws MediaTypeException
+     * @throws ServletException
+     * @throws IOException
+     */
     void writeModelAsResponseEntity(final Method requestMethod, final HttpServletResponse response, final Model responseModel, MediaType responseEntityMediaType, URI responseFormatUri) throws MediaTypeException, ServletException, IOException {
 
         // Set the content type
@@ -899,6 +965,11 @@ public class WrmlServlet extends HttpServlet {
         return null;
     }
 
+    /**
+     *
+     * @param response
+     * @throws IOException
+     */
     void writeNotFound(final HttpServletResponse response) throws IOException {
 
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -906,6 +977,11 @@ public class WrmlServlet extends HttpServlet {
         response.flushBuffer();
     }
 
+    /**
+     *
+     * @param response
+     * @throws IOException
+     */
     void writeVoid(final HttpServletResponse response) throws IOException {
 
         // TODO
