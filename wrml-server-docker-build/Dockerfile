@@ -6,7 +6,10 @@ COPY ROOT.war /var/lib/jetty/webapps/
 
 # Make a few directories that WRML components require
 RUN mkdir -p /etc/wrml/schemas
+RUN chmod -R a+w /etc/wrml/schemas
+
 RUN mkdir -p /etc/wrml/models
+RUN chmod -R a+w /etc/wrml/models
 
 # Copy the WRML configuration file to the image
 COPY wrml.json /etc/wrml/
@@ -22,3 +25,4 @@ COPY wrml-cli.jar /etc/wrml/
 
 # Set the WRML configuration file environment variable
 ENV wrmlConfiguration /etc/wrml/wrml.json
+

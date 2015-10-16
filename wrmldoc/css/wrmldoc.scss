@@ -70,6 +70,9 @@ $horizontalFormControlSpacing: 10px;
 $horizontalFormMarginLeft: $horizontalFormLabelWidth + $horizontalFormControlSpacing;
 $horizontalFormTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
+
+
+
 html {
   height: 100%;
 }
@@ -283,7 +286,9 @@ input[type="color"]:focus,
 
 #push {
   height: $footerHeightTotal;
-}
+}  
+
+
 
 /*
  * WRML - Web Resource Modeling Language
@@ -341,6 +346,7 @@ input[type="color"]:focus,
   margin-right: $formFieldSetMarginRight;
 
 }
+
 
 #main-region {
 
@@ -693,6 +699,7 @@ input[type="color"]:focus,
 
 }
 
+
 #main-region {
 
   #documentNotFound-page-header-section {
@@ -835,9 +842,7 @@ input[type="color"]:focus,
   a, a:hover, a:active {
     color: $white;
   }
-}
-
-/*
+}/*
  * WRML - Web Resource Modeling Language
  *  __     __   ______   __    __   __
  * /\ \  _ \ \ /\  == \ /\ "-./  \ /\ \
@@ -929,9 +934,7 @@ input[type="color"]:focus,
     margin-top: -30px;
   }
 
-}
-
-$listIndexHeaderWidth: $formFieldSetMarginRight;
+}$listIndexHeaderWidth: $formFieldSetMarginRight;
 $listIndexCellSpacing: 5px;
 $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
@@ -1044,6 +1047,7 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 
 }
 
+
 #registration-introduction {
   background-color: $white;
   padding-top: 50px;
@@ -1075,6 +1079,7 @@ $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
     margin-left: -20px;
   }
 }
+
 
 #main-region {
 

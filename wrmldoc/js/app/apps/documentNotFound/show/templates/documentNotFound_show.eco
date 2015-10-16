@@ -95,7 +95,7 @@
 							<div class="control-group">								
 							
 								<div class="controls">												
-									<button class="documentNotFound-form-button btn btn-inverse" type="button">Create New <%= documentTitle %></button>
+									<button id="new-document-button" class="documentNotFound-form-button btn btn-inverse" type="button">Create New <%= documentTitle %></button>
 								</div>	
 
 							</div>

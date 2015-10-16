@@ -2,3 +2,4 @@
 .sass-cache
 archive
 *.sublime*
+*.tmp.*

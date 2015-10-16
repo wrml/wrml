@@ -68,7 +68,7 @@ public class WrmlServlet extends HttpServlet {
     /**
      * TODO: Javadoc this.
      */
-    public static final String HOST_HEADER_NAME = "HOST";
+    public static final String HOST_HEADER_NAME = HttpHeaders.HOST;
 
     /**
      * TODO: Javadoc this.
@@ -83,12 +83,15 @@ public class WrmlServlet extends HttpServlet {
 
     public static final String ACCEPT_PARAMETER_NAME = "accept";
 
-    public static final String WRML_API_PARAMETER_NAME = "wrml-api";
+    public static final String HOST_PARAMETER_NAME = "host";
 
     public static final String WRML_CONFIGURATION_FILE_PATH_INIT_PARAM_NAME = "wrml-config-file-path";
 
     public static final String WRML_CONFIGURATION_RESOURCE_PATH_INIT_PARAM_NAME = "wrml-config-resource-path";
 
+    /**
+     * TODO: Manage these routes in a separate class?
+     */
     public static final String WRML_METADATA_ROOT_PATH = "/_wrml";
 
     public static final String WRML_METADATA_PING_PATH = WRML_METADATA_ROOT_PATH + "/ping";
@@ -99,12 +102,13 @@ public class WrmlServlet extends HttpServlet {
 
     public static final String WRML_METADATA_API_LOAD_PATH = WRML_METADATA_API_PATH + "/load";
 
-    public static final MediaType APPLICATION_JSON_MEDIA_TYPE = new MediaType("application", "json");
 
+    public static final MediaType APPLICATION_JSON_MEDIA_TYPE = new MediaType("application", "json");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WrmlServlet.class);
 
     private static final long serialVersionUID = 1L;
+
 
     private Engine _Engine;
 
@@ -489,6 +493,11 @@ public class WrmlServlet extends HttpServlet {
         String scheme = StringUtils.defaultIfEmpty(request.getHeader(WRML_SCHEME_HEADER_NAME), request.getScheme());
         String host = StringUtils.defaultIfEmpty(request.getHeader(WRML_HOST_HEADER_NAME), request.getHeader(HOST_HEADER_NAME));
 
+        final String hostParameterValue = request.getParameter(HOST_PARAMETER_NAME);
+        if (!StringUtils.isEmpty(hostParameterValue)) {
+            host = hostParameterValue;
+        }
+
         String portString = "80";
         int portSeparatorIndex = host.indexOf(':');
         if (portSeparatorIndex > 0 && portSeparatorIndex < host.length() - 1) {
@@ -497,14 +506,6 @@ public class WrmlServlet extends HttpServlet {
         }
 
         int port = Integer.parseInt(portString);
-
-        final String apiUriString = request.getParameter(WRML_API_PARAMETER_NAME);
-        if (apiUriString != null) {
-            final URI apiUri = URI.create(apiUriString);
-            scheme = apiUri.getScheme();
-            host = apiUri.getHost();
-            port = apiUri.getPort();
-        }
 
         if (port == 80) {
             port = -1;

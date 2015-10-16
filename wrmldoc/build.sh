@@ -106,13 +106,11 @@ COMPILED_FINAL_MIN_CSS=${CSS_PATH}/${APP_NAME}.min.css
 # Environment Variables
 ##################################################
 
-APP_DEPLOY_PATH=/Library/Tomcat/webapps/ROOT/_wrml/${APP_NAME}
-
-TOOLS_PATH=/Users/mark/tools
+TOOLS_PATH=~/bin
 
 CLOSURE_JAR_PATH=${TOOLS_PATH}/closure/compiler.jar
 
-YUI_COMPRESSOR_JAR_PATH=${TOOLS_PATH}/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar
+YUI_COMPRESSOR_JAR_PATH=${TOOLS_PATH}/yuicompressor/build/yuicompressor-2.4.8.jar
 
 ##################################################  
 # Clean previous run
@@ -256,28 +254,6 @@ echo "Appended ${COMPILED_APP_CSS} file to ${COMPILED_FINAL_CSS}"
 java -jar ${YUI_COMPRESSOR_JAR_PATH} ${COMPILED_FINAL_CSS} -o ${COMPILED_FINAL_MIN_CSS}
 
 echo "Minified ${COMPILED_FINAL_CSS} to ${COMPILED_FINAL_MIN_CSS} with ${YUI_COMPRESSOR_JAR_PATH}"
-
-##################################################  
-# Deploy
-##################################################
-
-cp ${COMPILED_LIB_JS} ${APP_DEPLOY_PATH}/${COMPILED_LIB_JS}
-echo "Deployed ${COMPILED_LIB_JS} to ${APP_DEPLOY_PATH}/${COMPILED_LIB_JS}"
-
-cp ${COMPILED_LIB_MIN_JS} ${APP_DEPLOY_PATH}/${COMPILED_LIB_MIN_JS}
-echo "Deployed ${COMPILED_LIB_MIN_JS} to ${APP_DEPLOY_PATH}/${COMPILED_LIB_MIN_JS}"
-
-cp ${COMPILED_APP_JS} ${APP_DEPLOY_PATH}/${COMPILED_APP_JS}
-echo "Deployed ${COMPILED_APP_JS} to ${APP_DEPLOY_PATH}/${COMPILED_APP_JS}"
-
-cp ${COMPILED_APP_MIN_JS} ${APP_DEPLOY_PATH}/${COMPILED_APP_MIN_JS}
-echo "Deployed ${COMPILED_APP_MIN_JS} to ${APP_DEPLOY_PATH}/${COMPILED_APP_MIN_JS}"
-
-cp ${COMPILED_FINAL_CSS} ${APP_DEPLOY_PATH}/${COMPILED_FINAL_CSS}
-echo "Deployed ${COMPILED_FINAL_CSS} to ${APP_DEPLOY_PATH}/${COMPILED_FINAL_CSS}"
-
-cp ${COMPILED_FINAL_MIN_CSS} ${APP_DEPLOY_PATH}/${COMPILED_FINAL_MIN_CSS}
-echo "Deployed ${COMPILED_FINAL_MIN_CSS} to ${APP_DEPLOY_PATH}/${COMPILED_FINAL_MIN_CSS}"
 
 
 

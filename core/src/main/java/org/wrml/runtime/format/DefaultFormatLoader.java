@@ -33,8 +33,10 @@ import org.wrml.runtime.format.application.json.JsonModelParserFactory;
 import org.wrml.runtime.format.application.json.JsonModelPrinterFactory;
 import org.wrml.runtime.format.application.schema.json.JsonSchemaFormatter;
 import org.wrml.runtime.format.application.vnd.wrml.ascii.api.ApiAsciiFormatter;
-import org.wrml.runtime.format.application.vnd.wrml.design.schema.SchemaDesignFormatter;
+import org.wrml.runtime.format.application.vnd.wrml.complete.api.CompleteApiFormatter;
+import org.wrml.runtime.format.application.vnd.wrml.complete.schema.CompleteSchemaFormatter;
 import org.wrml.runtime.format.application.vnd.wrml.swagger.api.SwaggerApiFormatter;
+import org.wrml.runtime.format.application.vnd.wrml.wrmldoc.WrmldocDataFormatter;
 import org.wrml.runtime.format.application.xml.XmlFormatter;
 import org.wrml.runtime.format.text.html.WrmldocFormatter;
 import org.wrml.runtime.format.text.java.JavaFormatter;
@@ -299,8 +301,12 @@ public class DefaultFormatLoader implements FormatLoader {
                 formatter = new JavaFormatter();
                 break;
             }
-            case vnd_wrml_design_schema: {
-                formatter = new SchemaDesignFormatter();
+            case vnd_wrml_complete_api: {
+                formatter = new CompleteApiFormatter();
+                break;
+            }
+            case vnd_wrml_complete_schema: {
+                formatter = new CompleteSchemaFormatter();
                 break;
             }
             case vnd_wrml_ascii_api: {
@@ -309,6 +315,10 @@ public class DefaultFormatLoader implements FormatLoader {
             }
             case vnd_wrml_swagger_api: {
                 formatter = new SwaggerApiFormatter();
+                break;
+            }
+            case vnd_wrml_wrmldoc: {
+                formatter = new WrmldocDataFormatter();
                 break;
             }
             default: {

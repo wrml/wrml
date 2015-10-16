@@ -14,12 +14,19 @@
                     "settings": {
                         "rootDirectory": "/etc/wrml/models"
                     }
+                },
+                {
+                    "name": "S3",
+                    "implementation": "org.wrml.contrib.runtime.service.s3.S3Service",
+                    "settings": {
+                        "bucketName": "wrml",
+                        "rootFolderPath": "models"
+                    }
                 }
             ],
 
             "serviceMapping": {
-
-                "*": "File"
+                "*": "S3"
             }
         }
     }

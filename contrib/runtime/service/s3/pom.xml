@@ -1,0 +1,176 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.wrml.contrib.runtime</groupId>
+        <artifactId>service</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <organization>
+        <name>Mark Masse (OSS project WRML.org)</name>
+        <url>http://www.wrml.org</url>
+    </organization>
+
+    <groupId>org.wrml.contrib.runtime.service</groupId>
+    <artifactId>s3</artifactId>
+    <name>wrml-contrib-runtime-service-s3</name>
+    <description>S3 as a WRML service. See also: https://aws.amazon.com/s3</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven-license-plugin.valid-header.wrml.core.path>../../../../core/src/main/resources/headers
+        </maven-license-plugin.valid-header.wrml.core.path>
+    </properties>
+
+
+    <dependencies>
+        <!-- WRML -->
+        <dependency>
+            <groupId>org.wrml</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wrml</groupId>
+            <artifactId>core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logging Utilities -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- S3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.10.26</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <!-- Adds the standard license header to the source files -->
+                <!-- Run "mvn license:check" to check if all sources files have the proper header. Run "mvn license:format" to add the
+                    proper header to source files. -->
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <strictCheck>true</strictCheck>
+                    <header>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-latest.txt</header>
+                    <includes>
+                        <include>src/**/*.java</include>
+                    </includes>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <validHeaders>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-00.txt
+                        </validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-01.txt
+                        </validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-02.txt
+                        </validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-03.txt
+                        </validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-04.txt
+                        </validHeader>
+                        <validHeader>${maven-license-plugin.valid-header.wrml.core.path}/JavaFileHeader-version-05.txt
+                        </validHeader>
+                    </validHeaders>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.wrml.cli.Wrml</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+
+					<artifactSet>
+						<excludes>
+							<exclude>org.wrml:core:*:*</exclude>
+						</excludes>
+					</artifactSet>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            -->
+
+        </plugins>
+    </build>
+
+    <modules>
+    </modules>
+</project>

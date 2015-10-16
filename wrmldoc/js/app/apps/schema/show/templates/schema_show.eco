@@ -409,16 +409,16 @@
 							<select id="<%= propertyName %>_defaultValue">
 
 							<% choices = property?.choices %>
-							<% choiceValues = choices?.values %>
-							
-							<% for choiceValue in choiceValues: %>
+							<% choiceValueMap = choices?.valueMap %>
+
+							<% for choiceValue, choiceDisplayText of choiceValueMap: %>
 								<% selectedAttribute = "" %>
 
 								<% if choiceValue is defaultValue: %>
 									<% selectedAttribute = "selected=selected" %>
 								<% end %>
 
-								<option <%= selectedAttribute %>><%= choiceValue %></option>
+								<option <%= selectedAttribute %> data-choice-value=<%= choiceValue %>><%= choiceDisplayText %></option>
 							
 							<% end %>
 							

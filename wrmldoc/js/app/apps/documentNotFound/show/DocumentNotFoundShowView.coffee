@@ -28,3 +28,21 @@
 @Wrmldoc.module "DocumentNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.DocumentNotFound extends App.Views.ItemView
     template: "documentNotFound/show/documentNotFound_show"
+
+    events:
+      'click #new-document-button' : 'newDocument'
+
+    newDocument: (e) ->
+
+      documentNotFoundErrorReport = @model.attributes["model"]
+      console.log documentNotFoundErrorReport
+
+      newDocumentSchemaUri = documentNotFoundErrorReport.defaultSchemaUri
+      newDocumentUri = documentNotFoundErrorReport.requestUri
+
+      # TODO Create new document
+      newDocumentData = @model
+
+      App.newDocument(newDocumentData)
+
+

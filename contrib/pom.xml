@@ -19,7 +19,6 @@
 
     <modules>
         <module>runtime</module>
-        <module>maven</module>
     </modules>
 
     <build>

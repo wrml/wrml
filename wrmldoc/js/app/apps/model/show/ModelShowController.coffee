@@ -36,7 +36,7 @@
       #wrmlData = App.request "wrml:data"
       new Show.Model
         model: wrmlData
-
+						
 ###
 
 	class Show.Controller extends App.Controllers.Base

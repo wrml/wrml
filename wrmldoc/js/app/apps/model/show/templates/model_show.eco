@@ -292,17 +292,17 @@
 				<select id="<%= slotName %>">
 
 				<% choices = slot.choices %>
-				<% choiceValues = choices?.values %>
+				<% choiceValueMap = choices?.valueMap %>
 				<% selectedValue = if slotValue then slotValue else slot.defaultValue %>
 
-				<% for choiceValue in choiceValues: %>
+				<% for choiceValue, choiceDisplayText of choiceValueMap: %>
 					<% selectedAttribute = "" %>
 
 					<% if choiceValue is selectedValue: %>
 						<% selectedAttribute = "selected=selected" %>
 					<% end %>
 
-					<option <%= selectedAttribute %>><%= choiceValue %></option>
+					<option <%= selectedAttribute %> data-choice-value=<%= choiceValue %>><%= choiceDisplayText %></option>
 				
 				<% end %>
 				

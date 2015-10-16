@@ -28,6 +28,7 @@
 
     <modules>
         <module>mongo</module>
+        <module>s3</module>
     </modules>
 
     <build>

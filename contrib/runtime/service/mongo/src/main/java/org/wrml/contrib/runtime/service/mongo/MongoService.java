@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
 /**
  * The marvellous mongoDB as a WRML Service.
  *
- * @see <a href="http://www.mongodb.org>mongoDB</a>
+ * @see <a href="http://www.mongodb.org:>mongoDB</a>
  * @see <a href="http://www.10gen.com">10gen</a>
  * @see <a href="http://api.mongodb.org/java">Java API for mongoDB</a>
  */

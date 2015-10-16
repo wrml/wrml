@@ -976,6 +976,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader {
                 final String[] relativePath = ArrayUtils.subarray(splitResult, 0, lastElementIndex);
                 final String classFileName = splitResult[lastElementIndex] + ".class";
                 final File classFileDir = FileUtils.getFile(schemaClassRootDirectory, relativePath);
+
                 final File classFileOnDisk = FileUtils.getFile(classFileDir, classFileName);
 
                 try {

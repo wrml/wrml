@@ -43,28 +43,8 @@
 
     schemaUri = App.wrmlData.get "schemaUri"
 
-    #App.module("RegistrationApp").start(App.wrmlData)
-
-    if schemaUri is "http://schema.api.wrml.org/org/wrml/model/schema/Schema"
-      App.module("SchemaApp").start(App.wrmlData)
-
-    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/Api"
-      App.module("ApiApp").start(App.wrmlData)
-
-    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation"
-      App.module("RelationApp").start(App.wrmlData)
-
-    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ApiNotFoundErrorReport"
-      App.module("ApiNotFoundApp").start(App.wrmlData)
-
-    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ResourceNotFoundErrorReport"
-      App.module("ResourceNotFoundApp").start(App.wrmlData)
-
-    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/DocumentNotFoundErrorReport"
-      App.module("DocumentNotFoundApp").start(App.wrmlData)
-
-    else
-      App.module("ModelApp").start(App.wrmlData)
+    module = App.getModuleForSchema(schemaUri)
+    module.start(App.wrmlData)
 
     App.module("FooterApp").start(App.wrmlData)
 
@@ -81,8 +61,40 @@
     @startHistory()
     @navigate(@rootRoute, trigger: true) unless @getCurrentRoute()
 
+
   App.getWrmlData = ->
     App.wrmlData
+
+  App.newDocument = (wrmlData) ->
+    alert "New Document!"
+    #module = App.getModuleForSchema(schemaUri)
+    module = App.module("ModelApp")
+    module.showView(wrmlData)
+
+
+  App.getModuleForSchema = (schemaUri) ->
+    module = null
+
+    if schemaUri is "http://schema.api.wrml.org/org/wrml/model/schema/Schema"
+      module = App.module("SchemaApp")
+
+    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/Api"
+      module = App.module("ApiApp")
+
+    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/LinkRelation"
+      module = App.module("RelationApp")
+
+    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ApiNotFoundErrorReport"
+      module = App.module("ApiNotFoundApp")
+
+    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/ResourceNotFoundErrorReport"
+      module = App.module("ResourceNotFoundApp")
+
+    else if schemaUri is "http://schema.api.wrml.org/org/wrml/model/rest/status/DocumentNotFoundErrorReport"
+      module = App.module("DocumentNotFoundApp")
+
+    else
+      module = App.module("ModelApp")
 
   #
   # GET (reqres)

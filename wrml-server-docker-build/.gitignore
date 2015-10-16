@@ -1,3 +1,4 @@
+*.csv
 *.war
 *.jar
 wrml.json
