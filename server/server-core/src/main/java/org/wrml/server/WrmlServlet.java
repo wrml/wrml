@@ -505,7 +505,13 @@ public class WrmlServlet extends HttpServlet {
             host = host.substring(0, portSeparatorIndex);
         }
 
-        int port = Integer.parseInt(portString);
+        int port = 80;
+        try {
+            port = Integer.parseInt(portString);
+        }
+        catch (NumberFormatException e) {
+            LOGGER.debug("Cannot parse request URI port string value as int: {}", portString);
+        }
 
         if (port == 80) {
             port = -1;

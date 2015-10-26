@@ -5,13 +5,14 @@
 			<div class="row">
 				<div class="pull-left">
 					<span class="brand">
-						<!-- <img id="logo" src="<%= wrmlData.docroot %>img/logo.png" /> -->
+						<!-- <img id="logo" src="<%= @docroot %>img/logo.png" /> -->
 						WRML
 					</span>
 				</div>
 				
 				<ul class="nav pull-right">
 
+					<!--
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							User
@@ -19,31 +20,33 @@
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 
-							<li><a tabindex="-1" href="#">Log In</a></li>
+							<li><a tabindex="-1" href="#">Log In...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" href="#">Preferences</a></li>
+							<li><a tabindex="-1" href="#">Preferences...</a></li>
 
 						</ul>
 					</li>
+					-->
 
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Model
+							Document
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li><a tabindex="-1" href="#">New</a></li>
-							<li><a tabindex="-1" href="#">Open</a></li>
+							<li><a tabindex="-1" id="newDocumentMenuItem" href="#">New...</a></li>
+							<li><a tabindex="-1" id="openDocumentMenuItem" href="#">Open...</a></li>
 							<li class="divider"></li>
 							<li><a tabindex="-1" href="#">Save</a></li>
-							<li><a tabindex="-1" href="#">Save As</a></li>							
+							<li><a tabindex="-1" href="#">Save As...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" href="#"><!-- <img src="<%= wrmlData.docroot %>img/store-small.png" /> -->Delete</a></li>					  
+							<li><a tabindex="-1" href="#"><!-- <img src="<%= @docroot %>img/store-small.png" /> -->Delete</a></li>
 							<!-- <li class="divider"></li> -->
 							<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
 						</ul>
 					</li>
 
+					<!--
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Edit
@@ -55,6 +58,7 @@
 							<li><a tabindex="-1" href="#">Paste</a></li>
 						</ul>
 					</li>
+					-->
 
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -74,6 +78,7 @@
 						</ul>
 					</li>
 
+					<!--
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							History
@@ -94,6 +99,7 @@
 							<li class="divider"></li>
 						</ul>
 					</li>					
+					-->
 
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -114,6 +120,71 @@
 
 		</div>
 	</div>
+
 </div>
+
+<!-- Document Modal -->
+<div id="documentDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="documentDialogTitleLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="documentDialogTitleLabel">? Document</h3>
+  </div>
+  <div class="modal-body">
+
+	  <div class="container-fluid">
+
+        <div class="row">
+
+		  <div class="span4 wrml-modal-left-pane">
+		    <div class="wrml-scroll-panel">
+			  <div id="documentDialogJstree"></div>
+			</div>
+		  </div>
+
+		  <div class="span7 wrml-modal-right-pane">
+	        <div>
+
+				<form class="wrml-modal-form" onsubmit="return false">
+
+					<fieldset>
+
+						<label class="wrml-modal-form-field-label" for="documentDialogApiInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/api.png" /> API</label>
+						<input class="wrml-modal-input" type="text" id="documentDialogApiInput" value="" readonly="readonly">
+
+						<label class="wrml-modal-form-field-label" for="documentDialogResourceInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /> Resource</label>
+						<input class="wrml-modal-input" type="url" id="documentDialogResourceInput" value="" readonly="readonly">
+
+						<label class="wrml-modal-form-field-label" for="documentDialogSchemaInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/schema.png" /> Schema</label>
+						<input class="wrml-modal-input" type="text" id="documentDialogSchemaInput" value="" readonly="readonly">
+
+						<div id="documentDialogKeysPanel" class="wrml-divided-panel">
+							<div class='alert'>Select a Schema to input Document key values.</div>
+						</div>
+
+						<div id="documentDialogUriPanel" class="wrml-divided-panel">
+							<label class="wrml-modal-form-field-label" for="documentDialogUriInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Text.png" /> URI</label>
+							<input class="wrml-modal-input" type="text" id="documentDialogUriInput" value="">
+						</div>
+
+						<div id="documentDialogBottomMessagePanel" class="wrml-divided-panel">
+							<div id="documentDialogBottomMessage" class='alert'></div>
+						</div>
+
+					</fieldset>
+				</form>
+
+			</div>
+		  </div>
+		</div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button id="documentDialogActionButton" class="btn btn-inverse">?</button>
+  </div>
+
+</div>
+
 
 

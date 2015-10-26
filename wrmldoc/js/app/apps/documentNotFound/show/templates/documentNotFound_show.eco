@@ -45,7 +45,7 @@
 						<div class="arrow"></div>						
 						<div class="popover-content">
 						<p>
-							Do you wish to create a new <strong><%= documentTitle %></strong>?							
+							Do you wish to create or open a Document?
 						</p>
 					</div>
 				
@@ -95,7 +95,7 @@
 							<div class="control-group">								
 							
 								<div class="controls">												
-									<button id="new-document-button" class="documentNotFound-form-button btn btn-inverse" type="button">Create New <%= documentTitle %></button>
+									<button id="newDocumentButton" class="documentNotFound-form-button btn btn-inverse" type="button">New Document...</button><span class="wrml-button-separator">OR</span><button id="openDocumentButton" class="documentNotFound-form-button btn btn-inverse" type="button">Open Document...</button>
 								</div>	
 
 							</div>

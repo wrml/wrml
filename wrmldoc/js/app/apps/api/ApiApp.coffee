@@ -31,11 +31,11 @@
   class ApiApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new ApiApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new ApiApp.Show.Controller(dataModel)
 
-  ApiApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  ApiApp.on "start", (dataModel) ->
+    API.show(dataModel)
 
 
 	

@@ -50,6 +50,7 @@ public class WrmldocDataBuilder {
     public static final String DEFAULT_DOCROOT = "/_wrml/wrmldoc/";
 
     private final CompleteApiBuilder _CompleteApiBuilder;
+    private final JstreeDataBuilder _JstreeDataBuilder;
     private final String _Docroot;
 
     public WrmldocDataBuilder(final CompleteApiBuilder completeApiBuilder) {
@@ -66,6 +67,7 @@ public class WrmldocDataBuilder {
             _Docroot = DEFAULT_DOCROOT;
         }
 
+        _JstreeDataBuilder = new JstreeDataBuilder(_Docroot);
     }
 
     public CompleteApiBuilder getCompleteApiBuilder() {
@@ -161,6 +163,9 @@ public class WrmldocDataBuilder {
         wrmlDataNode.put(PropertyName.api.name(), apiNode);
         wrmlDataNode.put(PropertyName.relation.name(), relationNode);
 
+        final ObjectNode jstreeDataNode = _JstreeDataBuilder.buildJstreeData(objectMapper, context);
+        wrmlDataNode.put(PropertyName.jstree.name(), jstreeDataNode);
+
         return wrmlDataNode;
     }
 
@@ -173,7 +178,8 @@ public class WrmldocDataBuilder {
         model,
         schema,
         api,
-        relation;
+        relation,
+        jstree;
     }
 }
 

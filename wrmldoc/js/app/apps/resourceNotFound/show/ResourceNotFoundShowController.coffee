@@ -28,10 +28,10 @@
 @Wrmldoc.module "ResourceNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Controller extends App.Controllers.Base
 
-    initialize: (wrmlData) ->
-      showView = @createShowView(wrmlData)
+    initialize: (dataModel) ->
+      showView = @createShowView(dataModel)
       @show showView
 
-    createShowView: (wrmlData) ->
+    createShowView: (dataModel) ->
       new Show.ResourceNotFound
-        model: wrmlData
+        model: dataModel

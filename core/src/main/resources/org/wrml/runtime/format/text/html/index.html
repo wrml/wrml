@@ -53,7 +53,9 @@ wrmldoc - A JS web app for WRML documentation generation.
 
                 "api" : {7},
 
-                "relation" : {8}
+                "relation" : {8},
+
+                "jstree" : {9}
 
             '}';
 
@@ -61,6 +63,8 @@ wrmldoc - A JS web app for WRML documentation generation.
 
 
         <script type="text/javascript" src="{0}js/lib{1}.js"></script>
+
+        <script type="text/javascript" src="{0}jstree/jstree{1}.js"></script>
 
         <!-- Uses wrmldoc for app logic -->
         <script type="text/javascript" src="{0}js/wrmldoc{1}.js"></script>
@@ -72,6 +76,8 @@ wrmldoc - A JS web app for WRML documentation generation.
         <!-- The favicon -->
         <link rel="shortcut icon" href="{3}" />
 
+        <link rel="stylesheet" media="all" href="{0}jstree/themes/wrml/style.css" />
+
         <link rel="stylesheet" media="all" href="{0}css/wrmldoc{1}.css" />
 
         <title>{2} - wrmldoc</title>
@@ -80,17 +86,12 @@ wrmldoc - A JS web app for WRML documentation generation.
 
     <body>
 
-
-
         <div id="wrap">
             <div id="header-region"></div>
             <div id="main-region" class="container"></div>
             <div id="push"></div>
         </div>
         <div id="footer-region"></div>
-
-
-
 
         <script type="text/javascript">
 

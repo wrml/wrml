@@ -97,8 +97,11 @@ public class WrmldocFormatter extends AbstractFormatter {
             final JsonNode relationNode = wrmldocData.get(WrmldocDataBuilder.PropertyName.relation.name());
             final String relationValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(relationNode);
 
+            final JsonNode jstreeDataNode = wrmldocData.get(WrmldocDataBuilder.PropertyName.jstree.name());
+            final String jstreeValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jstreeDataNode);
+
             final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
-            final String renderedPage = renderPage(pageTemplate, _WrmldocDataBuilder.getDocroot(), dotMin, documentTitle, documentIcon, schemaUriString, modelValue, schemaValue, apiValue, relationValue);
+            final String renderedPage = renderPage(pageTemplate, _WrmldocDataBuilder.getDocroot(), dotMin, documentTitle, documentIcon, schemaUriString, modelValue, schemaValue, apiValue, relationValue, jstreeValue);
 
             IOUtils.write(renderedPage, out);
 

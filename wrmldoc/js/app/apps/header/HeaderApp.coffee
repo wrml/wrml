@@ -25,14 +25,12 @@
 
 # CoffeeScript
 
-
 @Wrmldoc.module "HeaderApp", (HeaderApp, App, Backbone, Marionette, $, _) ->
   @startWithParent = false
 
   API =
-    show: ->
-      new HeaderApp.Show.Controller
-        region: App.headerRegion
+    show: (dataModel) ->
+      new HeaderApp.Show.Controller(dataModel)
 
-  HeaderApp.on "start", ->
-    API.show()
+  HeaderApp.on "start", (dataModel) ->
+    API.show(dataModel)

@@ -31,9 +31,9 @@
   class ApiNotFoundApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new ApiNotFoundApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new ApiNotFoundApp.Show.Controller(dataModel)
 
 
-  ApiNotFoundApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  ApiNotFoundApp.on "start", (dataModel) ->
+    API.show(dataModel)

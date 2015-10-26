@@ -29,9 +29,9 @@
   class Form.Controller extends App.Controllers.Base
 
     initialize: (options = {}) ->
-      @contentView = wrmlData.view
+      @contentView = dataModel.view
 
-      @formLayout = @getFormLayout wrmlData.config
+      @formLayout = @getFormLayout dataModel.config
 
       @listenTo @formLayout, "show", @formContentRegion
       @listenTo @formLayout, "form:submit", @formSubmit

@@ -31,9 +31,9 @@
   class SchemaApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new SchemaApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new SchemaApp.Show.Controller(dataModel)
 
 
-  SchemaApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  SchemaApp.on "start", (dataModel) ->
+    API.show(dataModel)

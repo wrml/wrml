@@ -31,9 +31,9 @@
   class HomeApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new HomeApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new HomeApp.Show.Controller(dataModel)
 
 
-  HomeApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  HomeApp.on "start", (dataModel) ->
+    API.show(dataModel)

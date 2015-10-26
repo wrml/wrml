@@ -3,7 +3,7 @@
 	<div id="model-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= wrmlData.docroot %>img/api.png" /><%= @api.title %> 
+	  	<img id="title-icon" src="<%= @docroot %>img/api.png" /><%= @api.title %>
 
 	  </h1>
 	</div>
@@ -95,7 +95,7 @@
 					
 					<div class="api-resource-segment controls span12">						
 
-						<label class="wrml-form-field-label" for="resource_<%= fullPath %>_pathSegment"><img class="wrml-form-field-label-icon" src="<%= wrmlData.docroot %>img/resource.png" /></label>
+						<label class="wrml-form-field-label" for="resource_<%= fullPath %>_pathSegment"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /></label>
 
 						<% if parentPath?.length > 1: %>														 
 
@@ -104,7 +104,7 @@
 
 								<% if not not parentPathSegment: %>
 									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><%= parentPathSegment %></label>
-									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><img class="api-resource-parent-path-icon" src="<%= wrmlData.docroot %>img/resource.png" /></label>
+									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><img class="api-resource-parent-path-icon" src="<%= @docroot %>img/resource.png" /></label>
 								<% end %>
 
 							<% end %>
@@ -150,7 +150,7 @@
 							
 				<div class="controls-row">
 					
-					<label class="api-resource-form-input-label" for="resource_<%= fullPath %>_defaultSchema"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/schema.png" /> Default Representation Schema</label>
+					<label class="api-resource-form-input-label" for="resource_<%= fullPath %>_defaultSchema"><img class="api-resource-form-icon" src="<%= @docroot %>img/schema.png" /> Default Representation Schema</label>
 
 					<div class="input-append">					
 						<% defaultSchemaTitle = resource.defaultSchema?.title %>
@@ -180,7 +180,7 @@
 
 					<thead>
 						<tr>							
-							<th colspan="10"><img class="api-resource-form-icon" src="<%= wrmlData.docroot %>img/type/Reference.png" />References</th>							
+							<th colspan="10"><img class="api-resource-form-icon" src="<%= @docroot %>img/type/Reference.png" />References</th>
 						</tr>
 
 

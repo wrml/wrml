@@ -34,8 +34,8 @@
     #		":uri" : "show"
 
   #API =
-  #  show: (wrmlData) ->
-  #    new ModelApp.Show.Controller(wrmlData)
+  #  show: (dataModel) ->
+  #    new ModelApp.Show.Controller(dataModel)
   #region: App.mainRegion
 
 
@@ -43,11 +43,11 @@
   #	new ModelApp.Router
   #		controller: API
 
-  @showView = (wrmlData) ->
-    new ModelApp.Show.Controller(wrmlData)
+  @showView = (dataModel) ->
+    new ModelApp.Show.Controller(dataModel)
 
-  ModelApp.on "start", (wrmlData) ->
-    @showView(wrmlData)
+  ModelApp.on "start", (dataModel) ->
+    @showView(dataModel)
 
 
 #newModel: (region) ->

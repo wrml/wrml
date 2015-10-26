@@ -31,9 +31,9 @@
   class RegistrationApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new RegistrationApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new RegistrationApp.Show.Controller(dataModel)
 
 
-  RegistrationApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  RegistrationApp.on "start", (dataModel) ->
+    API.show(dataModel)

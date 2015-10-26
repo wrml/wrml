@@ -427,7 +427,7 @@ public class OpenModelDialog extends WerminalWindow {
 
     private void addKeyMessageLabel() {
 
-        addMessageLabel("Enter a Schema.id and *click* the \"" + ENTER_KEYS_BUTTON_LABEL + "\" button.",
+        addMessageLabel("Enter a Schema URI and *click* the \"" + ENTER_KEYS_BUTTON_LABEL + "\" button.",
                 Alignment.LEFT_CENTER);
 
     }

@@ -30,8 +30,8 @@
 
   class DocumentNotFoundApp.Router extends Marionette.AppRouter
 
-  @showView = (wrmlData) ->
-    new DocumentNotFoundApp.Show.Controller(wrmlData)
+  @showView = (dataModel) ->
+    new DocumentNotFoundApp.Show.Controller(dataModel)
 
-  DocumentNotFoundApp.on "start", (wrmlData) ->
-    @showView(wrmlData)
+  DocumentNotFoundApp.on "start", (dataModel) ->
+    @showView(dataModel)

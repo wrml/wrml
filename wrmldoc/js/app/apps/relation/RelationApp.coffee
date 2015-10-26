@@ -31,11 +31,11 @@
   class RelationApp.Router extends Marionette.AppRouter
 
   API =
-    show: (wrmlData) ->
-      new RelationApp.Show.Controller(wrmlData)
+    show: (dataModel) ->
+      new RelationApp.Show.Controller(dataModel)
 
-  RelationApp.on "start", (wrmlData) ->
-    API.show(wrmlData)
+  RelationApp.on "start", (dataModel) ->
+    API.show(dataModel)
 
 
 	

@@ -28,15 +28,14 @@
 @Wrmldoc.module "ModelApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Controller extends App.Controllers.Base
 
-    initialize: (wrmlData) ->
-      showView = @createShowView(wrmlData)
+    initialize: (dataModel) ->
+      showView = @createShowView(dataModel)
       @show showView
 
-    createShowView: (wrmlData) ->
-      #wrmlData = App.request "wrml:data"
+    createShowView: (dataModel) ->
       new Show.Model
-        model: wrmlData
-						
+        model: dataModel
+
 ###
 
 	class Show.Controller extends App.Controllers.Base

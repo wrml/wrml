@@ -39,14 +39,14 @@
 
   # App Init
   App.addInitializer ->
-    App.module("HeaderApp").start(App.wrmlData)
+    App.module("HeaderApp").start(App.dataModel)
 
-    schemaUri = App.wrmlData.get "schemaUri"
+    schemaUri = App.dataModel.get "schemaUri"
 
     module = App.getModuleForSchema(schemaUri)
-    module.start(App.wrmlData)
+    module.start(App.dataModel)
 
-    App.module("FooterApp").start(App.wrmlData)
+    App.module("FooterApp").start(App.dataModel)
 
 
   #
@@ -54,22 +54,60 @@
   #
 
   App.on "initialize:before", (wrmlData) ->
-    App.wrmlData = new App.Entities.Model wrmlData
-
+    App.dataModel = App.createDataModel(wrmlData)
 
   App.on "initialize:after", ->
     @startHistory()
     @navigate(@rootRoute, trigger: true) unless @getCurrentRoute()
 
+  App.getEmbeddedDataModel = ->
+    App.dataModel
 
-  App.getWrmlData = ->
-    App.wrmlData
+  App.openDocument = (uri) ->
 
-  App.newDocument = (wrmlData) ->
-    alert "New Document!"
+    $("<a>").attr("href", uri).attr("target", "_blank")[0].click();
+
+    #settings = {
+    #  headers: {
+    #    Accept: "application/vnd.wrml.wrmldoc+json"
+    #  }
+    #  dataType: "json"
+    #  success: (wrmlData, textStatus) ->
+    #    console.log(wrmlData);
+    #    dataModel = App.createDataModel(wrmlData)
+    #    schemaUri = dataModel.attributes["schemaUri"]
+    #    console.log("Response Schema: " + schemaUri)
+    #    module = App.getModuleForSchema(schemaUri)
+    #    console.log(module)
+    #    new module.Show.Controller(dataModel)
+    #}
+    #$.ajax(uri, settings)
+
+  App.rewriteUri = (uri) ->
+
+    rewrittenUri = uri
+
+    windowLocation = window.location
+
+    if windowLocation.search.indexOf("host=") > -1
+
+      uriAnchor = document.createElement('a')
+      uriAnchor.href = uri
+
+      rewrittenUri = rewrittenUri.replace(uriAnchor.host, windowLocation.host)
+      rewrittenUri += "?host=" + uriAnchor.host
+
+    return rewrittenUri;
+
+  App.createDataModel = (wrmlData) ->
+    new App.Entities.Model wrmlData
+
+
+  App.newDocument = (dataModel) ->
+    #alert "New Document!"
     #module = App.getModuleForSchema(schemaUri)
     module = App.module("ModelApp")
-    module.showView(wrmlData)
+    module.showView(dataModel)
 
 
   App.getModuleForSchema = (schemaUri) ->
@@ -104,8 +142,7 @@
     App.mainRegion
 
   App.reqres.setHandler "wrml:data", ->
-    #App.wrmlData
-    App.getWrmlData()
+    App.getEmbeddedDataModel()
 
   #
   # POST (commands)
@@ -124,5 +161,7 @@
 
   # For debugging or whatever; provide a handle to the app in the Console.
   window.wrmldoc = App
+
+  console.log(App)
 
   App

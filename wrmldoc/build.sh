@@ -153,6 +153,9 @@ cat ${JS_LIB_PATH}/marionette.js >> ${COMPILED_LIB_JS}
 
 cat ${JS_LIB_PATH}/syphon.js >> ${COMPILED_LIB_JS}
 
+# TODO: This produces errors for some reason
+#cat ${JS_LIB_PATH}/jstree.js >> ${COMPILED_LIB_JS}
+
 #######################
 # Bootstrap
 #######################

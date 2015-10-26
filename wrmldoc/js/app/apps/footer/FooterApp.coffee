@@ -29,9 +29,9 @@
   @startWithParent = false
 
   API =
-    show: ->
-      new FooterApp.Show.Controller
-        region: App.footerRegion
+    show: (dataModel) ->
+      new FooterApp.Show.Controller(dataModel)
 
-  FooterApp.on "start", ->
-    API.show()
+
+  FooterApp.on "start", (dataModel) ->
+    API.show(dataModel)

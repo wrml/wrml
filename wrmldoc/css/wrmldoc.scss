@@ -257,6 +257,15 @@ input[type="color"]:focus,
   color: $codeMethodDeleteColor;
 }
 
+.wrml-button-separator {
+  margin-left: 40px;
+  margin-top: 15px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: -40px;
+  font-weight: bold;
+}
+
 #wrap {
   height: auto !important;
   min-height: 100%;
@@ -286,10 +295,59 @@ input[type="color"]:focus,
 
 #push {
   height: $footerHeightTotal;
-}  
+}
 
+.wrml-scroll-panel {
+  display: block;
+  height: 450px;
+  width: 100%;
+  overflow: auto;
+  border: 1px solid #eee;
+}
 
+.modal {
+  width: 950px;
+  margin-left: -475px;
+}
 
+.modal.fade.in {
+  top: 15%;
+}
+
+.modal-body {
+  max-height: 1000px;
+
+  .row {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+
+.modal-backdrop {
+  background-color: darkgrey;
+}
+
+.wrml-modal-left-pane {
+  margin-left: 0px;
+}
+
+.wrml-modal-right-pane {
+  margin-left: 35px;
+}
+
+.wrml-modal-form {
+  margin-bottom: 0px;
+}
+
+.wrml-modal-form-field-label {
+  font-weight: bold;
+  margin-top: 5px;
+  vertical-align: middle;
+}
+
+.wrml-modal-input {
+  width: 550px;
+}
 /*
  * WRML - Web Resource Modeling Language
  *  __     __   ______   __    __   __
@@ -934,7 +992,22 @@ input[type="color"]:focus,
     margin-top: -30px;
   }
 
-}$listIndexHeaderWidth: $formFieldSetMarginRight;
+}
+
+#documentDialog {
+
+  .alert {
+    margin-top: 5px;
+  }
+
+  .wrml-divided-panel {
+    padding-top: 10px;
+    margin-top: 20px;
+    border-top: lightgrey solid 1px;
+  }
+
+}
+$listIndexHeaderWidth: $formFieldSetMarginRight;
 $listIndexCellSpacing: 5px;
 $listValueTextInputWidth: $formTextInputWidth - $formFieldSetMarginLeft;
 

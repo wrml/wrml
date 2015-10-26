@@ -30,19 +30,11 @@
     template: "documentNotFound/show/documentNotFound_show"
 
     events:
-      'click #new-document-button' : 'newDocument'
+      'click #newDocumentButton' : 'showNewDocumentDialog'
+      'click #openDocumentButton' : 'showOpenDocumentDialog'
 
-    newDocument: (e) ->
+    showNewDocumentDialog: ->
+      App.headerView.showNewDocumentDialog()
 
-      documentNotFoundErrorReport = @model.attributes["model"]
-      console.log documentNotFoundErrorReport
-
-      newDocumentSchemaUri = documentNotFoundErrorReport.defaultSchemaUri
-      newDocumentUri = documentNotFoundErrorReport.requestUri
-
-      # TODO Create new document
-      newDocumentData = @model
-
-      App.newDocument(newDocumentData)
-
-
+    showOpenDocumentDialog: ->
+      App.headerView.showOpenDocumentDialog()
