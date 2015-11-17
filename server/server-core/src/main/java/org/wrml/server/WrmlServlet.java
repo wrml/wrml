@@ -31,6 +31,8 @@ import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
+import org.wrml.model.Titled;
+import org.wrml.model.UniquelyNamed;
 import org.wrml.model.format.Format;
 import org.wrml.model.rest.Api;
 import org.wrml.model.rest.CommonHeader;
@@ -46,6 +48,7 @@ import org.wrml.runtime.rest.MediaType.MediaTypeException;
 import org.wrml.runtime.schema.PropertyProtoSlot;
 import org.wrml.runtime.schema.Prototype;
 import org.wrml.util.PropertyUtil;
+import org.wrml.util.UniqueName;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -84,6 +87,8 @@ public class WrmlServlet extends HttpServlet {
     public static final String ACCEPT_PARAMETER_NAME = "accept";
 
     public static final String HOST_PARAMETER_NAME = "host";
+
+    public static final String NEW_PARAMETER_NAME = "new";
 
     public static final String WRML_CONFIGURATION_FILE_PATH_INIT_PARAM_NAME = "wrml-config-file-path";
 
@@ -349,6 +354,31 @@ public class WrmlServlet extends HttpServlet {
 
                 switch (method) {
                     case Get: {
+
+                        // Check if the request is for a new (unsaved) Model
+                        if (request.getParameter(NEW_PARAMETER_NAME) != null) {
+
+                            final Model newModel = context.newModel(dimensions);
+                            newModel.initKeySlots(keys);
+                            if (newModel instanceof UniquelyNamed && newModel instanceof Titled) {
+                                final UniqueName uniqueName = ((UniquelyNamed) newModel).getUniqueName();
+                                if (uniqueName != null) {
+                                    ((Titled) newModel).setTitle(uniqueName.getLocalName());
+                                }
+                            }
+
+                            final MediaType responseEntityMediaType = getMostAcceptableMediaType(newModel.getSchemaUri(), acceptableMediaTypes);
+
+                            try {
+                                writeModelAsResponseEntity(method, response, newModel, responseEntityMediaType, null);
+                            } catch (final ModelWriterException | MediaTypeException e) {
+                                throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + api + "]).", e);
+                            }
+
+                            return;
+                        }
+
+                        // Respond with a DocumentNotFoundErrorReport
                         final DocumentNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(DocumentNotFoundErrorReport.class, requestUri, api);
                         final URI defaultSchemaUri = dimensions.getSchemaUri();
                         final Prototype defaultSchemaPrototype = context.getSchemaLoader().getPrototype(defaultSchemaUri);
@@ -393,7 +423,7 @@ public class WrmlServlet extends HttpServlet {
                 LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] returning response Model: \n" + responseModel);
 
                 try {
-                    MediaType responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                    final MediaType responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
                     writeModelAsResponseEntity(method, response, responseModel, responseEntityMediaType, null);
                 }
                 catch (final ModelWriterException | MediaTypeException e) {

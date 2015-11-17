@@ -29,82 +29,14 @@
   class Show.Controller extends App.Controllers.Base
 
     initialize: (dataModel) ->
-      showView = @createShowView(dataModel)
-      @show showView
+      console.log ("Model Show Controller initialize")
+      @initialDataModel = dataModel
+      @initialView = @createShowView(dataModel)
+      @show @initialView
+
+    saveDocument: ->
+      console.log(@initialDataModel)
 
     createShowView: (dataModel) ->
       new Show.Model
         model: dataModel
-
-###
-
-	class Show.Controller extends App.Controllers.Base
-		
-		initialize: ->
-			model = App.request "model:entities"
-			
-			App.execute "when:fetched", model, =>
-			
-				@layout = @getLayoutView model
-				
-				# @listenTo @layout, "close", @close
-			
-				@listenTo @layout, "show", =>
-					@titleRegion()
-					@panelRegion()
-					@modelRegion model
-			
-				@show @layout
-		
-		titleRegion: ->
-			titleView = @getTitleView()
-			@layout.titleRegion.show titleView
-		
-		panelRegion: ->
-			panelView = @getPanelView()
-			
-			@listenTo panelView, "new:model:button:clicked", =>
-				@newRegion()
-			
-			@layout.panelRegion.show panelView
-		
-		newRegion: ->
-			App.execute "new:model:member", @layout.newRegion
-		
-		modelRegion: (model) ->
-			modelView = @getModelView model
-			
-			@listenTo modelView, "childview:model:member:clicked", (child, args) ->
-				App.vent.trigger "model:member:clicked", args.model
-			
-			@listenTo modelView, "childview:model:delete:clicked", (child, args) ->
-				model = args.model
-				if confirm "Are you sure you want to delete #{model.get("name")}?" then model.destroy() else false
-			
-			@layout.modelRegion.show modelView
-		
-		getModelView: (model) ->
-			
-			modelView = 
-				new List.Model
-					collection: model
-
-			window.modelView = modelView
-
-			modelView
-		
-		getPanelView: ->
-			new List.Panel
-		
-		getTitleView: ->
-			wrmlData = App.request "wrml:data"
-
-			new List.Title
-				model: new App.Entities.Model wrmlData
-		
-		getLayoutView: (model) ->
-			new List.Layout
-				collection: model
-
-
-###

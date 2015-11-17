@@ -43,8 +43,8 @@
 
     schemaUri = App.dataModel.get "schemaUri"
 
-    module = App.getModuleForSchema(schemaUri)
-    module.start(App.dataModel)
+    App.currentModule = App.getModuleForSchema(schemaUri)
+    App.currentModule.start(App.dataModel)
 
     App.module("FooterApp").start(App.dataModel)
 
@@ -83,31 +83,53 @@
     #}
     #$.ajax(uri, settings)
 
-  App.rewriteUri = (uri) ->
+  App.rewriteUri = (uri, queryParams) ->
 
     rewrittenUri = uri
 
     windowLocation = window.location
 
+    queryString = ""
     if windowLocation.search.indexOf("host=") > -1
 
       uriAnchor = document.createElement('a')
       uriAnchor.href = uri
 
       rewrittenUri = rewrittenUri.replace(uriAnchor.host, windowLocation.host)
-      rewrittenUri += "?host=" + uriAnchor.host
+      queryString = "?host=" + uriAnchor.host
 
-    return rewrittenUri;
+    if queryParams and not $.isEmptyObject(queryParams)
+      if queryString.length is 0
+        queryString = "?"
+      else
+        queryString += "&"
+
+      for name, value of queryParams
+        queryString += name
+        if value?.length > 0
+          queryString += "=" + value
+
+        queryString += "&"
+
+      queryString = queryString.slice(0, -1)
+
+
+    if queryString.length > 0
+      rewrittenUri += queryString
+
+    return rewrittenUri
 
   App.createDataModel = (wrmlData) ->
     new App.Entities.Model wrmlData
 
+  App.saveDocument = ->
+    App.currentModule.saveDocument()
 
-  App.newDocument = (dataModel) ->
-    #alert "New Document!"
-    #module = App.getModuleForSchema(schemaUri)
-    module = App.module("ModelApp")
-    module.showView(dataModel)
+  #App.newDocument = (dataModel) ->
+  #  #alert "New Document!"
+  #  #module = App.getModuleForSchema(schemaUri)
+  #  module = App.module("ModelApp")
+  #  module.showView(dataModel)
 
 
   App.getModuleForSchema = (schemaUri) ->

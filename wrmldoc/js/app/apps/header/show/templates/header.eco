@@ -37,10 +37,10 @@
 							<li><a tabindex="-1" id="newDocumentMenuItem" href="#">New...</a></li>
 							<li><a tabindex="-1" id="openDocumentMenuItem" href="#">Open...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" href="#">Save</a></li>
-							<li><a tabindex="-1" href="#">Save As...</a></li>
+							<li><a tabindex="-1" id="saveDocumentMenuItem" href="#">Save</a></li>
+							<li><a tabindex="-1" id="saveAsDocumentMenuItem" href="#">Save As...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" href="#"><!-- <img src="<%= @docroot %>img/store-small.png" /> -->Delete</a></li>
+							<li><a tabindex="-1" id="deleteDocumentMenuItem" href="#"><!-- <img src="<%= @docroot %>img/store-small.png" /> -->Delete</a></li>
 							<!-- <li class="divider"></li> -->
 							<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
 						</ul>

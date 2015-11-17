@@ -26,6 +26,8 @@
 # CoffeeScript
 
 @Wrmldoc.module "ModelApp.Show", (Show, App, Backbone, Marionette, $, _) ->
+  class Show.Model extends App.Views.ItemView
+    template: "model/show/model_show"
 
   #class List.Layout extends App.Views.Layout
   #	template: "model/show/model_show"
@@ -57,8 +59,7 @@
   #class List.Empty extends App.Views.ItemView
   #	template: "model/list/model_empty"
   #	tagName: "li"
-  class Show.Model extends App.Views.ItemView
-    template: "model/show/model_show"
+
 
 #class Show.Model extends App.Views.CompositeView
 #	template: "model/list/model_list"

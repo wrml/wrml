@@ -30,12 +30,14 @@
 
   class RelationApp.Router extends Marionette.AppRouter
 
-  API =
-    show: (dataModel) ->
-      new RelationApp.Show.Controller(dataModel)
+  @showView = (dataModel) ->
+    @controller = new RelationApp.Show.Controller(dataModel)
+
+  @saveDocument = ->
+    @controller.saveDocument()
 
   RelationApp.on "start", (dataModel) ->
-    API.show(dataModel)
+    @showView(dataModel)
 
 
 	

@@ -44,7 +44,10 @@
   #		controller: API
 
   @showView = (dataModel) ->
-    new ModelApp.Show.Controller(dataModel)
+    @controller = new ModelApp.Show.Controller(dataModel)
+
+  @saveDocument = ->
+    @controller.saveDocument()
 
   ModelApp.on "start", (dataModel) ->
     @showView(dataModel)

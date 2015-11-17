@@ -38,6 +38,9 @@
       'click #openDocumentMenuItem' : 'showOpenDocumentDialog'
       'click #documentDialogActionButton' : 'handleDocumentDialogAction'
       'keypress #documentDialogUriInput' : 'handleDocumentDialogUriInputKeypress'
+      'click #saveDocumentMenuItem' : 'saveDocument'
+      'click #saveAsDocumentMenuItem' : 'showSaveAsDocumentDialog'
+      'click #deleteDocumentMenuItem' : 'deleteDocument'
 
     onRender: ->
       self = @
@@ -68,6 +71,20 @@
         actionButtonLabel: "Open",
         bottomMessage: ""
       }, jstreeData)
+
+    saveDocument: ->
+      App.saveDocument()
+
+    showSaveAsDocumentDialog: ->
+      # TODO: Implement Document Save As
+      self.showNotImplementedMessage("Document \"Save As\" is not yet implemented.")
+
+    deleteDocument: ->
+      # TODO: Implement Document Delete
+      self.showNotImplementedMessage("Deleting Documents is not yet implemented.")
+
+    showNotImplementedMessage: (message) ->
+      alert(message)
 
     showDocumentDialog: (dialogData, jstreeData) ->
       documentDialog = $("#documentDialog")
@@ -100,11 +117,14 @@
         bottomMessageDiv.html(bottomMessageHtml)
         bottomMessagePanel.show()
 
+      uriInput = $("#documentDialogUriInput")
+      uriInput.val("")
       documentDialog.modal("show")
 
 
     handleDocumentDialogAction: (e) ->
-      uri = $('#documentDialogUriInput').val()
+      uriInput = $("#documentDialogUriInput")
+      uri = uriInput.val()
       App.openDocument(uri)
       $('#documentDialog').modal('hide')
 
@@ -219,6 +239,14 @@
         return @getParentNode(jstree, node.parent, type)
 
     setUriValue: (uri) ->
-      uri = App.rewriteUri(uri)
+
+      documentDialog = $("#documentDialog")
+      queryParams = {}
+      documentDialogAction = documentDialog.data("action")
+
+      if documentDialogAction?.length > 0 and documentDialogAction is "new"
+        queryParams.new = ""
+
+      uri = App.rewriteUri(uri, queryParams)
       uriInput = $("#documentDialogUriInput")
       uriInput.val(uri)

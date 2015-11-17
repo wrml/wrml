@@ -54,13 +54,13 @@ public class CompleteSchemaBuilder {
 
     public ObjectNode buildCompleteSchema(final ObjectMapper objectMapper, final Schema schema) {
 
+        final URI schemaUri = schema.getUri();
         final Context context = schema.getContext();
-        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
         final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
+
         final ObjectNode rootNode = objectMapper.createObjectNode();
 
-        final URI schemaUri = schema.getUri();
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
 
         rootNode.put(PropertyName.uri.name(), syntaxLoader.formatSyntaxValue(schemaUri));
         rootNode.put(PropertyName.title.name(), schema.getTitle());
@@ -72,13 +72,29 @@ public class CompleteSchemaBuilder {
             rootNode.put(PropertyName.titleSlotName.name(), titleSlotName);
         }
 
-
         final UniqueName uniqueName = schema.getUniqueName();
         final ObjectNode uniqueNameNode = objectMapper.createObjectNode();
         uniqueNameNode.put(PropertyName.fullName.name(), uniqueName.getFullName());
         uniqueNameNode.put(PropertyName.namespace.name(), uniqueName.getNamespace());
         uniqueNameNode.put(PropertyName.localName.name(), uniqueName.getLocalName());
         rootNode.put(PropertyName.uniqueName.name(), uniqueNameNode);
+
+        final Prototype prototype;
+        try {
+            prototype = schemaLoader.getPrototype(schemaUri);
+            buildCompleteSchemaFromPrototype(objectMapper, schema, prototype, rootNode);
+        }
+        catch (PrototypeException e) {
+        }
+
+        return rootNode;
+    }
+
+    private void buildCompleteSchemaFromPrototype(final ObjectMapper objectMapper, final Schema schema, final Prototype prototype, final ObjectNode rootNode) {
+        final URI schemaUri = schema.getUri();
+        final Context context = schema.getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final SyntaxLoader syntaxLoader = context.getSyntaxLoader();
 
         final Set<URI> declaredBaseSchemaUris = prototype.getDeclaredBaseSchemaUris();
         if (declaredBaseSchemaUris != null && !declaredBaseSchemaUris.isEmpty()) {
@@ -270,33 +286,30 @@ public class CompleteSchemaBuilder {
 
         }
 
-
-        return rootNode;
     }
 
     public ObjectNode buildEmbeddedSchema(final ObjectMapper objectMapper, final URI schemaUri, final SchemaLoader schemaLoader, final Set<URI> addedBaseSchemaUris) {
 
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null) {
-            return null;
-        }
-
         final ObjectNode schemaNode = objectMapper.createObjectNode();
-        schemaNode.put(PropertyName.localName.name(), prototype.getUniqueName().getLocalName());
-        schemaNode.put(PropertyName.title.name(), prototype.getTitle());
-        schemaNode.put(PropertyName.uri.name(), schemaUri.toString());
-        schemaNode.put(PropertyName.version.name(), prototype.getVersion());
 
-        String titleSlotName = prototype.getTitleSlotName();
+        schemaNode.put(PropertyName.uri.name(), schemaUri.toString());
+
+        String titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
         if (StringUtils.isNotBlank(titleSlotName)) {
             schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
         }
-        else {
-            titleSlotName = getTitleSlotName(schemaUri, schemaLoader);
-            if (StringUtils.isNotBlank(titleSlotName)) {
-                schemaNode.put(PropertyName.titleSlotName.name(), titleSlotName);
-            }
+
+        final Prototype prototype;
+        try {
+            prototype = schemaLoader.getPrototype(schemaUri);
         }
+        catch (PrototypeException e) {
+            return schemaNode;
+        }
+
+        schemaNode.put(PropertyName.localName.name(), prototype.getUniqueName().getLocalName());
+        schemaNode.put(PropertyName.title.name(), prototype.getTitle());
+        schemaNode.put(PropertyName.version.name(), prototype.getVersion());
 
         final Set<String> allSlotNames = prototype.getAllSlotNames();
         if (allSlotNames != null && !allSlotNames.isEmpty()) {
@@ -394,9 +407,13 @@ public class CompleteSchemaBuilder {
         //
         // Attempt to (heuristically) determine the "title" slot for the model
         //
-        final Prototype prototype = schemaLoader.getPrototype(schemaUri);
-        if (prototype == null) {
-            return null;
+        final Prototype prototype;
+        try {
+            prototype = schemaLoader.getPrototype(schemaUri);
+        }
+        catch (PrototypeException e) {
+            final UniqueName uniqueName = schemaLoader.getTypeUniqueName(schemaUri);
+            return (uniqueName != null) ? uniqueName.getLocalName() : null;
         }
 
         String titleSlotName = prototype.getTitleSlotName();

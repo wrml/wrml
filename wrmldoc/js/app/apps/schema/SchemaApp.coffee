@@ -30,10 +30,11 @@
 
   class SchemaApp.Router extends Marionette.AppRouter
 
-  API =
-    show: (dataModel) ->
-      new SchemaApp.Show.Controller(dataModel)
+  @showView = (dataModel) ->
+    @controller = new SchemaApp.Show.Controller(dataModel)
 
+  @saveDocument = ->
+    @controller.saveDocument()
 
   SchemaApp.on "start", (dataModel) ->
-    API.show(dataModel)
+    @showView(dataModel)

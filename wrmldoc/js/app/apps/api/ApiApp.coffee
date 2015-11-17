@@ -30,12 +30,14 @@
 
   class ApiApp.Router extends Marionette.AppRouter
 
-  API =
-    show: (dataModel) ->
-      new ApiApp.Show.Controller(dataModel)
+  @showView = (dataModel) ->
+    @controller = new ApiApp.Show.Controller(dataModel)
+
+  @saveDocument = ->
+    @controller.saveDocument()
 
   ApiApp.on "start", (dataModel) ->
-    API.show(dataModel)
+    @showView(dataModel)
 
 
 	
