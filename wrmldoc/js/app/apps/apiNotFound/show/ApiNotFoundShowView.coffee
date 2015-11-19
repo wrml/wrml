@@ -28,3 +28,25 @@
 @Wrmldoc.module "ApiNotFoundApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.ApiNotFound extends App.Views.ItemView
     template: "apiNotFound/show/apiNotFound_show"
+
+    events:
+      'click #apiNotFound-new-button' : 'handleNewApi'
+
+    onRender: ->
+      @self = @
+      @apiNotFound = @model.attributes.model
+
+    onDomRefresh: ->
+      uri = @apiNotFound.requestUri
+      uri = App.getApiUri(uri)
+      queryParams = {}
+      queryParams.new = ""
+      uri = App.rewriteUri(uri, queryParams)
+
+      uriInput = $("#wrml-model-property-uri")
+      uriInput.val(uri)
+
+    handleNewApi: (e) ->
+      uriInput = $("#wrml-model-property-uri")
+      uri = uriInput.val()
+      App.openDocument(uri)

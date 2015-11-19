@@ -30,14 +30,11 @@
 	
 	<div class="row">
 
-		<div class="span3">
-		</div>
-
 		<div class="span2">
 			<img id="apiNotFound-wormle" src="<%= @docroot %>img/wormle/facing-right-from-hole.png" />
 		</div>
 
-		<div class="span5 apiNotFound-workflow">
+		<div class="span10 apiNotFound-workflow">
 
 			<div class="row">
 			
@@ -46,43 +43,44 @@
 					<div class="popover right apiNotFound-speech-bubble">
 						<div class="arrow"></div>						
 						<div class="popover-content">
-						<p>
-							Do you wish to design a new <strong><%= apiTitle %></strong>?							
-						</p>
+							<p>
+								Do you wish to design a new <strong>API</strong>?
+							</p>
+						</div>
 					</div>
-				
 				</div>
 			
 			</div>
 
 			<div class="row">
 
-				<div class="span4 apiNotFound-workflow-element">
+				<div class="span8 apiNotFound-workflow-element">
 					
 					<form class="form-horizontal apiNotFound-form" onsubmit="return false">
 
-						<fieldset>			
-								  
-							<div class="control-group">								
-							
-								<div class="controls">												
-									<button class="apiNotFound-form-button btn btn-inverse" type="button">Create New <%= apiTitle %></button>
-								</div>	
+						<fieldset class="wrml-form-fieldset">
+
+							<div class="control-group">
+
+								<label class="control-label" for="wrml-model-property-uri">URI</label>
+
+								<div class="controls">
+									<div class="input-append">
+										<input id="wrml-model-property-uri" class="wrml-model-property-input" type="text">
+										<button id="apiNotFound-new-button" class="btn btn-inverse" type="button">New</button>
+									</div>
+								</div>
 
 							</div>
 
 						</fieldset>
-					</form>		
 
-				<div>		
+					</form>
+				</div>
 			
 			</div>
 
 		</div>
-
-		<div class="span5">
-		</div>
-
 
 	</div>
 

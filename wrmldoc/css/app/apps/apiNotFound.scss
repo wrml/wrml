@@ -53,9 +53,7 @@
   .apiNotFound-speech-bubble {
     position: relative;
     display: block;
-    float: right;
     max-width: 350px;
-    margin-left: -30px;
     padding: 10px;
 
     p {
@@ -64,18 +62,24 @@
 
   }
 
+  .wrml-model-property-input {
+    width: 400px;
+  }
+
   .apiNotFound-form {
     fieldset {
+
       margin-left: 0px;
 
       .control-group {
-        .controls {
-          margin-left: 0px;
-        }
-      }
 
-      .apiNotFound-form-button {
-        margin-left: 80px;
+        .control-label {
+          width: 50px;
+        }
+
+        .controls {
+          margin-left: 60px;
+        }
       }
 
     }

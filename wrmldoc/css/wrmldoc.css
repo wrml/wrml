@@ -6657,18 +6657,18 @@ input[type="color"]:focus,
 #main-region .apiNotFound-speech-bubble {
   position: relative;
   display: block;
-  float: right;
   max-width: 350px;
-  margin-left: -30px;
   padding: 10px; }
   #main-region .apiNotFound-speech-bubble p {
     margin-bottom: 0px; }
+#main-region .wrml-model-property-input {
+  width: 400px; }
 #main-region .apiNotFound-form fieldset {
   margin-left: 0px; }
+  #main-region .apiNotFound-form fieldset .control-group .control-label {
+    width: 50px; }
   #main-region .apiNotFound-form fieldset .control-group .controls {
-    margin-left: 0px; }
-  #main-region .apiNotFound-form fieldset .apiNotFound-form-button {
-    margin-left: 80px; }
+    margin-left: 60px; }
 
 #main-region #documentNotFound-page-header-section {
   margin-bottom: 0px; }

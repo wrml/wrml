@@ -240,6 +240,14 @@ this.Wrmldoc = (function(Backbone, Marionette) {
     }
     return rewrittenUri;
   };
+  App.getApiUri = function(documentUri) {
+    var apiUri, uriAnchor;
+    uriAnchor = document.createElement('a');
+    uriAnchor.href = documentUri;
+    uriAnchor.pathname = "";
+    apiUri = uriAnchor.href;
+    return apiUri;
+  };
   App.createDataModel = function(wrmlData) {
     return new App.Entities.Model(wrmlData);
   };
@@ -1576,6 +1584,33 @@ this.Wrmldoc.module("ApiNotFoundApp.Show", function(Show, App, Backbone, Marione
 
     ApiNotFound.prototype.template = "apiNotFound/show/apiNotFound_show";
 
+    ApiNotFound.prototype.events = {
+      'click #apiNotFound-new-button': 'handleNewApi'
+    };
+
+    ApiNotFound.prototype.onRender = function() {
+      this.self = this;
+      return this.apiNotFound = this.model.attributes.model;
+    };
+
+    ApiNotFound.prototype.onDomRefresh = function() {
+      var queryParams, uri, uriInput;
+      uri = this.apiNotFound.requestUri;
+      uri = App.getApiUri(uri);
+      queryParams = {};
+      queryParams["new"] = "";
+      uri = App.rewriteUri(uri, queryParams);
+      uriInput = $("#wrml-model-property-uri");
+      return uriInput.val(uri);
+    };
+
+    ApiNotFound.prototype.handleNewApi = function(e) {
+      var uri, uriInput;
+      uriInput = $("#wrml-model-property-uri");
+      uri = uriInput.val();
+      return App.openDocument(uri);
+    };
+
     return ApiNotFound;
 
   })(App.Views.ItemView);
@@ -1641,19 +1676,11 @@ this.Wrmldoc.module("ApiNotFoundApp.Show", function(Show, App, Backbone, Marione
           __out.push('\n\t\t\t</p>\t\n\t\t</div>\n\t\t');
         }
       
-        __out.push('\t\n\n\t</div>\n\n</section>\n\n<section id="apiNotFound">\n\t\n\t<div class="row">\n\n\t\t<div class="span3">\n\t\t</div>\n\n\t\t<div class="span2">\n\t\t\t<img id="apiNotFound-wormle" src="');
+        __out.push('\t\n\n\t</div>\n\n</section>\n\n<section id="apiNotFound">\n\t\n\t<div class="row">\n\n\t\t<div class="span2">\n\t\t\t<img id="apiNotFound-wormle" src="');
       
         __out.push(__sanitize(this.docroot));
       
-        __out.push('img/wormle/facing-right-from-hole.png" />\n\t\t</div>\n\n\t\t<div class="span5 apiNotFound-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span4 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right apiNotFound-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tDo you wish to design a new <strong>');
-      
-        __out.push(__sanitize(apiTitle));
-      
-        __out.push('</strong>?\t\t\t\t\t\t\t\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span4 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal apiNotFound-form" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="apiNotFound-form-button btn btn-inverse" type="button">Create New ');
-      
-        __out.push(__sanitize(apiTitle));
-      
-        __out.push('</button>\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</fieldset>\n\t\t\t\t\t</form>\t\t\n\n\t\t\t\t<div>\t\t\n\t\t\t\n\t\t\t</div>\n\n\t\t</div>\n\n\t\t<div class="span5">\n\t\t</div>\n\n\n\t</div>\n\n\n</section>\n');
+        __out.push('img/wormle/facing-right-from-hole.png" />\n\t\t</div>\n\n\t\t<div class="span10 apiNotFound-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span4 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right apiNotFound-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\t\tDo you wish to design a new <strong>API</strong>?\n\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span8 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal apiNotFound-form" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t\t\t\t\t<div class="control-group">\n\n\t\t\t\t\t\t\t\t<label class="control-label" for="wrml-model-property-uri">URI</label>\n\n\t\t\t\t\t\t\t\t<div class="controls">\n\t\t\t\t\t\t\t\t\t<div class="input-append">\n\t\t\t\t\t\t\t\t\t\t<input id="wrml-model-property-uri" class="wrml-model-property-input" type="text">\n\t\t\t\t\t\t\t\t\t\t<button id="apiNotFound-new-button" class="btn btn-inverse" type="button">New</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</fieldset>\n\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\n\t\t</div>\n\n\t</div>\n\n\n</section>\n');
       
       }).call(this);
       

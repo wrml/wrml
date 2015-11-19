@@ -35,7 +35,6 @@
       'click #main-toolbar-load-button' : 'handleMainToolbarLoad'
       'click #main-toolbar-swagger-button' : 'handleMainToolbarSwagger'
 
-
     onRender: ->
       @self = @
       @viewDocument = $.extend(true, {}, @model.attributes.model)

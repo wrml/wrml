@@ -282,11 +282,6 @@ public class WrmlServlet extends HttpServlet {
                             responseEntityFormatUri = SystemFormat.vnd_wrml_swagger_api.getFormatUri();
                             break;
 
-                        case WRML_METADATA_API_LOAD_PATH:
-                            responseModel = loadApi(requestUri);
-                            responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
-                            break;
-
                         default:
                             responseModel = null;
                             break;
@@ -342,18 +337,16 @@ public class WrmlServlet extends HttpServlet {
                     switch (method) {
                         case Get: {
 
-                            if (isNewDocumentRequest) {
+                            KeysBuilder keysBuilder = new KeysBuilder(schemaLoader.getDocumentSchemaUri(), requestUri);
+                            DimensionsBuilder dimensionsBuilder = new DimensionsBuilder(apiSchemaUri);
+                            responseModel = context.getModel(keysBuilder.toKeys(), dimensionsBuilder.toDimensions());
+
+                            if (responseModel == null && isNewDocumentRequest) {
                                 final ApiBuilder apiBuilder = new ApiBuilder(context);
                                 apiBuilder.uri(requestUri).title(requestUri.getHost()).docroot(UUID.randomUUID());
                                 responseModel = apiBuilder.toApi();
                                 final Keys apiKeys = responseModel.getKeys();
                                 responseModel.initKeySlots(apiKeys);
-                            }
-                            else {
-                                // Handle first time GET of a non-loaded API
-                                KeysBuilder keysBuilder = new KeysBuilder(schemaLoader.getDocumentSchemaUri(), requestUri);
-                                DimensionsBuilder dimensionsBuilder = new DimensionsBuilder(apiSchemaUri);
-                                responseModel = context.getModel(keysBuilder.toKeys(), dimensionsBuilder.toDimensions());
                             }
                             break;
                         }

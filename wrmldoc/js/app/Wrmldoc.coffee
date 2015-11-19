@@ -123,6 +123,14 @@
 
     return rewrittenUri
 
+
+  App.getApiUri = (documentUri) ->
+    uriAnchor = document.createElement('a')
+    uriAnchor.href = documentUri
+    uriAnchor.pathname = ""
+    apiUri = uriAnchor.href
+    return apiUri
+
   App.createDataModel = (wrmlData) ->
     new App.Entities.Model wrmlData
 
