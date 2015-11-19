@@ -125,7 +125,7 @@
     handleDocumentDialogAction: (e) ->
       uriInput = $("#documentDialogUriInput")
       uri = uriInput.val()
-      App.openDocument(uri)
+      App.openDocument(uri, "_blank")
       $('#documentDialog').modal('hide')
 
     handleDocumentDialogUriInputKeypress: (e) ->
@@ -188,11 +188,12 @@
         uri = apiData.uri + resourceData.path
 
         keys = schemaData.keys
+        hasKeys = not $.isEmptyObject(keys)
 
-        #keysPanel.toggleClass("wrml-divided-panel", not $.isEmptyObject(keys))
-
-        if not $.isEmptyObject(keys)
+        if hasKeys
           keysPanel.empty()
+
+        keysPanel.toggle(hasKeys)
 
         for key in keys
 

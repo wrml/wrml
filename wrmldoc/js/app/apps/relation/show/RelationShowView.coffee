@@ -28,3 +28,10 @@
 @Wrmldoc.module "RelationApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Relation extends App.Views.ItemView
     template: "relation/show/relation_show"
+
+    onRender: ->
+      @self = @
+
+    getViewDocument: ->
+      initialDocument = @model.attributes.model
+      return initialDocument

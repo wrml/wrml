@@ -28,3 +28,22 @@
 @Wrmldoc.module "SchemaApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Schema extends App.Views.ItemView
     template: "schema/show/schema_show"
+
+    events:
+      'keyup .wrml-model-property-input' : 'handleModelPropertyInputKeyup'
+      'keyup .schema-slot-name-input' : 'handleSchemaSlotNameInputKeyup'
+
+    onRender: ->
+      @self = @
+      @viewDocument = $.extend(true, {}, @model.attributes.model)
+
+    getViewDocument: ->
+      return @viewDocument
+
+    handleModelPropertyInputKeyup: (e) ->
+      console.log("handleModelPropertyInputKeyup")
+      console.log(e)
+
+    handleSchemaSlotNameInputKeyup: (e) ->
+      console.log("handleSchemaSlotNameInputKeyup")
+      console.log(e)

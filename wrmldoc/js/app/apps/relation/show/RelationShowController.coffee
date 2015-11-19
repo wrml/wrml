@@ -29,12 +29,12 @@
   class Show.Controller extends App.Controllers.Base
 
     initialize: (dataModel) ->
-      @initialDataModel = dataModel
       @initialView = @createShowView(dataModel)
       @show @initialView
 
     saveDocument: ->
-      console.log(@initialDataModel)
+      viewDocument = @initialView.getViewDocument()
+      App.saveViewDocument(viewDocument)
 
     createShowView: (dataModel) ->
       new Show.Relation

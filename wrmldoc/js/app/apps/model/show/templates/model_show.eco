@@ -49,7 +49,7 @@
 
 <section id="model-keys-section">
 
-	<form class="wrml-form model-form">
+	<form class="wrml-form model-form" onsubmit="return false">
 	  
 	<% for keySlotName, keySlot of @schema.keys: %>
 		
@@ -90,7 +90,7 @@
 <% if @schema.slotCount > 0: %>	
 <section>
 
-	<form class="wrml-form model-form">
+	<form class="wrml-form model-form" onsubmit="return false">
 	
 	<% for slotName, slot of @schema.slots: %>
 		
@@ -339,7 +339,7 @@
 
 			<% console.log "Link - name: " + linkName + " rel: " + link.rel %>
 
-			<form class="form-horizontal wrml-form model-form">
+			<form class="form-horizontal wrml-form model-form" onsubmit="return false">
 
 				<fieldset class="wrml-form-fieldset">		
 			
@@ -449,7 +449,7 @@
 
 
 
-	<form class="wrml-form model-form">
+	<form class="wrml-form model-form" onsubmit="return false">
 	
 		<fieldset class="wrml-form-fieldset">
 							
@@ -465,7 +465,7 @@
 
 	<% if @api.title: %>
 
-		<form class="wrml-form model-form">
+		<form class="wrml-form model-form" onsubmit="return false">
 
 			<fieldset class="wrml-form-fieldset">
 								
@@ -482,7 +482,7 @@
 	<% end %>	
 	<% if @api.resource: %>
 
-		<form class="wrml-form model-form">
+		<form class="wrml-form model-form" onsubmit="return false">
 
 			<fieldset class="wrml-form-fieldset">
 								

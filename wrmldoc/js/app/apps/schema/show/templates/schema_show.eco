@@ -18,26 +18,26 @@
 <section id="schema-top-properties-section" class="schema-section">
 
 
-	<form class="form-horizontal wrml-form">
+	<form class="form-horizontal wrml-form" onsubmit="return false">
 
 		<fieldset class="wrml-form-fieldset">
 				  
 			<div class="control-group">								
 			
-				<label class="control-label" for="uri">URI</label>		
+				<label class="control-label" for="wrml-model-property-uri">URI</label>
 
 				<div class="controls">												
-					<input type="url" id="uri" value="<%= @schema.uri %>" readonly="readonly">																											
+					<input type="url" id="wrml-model-property-uri" class="wrml-model-property-input" value="<%= @schema.uri %>" readonly="readonly">
 				</div>	
 
 			</div>
 						  
 			<div class="control-group">								
 			
-				<label class="control-label" for="uniqueName">Unique Name</label>		
+				<label class="control-label" for="wrml-model-property-uniqueName">Unique Name</label>
 
 				<div class="controls">												
-					<input type="text" id="uniqueName" value="<%= @schema.uniqueName.fullName %>" readonly="readonly">				
+					<input type="text" id="wrml-model-property-uniqueName" class="wrml-model-property-input" value="<%= @schema.uniqueName.fullName %>" readonly="readonly">
 				</div>	
 
 			</div>
@@ -45,20 +45,20 @@
 
 			<div class="control-group">								
 			
-				<label class="control-label" for="title">Title</label>		
+				<label class="control-label" for="wrml-model-property-title">Title</label>
 
 				<div class="controls">												
-					<input type="text" id="title" value="<%= @schema.title %>" autofocus="autofocus">
+					<input type="text" id="wrml-model-property-title" class="wrml-model-property-input"  value="<%= @schema.title %>" autofocus="autofocus">
 				</div>	
 
 			</div>
 
 			<div class="control-group">								
 			
-				<label class="control-label" for="version">Version</label>		
+				<label class="control-label" for="wrml-model-property-version">Version</label>
 
 				<div class="controls">												
-					<input type="number" id="version" value="<%= @schema.version %>">				
+					<input type="number" id="wrml-model-property-version" class="wrml-model-property-input" value="<%= @schema.version %>">
 				</div>	
 
 			</div>
@@ -68,12 +68,12 @@
 	</form>		
 
 
-	<form class="wrml-form">
+	<form class="wrml-form" onsubmit="return false">
 
 		<fieldset class="wrml-form-fieldset">
 							
-			<label class="wrml-form-field-label" for="description">Description</label>	
-			<textarea id="description"><%= @schema.description %></textarea>
+			<label class="wrml-form-field-label" for="wrml-model-property-description">Description</label>
+			<textarea id="wrml-model-property-description" class="wrml-model-property-input" ><%= @schema.description %></textarea>
 		
 		</fieldset>
 
@@ -95,7 +95,7 @@
   		
   		<div class="span6">
 
-			<form id="schema-base-schema-form" class="wrml-form">
+			<form id="schema-base-schema-form" class="wrml-form" onsubmit="return false">
 			  	  
 				<fieldset class="wrml-form-fieldset">
 
@@ -181,7 +181,7 @@
 
 <section id="schema-properties-section" class="schema-section">
 
-	<form class="wrml-form schema-properties-form">
+	<form class="wrml-form schema-properties-form" onsubmit="return false">
 		  
 		<fieldset class="wrml-form-fieldset">
 
@@ -220,7 +220,7 @@
 			
 			<% if property.declaringSchemaUri is @schema.uri: %>
 
-				<form class="wrml-form schema-slot-name-form form-inline well">	
+				<form class="wrml-form schema-slot-name-form form-inline well" onsubmit="return false">
 				
 					<% propertyType = property.type  %>				
 					<% console.log "Property - name: " + propertyName + " type: " + propertyType %>
@@ -229,10 +229,10 @@
 						
 						<div class="schema-slot-name controls span6">						
 
-							<label class="wrml-form-field-label" for="<%= propertyName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/<%= propertyType %>.png" /></label>															
+							<label class="wrml-form-field-label" for="wrml-model-property-<%= propertyName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/<%= propertyType %>.png" /></label>
 
 							<div class="input-append">					
-								<input class="schema-slot-name-input" type="text" id="<%= propertyName %>" value="<%= propertyName %>">
+								<input class="schema-slot-name-input" type="text" id="wrml-model-property-<%= propertyName %>" value="<%= propertyName %>">
 				  				
 								<div class="btn-group">								
 									<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
@@ -260,21 +260,21 @@
 				</form>	
 
 
-				<form class="wrml-form schema-slot-form form-inline">
+				<form class="wrml-form schema-slot-form form-inline" onsubmit="return false">
 						  
 					<!-- The Property's Type definition fields -->
 					<div class="controls-row">
 						
-						<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_type">Type</label>
-						<input id="<%= propertyName %>_type" class="schema-slot-form-input-short" type="text" value="<%= propertyType %>" readonly="readonly">
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-type">Type</label>
+						<input id="wrml-model-property-<%= propertyName %>-type" class="schema-slot-form-input-short" type="text" value="<%= propertyType %>" readonly="readonly">
 
 						<% if propertyType is "Model": %>
 						
-						<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_modelSchema">Model Schema</label>
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-modelSchema">Model Schema</label>
 						
 						<div class="input-append">					
 
-							<input id="<%= propertyName %>_modelSchema" type="text" value="<%= property.schema?.title %>" readonly="readonly">
+							<input id="wrml-model-property-<%= propertyName %>-modelSchema" type="text" value="<%= property.schema?.title %>" readonly="readonly">
 			  				
 							<div class="btn-group">
 								<button class="btn btn-inverse" type="button">Open</button>
@@ -288,10 +288,10 @@
 						<% propertySyntaxTitle = propertySyntax?.title %>
 
 							<% if propertySyntaxTitle: %>
-							<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_syntax">Syntax</label>
+							<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-syntax">Syntax</label>
 							<div class="input-append">					
 
-								<input id="<%= propertyName %>_syntax" type="text" value="<%= propertySyntaxTitle %>" readonly="readonly">
+								<input id="wrml-model-property-<%= propertyName %>-syntax" type="text" value="<%= propertySyntaxTitle %>" readonly="readonly">
 				  				
 								<div class="btn-group">
 									<button class="btn btn-inverse" type="button">Open</button>
@@ -303,11 +303,11 @@
 
 						<% else if propertyType is "SingleSelect": %>
 						
-						<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_choices">Choices</label>
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-choices">Choices</label>
 						
 						<div class="input-append">					
 
-							<input id="<%= propertyName %>_choices" type="text" value="<%= property.choices?.title %>" readonly="readonly">
+							<input id="wrml-model-property-<%= propertyName %>-choices" type="text" value="<%= property.choices?.title %>" readonly="readonly">
 			  				
 							<div class="btn-group">
 								<button class="btn btn-inverse" type="button">Open</button>
@@ -321,16 +321,16 @@
 						<% element = property.element %>
 						<% elementType = element?.type %>
 
-						<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_elementType">Element Type</label>
-						<input id="<%= propertyName %>_elementType" class="schema-slot-form-input-short" type="text" value="<%= elementType %>" readonly="readonly">
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-elementType">Element Type</label>
+						<input id="wrml-model-property-<%= propertyName %>-elementType" class="schema-slot-form-input-short" type="text" value="<%= elementType %>" readonly="readonly">
 
 							<% if elementType is "Model": %>
 							<% elementSchema = element?.schema %>
 
-							<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_elementType_modelSchema">Model Schema</label>
+							<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-elementType-modelSchema">Model Schema</label>
 							<div class="input-append">					
 
-								<input id="<%= propertyName %>_elementType_modelSchema" type="text" value="<%= elementSchema?.title %>" readonly="readonly">
+								<input id="wrml-model-property-<%= propertyName %>-elementType-modelSchema" type="text" value="<%= elementSchema?.title %>" readonly="readonly">
 				  				
 								<div class="btn-group">
 									<button class="btn btn-inverse" type="button">Open</button>
@@ -338,18 +338,16 @@
 
 							</div>	
 
-							
-							
 							<% else if elementType is "Text": %> 
 							<% elementSyntax = element?.syntax %>
 							<% elementSyntaxTitle = elementSyntax?.title %>
 
 								<% if elementSyntaxTitle: %>
-								<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_elementType_syntax">Syntax</label>
+								<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-elementType-syntax">Syntax</label>
 								
 								<div class="input-append">					
 
-									<input id="<%= propertyName %>_elementType_syntax" type="text" value="<%= elementSyntaxTitle %>" readonly="readonly">
+									<input id="wrml-model-property-<%= propertyName %>-elementType-syntax" type="text" value="<%= elementSyntaxTitle %>" readonly="readonly">
 					  				
 									<div class="btn-group">
 										<button class="btn btn-inverse" type="button">Open</button>
@@ -362,11 +360,11 @@
 							<% else if elementType is "SingleSelect": %>
 							<% elementChoices = element?.choices %>
 							
-							<label class="schema-slot-form-input-label readonly-label" for="<%= propertyName %>_elementType_choices">Choices</label>
+							<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-<%= propertyName %>-elementType-choices">Choices</label>
 							
 							<div class="input-append">					
 
-								<input id="<%= propertyName %>_elementType_choices" type="text" value="<%= elementChoices?.title %>" readonly="readonly">
+								<input id="wrml-model-property-<%= propertyName %>-elementType-choices" type="text" value="<%= elementChoices?.title %>" readonly="readonly">
 				  				
 								<div class="btn-group">
 									<button class="btn btn-inverse" type="button">Open</button>
@@ -381,8 +379,8 @@
 
 					<!-- The Property's Description field -->
 					<div class="controls-row">
-						<label class="schema-slot-form-input-label" for="<%= propertyName %>_description">Description</label>	
-						<textarea id="<%= propertyName %>_description"><%= property.description %></textarea>
+						<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-description">Description</label>
+						<textarea id="wrml-model-property-<%= propertyName %>-description"><%= property.description %></textarea>
 					</div>
 
 					<% if propertyType isnt "Model" and propertyType isnt "List" and propertyType isnt "Collection": %>
@@ -400,13 +398,13 @@
 							<% end %>
 
 							<label class="checkbox schema-slot-form-checkbox-label">						
-								<input id="<%= propertyName %>_defaultValue" type="checkbox" value="defaultValue" <%= checkedAttribute %>>Default Value
+								<input id="wrml-model-property-<%= propertyName %>-defaultValue" type="checkbox" value="defaultValue" <%= checkedAttribute %>>Default Value
 							</label>
 
 						<% else if propertyType is "SingleSelect": %>
 						
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_defaultValue">Default Value</label>
-							<select id="<%= propertyName %>_defaultValue">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-defaultValue">Default Value</label>
+							<select id="wrml-model-property-<%= propertyName %>-defaultValue">
 
 							<% choices = property?.choices %>
 							<% choiceValueMap = choices?.valueMap %>
@@ -426,7 +424,7 @@
 
 						<% else: %>
 							
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_defaultValue">Default Value</label>
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-defaultValue">Default Value</label>
 
 							<% inputType = "text" %>
 							<% classAttribute = "" %>
@@ -446,7 +444,7 @@
 								<% inputType = "datetime" %>					
 							<% end %>																					
 
-							<input id="<%= propertyName %>_defaultValue" <%= classAttribute %> type="<%= inputType %>" value="<%= defaultValue %>">
+							<input id="wrml-model-property-<%= propertyName %>-defaultValue" <%= classAttribute %> type="<%= inputType %>" value="<%= defaultValue %>">
 						<% end %>																					
 
 					</div>
@@ -459,43 +457,37 @@
 						
 						<% if propertyType is "Text": %> 
 									
-							<label class="checkbox schema-slot-form-checkbox-label">						
-								<input id="<%= propertyName %>isMultiline" type="checkbox" value="isMultiline">Multiline
-							</label>
+							<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isMultiline" type="checkbox" value="isMultiline">Multiline</label>
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_minimumLength">Minimum Length</label>
-							<input id="<%= propertyName %>_minimumLength" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-minimumLength">Minimum Length</label>
+							<input id="wrml-model-property-<%= propertyName %>-minimumLength" class="schema-slot-form-input-short" type="number" value="">
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_maximumLength">Maximum Length</label>
-							<input id="<%= propertyName %>_maximumLength" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-maximumLength">Maximum Length</label>
+							<input id="wrml-model-property-<%= propertyName %>-maximumLength" class="schema-slot-form-input-short" type="number" value="">
 
 						<% else if propertyType is "List": %>
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_minimumSize">Minimum Size</label>
-							<input id="<%= propertyName %>_minimumSize" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-minimumSize">Minimum Size</label>
+							<input id="wrml-model-property-<%= propertyName %>-minimumSize" class="schema-slot-form-input-short" type="number" value="">
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_maximumSize">Maximum Size</label>
-							<input id="<%= propertyName %>_maximumSize" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-maximumSize">Maximum Size</label>
+							<input id="wrml-model-property-<%= propertyName %>-maximumSize" class="schema-slot-form-input-short" type="number" value="">
 						
 						<% else if propertyType is "Integer" or propertyType is "Long" or propertyType is "Double": %>
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_minimum">Minimum</label>
-							<input id="<%= propertyName %>_minimum" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-minimum">Minimum</label>
+							<input id="wrml-model-property-<%= propertyName %>-minimum" class="schema-slot-form-input-short" type="number" value="">
 
-							<label class="checkbox schema-slot-form-checkbox-label">						
-								<input id="<%= propertyName %>isExclusiveMinimum" type="checkbox" value="isExclusiveMinimum">Exclusive
-							</label>
+							<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isExclusiveMinimum" type="checkbox" value="isExclusiveMinimum">Exclusive</label>
 
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_maximum">Maximum</label>
-							<input id="<%= propertyName %>_maximum" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-maximum">Maximum</label>
+							<input id="wrml-model-property-<%= propertyName %>-maximum" class="schema-slot-form-input-short" type="number" value="">
 
-							<label class="checkbox schema-slot-form-checkbox-label">						
-								<input id="<%= propertyName %>isExclusiveMaximum" type="checkbox" value="isExclusiveMaximum">Exclusive
-							</label>
+							<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isExclusiveMaximum" type="checkbox" value="isExclusiveMaximum">Exclusive</label>
 
 							<% if propertyType isnt "Double": %>
-							<label class="schema-slot-form-input-label" for="<%= propertyName %>_divisibleBy">Divisible By</label>
-							<input id="<%= propertyName %>_divisibleBy" class="schema-slot-form-input-short" type="number" value="">
+							<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-divisibleBy">Divisible By</label>
+							<input id="wrml-model-property-<%= propertyName %>-divisibleBy" class="schema-slot-form-input-short" type="number" value="">
 							<% end %>	
 
 						<% end %>																					
@@ -507,32 +499,15 @@
 					<!-- The Primitive Property's common fields -->
 					<div class="controls-row">
 						
+						<% isKey = _.contains(keyPropertyNames, propertyName) %>
+						<% keyCheckedAttribute = if isKey then "checked=true" else "" %>
 
-						<label class="checkbox schema-slot-form-checkbox-label">
-							
-							<% isKey = _.contains(keyPropertyNames, propertyName) %>
-							<% keyCheckedAttribute = if isKey then "checked=true" else "" %>
-
-							<input id="<%= propertyName %>_isKey" type="checkbox" value="isKey" <%= keyCheckedAttribute %>>Key
-						</label>
-
-						<label class="checkbox schema-slot-form-checkbox-label">
-							
-							<input id="<%= propertyName %>_isSearchable" type="checkbox" value="isSearchable">Searchable
-						</label>
-
-						<label class="checkbox schema-slot-form-checkbox-label">
-
-							<input id="<%= propertyName %>_isComparable" type="checkbox" value="isComparable">Comparable
-						</label>
-
-						<label class="checkbox schema-slot-form-checkbox-label">
-
-							<input id="<%= propertyName %>_isTitle" type="checkbox" value="isTitle">Title
-						</label>
-
-						<label class="schema-slot-form-input-label" for="<%= propertyName %>_aliases">Aliases</label>
-						<input id="<%= propertyName %>_aliases" type="text" value="">
+						<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isKey" type="checkbox" value="isKey" <%= keyCheckedAttribute %>>Key</label>
+						<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isSearchable" type="checkbox" value="isSearchable">Searchable</label>
+						<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isComparable" type="checkbox" value="isComparable">Comparable</label>
+						<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-<%= propertyName %>-isTitle" type="checkbox" value="isTitle">Title</label>
+						<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-aliases">Aliases</label>
+						<input id="wrml-model-property-<%= propertyName %>-aliases" type="text" value="">
 
 					</div>
 					<% else: %>
@@ -540,8 +515,8 @@
 					<!-- The Structure Property's common fields -->
 					<div class="controls-row">
 						
-						<label class="schema-slot-form-input-label" for="<%= propertyName %>_aliases">Aliases</label>
-						<input id="<%= propertyName %>_aliases" type="text" value="">
+						<label class="schema-slot-form-input-label" for="wrml-model-property-<%= propertyName %>-aliases">Aliases</label>
+						<input id="wrml-model-property-<%= propertyName %>-aliases" type="text" value="">
 
 					</div>
 					<% end %>		
@@ -565,7 +540,7 @@
 
 <section id="schema-links-section" class="schema-section">
 
-	<form class="wrml-form schema-links-form">
+	<form class="wrml-form schema-links-form" onsubmit="return false">
 		  
 		<fieldset class="wrml-form-fieldset">
 
@@ -585,16 +560,16 @@
 
 			<% if link.declaringSchemaUri is @schema.uri: %>
 
-				<form class="wrml-form schema-slot-name-form form-inline well">
+				<form class="wrml-form schema-slot-name-form form-inline well" onsubmit="return false">
 			  						
 					<div class="controls controls-row">
 						
 						<div class="schema-slot-name controls span6">						
 
-							<label class="wrml-form-field-label" for="<%= linkName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Link.png" /></label>
+							<label class="wrml-form-field-label" for="wrml-link-<%= linkName %>"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Link.png" /></label>
 
 							<div class="input-append">					
-								<input class="schema-slot-name-input" type="text" id="<%= linkName %>" value="<%= linkName %>">
+								<input class="schema-slot-name-input" type="text" id="wrml-link-<%= linkName %>" value="<%= linkName %>">
 				  				
 								<div class="btn-group">								
 									<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
@@ -620,16 +595,16 @@
 				</form>	
 
 
-				<form class="wrml-form schema-slot-form form-inline">
+				<form class="wrml-form schema-slot-form form-inline" onsubmit="return false">
 						  
 					<!-- The Link's definition fields -->
 					<div class="controls-row">
 						
-						<label class="schema-slot-form-input-label readonly-label" for="<%= linkName %>_relation">Relation</label>
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-link-<%= linkName %>-relation">Relation</label>
 
 						<div class="input-append">					
 
-							<input id="<%= linkName %>_relation" type="text" value="<%= link.relationTitle %>" readonly="readonly">
+							<input id="wrml-link-<%= linkName %>-relation" type="text" value="<%= link.relationTitle %>" readonly="readonly">
 			  				
 							<div class="btn-group">
 								<button class="btn btn-inverse" type="button">Open</button>
@@ -638,8 +613,8 @@
 						</div>	
 
 
-						<label class="schema-slot-form-input-label readonly-label" for="<%= linkName %>_method">Method</label>
-						<input id="<%= linkName %>_method" class="schema-slot-form-input-short" type="text" value="<%= link.method %>" readonly="readonly">
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-link-<%= linkName %>-method">Method</label>
+						<input id="wrml-link-<%= linkName %>-method" class="schema-slot-form-input-short" type="text" value="<%= link.method %>" readonly="readonly">
 
 					</div>
 
@@ -649,11 +624,11 @@
 					<div class="controls-row">
 						
 						<% if link.responseSchemaTitle: %>
-						<label class="schema-slot-form-input-label readonly-label" for="<%= linkName %>_responseSchema">Response Schema</label>	
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-link-<%= linkName %>-responseSchema">Response Schema</label>
 						
 						<div class="input-append">					
 
-							<input id="<%= linkName %>_responseSchema" type="text" value="<%= link.responseSchemaTitle %>" readonly="readonly">	
+							<input id="wrml-link-<%= linkName %>-responseSchema" type="text" value="<%= link.responseSchemaTitle %>" readonly="readonly">
 			  				
 							<div class="btn-group">
 								<button class="btn btn-inverse" type="button">Open</button>
@@ -663,11 +638,11 @@
 						<% end %>
 
 						<% if link.requestSchemaTitle: %>
-						<label class="schema-slot-form-input-label readonly-label" for="<%= linkName %>_requestSchema">Request Schema</label>	
+						<label class="schema-slot-form-input-label readonly-label" for="wrml-link-<%= linkName %>-requestSchema">Request Schema</label>
 
 						<div class="input-append">					
 
-							<input id="<%= linkName %>_requestSchema" type="text" value="<%= link.requestSchemaTitle %>" readonly="readonly">
+							<input id="wrml-link-<%= linkName %>-requestSchema" type="text" value="<%= link.requestSchemaTitle %>" readonly="readonly">
 			  				
 							<div class="btn-group">
 								<button class="btn btn-inverse" type="button">Open</button>
@@ -681,8 +656,8 @@
 	 
 					<!-- The Link's Description field -->
 					<div class="controls-row">
-						<label class="schema-slot-form-input-label" for="<%= linkName %>_description">Description</label>	
-						<textarea id="<%= linkName %>_description"><%= link.description %></textarea>
+						<label class="schema-slot-form-input-label" for="wrml-link-<%= linkName %>-description">Description</label>
+						<textarea id="wrml-link-<%= linkName %>-description"><%= link.description %></textarea>
 					</div>
 
 				</form>	

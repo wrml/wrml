@@ -5,6 +5,12 @@
 
 	  	<img id="title-icon" src="<%= @docroot %>img/api.png" /><%= @api.title %>
 
+          <div class="pull-right">
+            <button id="main-toolbar-save-button" class="btn btn-inverse wrml-toolbar-button" type="button">Save</button>
+            <button id="main-toolbar-load-button" class="btn btn-inverse wrml-toolbar-button" type="button">Load</button>
+            <button id="main-toolbar-swagger-button" class="btn btn-inverse wrml-toolbar-button" type="button">Swagger</button>
+          </div>
+
 	  </h1>
 	</div>
 
@@ -16,36 +22,36 @@
 <section id="api-top-properties-section" class="api-section">
 
 
-	<form class="form-horizontal wrml-form">
+	<form class="form-horizontal wrml-form" onsubmit="return false">
 
 		<fieldset class="wrml-form-fieldset">
 				  
 			<div class="control-group">								
 			
-				<label class="control-label" for="uri">URI</label>		
+				<label class="control-label" for="wrml-model-property-uri">URI</label>
 
 				<div class="controls">												
-					<input type="url" id="uri" value="<%= @api.uri %>" readonly="readonly">																											
+					<input type="url" id="wrml-model-property-uri" class="wrml-model-property-input" data-wrml-model-property-name="uri" value="<%= @api.uri %>" readonly="readonly">
 				</div>	
 
 			</div>
 						  
 			<div class="control-group">								
 			
-				<label class="control-label" for="title">Title</label>		
+				<label class="control-label" for="wrml-model-property-title">Title</label>
 
 				<div class="controls">												
-					<input type="text" id="title" value="<%= @api.title %>" autofocus="autofocus">
+					<input type="text" id="wrml-model-property-title" class="wrml-model-property-input" data-wrml-model-property-name="title" value="<%= @api.title %>" autofocus="autofocus">
 				</div>	
 
 			</div>
 
 			<div class="control-group">								
 			
-				<label class="control-label" for="version">Version</label>		
+				<label class="control-label" for="wrml-model-property-version">Version</label>
 
 				<div class="controls">												
-					<input type="number" id="version" value="<%= @api.version %>">				
+					<input type="number" id="wrml-model-property-version" class="wrml-model-property-input" data-wrml-model-property-name="version" value="<%= @api.version %>">
 				</div>	
 
 			</div>
@@ -55,12 +61,12 @@
 	</form>		
 
 
-	<form class="wrml-form">
+	<form class="wrml-form" onsubmit="return false">
 
 		<fieldset class="wrml-form-fieldset">
 							
-			<label class="wrml-form-field-label" for="description">Description</label>	
-			<textarea id="description"><%= @api.description %></textarea>
+			<label class="wrml-form-field-label" for="wrml-model-property-description">Description</label>
+			<textarea id="wrml-model-property-description" class="wrml-model-property-input" data-wrml-model-property-name="description"><%= @api.description %></textarea>
 		
 		</fieldset>
 
@@ -89,7 +95,7 @@
 			<% parentPath = resource.parentPath %>
 			<% isDocroot = not parentPath %>
 
-			<form class="wrml-form api-resource-segment-form form-inline well">
+			<form class="wrml-form api-resource-segment-form form-inline well" onsubmit="return false">
 		  						
 				<div class="controls controls-row">
 					
@@ -146,7 +152,7 @@
 
 			</form>
 
-			<form class="wrml-form api-resource-form form-inline">
+			<form class="wrml-form api-resource-form form-inline" onsubmit="return false">
 							
 				<div class="controls-row">
 					

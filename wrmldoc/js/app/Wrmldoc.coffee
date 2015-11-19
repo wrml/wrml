@@ -63,9 +63,13 @@
   App.getEmbeddedDataModel = ->
     App.dataModel
 
-  App.openDocument = (uri) ->
+  App.openDocument = (uri, target) ->
 
-    $("<a>").attr("href", uri).attr("target", "_blank")[0].click();
+    aElement = $("<a>").attr("href", uri)
+    if (target)
+      aElement = aElement.attr("target", "_blank")
+
+    aElement[0].click();
 
     #settings = {
     #  headers: {
@@ -124,6 +128,30 @@
 
   App.saveDocument = ->
     App.currentModule.saveDocument()
+
+  App.saveViewDocument = (viewDocument) ->
+    console.log("App.saveViewDocument")
+    console.log(viewDocument)
+
+    url = App.rewriteUri(viewDocument.uri)
+
+    $.ajax({
+      type: "PUT",
+      url: url,
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(viewDocument),
+      success: (data, textStatus, jqXHR) ->
+        console.log(textStatus)
+        console.log(data)
+        console.log(jqXHR.responseText)
+        App.openDocument(url)
+
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.error(textStatus)
+        console.error(errorThrown)
+        console.error(jqXHR.responseText)
+    })
 
   #App.newDocument = (dataModel) ->
   #  #alert "New Document!"

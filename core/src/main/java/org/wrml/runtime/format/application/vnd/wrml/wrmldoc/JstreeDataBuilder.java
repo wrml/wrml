@@ -103,7 +103,11 @@ public class JstreeDataBuilder {
                 dataArrayNode.add(apiDataNode);
 
                 final Api api = apiNavigator.getApi();
-                final String apiTitle = api.getTitle();
+                String apiTitle = api.getTitle();
+
+                if (apiTitle == null || apiTitle.isEmpty()) {
+                    apiTitle = apiUri.toString();
+                }
 
                 apiDataNode.put(PropertyName.text.name(), apiTitle);
                 apiDataNode.put(PropertyName.icon.name(), _ThemeDocroot + "api.png");

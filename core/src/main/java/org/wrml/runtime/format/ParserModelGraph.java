@@ -532,6 +532,8 @@ public final class ParserModelGraph extends ModelGraph {
             // Set the Embedded's document uri slot
             final URI uri = (URI) documentModel.getSlotMap().get(Document.SLOT_NAME_URI);
             typedModel.setSlotValue(Embedded.SLOT_NAME_DOCUMENT_URI, uri);
+            // TODO: BUG!!! - With refactor to initialize hypermedia in initKeys, embedded Document links may not be
+            // generated correctly
         }
 
         if (_ModelStack.isEmpty()) {

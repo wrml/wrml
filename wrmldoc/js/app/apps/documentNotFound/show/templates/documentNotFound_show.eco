@@ -57,7 +57,7 @@
 
 				<div class="span10 documentNotFound-workflow-element">
 					
-					<form class="documentNotFound-form form-horizontal">
+					<form class="documentNotFound-form form-horizontal" onsubmit="return false">
 
 						<fieldset>	
 						

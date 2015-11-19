@@ -47,6 +47,7 @@ import org.wrml.runtime.rest.*;
 import org.wrml.runtime.rest.MediaType.MediaTypeException;
 import org.wrml.runtime.schema.PropertyProtoSlot;
 import org.wrml.runtime.schema.Prototype;
+import org.wrml.runtime.schema.SchemaLoader;
 import org.wrml.util.PropertyUtil;
 import org.wrml.util.UniqueName;
 
@@ -228,6 +229,7 @@ public class WrmlServlet extends HttpServlet {
 
         final Context context = getContext();
         final ApiLoader apiLoader = context.getApiLoader();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
 
         // Determine the HTTP interaction method.
         final Method method = Method.fromProtocolGivenName(request.getMethod().toUpperCase());
@@ -248,6 +250,9 @@ public class WrmlServlet extends HttpServlet {
 
         LOGGER.debug("Acceptable Media Types: {}", acceptableMediaTypes);
 
+        // Flag that is true if the request is for a new (unsaved) Document
+        final boolean isNewDocumentRequest = (request.getParameter(NEW_PARAMETER_NAME) != null);
+
         try {
             // Determine the identity of the request's resource "endpoint".
             final URI requestUri = getRequestUri(request);
@@ -257,39 +262,54 @@ public class WrmlServlet extends HttpServlet {
             final String path = requestUri.getPath();
 
             // TODO: This is ugly here. Move this handling to an "admin" construct.
-            if (method == Method.Get && path.startsWith(WRML_METADATA_ROOT_PATH)) {
+            if (path.startsWith(WRML_METADATA_ROOT_PATH)) {
 
                 final Model responseModel;
                 MediaType responseEntityMediaType = null;
                 URI responseEntityFormatUri = null;
 
-                switch (path) {
+                if (method == Method.Get) {
+                    switch (path) {
 
-                    case WRML_METADATA_PING_PATH:
-                        responseModel = _PingStatusReport;
-                        responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
-                        break;
+                        case WRML_METADATA_PING_PATH:
+                            responseModel = _PingStatusReport;
+                            responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
+                            break;
 
-                    case WRML_METADATA_API_PATH:
-                        responseModel = api;
-                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
-                        break;
+                        case WRML_METADATA_API_SWAGGER_PATH:
+                            responseModel = api;
+                            responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
+                            responseEntityFormatUri = SystemFormat.vnd_wrml_swagger_api.getFormatUri();
+                            break;
 
-                    case WRML_METADATA_API_SWAGGER_PATH:
-                        responseModel = api;
-                        responseEntityMediaType = APPLICATION_JSON_MEDIA_TYPE;
-                        responseEntityFormatUri = SystemFormat.vnd_wrml_swagger_api.getFormatUri();
-                        break;
+                        case WRML_METADATA_API_LOAD_PATH:
+                            responseModel = loadApi(requestUri);
+                            responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                            break;
 
-                    case WRML_METADATA_API_LOAD_PATH:
-                        responseModel = loadApi(requestUri);
-                        responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
-                        break;
+                        default:
+                            responseModel = null;
+                            break;
 
-                    default:
-                        responseModel = null;
-                        break;
+                    }
+                }
+                else if (method == Method.Invoke) {
 
+                    switch (path) {
+
+                        case WRML_METADATA_API_LOAD_PATH:
+                            responseModel = loadApi(requestUri);
+                            responseEntityMediaType = getMostAcceptableMediaType(responseModel.getSchemaUri(), acceptableMediaTypes);
+                            break;
+
+                        default:
+                            responseModel = null;
+                            break;
+                    }
+
+                }
+                else {
+                    responseModel = null;
                 }
 
                 if (responseModel != null) {
@@ -305,9 +325,71 @@ public class WrmlServlet extends HttpServlet {
 
             }
 
+
             if (apiNavigator == null) {
+
+                LOGGER.debug("API Navigator is null for request URI: " + requestUri);
+
+                LOGGER.debug("Request URI path: \"" + path + "\"");
+
+                final URI apiSchemaUri = schemaLoader.getApiSchemaUri();
+
+                if (path.isEmpty() || path.equals("/")) {
+
+                    LOGGER.debug("Handling Unsaved API \"" + method.getProtocolGivenName() + "\" Request: " + requestUri);
+
+                    Model responseModel = null;
+                    switch (method) {
+                        case Get: {
+
+                            if (isNewDocumentRequest) {
+                                final ApiBuilder apiBuilder = new ApiBuilder(context);
+                                apiBuilder.uri(requestUri).title(requestUri.getHost()).docroot(UUID.randomUUID());
+                                responseModel = apiBuilder.toApi();
+                                final Keys apiKeys = responseModel.getKeys();
+                                responseModel.initKeySlots(apiKeys);
+                            }
+                            else {
+                                // Handle first time GET of a non-loaded API
+                                KeysBuilder keysBuilder = new KeysBuilder(schemaLoader.getDocumentSchemaUri(), requestUri);
+                                DimensionsBuilder dimensionsBuilder = new DimensionsBuilder(apiSchemaUri);
+                                responseModel = context.getModel(keysBuilder.toKeys(), dimensionsBuilder.toDimensions());
+                            }
+                            break;
+                        }
+                        case Save: {
+
+                            final Model parameterModel = readModelFromRequestEntity(request, method, requestUri, apiSchemaUri);
+                            LOGGER.debug("Saving API with parameter model: " + parameterModel);
+
+                            if (parameterModel instanceof Api) {
+                                responseModel = context.saveModel(parameterModel);
+                                LOGGER.debug("Saved API: " + responseModel);
+                            }
+
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+
+                    if (responseModel != null) {
+
+                        final MediaType responseEntityMediaType = getMostAcceptableMediaType(apiSchemaUri, acceptableMediaTypes);
+                        try {
+                            LOGGER.debug("Responding with API: " + responseModel);
+                            writeModelAsResponseEntity(method, response, responseModel, responseEntityMediaType, null);
+                        } catch (final ModelWriterException | MediaTypeException e) {
+                            throw new ServletException("Failed to write model to HTTP response output stream (URI = " + requestUri + ", Model = [" + api + "]).", e);
+                        }
+                        return;
+                    }
+                }
+
+                LOGGER.debug("API Handling code skipped " + method.getProtocolGivenName() + " request: " + requestUri);
                 final ApiNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(ApiNotFoundErrorReport.class, requestUri, null);
                 throw new WrmlServletException(notFoundErrorReport);
+
             }
 
             LOGGER.debug("Request is associated with REST API: {}.", api.getTitle());
@@ -332,14 +414,14 @@ public class WrmlServlet extends HttpServlet {
             }
 
             // Build the Model query objects; the Keys (URI and other identities) and Dimensions ("header" metadata).
-            final Dimensions dimensions = buildDimensions(request, method, requestUri, api, acceptableMediaTypes);
+            final Dimensions dimensions = buildDimensions(request, method, requestUri, acceptableMediaTypes);
             final Keys keys = apiLoader.buildDocumentKeys(requestUri, dimensions.getSchemaUri());
 
             LOGGER.debug("Request Keys: {}.", keys);
             LOGGER.debug("Request Dimensions: {}.", dimensions);
 
             // Read the request entity (with PUT or POST) as a model that will be passed as a parameter.
-            final Model parameterModel = readModelFromRequestEntity(request, method, requestUri);
+            final Model parameterModel = readModelFromRequestEntity(request, method, requestUri, null);
 
             if (parameterModel != null) {
                 LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] passed parameter Model\n: " + parameterModel);
@@ -351,12 +433,11 @@ public class WrmlServlet extends HttpServlet {
             if (responseModel == null) {
                 LOGGER.debug("Request method [" + method.getProtocolGivenName() + "] URI: " + requestUri + " returned a null Model.");
 
-
                 switch (method) {
                     case Get: {
 
-                        // Check if the request is for a new (unsaved) Model
-                        if (request.getParameter(NEW_PARAMETER_NAME) != null) {
+                        // Check if the request is for a new (unsaved) Document
+                        if (isNewDocumentRequest) {
 
                             final Model newModel = context.newModel(dimensions);
                             newModel.initKeySlots(keys);
@@ -381,11 +462,11 @@ public class WrmlServlet extends HttpServlet {
                         // Respond with a DocumentNotFoundErrorReport
                         final DocumentNotFoundErrorReport notFoundErrorReport = createNotFoundErrorReport(DocumentNotFoundErrorReport.class, requestUri, api);
                         final URI defaultSchemaUri = dimensions.getSchemaUri();
-                        final Prototype defaultSchemaPrototype = context.getSchemaLoader().getPrototype(defaultSchemaUri);
+                        final Prototype defaultSchemaPrototype = schemaLoader.getPrototype(defaultSchemaUri);
                         notFoundErrorReport.setDefaultSchemaUri(defaultSchemaUri);
                         notFoundErrorReport.setDefaultSchemaTitle(defaultSchemaPrototype.getTitle());
 
-                        if (keys.getCount() > 1) {
+                        if (keys.getCount() > 1 && endpointResource != null) {
 
                             final Set<Parameter> surrogateKeyComponents = endpointResource.getSurrogateKeyComponents(requestUri, defaultSchemaPrototype);
                             if (surrogateKeyComponents != null && !surrogateKeyComponents.isEmpty()) {
@@ -594,11 +675,10 @@ public class WrmlServlet extends HttpServlet {
      * @param request              The {@link HttpServletRequest} that holds the metadata that is needed for the {@link Dimensions}.
      * @param method               The requested interaction {@link Method}.
      * @param requestUri           The requested resource's id ({@link URI}).
-     * @param api                  The target REST API ({@link Api}).
      * @param acceptableMediaTypes The client-specified acceptable {@link MediaType}s.
      * @return The requested {@link Dimensions} of the desired response entity {@link Model}.
      */
-    Dimensions buildDimensions(final HttpServletRequest request, final Method method, final URI requestUri, final Api api, final List<MediaType> acceptableMediaTypes) throws ServletException {
+    Dimensions buildDimensions(final HttpServletRequest request, final Method method, final URI requestUri, final List<MediaType> acceptableMediaTypes) throws ServletException {
 
         // Determine the best possible schema URI for the response.
         final List<URI> acceptableSchemaUriList = getAcceptableResponseEntitySchemaUris(method, requestUri, acceptableMediaTypes);
@@ -610,11 +690,11 @@ public class WrmlServlet extends HttpServlet {
         else {
 
             if (!acceptableMediaTypes.isEmpty()) {
-                throw new ServletException("A 406. The WRML REST API (" + api.getTitle() + ") doesn't define any acceptable representations of the resource identified by: " + requestUri);
+                throw new ServletException("A 406. The WRML REST API doesn't define any acceptable representations of the resource identified by: " + requestUri);
             }
 
             if (method == Method.Get) {
-                throw new ServletException("A 403? The WRML REST API (" + api.getTitle() + ") doesn't define any representation of the resource identified by: " + requestUri);
+                throw new ServletException("A 403? The WRML REST API doesn't define any representation of the resource identified by: " + requestUri);
             }
 
             // The interaction may not return anything, (e.g. DELETE)
@@ -724,7 +804,7 @@ public class WrmlServlet extends HttpServlet {
      * @return
      * @throws ServletException
      */
-    Model readModelFromRequestEntity(final HttpServletRequest request, final Method requestMethod, final URI uri) throws ServletException {
+    Model readModelFromRequestEntity(final HttpServletRequest request, final Method requestMethod, final URI uri, URI requestEntitySchemaUri) throws ServletException {
 
         if (!requestMethod.isEntityAllowedInRequestMessage()) {
             LOGGER.debug("This type of request does not carry a payload [{}]", new Object[]{requestMethod});
@@ -741,13 +821,15 @@ public class WrmlServlet extends HttpServlet {
             }
         }
 
-        final URI requestEntitySchemaUri = getRequestEntitySchemaUri(requestEntityMediaType, requestMethod, uri);
-        final URI requestEntityFormatUri = getRequestFormatUri(requestEntityMediaType);
-
         if (requestEntitySchemaUri == null) {
-            LOGGER.debug("The request schema URI is null, returning null");
-            return null;
+            requestEntitySchemaUri = getRequestEntitySchemaUri(requestEntityMediaType, requestMethod, uri);
+            if (requestEntitySchemaUri == null) {
+                LOGGER.debug("The request schema URI is null, returning null");
+                return null;
+            }
         }
+
+        final URI requestEntityFormatUri = getRequestFormatUri(requestEntityMediaType);
 
         Model model = null;
         InputStream in;

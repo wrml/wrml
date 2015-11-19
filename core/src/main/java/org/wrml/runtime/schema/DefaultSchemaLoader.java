@@ -402,6 +402,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader {
 
 
         final Choices nativeChoices = getSchemaGenerator().generateChoices(nativeChoicesEnumClass);
+        nativeChoices.initKeySlots(keys);
         _NativeChoices.put(uri, nativeChoices);
         return nativeChoices;
 
@@ -436,6 +437,7 @@ public class DefaultSchemaLoader extends ClassLoader implements SchemaLoader {
 
         final Prototype prototype = getPrototype(schemaUri);
         final Schema nativeSchema = getSchemaGenerator().generateSchema(prototype);
+        nativeSchema.initKeySlots(keys);
         _NativeSchemas.put(schemaUri, nativeSchema);
         return nativeSchema;
     }

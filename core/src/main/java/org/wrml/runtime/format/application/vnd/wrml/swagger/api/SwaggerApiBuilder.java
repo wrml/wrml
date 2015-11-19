@@ -53,7 +53,19 @@ public class SwaggerApiBuilder {
         final ObjectNode rootNode = objectMapper.createObjectNode();
 
         final URI apiUri = api.getUri();
-        final ApiNavigator apiNavigator = apiLoader.getLoadedApiNavigator(apiUri);
+
+
+        final ApiNavigator apiNavigator;
+
+        if (apiLoader.getLoadedApiUris().contains(apiUri)) {
+            apiNavigator = apiLoader.getLoadedApiNavigator(apiUri);
+        }
+        else if (ApiNavigator.isApiNavigable(api)){
+            apiNavigator = new ApiNavigator(api);
+        }
+        else {
+            apiNavigator = null;
+        }
 
         rootNode.put("swagger", "2.0");
 
@@ -89,41 +101,43 @@ public class SwaggerApiBuilder {
         rootNode.put("schemes", schemesNode);
         schemesNode.add("http");
 
-        final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
-        final Map<URI, LinkRelation> allLinkRelations = new HashMap<>();
+        if (apiNavigator != null) {
+            final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
+            final Map<URI, LinkRelation> allLinkRelations = new HashMap<>();
 
-        if (allResources.size() > 0) {
-            final SortedMap<String, Resource> displayOrderResources = new TreeMap<>();
+            if (allResources.size() > 0) {
+                final SortedMap<String, Resource> displayOrderResources = new TreeMap<>();
 
-            for (final Resource resource : allResources.values()) {
-                displayOrderResources.put(resource.getPathText(), resource);
-            }
-
-            final ObjectNode pathsNode = objectMapper.createObjectNode();
-
-
-            for (final Resource resource : displayOrderResources.values()) {
-                if (resource.getReferenceMethods().size() > 0) {
-                    addPathObjectNode(context, objectMapper, pathsNode, resource, allLinkRelations, tagDefinitionsNode);
+                for (final Resource resource : allResources.values()) {
+                    displayOrderResources.put(resource.getPathText(), resource);
                 }
+
+                final ObjectNode pathsNode = objectMapper.createObjectNode();
+
+
+                for (final Resource resource : displayOrderResources.values()) {
+                    if (resource.getReferenceMethods().size() > 0) {
+                        addPathObjectNode(context, objectMapper, pathsNode, resource, allLinkRelations, tagDefinitionsNode);
+                    }
+                }
+
+                if (pathsNode.size() > 0) {
+                    rootNode.put("paths", pathsNode);
+                }
+
             }
 
-            if (pathsNode.size() > 0) {
-                rootNode.put("paths", pathsNode);
+            final Set<Schema> allSchemas = apiNavigator.getApiSchemas();
+            if (allSchemas.size() > 0) {
+                final ObjectNode definitionsNode = objectMapper.createObjectNode();
+                rootNode.put("definitions", definitionsNode);
+
+                for (final Schema schema : allSchemas) {
+                    addSchemaDefinitionObjectNode(objectMapper, definitionsNode, schema);
+                    addSchemaTagDefinitionObjectNode(objectMapper, tagDefinitionsNode, schema);
+                }
+
             }
-
-        }
-
-        final Set<Schema> allSchemas = apiNavigator.getApiSchemas();
-        if (allSchemas.size() > 0) {
-            final ObjectNode definitionsNode = objectMapper.createObjectNode();
-            rootNode.put("definitions", definitionsNode);
-
-            for (final Schema schema : allSchemas) {
-                addSchemaDefinitionObjectNode(objectMapper, definitionsNode, schema);
-                addSchemaTagDefinitionObjectNode(objectMapper, tagDefinitionsNode, schema);
-            }
-
         }
 
         // TODO Add this to WRML API?

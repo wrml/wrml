@@ -31,6 +31,7 @@ import org.wrml.model.schema.Syntax;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.ContextConfiguration;
 import org.wrml.runtime.Keys;
+import org.wrml.util.UniqueName;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -112,7 +113,7 @@ public final class DefaultSyntaxLoader implements SyntaxLoader {
 
     @Override
     public void loadInitialState() {
-
+        initSystemSyntaxKeys();
         loadConfiguredSyntaxes();
     }
 
@@ -303,15 +304,22 @@ public final class DefaultSyntaxLoader implements SyntaxLoader {
             final Syntax syntax = context.newModel(Syntax.class);
 
             final URI syntaxUri = systemSyntax.getSyntaxUri();
-            syntax.setUniqueName(systemSyntax.getUniqueName());
+            final UniqueName syntaxUniqueName = systemSyntax.getUniqueName();
             syntax.setUri(syntaxUri);
+            syntax.setUniqueName(syntaxUniqueName);
 
             _SystemSyntaxes.put(syntaxUri, syntax);
         }
 
     }
 
-    protected void loadConfiguredSyntaxes() {
+    private void initSystemSyntaxKeys() {
+        for (Syntax syntax : _SystemSyntaxes.values()) {
+            syntax.initKeySlots(syntax.getKeys());
+        }
+    }
+
+    private void loadConfiguredSyntaxes() {
 
         final Context context = getContext();
         final ContextConfiguration contextConfig = context.getConfig();
@@ -330,4 +338,6 @@ public final class DefaultSyntaxLoader implements SyntaxLoader {
         }
 
     }
+
+
 }

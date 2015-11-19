@@ -29,6 +29,14 @@
   class Show.Model extends App.Views.ItemView
     template: "model/show/model_show"
 
+    onRender: ->
+      @self = @
+
+    getViewDocument: ->
+      initialDocument = @model.attributes.model
+      return initialDocument
+
+
   #class List.Layout extends App.Views.Layout
   #	template: "model/show/model_show"
 

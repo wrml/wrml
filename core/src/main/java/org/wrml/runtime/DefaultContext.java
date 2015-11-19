@@ -749,7 +749,6 @@ public class DefaultContext implements Context {
 
         if (model instanceof Document) {
             final Document document = (Document) model;
-            updateLinkSlots(document);
 
             // Fetch and aggregate any link-embedded documents
             embedLinkedDocuments(document);
@@ -757,63 +756,6 @@ public class DefaultContext implements Context {
 
         // If the model has one ore more lists of links then they need to fill it with Link models
         searchForCollectionElements(model);
-    }
-
-    /**
-     * Part of the HATEOAS automation. Uses the runtime's available REST API metadata to update the Links and Link href values in response to a change/initialization of the URI
-     * slot value.
-     */
-    private void updateLinkSlots(final Document document) {
-
-        final URI uri = document.getUri();
-        if (uri == null) {
-            return;
-        }
-
-        final ApiNavigator apiNavigator = _ApiLoader.getParentApiNavigator(uri);
-
-        if (apiNavigator == null) {
-            return;
-        }
-
-        final Resource resource = apiNavigator.getResource(uri);
-        final Map<URI, LinkTemplate> linkTemplates = resource.getLinkTemplates();
-        if (linkTemplates == null || linkTemplates.isEmpty()) {
-            return;
-        }
-
-        final SortedMap<String, URI> prototypeLinkRelUris = document.getPrototype().getLinkRelationUris();
-        final Set<String> linkSlotNames = prototypeLinkRelUris.keySet();
-        for (final String linkSlotName : linkSlotNames) {
-
-            Link link = (Link) document.getSlotValue(linkSlotName);
-
-            final URI linkRelationUri = prototypeLinkRelUris.get(linkSlotName);
-            final Resource endpointResource = apiNavigator.getEndpointResource(linkRelationUri, uri);
-            if (endpointResource == null) {
-                continue;
-            }
-
-            final URI href = endpointResource.getHrefUri(document, linkRelationUri);
-            if (href == null) {
-                // Exclude Links that have null href values.
-
-                if (link != null) {
-                    document.setSlotValue(linkSlotName, null);
-                }
-
-                continue;
-            }
-
-            if (link == null) {
-
-                link = newModel(_SchemaLoader.getLinkSchemaUri());
-                link.setRel(linkRelationUri);
-                document.setSlotValue(linkSlotName, link);
-            }
-
-            link.setHref(href);
-        }
     }
 
     /**

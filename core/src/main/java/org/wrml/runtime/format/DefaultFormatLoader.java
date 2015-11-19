@@ -172,7 +172,7 @@ public class DefaultFormatLoader implements FormatLoader {
     @Override
     public void loadInitialState() {
 
-
+        initSystemFormatKeys();
         loadConfiguredFormats();
 
         final FormatLoaderConfiguration config = getConfig();
@@ -360,12 +360,11 @@ public class DefaultFormatLoader implements FormatLoader {
         for (final SystemFormat systemFormat : SystemFormat.values()) {
 
             final URI formatUri = systemFormat.getFormatUri();
-
             final UniqueName formatUniqueName = systemFormat.getUniqueName();
             final String mediaTypeString = formatUniqueName.toString();
 
             final Format format = context.newModel(Format.class);
-
+            format.setUri(formatUri);
             format.setUniqueName(formatUniqueName);
             format.setDescription(systemFormat.getDescription());
             format.setTitle(mediaTypeString);
@@ -373,8 +372,6 @@ public class DefaultFormatLoader implements FormatLoader {
             format.setRfcPageUri(systemFormat.getRfcPageUri());
             format.setMediaType(systemFormat.getMediaType());
             format.setFileExtension(systemFormat.getFileExtension());
-
-            format.setUri(formatUri);
 
             loadFormat(format);
 
@@ -385,4 +382,9 @@ public class DefaultFormatLoader implements FormatLoader {
 
     }
 
+    private void initSystemFormatKeys() {
+        for (Format format : _Formats.values()) {
+            format.initKeySlots(format.getKeys());
+        }
+    }
 }

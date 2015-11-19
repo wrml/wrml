@@ -285,6 +285,12 @@ public final class ApiBuilder {
         return this;
     }
 
+    public ApiBuilder docroot(final UUID docrootResourceTemplateId) {
+        final SchemaLoader schemaLoader = getContext().getSchemaLoader();
+        return resource("/", docrootResourceTemplateId, schemaLoader.getApiSchemaUri(), true);
+    }
+
+
     private void addDefaultSchemaLinkTemplates(final ResourceTemplate resourceTemplate) {
 
         final URI defaultSchemaUri = resourceTemplate.getDefaultSchemaUri();

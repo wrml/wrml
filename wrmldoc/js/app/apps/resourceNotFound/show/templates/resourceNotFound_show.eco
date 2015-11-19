@@ -59,7 +59,7 @@
 
 				<div class="span4 resourceNotFound-workflow-element">
 					
-					<form class="form-horizontal resourceNotFound-form">
+					<form class="form-horizontal resourceNotFound-form" onsubmit="return false">
 
 						<fieldset>			
 								  

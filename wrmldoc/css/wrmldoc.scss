@@ -80,7 +80,10 @@ html {
 body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
   height: 100%;
+}
 
+h1 {
+  font-size: 28px;
 }
 
 ul, ol, dl {
@@ -264,6 +267,21 @@ input[type="color"]:focus,
   display: inline-block;
   margin-right: -40px;
   font-weight: bold;
+}
+
+.wrml-toolbar-button {
+  border: 1px solid #FF0000;
+}
+
+.wrml-toolbar-button:hover,
+.wrml-toolbar-button:focus {
+  -webkit-box-shadow: none;
+  outline: -webkit-focus-ring-color auto 0px;
+
+  //box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+  //outline: thin dotted #FF0000;
+  //outline: 5px auto #FF0000;
+  //outline-offset: -2px;
 }
 
 #wrap {

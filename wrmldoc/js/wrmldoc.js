@@ -200,8 +200,13 @@ this.Wrmldoc = (function(Backbone, Marionette) {
   App.getEmbeddedDataModel = function() {
     return App.dataModel;
   };
-  App.openDocument = function(uri) {
-    return $("<a>").attr("href", uri).attr("target", "_blank")[0].click();
+  App.openDocument = function(uri, target) {
+    var aElement;
+    aElement = $("<a>").attr("href", uri);
+    if (target) {
+      aElement = aElement.attr("target", "_blank");
+    }
+    return aElement[0].click();
   };
   App.rewriteUri = function(uri, queryParams) {
     var name, queryString, rewrittenUri, uriAnchor, value, windowLocation;
@@ -240,6 +245,30 @@ this.Wrmldoc = (function(Backbone, Marionette) {
   };
   App.saveDocument = function() {
     return App.currentModule.saveDocument();
+  };
+  App.saveViewDocument = function(viewDocument) {
+    var url;
+    console.log("App.saveViewDocument");
+    console.log(viewDocument);
+    url = App.rewriteUri(viewDocument.uri);
+    return $.ajax({
+      type: "PUT",
+      url: url,
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(viewDocument),
+      success: function(data, textStatus, jqXHR) {
+        console.log(textStatus);
+        console.log(data);
+        console.log(jqXHR.responseText);
+        return App.openDocument(url);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error(textStatus);
+        console.error(errorThrown);
+        return console.error(jqXHR.responseText);
+      }
+    });
   };
   App.getModuleForSchema = function(schemaUri) {
     var module;
@@ -979,13 +1008,14 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
     }
 
     Controller.prototype.initialize = function(dataModel) {
-      this.initialDataModel = dataModel;
       this.initialView = this.createShowView(dataModel);
       return this.show(this.initialView);
     };
 
     Controller.prototype.saveDocument = function() {
-      return console.log(this.initialDataModel);
+      var viewDocument;
+      viewDocument = this.initialView.getViewDocument();
+      return App.saveViewDocument(viewDocument);
     };
 
     Controller.prototype.createShowView = function(dataModel) {
@@ -1011,6 +1041,80 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
     }
 
     Api.prototype.template = "api/show/api_show";
+
+    Api.prototype.events = {
+      'keyup .wrml-model-property-input': 'handleModelPropertyInputKeyup',
+      'click #main-toolbar-save-button': 'handleMainToolbarSave',
+      'click #main-toolbar-load-button': 'handleMainToolbarLoad',
+      'click #main-toolbar-swagger-button': 'handleMainToolbarSwagger'
+    };
+
+    Api.prototype.onRender = function() {
+      this.self = this;
+      return this.viewDocument = $.extend(true, {}, this.model.attributes.model);
+    };
+
+    Api.prototype.getViewDocument = function() {
+      return this.viewDocument;
+    };
+
+    Api.prototype.handleModelPropertyInputKeyup = function(e) {
+      var propertyInput, propertyInputData, propertyName, propertyValue;
+      console.log("handleModelPropertyInputKeyup");
+      console.log(e);
+      propertyInput = $(e.currentTarget);
+      propertyInputData = propertyInput.data();
+      propertyName = propertyInputData.wrmlModelPropertyName;
+      console.log(propertyName);
+      propertyValue = propertyInput.val();
+      return this.viewDocument[propertyName] = propertyValue;
+    };
+
+    Api.prototype.handleMainToolbarSave = function(e) {
+      console.log("handleMainToolbarSave");
+      console.log(e);
+      return App.saveDocument();
+    };
+
+    Api.prototype.handleMainToolbarLoad = function(e) {
+      var apiLoadUri, apiUri;
+      console.log("handleMainToolbarLoad");
+      console.log(e);
+      apiUri = this.viewDocument.uri;
+      apiLoadUri = apiUri + "/_wrml/api/load";
+      apiLoadUri = App.rewriteUri(apiLoadUri);
+      apiUri = App.rewriteUri(apiUri);
+      return $.ajax({
+        type: "POST",
+        url: apiLoadUri,
+        dataType: "json",
+        success: function(data, textStatus, jqXHR) {
+          console.log(textStatus);
+          console.log(data);
+          console.log(jqXHR.responseText);
+          return App.openDocument(apiUri);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error(textStatus);
+          console.error(errorThrown);
+          return console.error(jqXHR.responseText);
+        }
+      });
+    };
+
+    Api.prototype.handleMainToolbarSwagger = function(e) {
+      var apiUri, queryParams, swaggerJsonUri, swaggerUri;
+      console.log("handleMainToolbarSwagger");
+      console.log(e);
+      apiUri = this.viewDocument.uri;
+      swaggerJsonUri = apiUri + "/_wrml/api/swagger";
+      swaggerJsonUri = App.rewriteUri(swaggerJsonUri);
+      swaggerUri = apiUri + "/_wrml/wrmldoc/swagger";
+      queryParams = {};
+      queryParams.url = swaggerJsonUri;
+      swaggerUri = App.rewriteUri(swaggerUri, queryParams);
+      return App.openDocument(swaggerUri, "_blank");
+    };
 
     return Api;
 
@@ -1067,19 +1171,19 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
       
         __out.push(__sanitize(this.api.title));
       
-        __out.push('\n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n<section id="api-top-properties-section" class="api-section">\n\n\n\t<form class="form-horizontal wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uri">URI</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="url" id="uri" value="');
+        __out.push('\n\n          <div class="pull-right">\n            <button id="main-toolbar-save-button" class="btn btn-inverse wrml-toolbar-button" type="button">Save</button>\n            <button id="main-toolbar-load-button" class="btn btn-inverse wrml-toolbar-button" type="button">Load</button>\n            <button id="main-toolbar-swagger-button" class="btn btn-inverse wrml-toolbar-button" type="button">Swagger</button>\n          </div>\n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n<section id="api-top-properties-section" class="api-section">\n\n\n\t<form class="form-horizontal wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-uri">URI</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="url" id="wrml-model-property-uri" class="wrml-model-property-input" data-wrml-model-property-name="uri" value="');
       
         __out.push(__sanitize(this.api.uri));
       
-        __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="title">Title</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="title" value="');
+        __out.push('" readonly="readonly">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-title">Title</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="wrml-model-property-title" class="wrml-model-property-input" data-wrml-model-property-name="title" value="');
       
         __out.push(__sanitize(this.api.title));
       
-        __out.push('" autofocus="autofocus">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="version">Version</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="number" id="version" value="');
+        __out.push('" autofocus="autofocus">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-version">Version</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="number" id="wrml-model-property-version" class="wrml-model-property-input" data-wrml-model-property-name="version" value="');
       
         __out.push(__sanitize(this.api.version));
       
-        __out.push('">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="description">Description</label>\t\n\t\t\t<textarea id="description">');
+        __out.push('">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="wrml-model-property-description">Description</label>\n\t\t\t<textarea id="wrml-model-property-description" class="wrml-model-property-input" data-wrml-model-property-name="description">');
       
         __out.push(__sanitize(this.api.description));
       
@@ -1101,7 +1205,7 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
             parentPath = resource.parentPath;
             __out.push('\n\t\t\t');
             isDocroot = !parentPath;
-            __out.push('\n\n\t\t\t<form class="wrml-form api-resource-segment-form form-inline well">\n\t\t  \t\t\t\t\t\t\n\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\n\t\t\t\t\t<div class="api-resource-segment controls span12">\t\t\t\t\t\t\n\n\t\t\t\t\t\t<label class="wrml-form-field-label" for="resource_');
+            __out.push('\n\n\t\t\t<form class="wrml-form api-resource-segment-form form-inline well" onsubmit="return false">\n\t\t  \t\t\t\t\t\t\n\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\n\t\t\t\t\t<div class="api-resource-segment controls span12">\t\t\t\t\t\t\n\n\t\t\t\t\t\t<label class="wrml-form-field-label" for="resource_');
             __out.push(__sanitize(fullPath));
             __out.push('_pathSegment"><img class="wrml-form-field-label-icon" src="');
             __out.push(__sanitize(this.docroot));
@@ -1140,7 +1244,7 @@ this.Wrmldoc.module("ApiApp.Show", function(Show, App, Backbone, Marionette, $, 
             if (!isDocroot) {
               __out.push('\n\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Rename</a></li>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\n\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t');
             }
-            __out.push('\n\n\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Add Child</a></li>\n\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t</form>\n\n\t\t\t<form class="wrml-form api-resource-form form-inline">\n\t\t\t\t\t\t\t\n\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\n\t\t\t\t\t<label class="api-resource-form-input-label" for="resource_');
+            __out.push('\n\n\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Add Child</a></li>\n\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t</form>\n\n\t\t\t<form class="wrml-form api-resource-form form-inline" onsubmit="return false">\n\t\t\t\t\t\t\t\n\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\n\t\t\t\t\t<label class="api-resource-form-input-label" for="resource_');
             __out.push(__sanitize(fullPath));
             __out.push('_defaultSchema"><img class="api-resource-form-icon" src="');
             __out.push(__sanitize(this.docroot));
@@ -1545,7 +1649,7 @@ this.Wrmldoc.module("ApiNotFoundApp.Show", function(Show, App, Backbone, Marione
       
         __out.push(__sanitize(apiTitle));
       
-        __out.push('</strong>?\t\t\t\t\t\t\t\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span4 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal apiNotFound-form">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="apiNotFound-form-button btn btn-inverse" type="button">Create New ');
+        __out.push('</strong>?\t\t\t\t\t\t\t\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span4 apiNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal apiNotFound-form" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="apiNotFound-form-button btn btn-inverse" type="button">Create New ');
       
         __out.push(__sanitize(apiTitle));
       
@@ -1780,7 +1884,7 @@ this.Wrmldoc.module("DocumentNotFoundApp.Show", function(Show, App, Backbone, Ma
       
         __out.push(__sanitize(this.docroot));
       
-        __out.push('img/wormle/facing-right-from-hole.png" />\n\t\t</div>\n\n\t\t<div class="span10 documentNotFound-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span10 documentNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right documentNotFound-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tDo you wish to create or open a Document?\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span10 documentNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="documentNotFound-form form-horizontal">\n\n\t\t\t\t\t\t<fieldset>\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t\t<label class="control-label" for="schema"><img class="wrml-form-field-label-icon" src="');
+        __out.push('img/wormle/facing-right-from-hole.png" />\n\t\t</div>\n\n\t\t<div class="span10 documentNotFound-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span10 documentNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right documentNotFound-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tDo you wish to create or open a Document?\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span10 documentNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="documentNotFound-form form-horizontal" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset>\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t\t<label class="control-label" for="schema"><img class="wrml-form-field-label-icon" src="');
       
         __out.push(__sanitize(this.docroot));
       
@@ -2104,7 +2208,7 @@ this.Wrmldoc.module("HeaderApp.Show", function(Show, App, Backbone, Marionette, 
       var uri, uriInput;
       uriInput = $("#documentDialogUriInput");
       uri = uriInput.val();
-      App.openDocument(uri);
+      App.openDocument(uri, "_blank");
       return $('#documentDialog').modal('hide');
     };
 
@@ -2115,7 +2219,7 @@ this.Wrmldoc.module("HeaderApp.Show", function(Show, App, Backbone, Marionette, 
     };
 
     Header.prototype.handleTreeSelection = function(e, data) {
-      var apiData, apiInput, apiNode, i, jstree, key, keyInput, keyInputId, keyLabel, keys, keysPanel, len, messageElement, resourceData, resourceInput, resourceNode, schemaData, schemaInput, selectedNode, selectedNodeData, selectedNodeType, uri, uriInput;
+      var apiData, apiInput, apiNode, hasKeys, i, jstree, key, keyInput, keyInputId, keyLabel, keys, keysPanel, len, messageElement, resourceData, resourceInput, resourceNode, schemaData, schemaInput, selectedNode, selectedNodeData, selectedNodeType, uri, uriInput;
       jstree = $('#documentDialogJstree').jstree(true);
       apiInput = $("#documentDialogApiInput");
       resourceInput = $("#documentDialogResourceInput");
@@ -2155,9 +2259,11 @@ this.Wrmldoc.module("HeaderApp.Show", function(Show, App, Backbone, Marionette, 
         apiInput.val(apiData.title);
         uri = apiData.uri + resourceData.path;
         keys = schemaData.keys;
-        if (!$.isEmptyObject(keys)) {
+        hasKeys = !$.isEmptyObject(keys);
+        if (hasKeys) {
           keysPanel.empty();
         }
+        keysPanel.toggle(hasKeys);
         for (i = 0, len = keys.length; i < len; i++) {
           key = keys[i];
           keyInputId = "key-" + key.name;
@@ -2533,14 +2639,14 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
     }
 
     Controller.prototype.initialize = function(dataModel) {
-      console.log("Model Show Controller initialize");
-      this.initialDataModel = dataModel;
       this.initialView = this.createShowView(dataModel);
       return this.show(this.initialView);
     };
 
     Controller.prototype.saveDocument = function() {
-      return console.log(this.initialDataModel);
+      var viewDocument;
+      viewDocument = this.initialView.getViewDocument();
+      return App.saveViewDocument(viewDocument);
     };
 
     Controller.prototype.createShowView = function(dataModel) {
@@ -2566,6 +2672,16 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
     }
 
     Model.prototype.template = "model/show/model_show";
+
+    Model.prototype.onRender = function() {
+      return this.self = this;
+    };
+
+    Model.prototype.getViewDocument = function() {
+      var initialDocument;
+      initialDocument = this.model.attributes.model;
+      return initialDocument;
+    };
 
     return Model;
 
@@ -2659,7 +2775,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
         if (this.schema.keyCount > 0) {
           __out.push('\t\n');
           console.log("Key Count: " + this.schema.keyCount);
-          __out.push('\t\n<div class="section-divider">\n  <span>\n    Key Properties\n  </span>\n</div>\n\n<section id="model-keys-section">\n\n\t<form class="wrml-form model-form">\n\t  \n\t');
+          __out.push('\t\n<div class="section-divider">\n  <span>\n    Key Properties\n  </span>\n</div>\n\n<section id="model-keys-section">\n\n\t<form class="wrml-form model-form" onsubmit="return false">\n\t  \n\t');
           ref = this.schema.keys;
           for (keySlotName in ref) {
             keySlot = ref[keySlotName];
@@ -2693,7 +2809,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
         __out.push('\n\n');
       
         if (this.schema.slotCount > 0) {
-          __out.push('\t\n<section>\n\n\t<form class="wrml-form model-form">\n\t\n\t');
+          __out.push('\t\n<section>\n\n\t<form class="wrml-form model-form" onsubmit="return false">\n\t\n\t');
           ref1 = this.schema.slots;
           for (slotName in ref1) {
             slot = ref1[slotName];
@@ -2899,7 +3015,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
             if (linkHref) {
               __out.push('\n\n\t\t\t');
               console.log("Link - name: " + linkName + " rel: " + link.rel);
-              __out.push('\n\n\t\t\t<form class="form-horizontal wrml-form model-form">\n\n\t\t\t\t<fieldset class="wrml-form-fieldset">\t\t\n\t\t\t\n\t\t\t\t\t<label class="wrml-form-field-label" for="');
+              __out.push('\n\n\t\t\t<form class="form-horizontal wrml-form model-form" onsubmit="return false">\n\n\t\t\t\t<fieldset class="wrml-form-fieldset">\t\t\n\t\t\t\n\t\t\t\t\t<label class="wrml-form-field-label" for="');
               __out.push(__sanitize(linkName));
               __out.push('_href"><img class="wrml-form-field-label-icon" src="');
               __out.push(__sanitize(this.docroot));
@@ -2948,7 +3064,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
           __out.push('\n\n\n\t\n</section>\n\n');
         }
       
-        __out.push('\t\n\n<div class="section-divider">\n  <span>\n    Metadata\n  </span>\n</div>\n\n<section>\n\n\n\n\t<form class="wrml-form model-form">\n\t\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="schema"><img class="wrml-form-field-label-icon" src="');
+        __out.push('\t\n\n<div class="section-divider">\n  <span>\n    Metadata\n  </span>\n</div>\n\n<section>\n\n\n\n\t<form class="wrml-form model-form" onsubmit="return false">\n\t\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="schema"><img class="wrml-form-field-label-icon" src="');
       
         __out.push(__sanitize(this.docroot));
       
@@ -2959,7 +3075,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
         __out.push('" readonly="readonly">\t\t\t\t\n  \t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t</fieldset>\n\n\t</form>\n\n\t');
       
         if (this.api.title) {
-          __out.push('\n\n\t\t<form class="wrml-form model-form">\n\n\t\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\t\n\t\t\t\t<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="');
+          __out.push('\n\n\t\t<form class="wrml-form model-form" onsubmit="return false">\n\n\t\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\t\n\t\t\t\t<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="');
           __out.push(__sanitize(this.docroot));
           __out.push('img/api.png" /> API</label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t<div class="input-append">\n\t\t\t\t\t<input type="text" id="api" value="');
           __out.push(__sanitize(this.api.title));
@@ -2969,7 +3085,7 @@ this.Wrmldoc.module("ModelApp.Show", function(Show, App, Backbone, Marionette, $
         __out.push('\t\n\t');
       
         if (this.api.resource) {
-          __out.push('\n\n\t\t<form class="wrml-form model-form">\n\n\t\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\t\n\t\t\t\t<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="');
+          __out.push('\n\n\t\t<form class="wrml-form model-form" onsubmit="return false">\n\n\t\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\t\n\t\t\t\t<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="');
           __out.push(__sanitize(this.docroot));
           __out.push('img/resource.png" /> Resource</label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t<div class="input-append">\n\t\t\t\t\t<input type="url" id="uriTemplate" value="');
           __out.push(__sanitize(this.api.resource.uriTemplate));
@@ -3177,7 +3293,7 @@ this.Wrmldoc.module("RegistrationApp.Show", function(Show, App, Backbone, Marion
       
         __out.push(__sanitize(this.docroot));
       
-        __out.push('img/wormle/standing.png" />\n\t\t</div>\n\n\t\t<div class="span6 registration-introduction-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right registration-introduction-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\n\t\t\t\t\t\t<h3 class="popover-title"><strong>Greetings User</strong></h3>\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tI am Wormle the Worm Wizard.\n\t\t\t\t\t\t\tI can help you find your way around this <strong>WRML</strong> REST API design tool.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\t<em>\n\t\t\t\t\t\t\t\tWho are you?\n\t\t\t\t\t\t\t</em>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal registration-introduction-form">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="username">User Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="username" autofocus="autofocus">\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="email">Email</label>\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="email" id="email" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="firstName">First Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="firstName" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="lastName">Last Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="lastName" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="password">Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="password" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="repeatPassword">Repeat Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="repeatPassword" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Register</button>\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</fieldset>\n\t\t\t\t\t</form>\t\t\n\n\t\t\t\t<div>\t\t\n\t\t\t\n\t\t\t</div>\n\n\n\t\t</div>\n\n\t</div>\n\n\n</section>\n');
+        __out.push('img/wormle/standing.png" />\n\t\t</div>\n\n\t\t<div class="span6 registration-introduction-workflow">\n\n\t\t\t<div class="row">\n\t\t\t\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<div class="popover right registration-introduction-speech-bubble">\n\t\t\t\t\t\t<div class="arrow"></div>\n\t\t\t\t\t\t<h3 class="popover-title"><strong>Greetings User</strong></h3>\n\t\t\t\t\t\t<div class="popover-content">\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\tI am Wormle the Worm Wizard.\n\t\t\t\t\t\t\tI can help you find your way around this <strong>WRML</strong> REST API design tool.\n\t\t\t\t\t\t</p>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t\t<em>\n\t\t\t\t\t\t\t\tWho are you?\n\t\t\t\t\t\t\t</em>\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span12 registration-introduction-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal registration-introduction-form" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="username">User Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="username" autofocus="autofocus">\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="email">Email</label>\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="email" id="email" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="firstName">First Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="firstName" >\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="lastName">Last Name</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="text" id="lastName" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="password">Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="password" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<label class="control-label" for="repeatPassword">Repeat Password</label>\t\t\n\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<input type="password" id="repeatPassword" >\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Register</button>\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</fieldset>\n\t\t\t\t\t</form>\t\t\n\n\t\t\t\t<div>\t\t\n\t\t\t\n\t\t\t</div>\n\n\n\t\t</div>\n\n\t</div>\n\n\n</section>\n');
       
       }).call(this);
       
@@ -3225,13 +3341,14 @@ this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette
     }
 
     Controller.prototype.initialize = function(dataModel) {
-      this.initialDataModel = dataModel;
       this.initialView = this.createShowView(dataModel);
       return this.show(this.initialView);
     };
 
     Controller.prototype.saveDocument = function() {
-      return console.log(this.initialDataModel);
+      var viewDocument;
+      viewDocument = this.initialView.getViewDocument();
+      return App.saveViewDocument(viewDocument);
     };
 
     Controller.prototype.createShowView = function(dataModel) {
@@ -3257,6 +3374,16 @@ this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette
     }
 
     Relation.prototype.template = "relation/show/relation_show";
+
+    Relation.prototype.onRender = function() {
+      return this.self = this;
+    };
+
+    Relation.prototype.getViewDocument = function() {
+      var initialDocument;
+      initialDocument = this.model.attributes.model;
+      return initialDocument;
+    };
 
     return Relation;
 
@@ -3313,7 +3440,7 @@ this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette
       
         __out.push(__sanitize(this.documentTitle));
       
-        __out.push('</span>\n\t  \t\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n<section id="relation-top-properties-section" class="relation-section">\n\n\n\t<form class="form-horizontal wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uri">URI</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="uri" type="url" value="');
+        __out.push('</span>\n\t  \t\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n<section id="relation-top-properties-section" class="relation-section">\n\n\n\t<form class="form-horizontal wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uri">URI</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input id="uri" type="url" value="');
       
         __out.push(__sanitize(this.model.uri));
       
@@ -3329,11 +3456,11 @@ this.Wrmldoc.module("RelationApp.Show", function(Show, App, Backbone, Marionette
       
         __out.push(__sanitize(this.model.version));
       
-        __out.push('">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="description">Description</label>\t\n\t\t\t<textarea id="description">');
+        __out.push('">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="description">Description</label>\t\n\t\t\t<textarea id="description">');
       
         __out.push(__sanitize(this.model.description));
       
-        __out.push('</textarea>\n\t\t\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\t<form id="relation-method-form" class="form-horizontal wrml-form">\n\n\t\t');
+        __out.push('</textarea>\n\t\t\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\t<form id="relation-method-form" class="form-horizontal wrml-form" onsubmit="return false">\n\n\t\t');
       
         relationMethod = this.relation.method;
       
@@ -3671,7 +3798,7 @@ this.Wrmldoc.module("ResourceNotFoundApp.Show", function(Show, App, Backbone, Ma
       
         __out.push(__sanitize(resourceTitle));
       
-        __out.push('</strong>?\t\t\t\t\t\t\t\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span4 resourceNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal resourceNotFound-form">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="resourceNotFound-form-button btn btn-inverse" type="button">Create New ');
+        __out.push('</strong>?\t\t\t\t\t\t\t\n\t\t\t\t\t\t</p>\n\t\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t</div>\n\t\t\t\n\t\t\t</div>\n\t\t\t\n\t\t\t<div class="row">\n\n\t\t\t\t<div class="span4 resourceNotFound-workflow-element">\n\t\t\t\t\t\n\t\t\t\t\t<form class="form-horizontal resourceNotFound-form" onsubmit="return false">\n\n\t\t\t\t\t\t<fieldset>\t\t\t\n\t\t\t\t\t\t\t\t  \n\t\t\t\t\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="resourceNotFound-form-button btn btn-inverse" type="button">Create New ');
       
         __out.push(__sanitize(resourceTitle));
       
@@ -3723,13 +3850,14 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
     }
 
     Controller.prototype.initialize = function(dataModel) {
-      this.initialDataModel = dataModel;
       this.initialView = this.createShowView(dataModel);
       return this.show(this.initialView);
     };
 
     Controller.prototype.saveDocument = function() {
-      return console.log(this.initialDataModel);
+      var viewDocument;
+      viewDocument = this.initialView.getViewDocument();
+      return App.saveViewDocument(viewDocument);
     };
 
     Controller.prototype.createShowView = function(dataModel) {
@@ -3755,6 +3883,30 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
     }
 
     Schema.prototype.template = "schema/show/schema_show";
+
+    Schema.prototype.events = {
+      'keyup .wrml-model-property-input': 'handleModelPropertyInputKeyup',
+      'keyup .schema-slot-name-input': 'handleSchemaSlotNameInputKeyup'
+    };
+
+    Schema.prototype.onRender = function() {
+      this.self = this;
+      return this.viewDocument = $.extend(true, {}, this.model.attributes.model);
+    };
+
+    Schema.prototype.getViewDocument = function() {
+      return this.viewDocument;
+    };
+
+    Schema.prototype.handleModelPropertyInputKeyup = function(e) {
+      console.log("handleModelPropertyInputKeyup");
+      return console.log(e);
+    };
+
+    Schema.prototype.handleSchemaSlotNameInputKeyup = function(e) {
+      console.log("handleSchemaSlotNameInputKeyup");
+      return console.log(e);
+    };
 
     return Schema;
 
@@ -3811,27 +3963,27 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
       
         __out.push(__sanitize(this.schema.title));
       
-        __out.push(' \n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n\n\n<section id="schema-top-properties-section" class="schema-section">\n\n\n\t<form class="form-horizontal wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uri">URI</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="url" id="uri" value="');
+        __out.push(' \n\n\t  </h1>\n\t</div>\n\n\t<div id="page-header-push">\n\t</div>\n\n</section>\n\n\n\n<section id="schema-top-properties-section" class="schema-section">\n\n\n\t<form class="form-horizontal wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-uri">URI</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="url" id="wrml-model-property-uri" class="wrml-model-property-input" value="');
       
         __out.push(__sanitize(this.schema.uri));
       
-        __out.push('" readonly="readonly">\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="uniqueName">Unique Name</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="uniqueName" value="');
+        __out.push('" readonly="readonly">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\t\t\t\t\t\t  \n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-uniqueName">Unique Name</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="wrml-model-property-uniqueName" class="wrml-model-property-input" value="');
       
         __out.push(__sanitize(this.schema.uniqueName.fullName));
       
-        __out.push('" readonly="readonly">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="title">Title</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="title" value="');
+        __out.push('" readonly="readonly">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-title">Title</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="text" id="wrml-model-property-title" class="wrml-model-property-input"  value="');
       
         __out.push(__sanitize(this.schema.title));
       
-        __out.push('" autofocus="autofocus">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="version">Version</label>\t\t\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="number" id="version" value="');
+        __out.push('" autofocus="autofocus">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t\t<div class="control-group">\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t<label class="control-label" for="wrml-model-property-version">Version</label>\n\n\t\t\t\t<div class="controls">\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t<input type="number" id="wrml-model-property-version" class="wrml-model-property-input" value="');
       
         __out.push(__sanitize(this.schema.version));
       
-        __out.push('">\t\t\t\t\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="description">Description</label>\t\n\t\t\t<textarea id="description">');
+        __out.push('">\n\t\t\t\t</div>\t\n\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t<form class="wrml-form" onsubmit="return false">\n\n\t\t<fieldset class="wrml-form-fieldset">\n\t\t\t\t\t\t\t\n\t\t\t<label class="wrml-form-field-label" for="wrml-model-property-description">Description</label>\n\t\t\t<textarea id="wrml-model-property-description" class="wrml-model-property-input" >');
       
         __out.push(__sanitize(this.schema.description));
       
-        __out.push('</textarea>\n\t\t\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\n</section>\n\n<div class="section-divider">\n  <span>\n  Base Schemas  \n  </span>\n</div>\n\n<section id="schema-base-schema-section" class="schema-section" class="wrml-form">\n\n\t<div class="row">\n  \t\t\n  \t\t<div class="span6">\n\n\t\t\t<form id="schema-base-schema-form" class="wrml-form">\n\t\t\t  \t  \n\t\t\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t\t\t</div>\n\n\n\t\t\t\t\t<table id="schema-base-schema-table" class="table">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<tbody>\n\n\t\t\t\t\t\t');
+        __out.push('</textarea>\n\t\t\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\n</section>\n\n<div class="section-divider">\n  <span>\n  Base Schemas  \n  </span>\n</div>\n\n<section id="schema-base-schema-section" class="schema-section" class="wrml-form">\n\n\t<div class="row">\n  \t\t\n  \t\t<div class="span6">\n\n\t\t\t<form id="schema-base-schema-form" class="wrml-form" onsubmit="return false">\n\t\t\t  \t  \n\t\t\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t\t\t</div>\n\n\n\t\t\t\t\t<table id="schema-base-schema-table" class="table">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<tbody>\n\n\t\t\t\t\t\t');
       
         if (((ref = this.schema.baseSchemas) != null ? ref.length : void 0) > 0) {
           __out.push('\n\n\n\t\t\t\t\t\t\t');
@@ -3849,7 +4001,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
           __out.push('\n\t\t\t                <tr>\n\t\t\t                  <td><i>Empty</i></td>\t                  \n\t\t\t                </tr>\t\t\t\t\n\t\t\t\t\t\t');
         }
       
-        __out.push('\n\n\t\t            \t</tbody>\n\n\t\t            </table>\n\n\t\t\t\t</fieldset>\n\n\t\t\t</form>\n\n\t\t</div>\n\n\t\t<div class="span6">\n\n\n\t\t\t<canvas id="schema-base-schema-canvas" width="450" height="450"></canvas>\n\n\n\t\t</div>\n\t\n\t</div>\n\n</section>\n\n<div class="section-divider">\n  <span>\n  Properties  \n  </span>\n</div>\n\n<section id="schema-properties-section" class="schema-section">\n\n\t<form class="wrml-form schema-properties-form">\n\t\t  \n\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t<div class="btn-group">\n\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t');
+        __out.push('\n\n\t\t            \t</tbody>\n\n\t\t            </table>\n\n\t\t\t\t</fieldset>\n\n\t\t\t</form>\n\n\t\t</div>\n\n\t\t<div class="span6">\n\n\n\t\t\t<canvas id="schema-base-schema-canvas" width="450" height="450"></canvas>\n\n\n\t\t</div>\n\t\n\t</div>\n\n</section>\n\n<div class="section-divider">\n  <span>\n  Properties  \n  </span>\n</div>\n\n<section id="schema-properties-section" class="schema-section">\n\n\t<form class="wrml-form schema-properties-form" onsubmit="return false">\n\t\t  \n\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t<div class="btn-group">\n\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t</div>\n\n\t\t</fieldset>\n\n\t</form>\t\t\n\n\n\t');
       
         keyPropertyNames = this.schema.keyPropertyNames;
       
@@ -3885,33 +4037,33 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
             }
             __out.push('\n\t\t\t\n\t\t\t');
             if (property.declaringSchemaUri === this.schema.uri) {
-              __out.push('\n\n\t\t\t\t<form class="wrml-form schema-slot-name-form form-inline well">\t\n\t\t\t\t\n\t\t\t\t\t');
+              __out.push('\n\n\t\t\t\t<form class="wrml-form schema-slot-name-form form-inline well" onsubmit="return false">\n\t\t\t\t\n\t\t\t\t\t');
               propertyType = property.type;
               __out.push('\t\t\t\t\n\t\t\t\t\t');
               console.log("Property - name: " + propertyName + " type: " + propertyType);
-              __out.push('\n\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="');
+              __out.push('\n\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="wrml-model-property-');
               __out.push(__sanitize(propertyName));
               __out.push('"><img class="wrml-form-field-label-icon" src="');
               __out.push(__sanitize(this.docroot));
               __out.push('img/type/');
               __out.push(__sanitize(propertyType));
-              __out.push('.png" /></label>\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="');
+              __out.push('.png" /></label>\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="wrml-model-property-');
               __out.push(__sanitize(propertyName));
               __out.push('" value="');
               __out.push(__sanitize(propertyName));
-              __out.push('">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Rename</a></li>\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-divider span4"></label>\n\t\t\t\t\t\t\n\n\t\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t</form>\t\n\n\n\t\t\t\t<form class="wrml-form schema-slot-form form-inline">\n\t\t\t\t\t\t  \n\t\t\t\t\t<!-- The Property\'s Type definition fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+              __out.push('">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Rename</a></li>\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-divider span4"></label>\n\t\t\t\t\t\t\n\n\t\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t</form>\t\n\n\n\t\t\t\t<form class="wrml-form schema-slot-form form-inline" onsubmit="return false">\n\t\t\t\t\t\t  \n\t\t\t\t\t<!-- The Property\'s Type definition fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
               __out.push(__sanitize(propertyName));
-              __out.push('_type">Type</label>\n\t\t\t\t\t\t<input id="');
+              __out.push('-type">Type</label>\n\t\t\t\t\t\t<input id="wrml-model-property-');
               __out.push(__sanitize(propertyName));
-              __out.push('_type" class="schema-slot-form-input-short" type="text" value="');
+              __out.push('-type" class="schema-slot-form-input-short" type="text" value="');
               __out.push(__sanitize(propertyType));
               __out.push('" readonly="readonly">\n\n\t\t\t\t\t\t');
               if (propertyType === "Model") {
-                __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_modelSchema">Model Schema</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-modelSchema">Model Schema</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_modelSchema" type="text" value="');
+                __out.push('-modelSchema" type="text" value="');
                 __out.push(__sanitize((ref2 = property.schema) != null ? ref2.title : void 0));
                 __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\n\n\t\t\t\t\t\t');
               } else if (propertyType === "Text") {
@@ -3921,21 +4073,21 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                 propertySyntaxTitle = propertySyntax != null ? propertySyntax.title : void 0;
                 __out.push('\n\n\t\t\t\t\t\t\t');
                 if (propertySyntaxTitle) {
-                  __out.push('\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                  __out.push('\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_syntax">Syntax</label>\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="');
+                  __out.push('-syntax">Syntax</label>\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_syntax" type="text" value="');
+                  __out.push('-syntax" type="text" value="');
                   __out.push(__sanitize(propertySyntaxTitle));
                   __out.push('" readonly="readonly">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t');
                 }
                 __out.push('\n\n\t\t\t\t\t\t');
               } else if (propertyType === "SingleSelect") {
-                __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_choices">Choices</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-choices">Choices</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_choices" type="text" value="');
+                __out.push('-choices" type="text" value="');
                 __out.push(__sanitize((ref3 = property.choices) != null ? ref3.title : void 0));
                 __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\n\n\t\t\t\t\t\t');
               } else if (propertyType === "List") {
@@ -3943,23 +4095,23 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                 element = property.element;
                 __out.push('\n\t\t\t\t\t\t');
                 elementType = element != null ? element.type : void 0;
-                __out.push('\n\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                __out.push('\n\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_elementType">Element Type</label>\n\t\t\t\t\t\t<input id="');
+                __out.push('-elementType">Element Type</label>\n\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_elementType" class="schema-slot-form-input-short" type="text" value="');
+                __out.push('-elementType" class="schema-slot-form-input-short" type="text" value="');
                 __out.push(__sanitize(elementType));
                 __out.push('" readonly="readonly">\n\n\t\t\t\t\t\t\t');
                 if (elementType === "Model") {
                   __out.push('\n\t\t\t\t\t\t\t');
                   elementSchema = element != null ? element.schema : void 0;
-                  __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                  __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_elementType_modelSchema">Model Schema</label>\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="');
+                  __out.push('-elementType-modelSchema">Model Schema</label>\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_elementType_modelSchema" type="text" value="');
+                  __out.push('-elementType-modelSchema" type="text" value="');
                   __out.push(__sanitize(elementSchema != null ? elementSchema.title : void 0));
-                  __out.push('" readonly="readonly">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t');
+                  __out.push('" readonly="readonly">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t');
                 } else if (elementType === "Text") {
                   __out.push(' \n\t\t\t\t\t\t\t');
                   elementSyntax = element != null ? element.syntax : void 0;
@@ -3967,11 +4119,11 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                   elementSyntaxTitle = elementSyntax != null ? elementSyntax.title : void 0;
                   __out.push('\n\n\t\t\t\t\t\t\t\t');
                   if (elementSyntaxTitle) {
-                    __out.push('\n\t\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                    __out.push('\n\t\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                     __out.push(__sanitize(propertyName));
-                    __out.push('_elementType_syntax">Syntax</label>\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t<input id="');
+                    __out.push('-elementType-syntax">Syntax</label>\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t<input id="wrml-model-property-');
                     __out.push(__sanitize(propertyName));
-                    __out.push('_elementType_syntax" type="text" value="');
+                    __out.push('-elementType-syntax" type="text" value="');
                     __out.push(__sanitize(elementSyntaxTitle));
                     __out.push('" readonly="readonly">\n\t\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t\t');
                   }
@@ -3979,21 +4131,21 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                 } else if (elementType === "SingleSelect") {
                   __out.push('\n\t\t\t\t\t\t\t');
                   elementChoices = element != null ? element.choices : void 0;
-                  __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                  __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_elementType_choices">Choices</label>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="');
+                  __out.push('-elementType-choices">Choices</label>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_elementType_choices" type="text" value="');
+                  __out.push('-elementType-choices" type="text" value="');
                   __out.push(__sanitize(elementChoices != null ? elementChoices.title : void 0));
                   __out.push('" readonly="readonly">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\n\n\t\t\t\t\t\t\t');
                 }
                 __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t');
               }
-              __out.push('\t\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<!-- The Property\'s Description field -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+              __out.push('\t\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<!-- The Property\'s Description field -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
               __out.push(__sanitize(propertyName));
-              __out.push('_description">Description</label>\t\n\t\t\t\t\t\t<textarea id="');
+              __out.push('-description">Description</label>\n\t\t\t\t\t\t<textarea id="wrml-model-property-');
               __out.push(__sanitize(propertyName));
-              __out.push('_description">');
+              __out.push('-description">');
               __out.push(__sanitize(property.description));
               __out.push('</textarea>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t');
               if (propertyType !== "Model" && propertyType !== "List" && propertyType !== "Collection") {
@@ -4009,17 +4161,17 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                     checkedAttribute = "checked=checked";
                     __out.push('\n\t\t\t\t\t\t\t');
                   }
-                  __out.push('\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="');
+                  __out.push('\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_defaultValue" type="checkbox" value="defaultValue" ');
+                  __out.push('-defaultValue" type="checkbox" value="defaultValue" ');
                   __out.push(__sanitize(checkedAttribute));
                   __out.push('>Default Value\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t');
                 } else if (propertyType === "SingleSelect") {
-                  __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                  __out.push('\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_defaultValue">Default Value</label>\n\t\t\t\t\t\t\t<select id="');
+                  __out.push('-defaultValue">Default Value</label>\n\t\t\t\t\t\t\t<select id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_defaultValue">\n\n\t\t\t\t\t\t\t');
+                  __out.push('-defaultValue">\n\n\t\t\t\t\t\t\t');
                   choices = property != null ? property.choices : void 0;
                   __out.push('\n\t\t\t\t\t\t\t');
                   choiceValueMap = choices != null ? choices.valueMap : void 0;
@@ -4044,9 +4196,9 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                   }
                   __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t</select>\n\n\t\t\t\t\t\t');
                 } else {
-                  __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                  __out.push('\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_defaultValue">Default Value</label>\n\n\t\t\t\t\t\t\t');
+                  __out.push('-defaultValue">Default Value</label>\n\n\t\t\t\t\t\t\t');
                   inputType = "text";
                   __out.push('\n\t\t\t\t\t\t\t');
                   classAttribute = "";
@@ -4072,9 +4224,9 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
                     inputType = "datetime";
                     __out.push('\t\t\t\t\t\n\t\t\t\t\t\t\t');
                   }
-                  __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+                  __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_defaultValue" ');
+                  __out.push('-defaultValue" ');
                   __out.push(__sanitize(classAttribute));
                   __out.push(' type="');
                   __out.push(__sanitize(inputType));
@@ -4086,77 +4238,77 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
               }
               __out.push('\t\t\n\n\n\t\t\t\t\t<!-- The Property\'s Type-specific fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
               if (propertyType === "Text") {
-                __out.push(' \n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="');
+                __out.push(' \n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('isMultiline" type="checkbox" value="isMultiline">Multiline\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('-isMultiline" type="checkbox" value="isMultiline">Multiline</label>\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimumLength">Minimum Length</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-minimumLength">Minimum Length</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimumLength" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('-minimumLength" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximumLength">Maximum Length</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-maximumLength">Maximum Length</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximumLength" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t');
+                __out.push('-maximumLength" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t');
               } else if (propertyType === "List") {
-                __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimumSize">Minimum Size</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-minimumSize">Minimum Size</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimumSize" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('-minimumSize" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximumSize">Maximum Size</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-maximumSize">Maximum Size</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximumSize" class="schema-slot-form-input-short" type="number" value="">\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
+                __out.push('-maximumSize" class="schema-slot-form-input-short" type="number" value="">\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
               } else if (propertyType === "Integer" || propertyType === "Long" || propertyType === "Double") {
-                __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimum">Minimum</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-minimum">Minimum</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_minimum" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="');
+                __out.push('-minimum" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('isExclusiveMinimum" type="checkbox" value="isExclusiveMinimum">Exclusive\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('-isExclusiveMinimum" type="checkbox" value="isExclusiveMinimum">Exclusive</label>\n\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximum">Maximum</label>\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-maximum">Maximum</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_maximum" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input id="');
+                __out.push('-maximum" class="schema-slot-form-input-short" type="number" value="">\n\n\t\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('isExclusiveMaximum" type="checkbox" value="isExclusiveMaximum">Exclusive\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t\t');
+                __out.push('-isExclusiveMaximum" type="checkbox" value="isExclusiveMaximum">Exclusive</label>\n\n\t\t\t\t\t\t\t');
                 if (propertyType !== "Double") {
-                  __out.push('\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                  __out.push('\n\t\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_divisibleBy">Divisible By</label>\n\t\t\t\t\t\t\t<input id="');
+                  __out.push('-divisibleBy">Divisible By</label>\n\t\t\t\t\t\t\t<input id="wrml-model-property-');
                   __out.push(__sanitize(propertyName));
-                  __out.push('_divisibleBy" class="schema-slot-form-input-short" type="number" value="">\n\t\t\t\t\t\t\t');
+                  __out.push('-divisibleBy" class="schema-slot-form-input-short" type="number" value="">\n\t\t\t\t\t\t\t');
                 }
                 __out.push('\t\n\n\t\t\t\t\t\t');
               }
               __out.push('\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t</div>\n\n\t\t\t\t\t');
               if (propertyType !== "Model" && propertyType !== "List" && propertyType !== "Collection") {
-                __out.push('\n\t\t\t\t\t\n\t\t\t\t\t<!-- The Primitive Property\'s common fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t');
+                __out.push('\n\t\t\t\t\t\n\t\t\t\t\t<!-- The Primitive Property\'s common fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
                 isKey = _.contains(keyPropertyNames, propertyName);
-                __out.push('\n\t\t\t\t\t\t\t');
+                __out.push('\n\t\t\t\t\t\t');
                 keyCheckedAttribute = isKey ? "checked=true" : "";
-                __out.push('\n\n\t\t\t\t\t\t\t<input id="');
+                __out.push('\n\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_isKey" type="checkbox" value="isKey" ');
+                __out.push('-isKey" type="checkbox" value="isKey" ');
                 __out.push(__sanitize(keyCheckedAttribute));
-                __out.push('>Key\n\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<input id="');
+                __out.push('>Key</label>\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_isSearchable" type="checkbox" value="isSearchable">Searchable\n\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\n\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-isSearchable" type="checkbox" value="isSearchable">Searchable</label>\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_isComparable" type="checkbox" value="isComparable">Comparable\n\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label">\n\n\t\t\t\t\t\t\t<input id="');
+                __out.push('-isComparable" type="checkbox" value="isComparable">Comparable</label>\n\t\t\t\t\t\t<label class="checkbox schema-slot-form-checkbox-label"><input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_isTitle" type="checkbox" value="isTitle">Title\n\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('-isTitle" type="checkbox" value="isTitle">Title</label>\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_aliases">Aliases</label>\n\t\t\t\t\t\t<input id="');
+                __out.push('-aliases">Aliases</label>\n\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_aliases" type="text" value="">\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
+                __out.push('-aliases" type="text" value="">\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
               } else {
-                __out.push('\n\n\t\t\t\t\t<!-- The Structure Property\'s common fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+                __out.push('\n\n\t\t\t\t\t<!-- The Structure Property\'s common fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_aliases">Aliases</label>\n\t\t\t\t\t\t<input id="');
+                __out.push('-aliases">Aliases</label>\n\t\t\t\t\t\t<input id="wrml-model-property-');
                 __out.push(__sanitize(propertyName));
-                __out.push('_aliases" type="text" value="">\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
+                __out.push('-aliases" type="text" value="">\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
               }
               __out.push('\t\t\n\n\t\t\t\t</form>\t\n\n\t\t\t');
             }
@@ -4165,7 +4317,7 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
           __out.push('\n\n\n\t');
         }
       
-        __out.push('\n\n</section>\t\n\n<div class="section-divider">\n  <span>\n  Links  \n  </span>\n</div>\n\n<section id="schema-links-section" class="schema-section">\n\n\t<form class="wrml-form schema-links-form">\n\t\t  \n\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t<div class="btn-group">\n\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t</div>\n\t\t\t\n\t\t</fieldset>\t\t\n\n\t</form>\t\t\n\n\t');
+        __out.push('\n\n</section>\t\n\n<div class="section-divider">\n  <span>\n  Links  \n  </span>\n</div>\n\n<section id="schema-links-section" class="schema-section">\n\n\t<form class="wrml-form schema-links-form" onsubmit="return false">\n\t\t  \n\t\t<fieldset class="wrml-form-fieldset">\n\n\t\t\t<div class="btn-group">\n\t\t\t\t<button class="btn btn-inverse" type="button">Add</button>\n\t\t\t</div>\n\t\t\t\n\t\t</fieldset>\t\t\n\n\t</form>\t\t\n\n\t');
       
         links = this.schema.links;
       
@@ -4177,55 +4329,55 @@ this.Wrmldoc.module("SchemaApp.Show", function(Show, App, Backbone, Marionette, 
             link = links[linkName];
             __out.push('\n\n\t\t\t');
             if (link.declaringSchemaUri === this.schema.uri) {
-              __out.push('\n\n\t\t\t\t<form class="wrml-form schema-slot-name-form form-inline well">\n\t\t\t  \t\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="');
+              __out.push('\n\n\t\t\t\t<form class="wrml-form schema-slot-name-form form-inline well" onsubmit="return false">\n\t\t\t  \t\t\t\t\t\t\n\t\t\t\t\t<div class="controls controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="schema-slot-name controls span6">\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t<label class="wrml-form-field-label" for="wrml-link-');
               __out.push(__sanitize(linkName));
               __out.push('"><img class="wrml-form-field-label-icon" src="');
               __out.push(__sanitize(this.docroot));
-              __out.push('img/type/Link.png" /></label>\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="');
+              __out.push('img/type/Link.png" /></label>\n\n\t\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\t\t\t\t\t\t\t\t<input class="schema-slot-name-input" type="text" id="wrml-link-');
               __out.push(__sanitize(linkName));
               __out.push('" value="');
               __out.push(__sanitize(linkName));
-              __out.push('">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Rename</a></li>\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-divider span4"></label>\n\t\t\t\t\t\t\n\t\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t</form>\t\n\n\n\t\t\t\t<form class="wrml-form schema-slot-form form-inline">\n\t\t\t\t\t\t  \n\t\t\t\t\t<!-- The Link\'s definition fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+              __out.push('">\n\t\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t\t<div class="btn-group">\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">\n\t\t\t\t\t\t\t\t\t<span class="caret"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<ul class="dropdown-menu">\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Rename</a></li>\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li class="divider"></li>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<li><a tabindex="-1" href="#">Remove</a></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t</div>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-divider span4"></label>\n\t\t\t\t\t\t\n\t\t\t\t\t</div>\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t</form>\t\n\n\n\t\t\t\t<form class="wrml-form schema-slot-form form-inline" onsubmit="return false">\n\t\t\t\t\t\t  \n\t\t\t\t\t<!-- The Link\'s definition fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_relation">Relation</label>\n\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+              __out.push('-relation">Relation</label>\n\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_relation" type="text" value="');
+              __out.push('-relation" type="text" value="');
               __out.push(__sanitize(link.relationTitle));
-              __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\n\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+              __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\n\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_method">Method</label>\n\t\t\t\t\t\t<input id="');
+              __out.push('-method">Method</label>\n\t\t\t\t\t\t<input id="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_method" class="schema-slot-form-input-short" type="text" value="');
+              __out.push('-method" class="schema-slot-form-input-short" type="text" value="');
               __out.push(__sanitize(link.method));
               __out.push('" readonly="readonly">\n\n\t\t\t\t\t</div>\n\n\t\t\t\t\t\n\t\t\t\t\t');
               if (link.responseSchemaTitle || link.requestSchemaTitle) {
                 __out.push('\n\t\t\t\t\t<!-- The Link\'s I/O schema fields -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t\n\t\t\t\t\t\t');
                 if (link.responseSchemaTitle) {
-                  __out.push('\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                  __out.push('\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-link-');
                   __out.push(__sanitize(linkName));
-                  __out.push('_responseSchema">Response Schema</label>\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+                  __out.push('-responseSchema">Response Schema</label>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-link-');
                   __out.push(__sanitize(linkName));
-                  __out.push('_responseSchema" type="text" value="');
+                  __out.push('-responseSchema" type="text" value="');
                   __out.push(__sanitize(link.responseSchemaTitle));
-                  __out.push('" readonly="readonly">\t\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t');
+                  __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t');
                 }
                 __out.push('\n\n\t\t\t\t\t\t');
                 if (link.requestSchemaTitle) {
-                  __out.push('\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="');
+                  __out.push('\n\t\t\t\t\t\t<label class="schema-slot-form-input-label readonly-label" for="wrml-link-');
                   __out.push(__sanitize(linkName));
-                  __out.push('_requestSchema">Request Schema</label>\t\n\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="');
+                  __out.push('-requestSchema">Request Schema</label>\n\n\t\t\t\t\t\t<div class="input-append">\t\t\t\t\t\n\n\t\t\t\t\t\t\t<input id="wrml-link-');
                   __out.push(__sanitize(linkName));
-                  __out.push('_requestSchema" type="text" value="');
+                  __out.push('-requestSchema" type="text" value="');
                   __out.push(__sanitize(link.requestSchemaTitle));
                   __out.push('" readonly="readonly">\n\t\t\t  \t\t\t\t\n\t\t\t\t\t\t\t<div class="btn-group">\n\t\t\t\t\t\t\t\t<button class="btn btn-inverse" type="button">Open</button>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\t\n\t\t\t\t\t\t');
                 }
                 __out.push('\n\n\t\t\t\t\t</div>\n\t\t\t\t\t');
               }
-              __out.push('\n\t \n\t\t\t\t\t<!-- The Link\'s Description field -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="');
+              __out.push('\n\t \n\t\t\t\t\t<!-- The Link\'s Description field -->\n\t\t\t\t\t<div class="controls-row">\n\t\t\t\t\t\t<label class="schema-slot-form-input-label" for="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_description">Description</label>\t\n\t\t\t\t\t\t<textarea id="');
+              __out.push('-description">Description</label>\n\t\t\t\t\t\t<textarea id="wrml-link-');
               __out.push(__sanitize(linkName));
-              __out.push('_description">');
+              __out.push('-description">');
               __out.push(__sanitize(link.description));
               __out.push('</textarea>\n\t\t\t\t\t</div>\n\n\t\t\t\t</form>\t\n\n\t\t\t');
             }

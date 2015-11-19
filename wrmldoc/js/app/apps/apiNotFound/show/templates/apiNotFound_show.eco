@@ -59,7 +59,7 @@
 
 				<div class="span4 apiNotFound-workflow-element">
 					
-					<form class="form-horizontal apiNotFound-form">
+					<form class="form-horizontal apiNotFound-form" onsubmit="return false">
 
 						<fieldset>			
 								  

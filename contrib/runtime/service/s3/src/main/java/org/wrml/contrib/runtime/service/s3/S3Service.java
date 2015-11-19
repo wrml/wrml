@@ -258,6 +258,8 @@ public class S3Service extends AbstractService {
 
     private Model getModel(String s3Key, Keys keys, Dimensions dimensions) {
 
+        LOG.debug("S3 Service getModel looking for: {}", s3Key);
+
         final GetObjectRequest getObjectRequest = new GetObjectRequest(_BucketName, s3Key);
         final S3Object s3Object;
         try {
@@ -282,6 +284,8 @@ public class S3Service extends AbstractService {
         finally {
             IOUtils.closeQuietly(in);
         }
+
+        LOG.debug("S3 Service getModel returning: {}", model);
 
         return model;
     }

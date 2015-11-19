@@ -30,8 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wrml.model.Model;
 import org.wrml.model.rest.Document;
+import org.wrml.model.rest.Link;
+import org.wrml.model.rest.LinkTemplate;
 import org.wrml.model.schema.Schema;
 import org.wrml.model.schema.ValueType;
+import org.wrml.runtime.rest.ApiLoader;
+import org.wrml.runtime.rest.ApiNavigator;
+import org.wrml.runtime.rest.Resource;
 import org.wrml.runtime.schema.LinkProtoSlot;
 import org.wrml.runtime.schema.ProtoSlot;
 import org.wrml.runtime.schema.Prototype;
@@ -96,7 +101,6 @@ final class DefaultModel implements Model, InvocationHandler {
      * @param modelState The state for the model.
      */
     DefaultModel(final Context context, final ModelState modelState) {
-
         _Context = context;
         _ModelState = modelState;
     }
@@ -561,7 +565,7 @@ final class DefaultModel implements Model, InvocationHandler {
 
     private void initKeySlots(final Model model, final Keys keys) {
 
-        final SchemaLoader schemaLoader = getContext().getSchemaLoader();
+        final SchemaLoader schemaLoader = model.getContext().getSchemaLoader();
         final URI documentSchemaUri = schemaLoader.getDocumentSchemaUri();
 
         URI uri = null;
@@ -596,7 +600,9 @@ final class DefaultModel implements Model, InvocationHandler {
         // See comment above regarding saving the uri key slot for last.
         if (uri != null) {
             setSlotValue(model, Document.SLOT_NAME_URI, uri, documentSchemaUri, false);
+            updateLinkSlots((Document) model);
         }
+
     }
 
     private Object invokeReference(final Model model, final LinkProtoSlot linkProtoSlot, final Object[] args) {
@@ -657,6 +663,68 @@ final class DefaultModel implements Model, InvocationHandler {
 
         final Context context = getContext();
         return context.visitLink(model, linkSlotName, dimensionsBuilder, parameter);
+    }
+
+
+    /**
+     * Part of the HATEOAS automation. Uses the runtime's available REST API metadata to update the Links and Link href
+     * values in response to a change/initialization of the URI slot value.
+     */
+    private void updateLinkSlots(Document document) {
+
+        final URI uri = document.getUri();
+        if (uri == null) {
+            return;
+        }
+
+        final Prototype prototype = document.getPrototype();
+        final Context context = document.getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        final ApiLoader apiLoader = context.getApiLoader();
+        final ApiNavigator apiNavigator = apiLoader.getParentApiNavigator(uri);
+
+        if (apiNavigator == null) {
+            return;
+        }
+
+        final Resource resource = apiNavigator.getResource(uri);
+        final Map<URI, LinkTemplate> linkTemplates = resource.getLinkTemplates();
+        if (linkTemplates == null || linkTemplates.isEmpty()) {
+            return;
+        }
+
+        final SortedMap<String, URI> prototypeLinkRelUris = prototype.getLinkRelationUris();
+        final Set<String> linkSlotNames = prototypeLinkRelUris.keySet();
+        for (final String linkSlotName : linkSlotNames) {
+
+            Link link = (Link) document.getSlotValue(linkSlotName);
+
+            final URI linkRelationUri = prototypeLinkRelUris.get(linkSlotName);
+            final Resource endpointResource = apiNavigator.getEndpointResource(linkRelationUri, uri);
+            if (endpointResource == null) {
+                continue;
+            }
+
+            final URI href = endpointResource.getHrefUri(document, linkRelationUri);
+            if (href == null) {
+                // Exclude Links that have null href values.
+
+                if (link != null) {
+                    document.setSlotValue(linkSlotName, null);
+                }
+
+                continue;
+            }
+
+            if (link == null) {
+
+                link = context.newModel(schemaLoader.getLinkSchemaUri());
+                link.setRel(linkRelationUri);
+                document.setSlotValue(linkSlotName, link);
+            }
+
+            link.setHref(href);
+        }
     }
 
     @Override

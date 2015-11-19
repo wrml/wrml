@@ -6196,6 +6196,9 @@ body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
   height: 100%; }
 
+h1 {
+  font-size: 28px; }
+
 ul, ol, dl {
   list-style-type: none; }
 
@@ -6336,6 +6339,14 @@ input[type="color"]:focus,
   display: inline-block;
   margin-right: -40px;
   font-weight: bold; }
+
+.wrml-toolbar-button {
+  border: 1px solid #FF0000; }
+
+.wrml-toolbar-button:hover,
+.wrml-toolbar-button:focus {
+  -webkit-box-shadow: none;
+  outline: -webkit-focus-ring-color auto 0px; }
 
 #wrap {
   height: auto !important;

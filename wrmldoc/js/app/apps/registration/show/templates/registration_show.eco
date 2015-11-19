@@ -39,7 +39,7 @@
 
 				<div class="span12 registration-introduction-workflow-element">
 					
-					<form class="form-horizontal registration-introduction-form">
+					<form class="form-horizontal registration-introduction-form" onsubmit="return false">
 
 						<fieldset>			
 								  

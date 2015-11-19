@@ -61,8 +61,6 @@ public class CompleteApiBuilder {
         final Context context = api.getContext();
 
         final URI apiUri = api.getUri();
-        final ApiLoader apiLoader = context.getApiLoader();
-        final ApiNavigator apiNavigator = apiLoader.getLoadedApiNavigator(apiUri);
 
         final ObjectNode apiNode = objectMapper.createObjectNode();
         apiNode.put(PropertyName.uri.name(), apiUri.toString());
@@ -73,20 +71,36 @@ public class CompleteApiBuilder {
         final Map<URI, ObjectNode> schemaNodes = new HashMap<>();
         final Map<URI, LinkRelation> linkRelationCache = new HashMap<>();
 
-        final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
-        final SortedMap<String, Resource> orderedResources = new TreeMap<>();
-
-        for (final Resource resource : allResources.values()) {
-            orderedResources.put(resource.getPathText(), resource);
-        }
-
         final ArrayNode allResourcesNode = objectMapper.createArrayNode();
-        for (final Resource resource : orderedResources.values()) {
-            final ObjectNode resourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource);
-            allResourcesNode.add(resourceNode);
+        apiNode.put(PropertyName.allResources.name(), allResourcesNode);
+
+        final ApiLoader apiLoader = context.getApiLoader();
+        final ApiNavigator apiNavigator;
+
+        if (apiLoader.getLoadedApiUris().contains(apiUri)) {
+            apiNavigator = apiLoader.getLoadedApiNavigator(apiUri);
+        }
+        else if (ApiNavigator.isApiNavigable(api)){
+            apiNavigator = new ApiNavigator(api);
+        }
+        else {
+            apiNavigator = null;
         }
 
-        apiNode.put(PropertyName.allResources.name(), allResourcesNode);
+        if (apiNavigator != null) {
+            final Map<UUID, Resource> allResources = apiNavigator.getAllResources();
+            final SortedMap<String, Resource> orderedResources = new TreeMap<>();
+
+            for (final Resource resource : allResources.values()) {
+                orderedResources.put(resource.getPathText(), resource);
+            }
+
+            for (final Resource resource : orderedResources.values()) {
+                final ObjectNode resourceNode = buildResourceNode(objectMapper, schemaNodes, linkRelationCache, apiNavigator, resource);
+                allResourcesNode.add(resourceNode);
+            }
+        }
+
         return apiNode;
     }
 

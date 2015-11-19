@@ -308,7 +308,8 @@ public class DefaultApiLoader implements ApiLoader {
 
     @Override
     public void loadInitialState() {
-
+        initSystemLinkRelationKeys();
+        initSystemApiKeys();
         loadConfiguredApis();
     }
 
@@ -412,6 +413,20 @@ public class DefaultApiLoader implements ApiLoader {
         return result;
     }
 
+    protected final Dimensions getApiDimensions() {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        return schemaLoader.getApiDimensions();
+    }
+
+    protected final Dimensions getLinkRelationDimensions() {
+
+        final Context context = getContext();
+        final SchemaLoader schemaLoader = context.getSchemaLoader();
+        return schemaLoader.getLinkRelationDimensions();
+    }
+
     protected Object decipherDocumentSurrogateKeyValue(final URI uri, final Prototype prototype) {
 
         final ApiNavigator apiNavigator = getParentApiNavigator(uri);
@@ -475,32 +490,21 @@ public class DefaultApiLoader implements ApiLoader {
 
     }
 
-    protected final Dimensions getApiDimensions() {
+    private Object parseSlotValueSyntacticText(final Prototype prototype, final String slotName, final String slotTextValue) {
 
-        final Context context = getContext();
-        final SchemaLoader schemaLoader = context.getSchemaLoader();
-        return schemaLoader.getApiDimensions();
-    }
-
-    protected final Dimensions getLinkRelationDimensions() {
-
-        final Context context = getContext();
-        final SchemaLoader schemaLoader = context.getSchemaLoader();
-        return schemaLoader.getLinkRelationDimensions();
-    }
-
-    private void loadConfiguredApis() {
-
-        final ApiLoaderConfiguration config = getConfig();
-        if (config != null) {
-            final URI[] apiUriArray = config.getApis();
-            if (apiUriArray != null && apiUriArray.length > 0) {
-                for (final URI apiUri : apiUriArray) {
-                    loadApi(apiUri);
-                }
-            }
+        final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
+        if (protoSlot == null) {
+            return null;
         }
+
+        final Type slotType = protoSlot.getHeapValueType();
+
+        final SyntaxLoader syntaxLoader = getContext().getSyntaxLoader();
+
+        final Object slotValue = syntaxLoader.parseSyntacticText(slotTextValue, slotType);
+        return slotValue;
     }
+
 
     private void loadSystemApis() {
 
@@ -510,9 +514,11 @@ public class DefaultApiLoader implements ApiLoader {
 
             final ApiBuilder apiBuilder = new ApiBuilder(context);
 
-            apiBuilder.uri(systemApi.getUri()).title(systemApi.getTitle()).description(systemApi.getDescription());
+            final URI apiUri = systemApi.getUri();
 
-            apiBuilder.resource(SYSTEM_API_DOCROOT_FULL_PATH, systemApi.getDocrootId());
+            apiBuilder.uri(apiUri).title(systemApi.getTitle()).description(systemApi.getDescription());
+
+            apiBuilder.docroot(systemApi.getDocrootId());
             apiBuilder.resource(SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, systemApi.getPrimaryEndpointId(), systemApi.getDefaultSchemaInterface(), true);
 
             // TODO: Rework the SchemaNamespace
@@ -540,12 +546,13 @@ public class DefaultApiLoader implements ApiLoader {
         for (final SystemLinkRelation systemLinkRelation : SystemLinkRelation.values()) {
             final LinkRelation linkRelation = context.newModel(LinkRelation.class);
 
-            final UniqueName uniqueName = systemLinkRelation.getUniqueName();
-            linkRelation.setUniqueName(uniqueName);
-            linkRelation.setMethod(systemLinkRelation.getMethod());
-            linkRelation.setUri(systemLinkRelation.getUri());
-            linkRelation.setTitle(uniqueName.getLocalName());
+            final URI linkRelationUri = systemLinkRelation.getUri();
+            final UniqueName linkRelationUniqueName = systemLinkRelation.getUniqueName();
 
+            linkRelation.setUri(linkRelationUri);
+            linkRelation.setUniqueName(linkRelationUniqueName);
+            linkRelation.setMethod(systemLinkRelation.getMethod());
+            linkRelation.setTitle(linkRelationUniqueName.getLocalName());
 
             if (systemLinkRelation == SystemLinkRelation.self) {
                 linkRelation.setResponseSchemaUri(documentSchemaUri);
@@ -556,24 +563,33 @@ public class DefaultApiLoader implements ApiLoader {
                 linkRelation.setRequestSchemaUri(documentSchemaUri);
             }
 
-
             loadLinkRelation(linkRelation);
         }
     }
 
-    private Object parseSlotValueSyntacticText(final Prototype prototype, final String slotName, final String slotTextValue) {
-
-        final ProtoSlot protoSlot = prototype.getProtoSlot(slotName);
-        if (protoSlot == null) {
-            return null;
+    private void initSystemApiKeys() {
+        for (Api api : _Apis.values()) {
+            api.initKeySlots(api.getKeys());
         }
+    }
 
-        final Type slotType = protoSlot.getHeapValueType();
+    private void initSystemLinkRelationKeys() {
+        for (LinkRelation linkRelation : _LinkRelations.values()) {
+            linkRelation.initKeySlots(linkRelation.getKeys());
+        }
+    }
 
-        final SyntaxLoader syntaxLoader = getContext().getSyntaxLoader();
+    private void loadConfiguredApis() {
 
-        final Object slotValue = syntaxLoader.parseSyntacticText(slotTextValue, slotType);
-        return slotValue;
+        final ApiLoaderConfiguration config = getConfig();
+        if (config != null) {
+            final URI[] apiUriArray = config.getApis();
+            if (apiUriArray != null && apiUriArray.length > 0) {
+                for (final URI apiUri : apiUriArray) {
+                    loadApi(apiUri);
+                }
+            }
+        }
     }
 
 }
