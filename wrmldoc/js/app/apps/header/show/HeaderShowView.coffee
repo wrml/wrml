@@ -41,10 +41,19 @@
       'click #saveDocumentMenuItem' : 'saveDocument'
       'click #saveAsDocumentMenuItem' : 'showSaveAsDocumentDialog'
       'click #deleteDocumentMenuItem' : 'deleteDocument'
+      'click #viewJsonMenuItem' : 'showJsonView'
+      'click #viewYamlMenuItem' : 'showYamlView'
+      'change #formatViewFormatSelect' : 'handleFormatViewFormatSelectChange'
 
     onRender: ->
       self = @
       App.headerView = self
+
+    #
+    #
+    # Document Menu
+    #
+    #
 
     showNewDocumentDialog: ->
       console.log("New Document")
@@ -251,3 +260,76 @@
       uri = App.rewriteUri(uri, queryParams)
       uriInput = $("#documentDialogUriInput")
       uriInput.val(uri)
+
+    #
+    #
+    # View Menu
+    #
+    #
+
+    showJsonView: ->
+      console.log("Show JSON View")
+      self.showFormatView("application/json")
+
+    showYamlView: ->
+      console.log("Show YAML View")
+      self.showFormatView("application/yaml")
+
+    showFormatView: (mediaType) ->
+
+      console.log("Show Format View: " + mediaType)
+
+      formatView = $("#formatView")
+
+      aceEditor = ace.edit("formatViewAceEditor")
+
+      aceEditorSession = aceEditor.getSession()
+
+      format = App.formats[mediaType];
+
+      formatViewFormatSelect = $("#formatViewFormatSelect")
+
+      #$('#formatViewFormatSelect option[value="' + mediaType + '"]').attr("selected", "selected");
+
+      aceEditorModeId = "ace/mode/" + format.fileExtension
+      aceEditorSession.setMode(aceEditorModeId)
+      #aceEditorSession.setUseWrapMode(true)
+
+      aceEditor.setShowPrintMargin(false)
+      aceEditor.renderer.setShowGutter(false)
+      aceEditor.renderer.setHighlightGutterLine(false)
+
+      documentUri = App.viewDocument.uri
+
+      console.log("View Document URI: " + documentUri)
+
+      #queryParams = {}
+      #queryParams.accept = mediaType
+      #uri = App.rewriteUri(documentUri, queryParams)
+
+      uri = App.rewriteUri(documentUri)
+      console.log("Formatted Document AJAX request URI: " + uri)
+
+      #      $.get(uri, (data) ->
+
+      $.ajax(uri, {
+        dataType: "text",
+        headers:
+          Accept : mediaType,
+        success: (data) ->
+          if (data)
+            value = data
+            if typeof value == 'object'
+              value = JSON.stringify(value, null, 4)
+
+            console.log(value)
+            aceEditorSession.setValue(value)
+            formatView.modal("show")
+      })
+
+
+    handleFormatViewFormatSelectChange: (e) ->
+      console.log("handleFormatViewFormatSelectChange")
+      console.log(e)
+      selectedMediaType = e.currentTarget.value
+      self.showFormatView(selectedMediaType)

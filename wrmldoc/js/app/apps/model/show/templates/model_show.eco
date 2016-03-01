@@ -110,8 +110,8 @@
 				<% if slotSyntax == "URI": %> 
 
 				<div class="input-append">					
-					<input type="url" id="<%= slotName %>" value="<%= slotValue %>">																	
-					<button class="btn btn-success" type="button">GET</button>
+					<input type="url" id="<%= slotName %>" value="<%= slotValue %>">
+                    <button class="wrml-document-opener btn btn-success" data-document-uri="<%= slotValue %>" type="button">GET</button>
 				</div>	
 
 				<% else if isMultiline: %> 
@@ -182,7 +182,7 @@
 
 											<div class="input-append">					
 												<input type="url" id="<%= inputDomId %>" value="<%= elementValue %>">
-												<button class="btn btn-success" type="button">GET</button>
+												<button class="wrml-document-opener btn btn-success" data-document-uri="<%= elementValue %>" type="button">GET</button>
 											</div>	
 
 										<% else: %>
@@ -215,20 +215,17 @@
 							  				
 
 											<div class="btn-group">
-												<button class="btn btn-inverse" type="button">Open</button>
-												<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-												<span class="caret"></span>
-												</button>
-												<ul class="dropdown-menu">
-													<li><a tabindex="-1" href="#">Open</a></li>
+
+                                                <button class="wrml-document-open-dialog btn btn-inverse" type="button">Open</button>
+                                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a tabindex="-1" class="wrml-document-open-dialog">Open</a></li>
 													<li class="divider"></li>
-													<li><a tabindex="-1" href="#">Clear</a></li>
+													<li><a tabindex="-1" >Clear</a></li>
 													<li class="divider"></li>
-													<li><a tabindex="-1" href="#">Remove</a></li>
-													<li class="divider"></li>
-													<li><a tabindex="-1" href="#">History</a></li>
-													<li class="divider"></li>
-													<li><a tabindex="-1" href="#">Bookmarks</a></li>
+													<li><a tabindex="-1" >Remove</a></li>
 												</ul>
 											</div>
 
@@ -270,18 +267,17 @@
   				
 
 				<div class="btn-group">
-					<button class="btn btn-inverse" type="button">Open</button>
-					<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-					<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-						<li><a tabindex="-1" href="#">Open</a></li>
-						<li class="divider"></li>
-						<li><a tabindex="-1" href="#">Clear</a></li>
-						<li class="divider"></li>
-						<li><a tabindex="-1" href="#">History</a></li>
-						<li class="divider"></li>
-						<li><a tabindex="-1" href="#">Bookmarks</a></li>
+
+                    <button class="wrml-document-open-dialog btn btn-inverse" type="button">Open</button>
+                    <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a tabindex="-1" class="wrml-document-open-dialog">Open</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" class="wrml-document-open-dialog">Edit...</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" >Clear</a></li>
 					</ul>
 				</div>
 
@@ -354,21 +350,19 @@
 							<div class="input-append">
 								
 								<input id="<%= linkName %>_href" value="<%= linkHref %>" class="model-link-href-input" type="url"  readonly="readonly">
-																					
-								<% if link.method == "GET": %>	
-								<button class="btn btn-success" type="button">
-								
-								<% else if link.method == "PUT": %>	
-								<button class="btn btn-warning" type="button">
-																
-								<% else if link.method == "POST": %>	
-								<button class="btn btn-warning" type="button">
-															
-								<% else if link.method == "DELETE": %>	
-								<button class="btn btn-danger" type="button">
-									
-								<% end %>							
-								<%= link.method %></button>
+
+								<% buttonClass = "btn" %>
+								<% if link.method == "GET": %>
+								<% buttonClass = "btn btn-success wrml-document-opener" %>
+								<% else if link.method == "PUT": %>
+                                <% buttonClass = "btn btn-warning" %>
+								<% else if link.method == "POST": %>
+                                <% buttonClass = "btn btn-warning" %>
+								<% else if link.method == "DELETE": %>
+                                <% buttonClass = "btn btn-danger" %>
+								<% end %>
+
+								<button class="<%= buttonClass %>" data-document-uri="<%= linkHref %>" type="button"><%= link.method %></button>
 
 							</div>	
 						
@@ -382,8 +376,8 @@
 
 						<div class="controls">						
 							<div class="input-append">
-								<input  id="<%= linkName %>_rel" class="model-link-relation-input" type="text" value="<%= link.relationTitle %>" readonly="readonly">													
-									<button class="btn btn-inverse" type="button">Open</button>
+								<input  id="<%= linkName %>_rel" class="model-link-relation-input" type="text" value="<%= link.relationTitle %>" readonly="readonly">
+								<button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= link.rel %>" type="button">Open</button>
 							</div>	
 
 						</div>	
@@ -403,18 +397,17 @@
 								<input id="<%= linkName %>_entity" class="model-link-entity-input" type="text" placeholder="Specify <%= requestEntitySchemaTitle %> request entity.">
 				  				
 								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Open</button>
-									<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-									<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li><a tabindex="-1" href="#">Open</a></li>
+
+                                    <button class="wrml-document-open-dialog btn btn-inverse" type="button">Open</button>
+                                    <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" class="wrml-document-open-dialog">Open</a></li>
 										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">Clear</a></li>
+										<li><a tabindex="-1" class="wrml-document-open-dialog">Edit...</a></li>
 										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">History</a></li>
-										<li class="divider"></li>
-										<li><a tabindex="-1" href="#">Bookmarks</a></li>
+										<li><a tabindex="-1" >Clear</a></li>
 									</ul>
 								</div>
 
@@ -456,7 +449,7 @@
 			<label class="wrml-form-field-label" for="schema"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/schema.png" /> Schema</label>	
 			<div class="input-append">
   				<input type="text" id="schema" value="<%= @schema.title %>" readonly="readonly">				
-  				<button class="btn btn-inverse" type="button">Open</button>
+  				<button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= @schema.uri %>" type="button">Open</button>
 			</div>																
 				
 		</fieldset>
@@ -472,7 +465,7 @@
 				<label class="wrml-form-field-label" for="api"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/api.png" /> API</label>																	
 				<div class="input-append">
 					<input type="text" id="api" value="<%= @api.title %>" readonly="readonly">				
-	  				<button class="btn btn-inverse" type="button">Open</button>
+	  				<button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= @api.uri %>" type="button">Open</button>
 				</div>																
 				
 			</fieldset>
@@ -488,8 +481,8 @@
 								
 				<label class="wrml-form-field-label" for="uriTemplate"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /> Resource</label>																	
 				<div class="input-append">
-					<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">																							 		
-	  				<button class="btn btn-inverse" type="button">Open</button>
+					<input type="url" id="uriTemplate" value="<%= @api.resource.uriTemplate %>" readonly="readonly">
+	  				<button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= @api.uri %>" type="button">Open</button>
 				</div>																
 			
 			</fieldset>

@@ -122,19 +122,17 @@
 							<input id="responseSchema" type="text" value="<%= responseSchemaTitle %>" readonly="readonly">
 			  				
 							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
-								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a tabindex="-1" href="#">Open</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Clear</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">History</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Bookmarks</a></li>
-								</ul>
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= @relation.responseSchema?.uri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= @relation.responseSchema?.uri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" >Clear</a></li>
+                                </ul>
 							</div>
 
 						</div>	
@@ -157,19 +155,17 @@
 							<input id="requestSchema" type="text" value="<%= requestSchemaTitle %>" readonly="readonly">
 			  				
 							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
-								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a tabindex="-1" href="#">Open</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Clear</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">History</a></li>
-									<li class="divider"></li>
-									<li><a tabindex="-1" href="#">Bookmarks</a></li>
-								</ul>
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= @relation.requestSchema?.uri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= @relation.requestSchema?.uri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" >Clear</a></li>
+                                </ul>
 							</div>
 
 						</div>	

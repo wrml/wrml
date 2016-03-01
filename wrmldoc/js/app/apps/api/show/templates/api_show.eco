@@ -3,12 +3,12 @@
 	<div id="model-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= @docroot %>img/api.png" /><%= @api.title %>
+	  	<img id="title-icon" title="API" src="<%= @docroot %>img/api.png" /><%= @api.title %>
 
           <div class="pull-right">
-            <button id="main-toolbar-save-button" class="btn btn-inverse wrml-toolbar-button" type="button">Save</button>
-            <button id="main-toolbar-load-button" class="btn btn-inverse wrml-toolbar-button" type="button">Load</button>
-            <button id="main-toolbar-swagger-button" class="btn btn-inverse wrml-toolbar-button" type="button">Swagger</button>
+            <button id="mainToolbarSaveButton" class="btn btn-inverse wrml-toolbar-button" type="button">Save</button>
+            <button id="mainToolbarLoadButton" class="btn btn-inverse wrml-toolbar-button" type="button">Load</button>
+            <button id="mainToolbarSwaggerButton" class="btn btn-inverse wrml-toolbar-button" type="button">Swagger</button>
           </div>
 
 	  </h1>
@@ -20,6 +20,8 @@
 </section>
 
 <section id="api-top-properties-section" class="api-section">
+
+	<div id="nested-view-test"></div>
 
 
 	<form class="form-horizontal wrml-form" onsubmit="return false">
@@ -82,402 +84,99 @@
   </span>
 </div>
 
-<section id="api-resources-section" class="api-section">
+<section id="apiResourcesSection" class="api-section">
+</section>
 
-	<% allResources = @api.allResources %>
+<!-- Resource Dialog -->
+<div id="resourceDialog" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="resourceDialogTitleLabel" aria-hidden="true">
 
-	<% if allResources: %>
 
-		<% for resource in allResources: %>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="resourceDialogTitleLabel"></h3>
+	</div>
 
-			<% fullPath = resource.fullPath %>
-			<% pathSegment = resource.pathSegment %>
-			<% parentPath = resource.parentPath %>
-			<% isDocroot = not parentPath %>
+	<div class="modal-body">
 
-			<form class="wrml-form api-resource-segment-form form-inline well" onsubmit="return false">
-		  						
-				<div class="controls controls-row">
-					
-					<div class="api-resource-segment controls span12">						
+		<div class="container-fluid">
 
-						<label class="wrml-form-field-label" for="resource_<%= fullPath %>_pathSegment"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /></label>
+			<div class="row">
 
-						<% if parentPath?.length > 1: %>														 
+				<div class="span12">
+					<div>
 
-							<% parentPathSegments = parentPath.split "/" %>
-							<% for parentPathSegment in parentPathSegments: %>
+						<form class="wrml-modal-form" onsubmit="return false">
 
-								<% if not not parentPathSegment: %>
-									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><%= parentPathSegment %></label>
-									<label class="api-resource-parent-path-label" for="resource_<%= fullPath %>_pathSegment"><img class="api-resource-parent-path-icon" src="<%= @docroot %>img/resource.png" /></label>
-								<% end %>
-
-							<% end %>
-
-						<% end %>
-
-						<div class="input-append">					
-							
-							<% readonlyAttribute = if isDocroot then "readonly=readonly" else "" %>
-
-							<input id="resource_<%= fullPath %>_pathSegment" class="api-resource-segment-input" type="text"  value="<%= pathSegment %>" <%= readonlyAttribute %>>
-			  				
-							<div class="btn-group">								
-								<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									
-									<% if not isDocroot: %>
-									<li><a tabindex="-1" href="#">Rename</a></li>
-									
-									<li class="divider"></li>
-								
-									<li><a tabindex="-1" href="#">Remove</a></li>
-
-									<li class="divider"></li>
-									<% end %>
-
-									<li><a tabindex="-1" href="#">Add Child</a></li>
-
-								</ul>
+							<div class="controls controls-row">
+								<div>
+									<div class='alert'><b>TIP:</b>  First select a <b>Default Representation Schema</b> to use a key property name in the <b>Path Segment</b>.</div>
+								</div>
 							</div>
 
-						</div>
+							<div class="controls controls-row">
 
-					</div>
-																		
-				</div>													
+								<div id="resourceDialogDefaultSchemaPanel" class="wrml-divided-panel">
 
-			</form>
+									<label class="wrml-modal-form-field-label" for="resourceDialogDefaultSchemaInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/schema.png" /> Default Representation Schema</label>
 
-			<form class="wrml-form api-resource-form form-inline" onsubmit="return false">
-							
-				<div class="controls-row">
-					
-					<label class="api-resource-form-input-label" for="resource_<%= fullPath %>_defaultSchema"><img class="api-resource-form-icon" src="<%= @docroot %>img/schema.png" /> Default Representation Schema</label>
+									<div class="input-append">
 
-					<div class="input-append">					
-						<% defaultSchemaTitle = resource.defaultSchema?.title %>
-						<input id="resource_<%= fullPath %>_defaultSchema" type="text" value="<%= defaultSchemaTitle %>" readonly="readonly">
-		  				
-						<div class="btn-group">
-							<button class="btn btn-inverse" type="button">Open</button>
-							<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-							<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a tabindex="-1" href="#">Open</a></li>
-								<li class="divider"></li>
-								<li><a tabindex="-1" href="#">Clear</a></li>
-								<li class="divider"></li>
-								<li><a tabindex="-1" href="#">History</a></li>
-								<li class="divider"></li>
-								<li><a tabindex="-1" href="#">Bookmarks</a></li>
-							</ul>
-						</div>
+										<input id="resourceDialogDefaultSchemaInput" type="text" value="" readonly="readonly">
 
-					</div>	
-
-				</div>
-
-				<table class="table resource-table">
-
-					<thead>
-						<tr>							
-							<th colspan="10"><img class="api-resource-form-icon" src="<%= @docroot %>img/type/Reference.png" />References</th>
-						</tr>
-
-
-					</thead>
-					
-					<tbody>
-
-						<tr>							
-							<td colspan="10">
-								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Add</button>
-								</div>
-							</td>
-						</tr>
-
-						<% references = resource.references %>
-
-						<% console.log "References: " + references %>
-
-						<% if references: %>
-
-							<tr>
-								<th colspan="2">Relation</th>							
-								<th colspan="6">API Function</th>
-								<th colspan="1">Start Dialog</th>
-								<th colspan="1">Reference Actions</th>
-							</tr>
-
-							<% for reference in references: %>
-								<% referenceMethod = reference.method %>
-								<% console.log "Reference Method: " + referenceMethod %>
-
-								<tr>
-
-									<td colspan="2">							
-					
-										<div class="input-append">
-											<input class="api-relation-input" type="text" value="<%= reference.relationTitle %>" readonly="readonly">													
-											<div class="btn-group">
-												<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-													<span class="caret"></span>
-												</button>
-												<ul class="dropdown-menu">
-													<li><a tabindex="-1" href="#">Open</a></li>
-												</ul>
-											</div>		
-										</div>	
-
-									</td>		
-
-
-									<td colspan="6">							
-																	
-										<% signatureParts = reference.signature.split " " %>	
-
-										<label class="signature">
-											
-											<span class="wrml-code-normal"><%= signatureParts[0] %>&nbsp;</span>													
-											<span class="wrml-code-method-<%= referenceMethod %>"><%= signatureParts[1] %></span>		
-											<span class="wrml-code-normal"><%= signatureParts[2] %></span>		
-
-											<% parameterType = null %>
-											<% parameterName = null %>
-
-											<% for i in [3..signatureParts.length]: %>
-
-												<% parameterToken = signatureParts[i] %>
-
-												<% if parameterToken is ",": %>
-													
-													<span class="wrml-code-normal"><%= parameterToken %>&nbsp;</span>		
-
-													<% parameterType = null %>
-													<% parameterName = null %>
-
-												<% else if parameterToken is ")": %>
-
-													<span class="wrml-code-normal"><%= parameterToken %></span>		
-
-												<% else if not parameterType: %>																					
-													
-													<% parameterType = parameterToken %>
-													
-													<span class="wrml-code-normal"><%= parameterType %>&nbsp;</span>		
-												
-												<% else if not parameterName: %>																					
-												
-													<% parameterName = parameterToken %>
-
-													<span class="wrml-code-normal"><%= parameterName %></span>		
-
-												<% end %>
-
-											<% end %>											
-
-										</label>
-
-									</td>		
-
-									<td colspan="1">
-										
-										<% if referenceMethod is "GET": %>	
-										<button class="btn btn-success" type="button">
-											
-										<% else if referenceMethod is "PUT": %>	
-										<button class="btn btn-warning" type="button">
-																		
-										<% else if referenceMethod is "POST": %>	
-										<button class="btn btn-warning" type="button">
-																	
-										<% else if referenceMethod is "DELETE": %>	
-										<button class="btn btn-danger" type="button">
-											
-										<% end %>							
-										<%= referenceMethod %></button>
-									</td>
-
-									<td colspan="1">
 										<div class="btn-group">
-											<button class="btn btn-inverse" type="button">Edit</button>
+											<button id="resourceDialogDefaultSchemaSelectButton" class="btn btn-inverse" type="button">Select...</button>
 											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
 											<span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu">
-												<li><a tabindex="-1" href="#">Edit</a></li>
+												<li><a id="resourceDialogDefaultSchemaSelectMenuItem" tabindex="-1" >Select...</a></li>
 												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">Remove</a></li>
+												<li><a id="resourceDialogDefaultSchemaOpenMenuItem" tabindex="-1" >Open</a></li>
+												<li class="divider"></li>
+												<li><a id="resourceDialogDefaultSchemaClearMenuItem" tabindex="-1" >Clear</a></li>
 											</ul>
-										
 										</div>
 
-									</td>
+									</div>
+								</div>
+							</div>
 
-								</tr>
-						
-							<% end %>
+							<div class="controls controls-row">
+								<div id="apiBrowser">
+								</div>
+							</div>
 
-						<% end %>
+							<div class="controls controls-row">
 
-					</tbody>
-				</table>
+								<div id="resourceDialogPathSegmentPanel" class="wrml-divided-panel">
 
-				<% links = resource.links %>
+									<label class="wrml-modal-form-field-label" for="resourceDialogPathSegmentInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/type/Text.png" /> Path Segment</label>
 
-				<% console.log "Links: " + links %>
+									<div class="controls">
+										<label class="wrml-modal-form-field-label pull-left" for="resourceDialogPathSegmentInput"><img class="wrml-form-field-label-icon" src="<%= @docroot %>img/resource.png" /></label>
+										<label id="resourceDialogParentPathLabel" class="wrml-modal-form-field-label" for="resourceDialogPathSegmentInput"></label>
+										<input id="resourceDialogPathSegmentInput" class="wrml-modal-input" type="text" value="">
+									</div>
 
-				<% if links: %>
+								</div>
 
-					<% for linkSchemaName, link of links: %>
-					
-						<table class="table resource-table">
-
-							<thead>
-								<tr>							
-									<th colspan="13"><img class="api-resource-form-icon" src="<%= @docroot %>img/type/Link.png" /><%= linkSchemaName %> Links</th>							
-								</tr>
-							</thead>
-							
-							<tbody>
-
-								<tr>
-									<th colspan="2">Relation</th>							
-									<th colspan="6"><%= linkSchemaName %> Method</th>
-									<th colspan="1">Method</th>
-									<th colspan="4">Endpoint Resource</th>
-								</tr>
-
-								<% linkTemplates = link.linkTemplates %>
-								<% for linkName, linkTemplate of linkTemplates: %>
-									<% linkMethod = linkTemplate.method %>
-									<% console.log "Link Method: " + linkMethod %>
-
-									<tr>
-
-										<td colspan="2">							
-						
-											<div class="input-append">
-												<input class="api-relation-input" type="text" value="<%= linkTemplate.relationTitle %>" readonly="readonly">													
-												
-												<div class="btn-group">
-													<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-														<span class="caret"></span>
-													</button>
-													<ul class="dropdown-menu">
-														<li><a tabindex="-1" href="#">Open</a></li>
-													</ul>
-												</div>	
-
-											</div>	
-
-										</td>		
+							</div>
 
 
-										<td colspan="6">							
-																		
-											<% signatureParts = linkTemplate.signature.split " " %>	
+						</form>
 
-											<label class="signature">
-												
-												<span class="wrml-code-normal"><%= signatureParts[0] %>&nbsp;</span>													
-												<span class="wrml-code-method-<%= linkMethod %>"><%= signatureParts[1] %></span>		
-												<span class="wrml-code-normal"><%= signatureParts[2] %></span>		
+					</div>
+				</div>
+			</div>
 
-												<% parameterType = null %>
-												<% parameterName = null %>
+		</div>
 
-												<% for i in [3..signatureParts.length]: %>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button id="resourceDialogActionButton" class="btn btn-inverse">?</button>
+		</div>
 
-													<% parameterToken = signatureParts[i] %>
-
-													<% if parameterToken is ",": %>
-														
-														<span class="wrml-code-normal"><%= parameterToken %>&nbsp;</span>		
-
-														<% parameterType = null %>
-														<% parameterName = null %>
-
-													<% else if parameterToken is ")": %>
-
-														<span class="wrml-code-normal"><%= parameterToken %></span>		
-
-													<% else if not parameterType: %>																					
-														
-														<% parameterType = parameterToken %>
-														
-														<span class="wrml-code-normal"><%= parameterType %>&nbsp;</span>		
-													
-													<% else if not parameterName: %>																					
-													
-														<% parameterName = parameterToken %>
-
-														<span class="wrml-code-normal"><%= parameterName %></span>		
-
-													<% end %>
-
-												<% end %>											
-
-											</label>
-
-										</td>		
-
-										<td colspan="1">											
-											<label class="api-method-text"><%= linkMethod %></label>	
-										</td>
-
-										<td colspan="4">
-
-											<div class="input-append">
-
-												<input class="api-endpoint-input" type="text" value="<%= linkTemplate.endpoint?.fullPath %>" >
-												
-												<div class="btn-group">
-													<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
-														<span class="caret"></span>
-													</button>
-													<ul class="dropdown-menu">
-														
-														<% if linkTemplate.endpoint: %>																								
-														<li><a tabindex="-1" href="#">Jump To</a></li>
-														<li class="divider"></li>
-														<li><a tabindex="-1" href="#">Clear</a></li>
-														<li class="divider"></li>
-														<% end %>
-														<li><a tabindex="-1" href="#">Recomended Resources</a></li>												
-														<li class="divider"></li>
-														<li><a tabindex="-1" href="#">All Resources</a></li>
-
-													</ul>
-												</div>
-
-											</div>
-													
-										</td>
-
-									</tr>
-							
-								<% end %>
-
-							</tbody>
-
-						</table>
-
-					<% end %>					
-
-				<% end %>					
-			</form>
-			
+	</div>
 
 
-		<% end %>
-
-	<% end %>	
-
-</section>	
+</div>

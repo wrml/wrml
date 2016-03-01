@@ -1,0 +1,40 @@
+#main-region {
+
+  .api-browser-content {
+    //width: 800px;
+
+    .api-browser-panel-header {
+      font-weight: bold;
+    }
+
+    .row {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .wrml-toolbar,
+    .wrml-toolbar-top,
+    .wrml-toolbar-bottom
+    {
+      width: 100%;
+      height: 30px;
+      background-color: $componentBackgroundColor;
+      border-left: 1px solid $componentBorderColor;
+      border-right: 1px solid $componentBorderColor;
+    }
+
+    .wrml-toolbar-top {
+      border-top: 1px solid $componentBorderColor;
+    }
+
+    .wrml-toolbar-bottom {
+      border-bottom: 1px solid $componentBorderColor;
+    }
+
+    .api-browser-preview-scroll-panel {
+      height: 388px;
+    }
+  }
+
+}
+

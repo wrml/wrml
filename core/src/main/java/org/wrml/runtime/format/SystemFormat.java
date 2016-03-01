@@ -82,7 +82,7 @@ public enum SystemFormat {
     vnd_wrml_swagger_api(new UniqueName("application/vnd.wrml.swagger.api+json"),
     "The WRML System Format representing the \"application/vnd.wrml.swagger.api\" media type.",
             URI.create("http://wrml.org"),
-            URI.create(""), "txt"),
+            URI.create(""), "json"),
 
     vnd_wrml_wrmldoc(new UniqueName("application/vnd.wrml.wrmldoc+json"),
     "The WRML System Format representing the \"application/vnd.wrml.wrmldoc\" media type.",

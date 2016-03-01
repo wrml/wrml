@@ -32,6 +32,12 @@ do (Marionette) ->
     lookups: ["apps/", "components/"]
 
     render: (template, data) ->
+
+# TODO: Is this needed to support embedded templates?
+#      if (template.startsWith("#"))
+#        Marionette.Renderer.render(template, data)
+#        return
+
       ecoTemplate = @getEcoTemplate(template)
       throw "Template #{template} not found!" unless ecoTemplate
       ecoTemplate(data)

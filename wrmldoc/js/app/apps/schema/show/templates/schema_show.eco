@@ -3,7 +3,7 @@
 	<div id="schema-page-header">
 	  <h1>
 
-	  	<img id="title-icon" src="<%= @docroot %>img/schema.png" /><%= @schema.title %> 
+	  	<img id="title-icon" title="Schema" src="<%= @docroot %>img/schema.png" /><%= @schema.title %>
 
 	  </h1>
 	</div>
@@ -123,18 +123,14 @@
 										<input type="url" id="baseSchemaUri" value="<%= baseSchema.title %>" readonly="readonly">				
 						  				
 										<div class="btn-group">
-											<button class="btn btn-inverse" type="button">Open</button>
+											<button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= baseSchema.uri %>" type="button">Open</button>
 											<button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
 											<span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu">
-												<li><a tabindex="-1" href="#">Open</a></li>
+												<li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= baseSchema.uri %>" >Open</a></li>
 												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">Remove</a></li>
-												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">History</a></li>
-												<li class="divider"></li>
-												<li><a tabindex="-1" href="#">Bookmarks</a></li>
+												<li><a tabindex="-1" >Remove</a></li>
 											</ul>
 										</div>
 
@@ -240,11 +236,11 @@
 									</button>
 									<ul class="dropdown-menu">
 										
-										<li><a tabindex="-1" href="#">Rename</a></li>
+										<li><a tabindex="-1" >Rename</a></li>
 										
 										<li class="divider"></li>
 									
-										<li><a tabindex="-1" href="#">Remove</a></li>
+										<li><a tabindex="-1" >Remove</a></li>
 									</ul>
 								</div>
 
@@ -277,7 +273,17 @@
 							<input id="wrml-model-property-<%= propertyName %>-modelSchema" type="text" value="<%= property.schema?.title %>" readonly="readonly">
 			  				
 							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= property.schema?.uri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= property.schema?.uri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" >Clear</a></li>
+                                </ul>
 							</div>
 
 						</div>	
@@ -293,9 +299,19 @@
 
 								<input id="wrml-model-property-<%= propertyName %>-syntax" type="text" value="<%= propertySyntaxTitle %>" readonly="readonly">
 				  				
-								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Open</button>
-								</div>
+                                <div class="btn-group">
+                                    <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= propertySyntax.uri %>" type="button">Open</button>
+                                    <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= propertySyntax.uri %>" >Open</a></li>
+                                        <li class="divider"></li>
+                                        <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                        <li class="divider"></li>
+                                        <li><a tabindex="-1" >Clear</a></li>
+                                    </ul>
+                                </div>
 
 							</div>	
 
@@ -310,9 +326,16 @@
 							<input id="wrml-model-property-<%= propertyName %>-choices" type="text" value="<%= property.choices?.title %>" readonly="readonly">
 			  				
 							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= property.choices?.uri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= property.choices?.uri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                </ul>
 							</div>
-
 						</div>	
 
 
@@ -332,9 +355,19 @@
 
 								<input id="wrml-model-property-<%= propertyName %>-elementType-modelSchema" type="text" value="<%= elementSchema?.title %>" readonly="readonly">
 				  				
-								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Open</button>
-								</div>
+						        <div class="btn-group">
+                                    <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= elementSchema?.uri %>" type="button">Open</button>
+                                    <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= elementSchema?.uri %>" >Open</a></li>
+                                        <li class="divider"></li>
+                                        <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                        <li class="divider"></li>
+                                        <li><a tabindex="-1" >Clear</a></li>
+                                    </ul>
+                                </div>
 
 							</div>	
 
@@ -349,10 +382,19 @@
 
 									<input id="wrml-model-property-<%= propertyName %>-elementType-syntax" type="text" value="<%= elementSyntaxTitle %>" readonly="readonly">
 					  				
-									<div class="btn-group">
-										<button class="btn btn-inverse" type="button">Open</button>
-									</div>
-
+                                    <div class="btn-group">
+                                        <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= elementSyntax?.uri %>" type="button">Open</button>
+                                        <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= elementSyntax?.uri %>" >Open</a></li>
+                                            <li class="divider"></li>
+                                            <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                            <li class="divider"></li>
+                                            <li><a tabindex="-1" >Clear</a></li>
+                                        </ul>
+                                    </div>
 								</div>	
 
 								<% end %>
@@ -366,9 +408,17 @@
 
 								<input id="wrml-model-property-<%= propertyName %>-elementType-choices" type="text" value="<%= elementChoices?.title %>" readonly="readonly">
 				  				
-								<div class="btn-group">
-									<button class="btn btn-inverse" type="button">Open</button>
-								</div>
+                                <div class="btn-group">
+                                    <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= elementChoices?.uri %>" type="button">Open</button>
+                                    <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= elementChoices?.uri %>" >Open</a></li>
+                                        <li class="divider"></li>
+                                        <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    </ul>
+                                </div>
 
 							</div>	
 
@@ -577,11 +627,11 @@
 									</button>
 									<ul class="dropdown-menu">
 										
-										<li><a tabindex="-1" href="#">Rename</a></li>
+										<li><a tabindex="-1" >Rename</a></li>
 										
 										<li class="divider"></li>
 									
-										<li><a tabindex="-1" href="#">Remove</a></li>
+										<li><a tabindex="-1" >Remove</a></li>
 									</ul>
 								</div>
 
@@ -606,9 +656,17 @@
 
 							<input id="wrml-link-<%= linkName %>-relation" type="text" value="<%= link.relationTitle %>" readonly="readonly">
 			  				
-							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
-							</div>
+                            <div class="btn-group">
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= link.rel %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= link.rel %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                </ul>
+                            </div>
 
 						</div>	
 
@@ -630,9 +688,19 @@
 
 							<input id="wrml-link-<%= linkName %>-responseSchema" type="text" value="<%= link.responseSchemaTitle %>" readonly="readonly">
 			  				
-							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
-							</div>
+                            <div class="btn-group">
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= link.responseSchemaUri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= link.responseSchemaUri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" >Clear</a></li>
+                                </ul>
+                            </div>
 
 						</div>	
 						<% end %>
@@ -644,9 +712,19 @@
 
 							<input id="wrml-link-<%= linkName %>-requestSchema" type="text" value="<%= link.requestSchemaTitle %>" readonly="readonly">
 			  				
-							<div class="btn-group">
-								<button class="btn btn-inverse" type="button">Open</button>
-							</div>
+                            <div class="btn-group">
+                                <button class="wrml-document-opener btn btn-inverse" data-document-uri="<%= link.requestSchemaUri %>" type="button">Open</button>
+                                <button class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" class="wrml-document-opener" data-document-uri="<%= link.requestSchemaUri %>" >Open</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" class="wrml-document-open-dialog" >Edit...</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" >Clear</a></li>
+                                </ul>
+                            </div>
 
 						</div>	
 						<% end %>

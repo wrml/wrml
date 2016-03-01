@@ -27,11 +27,17 @@
 
 @Wrmldoc.module "SchemaApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Schema extends App.Views.ItemView
+
+    self = @
+
     template: "schema/show/schema_show"
 
     events:
       'keyup .wrml-model-property-input' : 'handleModelPropertyInputKeyup'
       'keyup .schema-slot-name-input' : 'handleSchemaSlotNameInputKeyup'
+      'click .wrml-document-opener' : 'handleDocumentOpen'
+      'click .wrml-document-new-dialog' : 'showNewDocumentDialog'
+      'click .wrml-document-open-dialog' : 'showOpenDocumentDialog'
 
     onRender: ->
       @self = @
@@ -47,3 +53,12 @@
     handleSchemaSlotNameInputKeyup: (e) ->
       console.log("handleSchemaSlotNameInputKeyup")
       console.log(e)
+
+    handleDocumentOpen: (e) ->
+      App.handleDocumentOpen(e)
+
+    showNewDocumentDialog: ->
+      App.headerView.showNewDocumentDialog()
+
+    showOpenDocumentDialog: ->
+      App.headerView.showOpenDocumentDialog()

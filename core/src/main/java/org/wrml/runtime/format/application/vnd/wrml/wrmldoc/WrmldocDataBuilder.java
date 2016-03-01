@@ -25,9 +25,11 @@
 package org.wrml.runtime.format.application.vnd.wrml.wrmldoc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import org.wrml.model.Model;
+import org.wrml.model.format.Format;
 import org.wrml.model.rest.Api;
 import org.wrml.model.rest.Document;
 import org.wrml.model.rest.LinkRelation;
@@ -38,12 +40,16 @@ import org.wrml.model.rest.status.ResourceNotFoundErrorReport;
 import org.wrml.model.schema.Schema;
 import org.wrml.runtime.Context;
 import org.wrml.runtime.Keys;
+import org.wrml.runtime.format.FormatLoader;
+import org.wrml.runtime.format.Formatter;
 import org.wrml.runtime.format.application.vnd.wrml.complete.api.CompleteApiBuilder;
 import org.wrml.runtime.format.application.vnd.wrml.complete.schema.CompleteSchemaBuilder;
+import org.wrml.runtime.rest.ApiLoader;
 import org.wrml.runtime.schema.SchemaLoader;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.SortedSet;
 
 public class WrmldocDataBuilder {
 
@@ -166,7 +172,41 @@ public class WrmldocDataBuilder {
         final ObjectNode jstreeDataNode = _JstreeDataBuilder.buildJstreeData(objectMapper, context);
         wrmlDataNode.put(PropertyName.jstree.name(), jstreeDataNode);
 
+        final ObjectNode formatsDataNode = buildFormatsData(objectMapper, model);
+        wrmlDataNode.put(PropertyName.formats.name(), formatsDataNode);
+
         return wrmlDataNode;
+    }
+
+
+    public ObjectNode buildFormatsData(final ObjectMapper objectMapper, final Model model) {
+
+        final ObjectNode formatsNode = objectMapper.createObjectNode();
+
+        final Context context = model.getContext();
+        final FormatLoader formatLoader = context.getFormatLoader();
+        final SortedSet<URI> formatUris = formatLoader.getLoadedFormatUris();
+        final URI defaultFormatUri = formatLoader.getDefaultFormatUri();
+
+        for (final URI formatUri : formatUris) {
+            final Formatter formatter = formatLoader.getFormatter(formatUri);
+            if (formatter.isApplicableTo(model.getSchemaUri())) {
+
+                final Format format = formatLoader.loadFormat(formatUri);
+                final String mediaTypeString = String.valueOf(format.getMediaType());
+                final ObjectNode formatNode = objectMapper.createObjectNode();
+                formatsNode.put(mediaTypeString, formatNode);
+
+                formatNode.put("uri", String.valueOf(formatUri));
+                formatNode.put("title", format.getTitle());
+                formatNode.put("mediaType", mediaTypeString);
+                formatNode.put("fileExtension", format.getFileExtension());
+                formatNode.put("isDefault", formatUri.equals(defaultFormatUri));
+
+            }
+        }
+
+        return formatsNode;
     }
 
 
@@ -179,7 +219,8 @@ public class WrmldocDataBuilder {
         schema,
         api,
         relation,
-        jstree;
+        jstree,
+        formats;
     }
 }
 

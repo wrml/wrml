@@ -1,5 +1,58 @@
 #main-region {
 
+  .modal {
+    width: 1010px;
+    margin-left: -505px;
+  }
+
+  .modal.fade {
+    -webkit-transform: scale(0.1);
+    -moz-transform: scale(0.1);
+    -ms-transform: scale(0.1);
+    transform: scale(0.1);
+    top: 30%;
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+
+  .modal.fade.in {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform: translate3d(0, -300px, 0);
+    transform: translate3d(0, -300px, 0);
+    opacity: 1;
+  }
+
+  #apiBrowser {
+    margin-left: 20px;
+  }
+
+  #resourceDialogParentPathLabel {
+    padding-top: 2px;
+    padding-left: 2px;
+    padding-right: 3px;
+    letter-spacing: 1px;
+    float: left;
+    color: $muted;
+  }
+
+  #resourceDialogDefaultSchemaInput {
+    width: 480px;
+    cursor: pointer;
+    color: $black;
+    background-color: $white;
+  }
+
+  #resourceDialogPathSegmentInput {
+    font-weight: bold;
+    width: 200px;
+  }
+
+
   .api-section {
 
     fieldset {
@@ -62,8 +115,7 @@
       margin-top: 5px;
     }
 
-    textarea,
-    {
+    textarea {
       width: $containerWidth - 50;
     }
 
@@ -87,9 +139,12 @@
   }
 
   .api-resource-segment-input {
+    cursor: pointer;
     font-weight: bold;
     width: 200px;
-    border: 1px solid #ebebeb;
+    border: 1px solid #cccccc;
+    color: $black;
+    background-color: $white;
 
     :focus {
       color: $focusForegroundColor;
@@ -182,10 +237,17 @@
         width: 650px;
       }
 
-      input.api-resource-form-input-short,
-      {
+      input.api-resource-form-input-short {
         width: 100px;
       }
+
+      input.api-resource-default-schema-input {
+        color: $black;
+        background-color: $white;
+        width: 475px;
+        cursor: pointer;
+      }
+
     }
 
     .api-resource-form-icon {
@@ -237,7 +299,9 @@
 
     .api-relation-input {
       width: 120px;
-
+      cursor: pointer;
+      color: $black;
+      background-color: $white;
     }
 
     .api-endpoint-input {
@@ -264,3 +328,5 @@
 
   }
 }
+
+

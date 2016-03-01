@@ -39,6 +39,12 @@
 
   # App Init
   App.addInitializer ->
+
+
+    App.viewDocument = $.extend(true, {}, App.dataModel.attributes.model)
+
+    App.formats = $.extend(true, {}, App.dataModel.attributes.formats)
+
     App.module("HeaderApp").start(App.dataModel)
 
     schemaUri = App.dataModel.get "schemaUri"
@@ -63,29 +69,38 @@
   App.getEmbeddedDataModel = ->
     App.dataModel
 
+  # TODO: Find a better UUID generation algorithm
+  App.generateUUID = () ->
+    _p8 = (s) ->
+      p = (Math.random().toString(16)+"000000000").substr(2,8)
+      if s then "-" + p.substr(0,4) + "-" + p.substr(4,4) else p
+
+    _p8() + _p8(true) + _p8(true) + _p8()
+
+
   App.openDocument = (uri, target) ->
 
     aElement = $("<a>").attr("href", uri)
     if (target)
-      aElement = aElement.attr("target", "_blank")
+      aElement = aElement.attr("target", target)
 
     aElement[0].click();
 
-    #settings = {
-    #  headers: {
-    #    Accept: "application/vnd.wrml.wrmldoc+json"
-    #  }
-    #  dataType: "json"
-    #  success: (wrmlData, textStatus) ->
-    #    console.log(wrmlData);
-    #    dataModel = App.createDataModel(wrmlData)
-    #    schemaUri = dataModel.attributes["schemaUri"]
-    #    console.log("Response Schema: " + schemaUri)
-    #    module = App.getModuleForSchema(schemaUri)
-    #    console.log(module)
-    #    new module.Show.Controller(dataModel)
-    #}
-    #$.ajax(uri, settings)
+  #settings = {
+  #  headers: {
+  #    Accept: "application/vnd.wrml.wrmldoc+json"
+  #  }
+  #  dataType: "json"
+  #  success: (wrmlData, textStatus) ->
+  #    console.log(wrmlData);
+  #    dataModel = App.createDataModel(wrmlData)
+  #    schemaUri = dataModel.attributes["schemaUri"]
+  #    console.log("Response Schema: " + schemaUri)
+  #    module = App.getModuleForSchema(schemaUri)
+  #    console.log(module)
+  #    new module.Show.Controller(dataModel)
+  #}
+  #$.ajax(uri, settings)
 
   App.rewriteUri = (uri, queryParams) ->
 
@@ -123,6 +138,14 @@
 
     return rewrittenUri
 
+  App.handleDocumentOpen = (e) ->
+    console.log("App.handleDocumentOpen")
+    console.log(e)
+    el = $(e.currentTarget)
+    uri = el.data("document-uri")
+    if (uri)
+      uri = App.rewriteUri(uri)
+      App.openDocument(uri, "_blank")
 
   App.getApiUri = (documentUri) ->
     uriAnchor = document.createElement('a')
@@ -191,6 +214,23 @@
 
     else
       module = App.module("ModelApp")
+
+  App.scrollToView = (el) ->
+
+    offset = el.offset().top
+
+    visible_area_start = $(window).scrollTop()
+    visible_area_end = visible_area_start + window.innerHeight
+
+    if (offset < visible_area_start || offset > visible_area_end)
+      $('html,body').animate({scrollTop: offset - window.innerHeight/3}, 300)
+      return false
+
+    return true
+
+  App.flashElement = (el) ->
+    el.fadeIn(200).fadeOut(200).fadeIn(200).fadeTo(200, 0.5).fadeTo(200, 1)
+
 
   #
   # GET (reqres)

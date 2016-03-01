@@ -26,24 +26,68 @@
 # CoffeeScript
 
 @Wrmldoc.module "ApiApp.Show", (Show, App, Backbone, Marionette, $, _) ->
-  class Show.Api extends App.Views.ItemView
+  class Show.Api extends App.Views.Layout
+
+    self = @
+
     template: "api/show/api_show"
 
+    regions:
+      resourcesSection: "#apiResourcesSection"
+      apiBrowser: "#apiBrowser"
+
     events:
+      'click .wrml-document-opener' : 'handleDocumentOpen'
+      'click .wrml-document-new-dialog' : 'showNewDocumentDialog'
+      'click .wrml-document-open-dialog' : 'showOpenDocumentDialog'
       'keyup .wrml-model-property-input' : 'handleModelPropertyInputKeyup'
-      'click #main-toolbar-save-button' : 'handleMainToolbarSave'
-      'click #main-toolbar-load-button' : 'handleMainToolbarLoad'
-      'click #main-toolbar-swagger-button' : 'handleMainToolbarSwagger'
+      'click #mainToolbarSaveButton' : 'handleSave'
+      'click #mainToolbarLoadButton' : 'handleLoad'
+      'click #mainToolbarSwaggerButton' : 'handleSwagger'
+      'click .api-resource-add-child-resource-menu-item' : 'handleAddChildResource'
+      'click .api-resource-edit-resource-menu-item' : 'handleEditResource'
+      'click .api-resource-remove-resource-menu-item' : 'handleRemoveResource'
+      'click #resourceDialogActionButton' : 'handleResourceDialogAction'
+      'click #resourceDialogDefaultSchemaSelectButton' : 'handleResourceDialogSchemaSelect'
+      'click #resourceDialogDefaultSchemaSelectMenuItem' : 'handleResourceDialogSchemaSelect'
+      'keypress #resourceDialogPathSegmentInput' : 'handleResourceDialogPathSegmentInputKeypress'
+
 
     onRender: ->
-      @self = @
+      console.log("Show.Api::onRender")
+
+      self = @
+
+      console.log(@model)
+
       @viewDocument = $.extend(true, {}, @model.attributes.model)
+      @viewApi = $.extend(true, {}, @model.attributes.api)
+      resourceArray = @viewApi.allResources
+      console.log(resourceArray)
+      @resourceCollection = new App.Entities.Collection(resourceArray)
+      console.log(@resourceCollection)
+
+      @resourcesSection.show(new ResourceCollectionView({
+          collection: @resourceCollection
+          wrmldocDocroot: @model.attributes.docroot
+        }
+      ))
 
     getViewDocument: ->
       return @viewDocument
 
+    handleDocumentOpen: (e) ->
+      App.handleDocumentOpen(e)
+
+    showNewDocumentDialog: ->
+      App.headerView.showNewDocumentDialog()
+
+    showOpenDocumentDialog: ->
+      App.headerView.showOpenDocumentDialog()
+
+
     handleModelPropertyInputKeyup: (e) ->
-      console.log("handleModelPropertyInputKeyup")
+      console.log("Show.Api::handleModelPropertyInputKeyup")
       console.log(e)
       propertyInput = $(e.currentTarget)
       propertyInputData = propertyInput.data();
@@ -53,13 +97,13 @@
       propertyValue = propertyInput.val()
       @viewDocument[propertyName] = propertyValue
 
-    handleMainToolbarSave: (e) ->
-      console.log("handleMainToolbarSave")
+    handleSave: (e) ->
+      console.log("handleSave")
       console.log(e)
       App.saveDocument()
 
-    handleMainToolbarLoad: (e) ->
-      console.log("handleMainToolbarLoad")
+    handleLoad: (e) ->
+      console.log("handleLoad")
       console.log(e)
 
       apiUri = @viewDocument.uri
@@ -85,13 +129,11 @@
       })
 
 
-    handleMainToolbarSwagger: (e) ->
-      console.log("handleMainToolbarSwagger")
+    handleSwagger: (e) ->
+      console.log("handleSwagger")
       console.log(e)
 
       apiUri = @viewDocument.uri
-
-      #http://192.168.99.100:8888/_wrml/wrmldoc/swagger/?host=goonies01.api.wrml.org&url=http://192.168.99.100:8888/_wrml/api/swagger/?host=goonies01.api.wrml.org
 
       swaggerJsonUri = apiUri + "/_wrml/api/swagger"
       swaggerJsonUri = App.rewriteUri(swaggerJsonUri)
@@ -102,3 +144,172 @@
       swaggerUri = App.rewriteUri(swaggerUri, queryParams)
 
       App.openDocument(swaggerUri, "_blank")
+
+
+    handleAddChildResource: (e) ->
+      console.log("handleAddChildResource")
+      #console.log(e)
+      #console.log(@resourceCollection)
+
+      pathSegment = ""
+
+      console.log(e.target)
+
+      eventTarget = $(e.target)
+      console.log(eventTarget)
+
+      parentResourceId = eventTarget.data("resource-id")
+      console.log("parentResourceId: " + parentResourceId)
+
+      parentResourceElement = $('.api-resource[data-resource-id="' + parentResourceId + '"]');
+      console.log(parentResourceElement)
+
+      parentPath = parentResourceElement.data("full-path")
+      console.log("parentPath: " + parentPath)
+
+      resourceId = App.generateUUID()
+      console.log("resourceId: " + resourceId)
+
+      resource = {
+        fullPath: parentPath + pathSegment
+        id: resourceId
+        parentPath: parentPath
+        pathSegment: pathSegment
+      }
+
+      self.showResourceDialog({
+        action: "new"
+        title: "New Resource"
+        actionButtonLabel: "New"
+        resource: resource
+      })
+
+
+    showResourceDialog: (dialogData) ->
+      resourceDialog = $("#resourceDialog")
+
+      for key, value of dialogData
+        resourceDialog.data(key, value)
+
+      resourceDialogTitleLabel = $("#resourceDialogTitleLabel")
+      resourceDialogTitleLabel.text(dialogData.title)
+
+      resourceDialogActionButton = $("#resourceDialogActionButton")
+      resourceDialogActionButton.text(dialogData.actionButtonLabel)
+
+      parentPathLabel = $("#resourceDialogParentPathLabel")
+
+      parentPath = dialogData.resource.parentPath
+      if (parentPath.startsWith('/'))
+        parentPath = parentPath.substring(1)
+
+      if (not not parentPath)
+        parentPath = parentPath + '/'
+
+      parentPathLabel.text(parentPath)
+
+      pathSegmentInput = $("#resourceDialogPathSegmentInput")
+      pathSegmentInput.val(dialogData.resource.pathSegment)
+
+      resourceDialog.on('shown', ->
+        pathSegmentInput.focus()
+      )
+
+      resourceDialog.modal("show")
+
+    handleResourceDialogAction: (e) ->
+      resourceDialog = $("#resourceDialog")
+      resource = resourceDialog.data("resource")
+      console.log(resource)
+      pathSegmentInput = $("#resourceDialogPathSegmentInput")
+      console.log(pathSegmentInput)
+      resource.pathSegment = pathSegmentInput.val()
+      parentPath = resource.parentPath
+      if (!parentPath.endsWith('/'))
+        parentPath = parentPath + '/'
+
+      resource.fullPath = parentPath + resource.pathSegment
+
+      resourceDialog.modal('hide')
+
+      resourceModel = new App.Entities.Model(resource)
+      console.log(resourceModel)
+
+      # TODO: Insert the model in sort order
+      @resourceCollection.add(resourceModel)
+      console.log(@resourceCollection)
+
+      resourceElement = $('.api-resource[data-resource-id="' + resource.id + '"]');
+      console.log(resourceElement)
+
+      if (resourceElement)
+        App.scrollToView(resourceElement)
+        App.flashElement(resourceElement)
+
+    handleResourceDialogPathSegmentInputKeypress: (e) ->
+      if e.which is 13
+        $("#resourceDialogActionButton").click();
+
+    handleResourceDialogSchemaSelect: (e) ->
+      resourceDialog = $("#resourceDialog")
+      resource = resourceDialog.data("resource")
+      console.log("handleResourceDialogSchemaSelect")
+
+      @apiBrowser.show(new App.ApiBrowserApp.Show.ApiBrowser({
+          #collection: @resourceCollection
+          #wrmldocDocroot: @model.attributes.docroot
+        }
+      ))
+
+    handleEditResource: (e) ->
+      console.log("handleEditResource")
+
+    handleRemoveResource: (e) ->
+      console.log("handleRemoveResource")
+
+    #
+    # View for a single Resource
+    #
+    class ResourceView extends App.Views.ItemView
+
+      template: "api/show/resource_show"
+
+      initialize: (options) ->
+        @wrmldocDocroot = options.wrmldocDocroot
+        #console.log("ResourceView::initialize")
+        #console.log(options)
+        #console.log(@wrmldocDocroot)
+
+      onRender: ->
+        #console.log("Rendering ResourceView")
+        #console.log(@)
+        #console.log(@model)
+        #console.log(@wrmldocDocroot)
+
+      templateHelpers: ->
+        return {
+          wrmldocDocroot: @wrmldocDocroot
+        }
+
+
+    #
+    # View for a collection of Resources
+    #
+    class ResourceCollectionView extends App.Views.CollectionView
+
+      itemView: ResourceView
+
+      itemViewOptions: (model, index) ->
+        return {
+          wrmldocDocroot: @wrmldocDocroot
+        }
+
+      initialize: (options) ->
+        @wrmldocDocroot = options.wrmldocDocroot
+        #console.log("ResourceCollectionView::initialize")
+        #console.log(options)
+        #console.log(@wrmldocDocroot)
+
+      onRender: ->
+        #console.log("Rendering ResourceCollectionView")
+        #console.log(@collection)

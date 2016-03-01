@@ -79,6 +79,8 @@ public class WrmldocFormatter extends AbstractFormatter {
 
         try {
 
+            final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
+
             final ObjectNode wrmldocData = _WrmldocDataBuilder.buildWrmldocData(objectMapper, model);
 
             final String documentTitle = wrmldocData.get(WrmldocDataBuilder.PropertyName.documentTitle.name()).asText();
@@ -100,8 +102,23 @@ public class WrmldocFormatter extends AbstractFormatter {
             final JsonNode jstreeDataNode = wrmldocData.get(WrmldocDataBuilder.PropertyName.jstree.name());
             final String jstreeValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jstreeDataNode);
 
-            final MessageFormat pageTemplate = getTemplate(SHELL_PAGE_TEMPLATE_RESOURCE);
-            final String renderedPage = renderPage(pageTemplate, _WrmldocDataBuilder.getDocroot(), dotMin, documentTitle, documentIcon, schemaUriString, modelValue, schemaValue, apiValue, relationValue, jstreeValue);
+            final JsonNode formatsDataNode = wrmldocData.get(WrmldocDataBuilder.PropertyName.formats.name());
+            final String formatsValue = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(formatsDataNode);
+
+            final String renderedPage =
+                    renderPage(
+                            pageTemplate,
+                            _WrmldocDataBuilder.getDocroot(),
+                            dotMin,
+                            documentTitle,
+                            documentIcon,
+                            schemaUriString,
+                            modelValue,
+                            schemaValue,
+                            apiValue,
+                            relationValue,
+                            jstreeValue,
+                            formatsValue);
 
             IOUtils.write(renderedPage, out);
 

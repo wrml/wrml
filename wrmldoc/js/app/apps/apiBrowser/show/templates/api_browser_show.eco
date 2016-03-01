@@ -1,0 +1,63 @@
+<div class="api-browser-content">
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="span2">
+                <div class="api-browser-panel-header">APIs</div>
+            </div>
+
+            <div class="span2">
+                <div class="api-browser-panel-header">Resources</div>
+            </div>
+
+            <div class="span3">
+                <div class="api-browser-panel-header">Keys</div>
+            </div>
+
+            <div class="span4">
+                <div class="api-browser-panel-header">Preview</div>
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="span2">
+                <div class="wrml-scroll-panel">
+                    <div id="apiBrowserApiJstree"></div>
+                </div>
+            </div>
+
+            <div class="span2">
+                <div class="wrml-scroll-panel">
+                    <div id="apiBrowserResourceJstree"></div>
+                </div>
+            </div>
+
+            <div class="span3">
+                <div class="wrml-scroll-panel">
+                    <div id="apiBrowserKeyPanel"></div>
+                </div>
+            </div>
+
+            <div class="span4">
+
+                <div class="wrml-toolbar-top">
+                    URI:
+                </div>
+
+                <div class="wrml-scroll-panel api-browser-preview-scroll-panel">
+                    <div id="apiBrowserPreviewPanel"></div>
+                </div>
+
+                <div class="wrml-toolbar-bottom">
+                    Footer
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

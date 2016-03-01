@@ -61,7 +61,7 @@ import java.util.UUID;
  * <p/>
  * <p>
  * A link ends with its pointy-end pointing to the end point. This end point is the resource that the referrer resource
- * was referencing with its link.
+ * is referencing with its link.
  * </p>
  *
  * @see Api
@@ -70,7 +70,6 @@ import java.util.UUID;
  * @see URI
  * @see Link
  * @see LinkRelation
- * @see org.wrml.runtime.schema.LinkSlot
  * @see LinkValue
  * @see Schema
  * @see Document

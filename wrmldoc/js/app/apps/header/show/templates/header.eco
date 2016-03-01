@@ -14,15 +14,15 @@
 
 					<!--
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<a  class="dropdown-toggle" data-toggle="dropdown">
 							User
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 
-							<li><a tabindex="-1" href="#">Log In...</a></li>
+							<li><a tabindex="-1" >Log In...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" href="#">Preferences...</a></li>
+							<li><a tabindex="-1" >Preferences...</a></li>
 
 						</ul>
 					</li>
@@ -34,15 +34,15 @@
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li><a tabindex="-1" id="newDocumentMenuItem" href="#">New...</a></li>
-							<li><a tabindex="-1" id="openDocumentMenuItem" href="#">Open...</a></li>
+							<li><a tabindex="-1" id="newDocumentMenuItem" >New...</a></li>
+							<li><a tabindex="-1" id="openDocumentMenuItem" >Open...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" id="saveDocumentMenuItem" href="#">Save</a></li>
-							<li><a tabindex="-1" id="saveAsDocumentMenuItem" href="#">Save As...</a></li>
+							<li><a tabindex="-1" id="saveDocumentMenuItem" >Save</a></li>
+							<li><a tabindex="-1" id="saveAsDocumentMenuItem" >Save As...</a></li>
 							<li class="divider"></li>
-							<li><a tabindex="-1" id="deleteDocumentMenuItem" href="#"><!-- <img src="<%= @docroot %>img/store-small.png" /> -->Delete</a></li>
+							<li><a tabindex="-1" id="deleteDocumentMenuItem" ><!-- <img src="<%= @docroot %>img/store-small.png" /> -->Delete</a></li>
 							<!-- <li class="divider"></li> -->
-							<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
+							<!-- <li><a tabindex="-1" >Separated link</a></li> -->
 						</ul>
 					</li>
 
@@ -53,9 +53,9 @@
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li><a tabindex="-1" href="#">Cut</a></li>
-							<li><a tabindex="-1" href="#">Copy</a></li>
-							<li><a tabindex="-1" href="#">Paste</a></li>
+							<li><a tabindex="-1" >Cut</a></li>
+							<li><a tabindex="-1" >Copy</a></li>
+							<li><a tabindex="-1" >Paste</a></li>
 						</ul>
 					</li>
 					-->
@@ -66,15 +66,8 @@
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li>
-								<a  tabindex="-1" href="#">Format <span class="badge badge-inverse">&gt;</span></a>
-
-								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-									<li><a tabindex="-1" href="#">JSON</a></li>
-									<li><a tabindex="-1" href="#">XML</a></li>
-								</ul>
-
-							</li>
+						    <li><a tabindex="-1" id="viewJsonMenuItem" >JSON</a></li>
+						    <li><a tabindex="-1" id="viewYamlMenuItem" >YAML</a></li>
 						</ul>
 					</li>
 
@@ -107,10 +100,10 @@
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-							<li><a tabindex="-1" href="#">README</a></li>
-							<li><a tabindex="-1" href="#">User Guide</a></li>
-							<li><a tabindex="-1" href="#">WRML Wiki</a></li>
-							<li><a tabindex="-1" href="#">WRML.org</a></li>
+							<li><a tabindex="-1" >README</a></li>
+							<li><a tabindex="-1" >User Guide</a></li>
+							<li><a tabindex="-1" >WRML Wiki</a></li>
+							<li><a tabindex="-1" >WRML.org</a></li>
 						</ul>
 					</li>
 
@@ -173,18 +166,54 @@
 					</fieldset>
 				</form>
 
-			</div>
-		  </div>
-		</div>
+			    </div>
+		    </div>
+        </div>
 
-  </div>
+    </div>
 
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button id="documentDialogActionButton" class="btn btn-inverse">?</button>
-  </div>
+	  <div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		<button id="documentDialogActionButton" class="btn btn-inverse">?</button>
+	  </div>
+
+	</div>
 
 </div>
 
+<!-- View Format Modal -->
+<div id="formatView" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="formatViewTitleLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="formatViewTitleLabel">Representation Format</h3>
+  </div>
+  <div class="modal-body">
 
+    <div id="formatViewFormatSelectionPanel">
+      <form class="formatViewFormatSelect-form form-horizontal" onsubmit="return false">
+        <fieldset class="wrml-form-fieldset">
+          <div class="control-group">
+            <label class="control-label" for="formatViewFormatSelect">Format</label>
+            <div class="controls">
+                <select id="formatViewFormatSelect">
 
+                  <% for mediaType, format of @formats: %>
+                    <option><%= mediaType %></option>
+                  <% end %>
+
+                </select>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+    <div id="formatViewAceEditor"></div>
+
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+
+  </div>
+
+</div>

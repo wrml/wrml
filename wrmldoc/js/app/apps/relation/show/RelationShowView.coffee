@@ -27,11 +27,29 @@
 
 @Wrmldoc.module "RelationApp.Show", (Show, App, Backbone, Marionette, $, _) ->
   class Show.Relation extends App.Views.ItemView
+
+    self = @
+
     template: "relation/show/relation_show"
+
+    events:
+      'click .wrml-document-opener' : 'handleDocumentOpen'
+      'click .wrml-document-new-dialog' : 'showNewDocumentDialog'
+      'click .wrml-document-open-dialog' : 'showOpenDocumentDialog'
 
     onRender: ->
       @self = @
+      @viewDocument = $.extend(true, {}, @model.attributes.model)
 
     getViewDocument: ->
-      initialDocument = @model.attributes.model
-      return initialDocument
+      return @viewDocument
+
+    handleDocumentOpen: (e) ->
+      App.handleDocumentOpen(e)
+
+    showNewDocumentDialog: ->
+      App.headerView.showNewDocumentDialog()
+
+    showOpenDocumentDialog: ->
+      App.headerView.showOpenDocumentDialog()
+

@@ -518,17 +518,9 @@ public class DefaultApiLoader implements ApiLoader {
 
             apiBuilder.uri(apiUri).title(systemApi.getTitle()).description(systemApi.getDescription());
 
+            // NOTE: This call to docroot will automatically *Api* as a default response schema at the root
             apiBuilder.docroot(systemApi.getDocrootId());
             apiBuilder.resource(SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, systemApi.getPrimaryEndpointId(), systemApi.getDefaultSchemaInterface(), true);
-
-            // TODO: Rework the SchemaNamespace
-            /*
-             * if (systemApi == SystemApi.Schema) { apiBuilder.link(SYSTEM_API_DOCROOT_FULL_PATH, SystemLinkRelation.self.getUri(), SYSTEM_API_DOCROOT_FULL_PATH,
-             * SchemaNamespace.class); apiBuilder.link(SYSTEM_API_DOCROOT_FULL_PATH, SystemLinkRelation.element.getUri(), SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, Schema.class);
-             * apiBuilder.link(SYSTEM_API_DOCROOT_FULL_PATH, SystemLinkRelation.child.getUri(), SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, SchemaNamespace.class);
-             * apiBuilder.link(SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, SystemLinkRelation.element.getUri(), SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, Schema.class);
-             * apiBuilder.link(SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, SystemLinkRelation.child.getUri(), SYSTEM_API_PRIMARY_ENDPOINT_FULL_PATH, SchemaNamespace.class); }
-             */
 
             final Api api = apiBuilder.toApi();
             loadApi(api);
