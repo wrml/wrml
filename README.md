@@ -15,7 +15,7 @@ The initial implementation of the WRML runtime is Java-based, with the WrmlServl
 
 * Routes requests to a configured “back-end” **Service** implementation class based upon the target API endpoint’s response document’s **Schema**
 
-* Generates hyperlinks in responses based upon the designs of the API and the response document’s Schema
+* Generates hyperlinks in responses based upon the designs of the API and the response document’s Schema (HATEOAS!)
 
 * Represents response documents using any configured Format (e.g. JSON)
 
@@ -302,7 +302,7 @@ With the **baseSchemaURis** slot focused, press the enter key to open the list e
 
 ## wrmldoc
 
-See the <a href="./wrmldoc/README.md">/wrmldoc project.</a>.
+See the <a href="./wrmldoc/README.md">/wrmldoc project</a>.
 
 
 
