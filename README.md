@@ -2,14 +2,14 @@
   <img src="doc/wrml.png"/>
 </p>
 
-#About
+# About
 WRML, the Web Resource Modeling Language, is a domain-specific modeling language that's oriented toward the design of REST APIs. It is a formalization of common REST API design and implementation patterns found in modern application servers. 
 
 WRML is an open source software project (http://www.wrml.org) focused on providing REST API standards, frameworks, and tools to support the development of web-oriented, client-server applications.
 
 The initial implementation of the WRML runtime is Java-based, with the WrmlServlet providing the REST API engine that frees the service developer to focus on application logic.
 
-#Key Benefits
+# Key Benefits
 
 * Loads and initializes REST API models (API design metadata) to be routed and invoked
 
@@ -26,13 +26,13 @@ The initial implementation of the WRML runtime is Java-based, with the WrmlServl
 * Exposes API and Schema metadata to automate generation of code and docs for clients and intermediaries
 
 
-#Getting Started
+# Getting Started
 
 *Getting started* with WRML means something a little bit different to each role involved in the creation of REST APIs.
 
 The remainder of this README is intended for developers or other folks wanting to download, build, install, and run the WRML server and/or client tools.
 
-##Before you install WRML##
+## Before you install WRML
 
 From a console/terminal window, verify that *Java 7* is installed:
 
@@ -54,11 +54,11 @@ Which should display something like this:
 
 If not, it can be downloaded from: http://maven.apache.org/download.cgi
 
-##Download WRML##
+## Download WRML
 
 	$> git clone git@github.com:wrml/wrml.git
 
-##Install WRML##
+## Install WRML
 
 Change to the root directory of the WRML project.
 
@@ -71,7 +71,7 @@ From the root directory run maven's install command.
 Please note that the first time you run this command, it may download several of WRML's dependencies and install them into your system's local maven repository.
 
 
-##Configure WRML##
+## Configure WRML
 
 Edit the WRML configuration file at **wrml/config/filesystem-wrml.json** to match your local environment. The default contents of the configuration file are shown below:
     
@@ -102,7 +102,7 @@ Edit the WRML configuration file at **wrml/config/filesystem-wrml.json** to matc
 	    }
 	}
 
-##File Service Root Directory##
+## File Service Root Directory
 
 This setting specifies the root directory for WRML Models (stored as JSON files on disk).
 
@@ -115,7 +115,7 @@ You may edit this line to refer to a different directory or keep it as is to acc
 </p>
 	
 
-##Schema Loader Schema Directory##
+## Schema Loader Schema Directory
 
 This setting specifies the root directory for WRML Schemas (compiled as Java interfaces).
 
@@ -123,7 +123,7 @@ This setting specifies the root directory for WRML Schemas (compiled as Java int
 
 You may edit this line to refer to a different directory or keep it as is to accept the default. In either case, ensure that this directory **exists** and it and its subdirectories are **readable & writable** by you.
 
-#Werminal - WRML Terminal#
+# Werminal - WRML Terminal
 
 Werminal is a terminal (command line) application for WRML model browsing and editing.
 
@@ -136,7 +136,7 @@ Werminal also enables you to open, edit, and save data (of any data type).
 </p>
 
 
-##Running Werminal##
+## Running Werminal
 
 From the project root directory of the WRML project, change to the *cli* subdirectory.
 
@@ -158,7 +158,7 @@ For more information about running Werminal, see <a href="./cli/README.md">the W
 If you have problems starting Werminal, please confirm that the WRML configuration file is using the correct "slash" leaning direction for the folder/directory paths match the conventions of your OS. In WRML config files, the "/" forward slash should work cross-platform.
 
 
-##A Quick Tour of Werminal##
+## A Quick Tour of Werminal
 This section will walk through a simple example of using Werminal to demonstrate WRML's modeling features. Specifically, in this tour we will:
 
 1. Design a new schema
@@ -172,7 +172,7 @@ This section will walk through a simple example of using Werminal to demonstrate
 
 For more about the Werminal app, please consult the "[Werminal Masters Handbook](https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf)"
 
-###Designing a new Schema###
+### Designing a new Schema
 
 As you might expect, a WRML schema is a structured data type. For the first part of the Werminal tour, you will create a new schema named **Demo**.
 
@@ -263,7 +263,7 @@ With the **baseSchemaURis** slot focused, press the enter key to open the list e
 </p>
 
 
-###Creating a Model Instance###
+### Creating a Model Instance
 
 <p align="center">
   <img src="doc/README/Werminal-017.png" width="90%"/>
@@ -300,11 +300,11 @@ With the **baseSchemaURis** slot focused, press the enter key to open the list e
 
 
 
-##wrmldoc##
+## wrmldoc
 
 See the /wrmldoc project.
 
 
-#License#
+# License
 WRML is copyright (C) 2012-2015 Mark Masse <mark@wrml.org> (OSS project WRML.org). WRML is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
 
