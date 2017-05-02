@@ -302,7 +302,8 @@ With the **baseSchemaURis** slot focused, press the enter key to open the list e
 
 ## wrmldoc
 
-See the /wrmldoc project.
+See the <a href="./wrmldoc/README.md">/wrmldoc project.</a>.
+
 
 
 # License
