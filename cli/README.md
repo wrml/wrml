@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="doc/wrml.png"/>
+  <img src="../doc/wrml.png"/>
 </p>
 
 Werminal 
