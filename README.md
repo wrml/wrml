@@ -3,28 +3,29 @@
 </p>
 
 # About
-WRML, the Web Resource Modeling Language, is a domain-specific modeling language that's oriented toward the design of REST APIs. It is a formalization of common REST API design and implementation patterns found in modern application servers. 
-
-WRML is an open source software project (http://www.wrml.org) focused on providing REST API standards, frameworks, and tools to support the development of web-oriented, client-server applications.
+WRML, the Web Resource Modeling Language, is an open source software project (http://www.wrml.org) focused on providing tools to support the development of RESTful client-server applications. 
 
 The initial implementation of the WRML runtime is Java-based, with the WrmlServlet providing the REST API engine that frees the service developer to focus on application logic.
 
 # Key Benefits
 
-* Loads and initializes REST API models (API design metadata) to be routed and invoked
+WRML offers a _REST API engine_ that promotes a design first approach to REST API development. It does this by treating REST API design metadata (think swagger JSON) as primary input "model" to power the REST API server's runtime. The following list highlights some of WRML's "key benefits" - what differentiates a WRML-based REST API server from a JAX-RS (or other modern framework) approach?
 
-* Routes requests to a configured “back-end” **Service** implementation class based upon the target API endpoint’s response document’s **Schema**
+* WRML REST API servers load API design metadata (again, think swagger JSON) and initialize _runtime_ REST API models which are used  for request routing and HATEOAS (see below)
 
-* Generates hyperlinks in responses based upon the designs of the API and the response document’s Schema (HATEOAS!)
+* Since the server literally _runs_ your API designs (API design metadata expressed as JSON), your documentation and tools like Swagger will never "drift" from the running API - the REST API design's JSON representation is never stale, it becomes the source of truth
 
-* Represents response documents using any configured Format (e.g. JSON)
+* The server generates hyperlinks in responses based upon the designs of the API and the response document’s Schema (HATEOAS!)
+
+* The server routes incoming requests to a configured “back-end” **Service** implementation class based upon the target API endpoint’s response document’s **Schema** - learning this simple Service interface will enable you to hook up any backend to WRML's powerful REST API "frontend". 
+
+* The server represents response documents using any configured format (e.g. JSON) - formats are pluggable and can be easily added
 
 * To reduce the number of requests per screen, supports embedding linked document(s) within the requested document
 
 * To reduce the byte size of responses, supports omission of unused properties from the requested document
 
-* Exposes API and Schema metadata to automate generation of code and docs for clients and intermediaries
-
+* Exposes API and Schema metadata to automate generation of code and docs for clients and intermediaries - for instance, the WRML server represents the loaded API design metadata in Swagger format so it can be easily used with WRML
 
 # Getting Started
 
@@ -38,7 +39,7 @@ From a console/terminal window, verify that *Java 7* is installed:
 
 	$> java -version
 
-Which should display something like this (with a "1.7.0" or higher version number):
+Which should display something like this (with a "1.7.0" or higher version number - 1.8.* is cool too):
 
 	java version "1.7.0_25"
 
@@ -104,9 +105,9 @@ Edit the WRML configuration file at **wrml/config/filesystem-wrml.json** to matc
 
 ## File Service Root Directory
 
-This setting specifies the root directory for WRML Models (stored as JSON files on disk).
+This setting specifies the root directory for WRML models, which are individual Object instances stored as JSON files on disk.
 
-	"rootDirectory" : "/etc/wrml/schemas"
+	"rootDirectory" : "/etc/wrml/models"
 	
 You may edit this line to refer to a different directory or keep it as is to accept the default. In either case, ensure that this directory **exists** and it and its subdirectories are **readable & writable** by you.
 
@@ -117,24 +118,21 @@ You may edit this line to refer to a different directory or keep it as is to acc
 
 ## Schema Loader Schema Directory
 
-This setting specifies the root directory for WRML Schemas (compiled as Java interfaces).
+This setting specifies the root directory for WRML Schemas as Java interfaces with bytecode dynamically generated (only once).
 
-	"schemaClassRootDirectory" : "/etc/wrml/models"
+	"schemaClassRootDirectory" : "/etc/wrml/schemas"
 
 You may edit this line to refer to a different directory or keep it as is to accept the default. In either case, ensure that this directory **exists** and it and its subdirectories are **readable & writable** by you.
 
 # Werminal - WRML Terminal
 
-Werminal is a terminal (command line) application for WRML model browsing and editing.
+The WRML server and its "REST API engine" cover a decent chunk of what every REST API server needs to have. Beyond that, the WRML core (internals of the server) supports REST API and Schema design by creating design metadata and putting it all together. To test these features and capabilities and to interact with the WRML core directly, I built _Werminal_ to demonstrate that the bulk of the cabilities of the WRML server come from the WRML core, which Werminal, as a Java-based client, has baked in.
 
-Werminal can be used to create new models of any type such as: Schemas, Teams, Players, Aliens, HomeScreens, Movies; whatever your application calls for.
-
-Werminal also enables you to open, edit, and save data (of any data type).
+Werminal is a terminal (command line) application for WRML model browsing and editing. Werminal can be used to create new models of any type such as: Schemas, Teams, Players, Aliens, HomeScreens, Movies; whatever your application calls for. Werminal also enables you to open, edit, and save data (of any data type).
 
 <p align="center">
   <img src="doc/wormle.png" width="80%"/>
 </p>
-
 
 ## Running Werminal
 
