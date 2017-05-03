@@ -200,9 +200,3 @@ With the **baseSchemaURis** slot focused, press the enter key to open the list e
   <img src="../doc/README/Werminal-025.png" width="90%"/>
 </p>
 
-
-
-References
-===============
-
-For more about the Werminal app, please consult the "Werminal Masters Handbook": https://github.com/wrml/wrml/blob/master/doc/WRML_WerminalMastersHandbook.pdf
