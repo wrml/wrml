@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="http://www.wrml.org/images/index-titleLogo.png"/>
+  <img src="doc/wrml.png"/>
 </p>
 
 Werminal 
