@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="http://www.wrml.org/images/site-logo-2.png"/>
+  <img src="../doc/wrml.png"/>
 </p>
 
 # WRML
