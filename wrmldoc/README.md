@@ -2,10 +2,6 @@
   <img src="../doc/wrml.png"/>
 </p>
 
-# WRML
-
-WRML, the Web Resource Modeling Language, is an open source software project (http://www.wrml.org) focused on providing REST API standards, frameworks, and tools to support the development of web-oriented, client-server applications.
-
 # wrmldoc
 
 The WRML REST API server comes pre-configured with the *wrmldoc* web application.
