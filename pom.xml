@@ -527,7 +527,7 @@
         <aalto-xml.version>0.9.8</aalto-xml.version>
         <asm.version>3.3.1</asm.version>
         <commons-cli.version>1.2</commons-cli.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <commons-io.version>2.4</commons-io.version>
         <cors-filter.version>1.6</cors-filter.version>
