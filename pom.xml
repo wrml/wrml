@@ -556,7 +556,7 @@
         <slf4j.version>1.7.5</slf4j.version>
         <tika-core.version>1.3</tika-core.version>
         <woodstox.version>4.2.0</woodstox.version>
-        <xstream.version>1.4.4</xstream.version>
+        <xstream.version>1.4.16</xstream.version>
         <!-- -->
         <!-- plugin properties -->
         <!-- -->
