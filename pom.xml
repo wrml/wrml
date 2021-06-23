@@ -540,7 +540,7 @@
         <janino.version>2.6.1</janino.version>
         <javax-inject.version>1</javax-inject.version>
         <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
-        <jetty-server.version>9.0.3.v20130506</jetty-server.version>
+        <jetty-server.version>9.4.41.v20210516</jetty-server.version>
         <jsr311-api.version>1.1.1</jsr311-api.version>
         <junit.version>4.11</junit.version>
         <lanterna.version>2.1.5</lanterna.version>
